@@ -462,12 +462,13 @@ function copiarLote(btn){
 }
 function delLote(id){
   if(!confirm("Excluir lote? Os codigos nao usados voltarao ao banco."))return;
-  ap("codigos?lote_id=eq."+id+"&usado=eq.false",{m:"PATCH",pref:"return=minimal",b:JSON.stringify({lote_id:null})}).then(function(){
+  ap("codigos?lote_id=eq."+id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({lote_id:null,usado:false,usado_em:null})}).then(function(){
     return ap("lotes?id=eq."+id,{m:"DELETE",pref:"return=minimal"});
   }).then(function(){
     lotes=lotes.filter(function(l){return l.id!==id;});
     rLotes();rSts();
-  }).catch(function(){alert("Erro ao excluir lote");});
+    load();
+  }).catch(function(e){alert("Erro ao excluir: "+e.message);});
 }
 function load(){
   q("tbl").innerHTML="<div class='empty'>Carregando...</div>";
