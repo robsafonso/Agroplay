@@ -103,7 +103,7 @@ input:focus{border-color:var(–g2)}
 </head>
 <body>
 <div class="wrap">
-  <div id="loading">🌿 Carregando...</div>
+  <div id="loading" style="color:#fff;padding:20px;font-size:14px">🌿 Carregando...<br><span id="dbg" style="color:#aaa;font-size:12px"></span></div>
   <div id="erro">
     <div style="font-size:48px;margin-bottom:16px">🎪</div>
     <div style="font-size:18px;color:#fff;font-weight:700;margin-bottom:8px">Convite nao encontrado</div>
@@ -228,12 +228,14 @@ var p=new URLSearchParams(window.location.search);
 var id=p.get(“ev”);
 if(!id){showErro();return;}
 try{
+document.getElementById(“dbg”).textContent=“Buscando evento “+id+”…”;
 var d=await api(“eventos?id=eq.”+id+”&select=*”);
+document.getElementById(“dbg”).textContent=“Resposta: “+(d?JSON.stringify(d).substring(0,50):“null”);
 if(!d||!d.length){showErro();return;}
 evAtual=d[0];renderEv(d[0]);
 document.getElementById(“loading”).style.display=“none”;
 document.getElementById(“main”).style.display=“block”;
-}catch(e){showErro();}
+}catch(e){document.getElementById(“loading”).textContent=“Erro: “+e.message;showErro();}
 }
 
 function showErro(){document.getElementById(“loading”).style.display=“none”;document.getElementById(“erro”).style.display=“block”;}
