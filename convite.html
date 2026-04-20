@@ -11,6 +11,18 @@
 <div class="card" id="einfo"></div>
 <div class="card" id="earts" class="gone"></div>
 <div class="card">
+<div id="t1interno" class="gone card" style="text-align:center;margin-bottom:0">
+  <div style="font-size:16px;font-weight:900;color:#fff;margin-bottom:8px">Confirmar Presenca</div>
+  <div style="font-size:12px;color:#666;margin-bottom:16px">Voce ja e cadastrado na Agroplay.<br>Digite seu codigo para confirmar.</div>
+  <div id="al1i"></div>
+  <div class="fl"><label>Codigo de acesso</label><input id="codi" placeholder="000000" maxlength="6" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div>
+  <button class="btn" id="btn1i">Confirmar Presenca</button>
+  <div id="t5i" class="gone" style="margin-top:16px;text-align:center">
+    <div style="font-size:22px;margin-bottom:8px">✅</div>
+    <div style="font-size:18px;font-weight:900;color:#fff;margin-bottom:6px">Presenca Confirmada!</div>
+    <p style="color:#666;font-size:13px">Ate logo! 🌿</p>
+  </div>
+</div>
 <div id="t1" class="tl on">
 <div class="ttl">Confirmar Presenca</div>
 <div class="sub">Digite o codigo exclusivo recebido.</div>
@@ -80,6 +92,7 @@ function mCPF(el){var v=el.value.replace(/\D/g,"").slice(0,11);v=v.replace(/(\d{
 function mTel(el){var v=el.value.replace(/\D/g,"").slice(0,11);v=v.replace(/(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2");el.value=v;}
 function selS(s,btn){setor=s;document.querySelectorAll(".sb").forEach(function(b){b.classList.remove("on");});btn.classList.add("on");g("es").textContent="";}
 function api(p,o){o=o||{};var h={"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json"};if(o.pref)h["Prefer"]=o.pref;return fetch(SB+"/rest/v1/"+p,{method:o.m||"GET",headers:h,body:o.b}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});}
+var TIPO=new URLSearchParams(window.location.search).get("tipo")||"externo";
 function init(){
   var id=new URLSearchParams(window.location.search).get("ev");
   if(!id){g("msg").textContent="Convite nao encontrado.";return;}
@@ -97,6 +110,9 @@ function init(){
       if(ev.atracao1){var a="<div style='font-size:10px;color:#555;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px'>Atracoes</div><div class='art'><div class='an'>🤠 "+ev.atracao1+"</div><div class='ai'>"+(ev.insta_atr1?"<a href='"+ev.insta_atr1+"' target='_blank'>Ver Instagram</a>":"")+"</div></div>";if(ev.atracao2)a+="<div class='art'><div class='an'>🎵 "+ev.atracao2+"</div><div class='ai'>"+(ev.insta_atr2?"<a href='"+ev.insta_atr2+"' target='_blank'>Ver Instagram</a>":"")+"</div></div>";g("earts").innerHTML=a;g("earts").classList.remove("gone");}
       g("msg").classList.add("gone");
       g("main").classList.remove("gone");
+      if(TIPO==="interno"){g("t1").classList.remove("on");
+        g("t1interno").classList.remove("gone");
+      }
     })
     .catch(function(e){g("msg").textContent="Erro: "+e.message;});
 }
@@ -140,6 +156,23 @@ g("btn4").onclick=function(){
     }).then(function(){ir("t5");})
     .catch(function(){al.innerHTML="<div class='al err'>Erro ao salvar.</div>";})
     .finally(function(){btn.textContent="Confirmar Presenca";btn.disabled=false;});
+};
+g("btn1i").onclick=function(){
+  var c=g("codi").value.trim();
+  var al=g("al1i");al.innerHTML="";
+  if(!c||c.length<6){al.innerHTML="<div class='al err'>Digite o codigo de 6 digitos.</div>";return;}
+  var btn=this;btn.textContent="Verificando...";btn.disabled=true;
+  api("codigos?codigo=eq."+c+"&select=*").then(function(d){
+    if(!d||!d.length){al.innerHTML="<div class='al err'>Codigo invalido.</div>";}
+    else if(d[0].usado){al.innerHTML="<div class='al err'>Codigo ja utilizado.</div>";}
+    else{
+      api("codigos?codigo=eq."+c,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString()})}).then(function(){
+        btn.style.display="none";
+        g("t5i").classList.remove("gone");
+      });
+    }
+  }).catch(function(){al.innerHTML="<div class='al err'>Erro.</div>";
+  }).finally(function(){btn.textContent="Confirmar Presenca";btn.disabled=false;});
 };
 init();
 </script>
