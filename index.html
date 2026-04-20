@@ -66,6 +66,7 @@ textarea{height:70px;resize:none}
   <button class="tab" id="te">Eventos</button>
   <button class="tab" id="tk">Codigos</button>
   <button class="tab" id="tl">Lista</button>
+  <button class="tab" id="tlt">Lotes</button>
 </div>
 <div id="sc">
   <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
@@ -98,6 +99,10 @@ textarea{height:70px;resize:none}
   <div id="klst"></div>
 </div>
 <div id="sl" class="gone"><div id="llst"></div></div>
+<div id="slt" class="gone">
+  <button class="btn" id="bnovolote" style="width:100%;margin-bottom:14px">+ Criar novo lote</button>
+  <div id="loteslst"><div class="empty">Nenhum lote criado</div></div>
+</div>
 <div class="ov ovc" id="ovlinkc">
   <div class="mod" style="border-radius:20px;max-width:400px;margin:20px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
@@ -117,6 +122,18 @@ textarea{height:70px;resize:none}
       <button class="btn" id="bcopiarlinkc" style="width:100%">Copiar mensagem</button>
       <button class="bto" id="bnovocadlinkc" style="width:100%;margin-top:8px">Gerar outro</button>
     </div>
+  </div>
+</div>
+<div class="ov ovc" id="ovlote">
+  <div class="mod" style="border-radius:20px;max-width:400px;margin:20px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="font-size:16px;font-weight:700;color:#fff">Novo Lote de Convites</div>
+      <button class="bto" id="bflote">X</button>
+    </div>
+    <div id="lote-alert"></div>
+    <div class="fl"><label>Nome do responsavel</label><input id="lote-resp" placeholder="Ex: Albertone"></div>
+    <div class="fl"><label>Quantidade de convites</label><input id="lote-qtd" type="number" value="50" min="1" max="200" placeholder="50"></div>
+    <button class="btn" id="bsalvalote" style="width:100%">Criar lote</button>
   </div>
 </div>
 <div class="ov" id="ovp">
@@ -270,6 +287,20 @@ q("tc").onclick=function(){tab("c");};
 q("te").onclick=function(){tab("e");};
 q("tk").onclick=function(){tab("k");};
 q("tl").onclick=function(){tab("l");};
+q("tlt").onclick=function(){tab("lt");};
+q("bnovolote").onclick=function(){q("ovlote").classList.add("on");q("lote-alert").innerHTML="";q("lote-resp").value="";q("lote-qtd").value="50";};
+q("bflote").onclick=function(){q("ovlote").classList.remove("on");};
+q("bsalvalote").onclick=function(){
+  var resp=q("lote-resp").value.trim();
+  if(!resp){q("lote-alert").innerHTML="<div class='ea'>Nome obrigatorio</div>";return;}
+  var qtd=parseInt(q("lote-qtd").value)||50;
+  var btn=q("bsalvalote");btn.textContent="Criando...";btn.disabled=true;
+  ap("lotes",{m:"POST",pref:"return=representation",b:JSON.stringify({nome:"Lote "+resp,responsavel:resp,quantidade:qtd})}).then(function(d){
+    q("ovlote").classList.remove("on");
+    rLotes();
+  }).catch(function(){q("lote-alert").innerHTML="<div class='ea'>Erro ao criar</div>";
+  }).finally(function(){btn.textContent="Criar lote";btn.disabled=false;});
+};
 q("bapv").onclick=function(){
   if(!pa)return;
   var pid=pa.id;
@@ -291,11 +322,45 @@ q("brpv").onclick=function(){
     rend();
   });
 };
+var lotes=[];
+function rLotes(){
+  ap("lotes?select=*&order=criado_em.desc").then(function(d){
+    lotes=d||[];
+    var el=q("loteslst");
+    if(!lotes.length){el.innerHTML="<div class='empty'>Nenhum lote criado</div>";return;}
+    var h="";
+    lotes.forEach(function(lt){
+      var link=LC+"?lote="+lt.id+"&resp="+encodeURIComponent(lt.responsavel);
+      var convidados=cads.filter(function(c){return c.lote_id===lt.id;}).length;
+      h+="<div class='card'>";
+      h+="<div style='font-size:15px;font-weight:700;color:#fff;margin-bottom:4px'>"+lt.responsavel+"</div>";
+      h+="<div style='font-size:11px;color:#555;line-height:1.7;margin-bottom:10px'>"+convidados+" cadastrados de "+lt.quantidade+" convites</div>";
+      h+="<div style='background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;margin-bottom:10px'>";
+      h+="<div style='font-size:10px;color:#555;margin-bottom:4px;text-transform:uppercase'>Link do lote</div>";
+      h+="<div style='font-family:monospace;font-size:11px;color:#2aab47;word-break:break-all'>"+link+"</div></div>";
+      h+="<div style='display:flex;gap:6px'>";
+      h+="<button class='btn' onclick='copiarLote(this)' data-link='"+link+"' data-resp='"+lt.responsavel+"' data-qtd='"+lt.quantidade+"' style='flex:1;font-size:11px;padding:8px'>Copiar link</button>";
+      h+="<button class='btr' onclick='delLote("+lt.id+")' style='font-size:11px;padding:8px'>X</button>";
+      h+="</div></div>";
+    });
+    el.innerHTML=h;
+  }).catch(function(){});
+}
+function copiarLote(btn){
+  var link=btn.dataset.link;var resp=btn.dataset.resp;var qtd=btn.dataset.qtd;
+  var msg="AGROPLAY - Convite de Cadastro\n\nVoce foi convidado por "+resp+" para se cadastrar no sistema Agroplay!\n\nAcesse o link e faca seu cadastro:\n"+link+"\n\nAgroplay Music - Londrina PR";
+  cp2(msg,btn,"Copiar link");
+}
+function delLote(id){
+  if(!confirm("Excluir lote?"))return;
+  ap("lotes?id=eq."+id,{m:"DELETE",pref:"return=minimal"}).then(function(){lotes=lotes.filter(function(l){return l.id!==id;});rLotes();});
+}
 function load(){
   q("tbl").innerHTML="<div class='empty'>Carregando...</div>";
   ap("cadastros?select=*&order=criado_em.desc").then(function(d){cads=d||[];rSts();rChips();rend();}).catch(function(){cads=[];rSts();rChips();rend();});
   ap("codigos?select=*&order=id.asc").then(function(d){cods=d||[];rSts();rCods();}).catch(function(){cods=[];});
   ap("eventos?select=*&order=data.asc").then(function(d){evs=d||[];rSts();rEvs();}).catch(function(){evs=[];});
+  ap("lotes?select=*&order=criado_em.desc").then(function(d){lotes=d||[];rLotes();}).catch(function(){lotes=[];});
 }
 function rSts(){
   var d=cods.filter(function(c){return !c.usado;}).length;
@@ -531,9 +596,9 @@ function mkXls(rows,name){
   dl("<?xml version='1.0'?><Workbook xmlns='urn:schemas-microsoft-com:office:spreadsheet' xmlns:ss='urn:schemas-microsoft-com:office:spreadsheet'><Worksheet ss:Name='Dados'><Table>"+hdr+body+"</Table></Worksheet></Workbook>","application/vnd.ms-excel",name+".xls");
 }
 function tab(t){
-  ["c","e","k","l"].forEach(function(x){q("s"+x).classList.add("gone");q("t"+x).classList.remove("on");});
+  ["c","e","k","l","lt"].forEach(function(x){q("s"+x).classList.add("gone");q("t"+x).classList.remove("on");});
   q("s"+t).classList.remove("gone");q("t"+t).classList.add("on");
-  if(t==="l")rLst();if(t==="k")rCods();if(t==="e")rEvs();
+  if(t==="l")rLst();if(t==="k")rCods();if(t==="e")rEvs();if(t==="lt")rLotes();
 }
 load();
 </script>
