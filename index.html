@@ -204,7 +204,13 @@ function togAll(ids,v){if(v)ids.forEach(function(id){if(sel.indexOf(id)<0)sel.pu
 function verP(id){
   var c=cads.find(function(x){return x.id===id;});if(!c)return;pa=c;
   var cor=COR[c.setor]||"#555";
-  var h="<div style='text-align:center;margin-bottom:16px'><div style='width:52px;height:52px;background:"+cor+";border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:20px;color:#fff;font-weight:700'>"+c.nome.charAt(0).toUpperCase()+"</div><div style='font-size:17px;font-weight:700;color:#fff'>"+c.nome+"</div><span class='badge' style='background:"+cor+";margin-top:6px;display:inline-block'>"+c.setor+"</span></div>";
+  var fotoHtml="";
+  if(c.foto_url){
+    fotoHtml="<img src='"+c.foto_url+"' style='width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #3ab54a;margin:0 auto 10px;display:block'/>";
+  } else {
+    fotoHtml="<div style='width:80px;height:80px;background:"+cor+";border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:28px;color:#fff;font-weight:700'>"+c.nome.charAt(0).toUpperCase()+"</div>";
+  }
+  var h="<div style='text-align:center;margin-bottom:16px'>"+fotoHtml+"<div style='font-size:17px;font-weight:700;color:#fff'>"+c.nome+"</div><span class='badge' style='background:"+cor+";margin-top:6px;display:inline-block'>"+c.setor+"</span></div>";
   [["CPF",c.cpf],["RG",c.rg],["Email",c.email],["Telefone",c.telefone],["Nascimento",fd(c.nascimento)]].forEach(function(r){h+="<div class='prow'><span>"+r[0]+"</span><span>"+r[1]+"</span></div>";});
   g("pcont").innerHTML=h;g("ov-p").classList.add("on");
 }
