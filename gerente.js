@@ -1,3 +1,4 @@
+document.addEventListener(‘DOMContentLoaded’,function(){
 var SB=“https://wexwcnezjadoutyzkbcj.supabase.co”;
 var KY=“eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ”;
 var LC=“https://robsafonso.github.io/Agroplay/cadastro.html”;
@@ -338,3 +339,4 @@ q(“s”+t).classList.remove(“gone”);q(“t”+t).classList.add(“on”);
 if(t===“l”)rLst();if(t===“k”)rCods();if(t===“e”)rEvs();
 }
 load();
+});
