@@ -124,7 +124,7 @@ q("btn-gerar").onclick=function(){
   var al=q("al-conv");al.innerHTML="";
   if(!codsDisponiveis.length){al.innerHTML="<div class='ea'>Sem convites disponiveis! Contate a Agroplay.</div>";return;}
   var cod=codsDisponiveis[0];
-  var link=LC+"?lote="+loteAtual.id+"&resp="+encodeURIComponent(loteAtual.responsavel)+"&cod="+cod.codigo;
+  var link=LC+"?lote="+loteAtual.id+"&resp="+encodeURIComponent(loteAtual.responsavel)+"&cod="+cod.codigo+"&tipo=externo";
   var msg="AGROPLAY - Convite de Cadastro\n\nVoce foi convidado por "+loteAtual.responsavel+" para se cadastrar no sistema Agroplay!\n\nAcesse o link e faca seu cadastro:\n"+link+"\n\nSeu codigo: "+cod.codigo+"\n\nCodigo intransferivel e de uso unico.\nAgroplay Music - Londrina PR";
   q("conv-cod").textContent=cod.codigo;
   q("conv-msg").textContent=msg;
