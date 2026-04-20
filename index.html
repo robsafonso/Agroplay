@@ -498,7 +498,7 @@ function rend(){
   f.forEach(function(c){
     var cor=COR[c.setor]||"#555";
     var sb=c.status==="aprovado"?"<span class='ab'>Aprov</span>":c.status==="reprovado"?"<span class='rb'>Reprov</span>":c.evento_id?"<span class='pb'>Pend</span>":"";
-    if(c.lote_nome)sb+="<span style='background:#0891b2;color:#fff;padding:2px 6px;border-radius:10px;font-size:9px;margin-left:3px'>"+c.lote_nome+"</span>";
+    if(c.lote_nome)sb=(sb||"")+"<span style='background:#0891b2;color:#fff;padding:2px 6px;border-radius:10px;font-size:9px;display:block;margin-top:3px'>"+c.lote_nome+"</span>";
     h+="<tr><td><input type='checkbox'"+(sel.indexOf(c.id)>=0?" checked":"")+" onchange='togS("+c.id+",this.checked)'></td><td><span class='nlink' onclick='verP("+c.id+")'>"+c.nome+"</span></td><td><span class='badge' style='background:"+cor+"'>"+c.setor+"</span></td><td>"+sb+"</td></tr>";
   });
   h+="</tbody></table></div>";
@@ -514,7 +514,7 @@ function verP(id){
   if(!c)return;pa=c;
   var cor=COR[c.setor]||"#555";
   var fh=c.foto_url?"<img src='"+c.foto_url+"' onclick='verFoto("+c.id+")' style='width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid #2aab47;margin:0 auto 10px;display:block;cursor:pointer'/>":"<div style='width:80px;height:80px;background:"+cor+";border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:28px;color:#fff;font-weight:700'>"+c.nome.charAt(0).toUpperCase()+"</div>";
-  var h="<div style='text-align:center;margin-bottom:16px'>"+fh+"<div style='font-size:17px;font-weight:700;color:#fff'>"+c.nome+"</div><span class='badge' style='background:"+cor+";margin-top:6px;display:inline-block'>"+c.setor+"</span></div>";
+  var loteTag=c.lote_nome?"<div style='font-size:11px;color:#0891b2;margin-top:6px'>Convidado por <b>"+c.lote_nome+"</b></div>":""; var h="<div style='text-align:center;margin-bottom:16px'>"+fh+"<div style='font-size:17px;font-weight:700;color:#fff'>"+c.nome+"</div><span class='badge' style='background:"+cor+";margin-top:6px;display:inline-block'>"+c.setor+"</span>"+loteTag+"</div>";
   var rows=[["CPF",c.cpf],["RG",c.rg],["Email",c.email],["Telefone",c.telefone],["Nascimento",fd(c.nascimento)]];
   if(c.empresa)rows.push(["Empresa",c.empresa]);
   if(c.cargo)rows.push(["Cargo",c.cargo]);
@@ -689,25 +689,25 @@ function rLst(){
   h+="<div><div style='font-size:15px;color:#fff;font-weight:700'>"+lista.n+"</div>";
   h+="<div style='font-size:11px;color:#555;margin-top:2px'>"+lista.dt+" - "+lista.p.length+" pessoa(s)</div></div>";
   h+="<div style='display:flex;gap:6px'><button class='bto' onclick='exXlsL()'>Excel</button><button class='bto' onclick='exCsvL()'>CSV</button></div></div>";
-  h+="<div class='tbl'><table><thead><tr><th>#</th><th>Nome</th><th>Empresa</th><th>Cargo</th><th>Email</th><th>Tel</th><th>Setor</th><th>Status</th></tr></thead><tbody>";
+  h+="<div class='tbl'><table><thead><tr><th>#</th><th>Nome</th><th>Empresa</th><th>Cargo</th><th>Email</th><th>Tel</th><th>Setor</th><th>Status</th><th>Convidado por</th></tr></thead><tbody>";
   lista.p.forEach(function(p,i){
     var sb=p.status==="aprovado"?"<span class='ab'>Aprov</span>":p.status==="reprovado"?"<span class='rb'>Reprov</span>":"<span class='pb'>Pend</span>";
     h+="<tr><td style='color:#444'>"+(i+1)+"</td><td style='color:#fff'>"+p.nome+"</td>";
     h+="<td style='color:#777'>"+(p.empresa||"-")+"</td><td style='color:#777'>"+(p.cargo||"-")+"</td>";
     h+="<td style='color:#777'>"+p.email+"</td><td style='color:#777'>"+p.telefone+"</td>";
     h+="<td><span class='badge' style='background:"+(COR[p.setor]||"#555")+"'>"+p.setor+"</span></td>";
-    h+="<td>"+sb+"</td></tr>";
+    h+="<td>"+sb+"</td><td style='color:#0891b2;font-size:11px'>"+(p.lote_nome||"-")+"</td></tr>";
   });
   h+="</tbody></table></div>";
   q("llst").innerHTML=h;
 }
-function mkR(arr){return arr.map(function(c){return[c.nome,c.cpf,c.rg,c.email,c.telefone,fd(c.nascimento),c.setor,c.empresa||"",c.cargo||"",c.status||""];});}
+function mkR(arr){return arr.map(function(c){return[c.nome,c.cpf,c.rg,c.email,c.telefone,fd(c.nascimento),c.setor,c.empresa||"",c.cargo||"",c.status||"",c.lote_nome||""];});}
 function expExcel(){mkXls(mkR(cads),"Cadastros");}
 function exXlsL(){if(lista)mkXls(mkR(lista.p),"Lista_"+lista.n);}
-function expCSV(){dl("Nome,CPF,RG,Email,Telefone,Nascimento,Setor,Empresa,Cargo,Status\n"+mkR(cads).map(function(r){return r.map(function(v){return'"'+v+'"';}).join(",");}).join("\n"),"text/csv","Cadastros.csv");}
-function exCsvL(){if(lista)dl("Nome,CPF,RG,Email,Telefone,Nascimento,Setor,Empresa,Cargo,Status\n"+mkR(lista.p).map(function(r){return r.map(function(v){return'"'+v+'"';}).join(",");}).join("\n"),"text/csv","Lista.csv");}
+function expCSV(){dl("Nome,CPF,RG,Email,Telefone,Nascimento,Setor,Empresa,Cargo,Status,Convidado por\n"+mkR(cads).map(function(r){return r.map(function(v){return'"'+v+'"';}).join(",");}).join("\n"),"text/csv","Cadastros.csv");}
+function exCsvL(){if(lista)dl("Nome,CPF,RG,Email,Telefone,Nascimento,Setor,Empresa,Cargo,Status,Convidado por\n"+mkR(lista.p).map(function(r){return r.map(function(v){return'"'+v+'"';}).join(",");}).join("\n"),"text/csv","Lista.csv");}
 function mkXls(rows,name){
-  var hdr="<Row><Cell><Data ss:Type='String'>Nome</Data></Cell><Cell><Data ss:Type='String'>CPF</Data></Cell><Cell><Data ss:Type='String'>RG</Data></Cell><Cell><Data ss:Type='String'>Email</Data></Cell><Cell><Data ss:Type='String'>Telefone</Data></Cell><Cell><Data ss:Type='String'>Nascimento</Data></Cell><Cell><Data ss:Type='String'>Setor</Data></Cell><Cell><Data ss:Type='String'>Empresa</Data></Cell><Cell><Data ss:Type='String'>Cargo</Data></Cell><Cell><Data ss:Type='String'>Status</Data></Cell></Row>";
+  var hdr="<Row><Cell><Data ss:Type='String'>Nome</Data></Cell><Cell><Data ss:Type='String'>CPF</Data></Cell><Cell><Data ss:Type='String'>RG</Data></Cell><Cell><Data ss:Type='String'>Email</Data></Cell><Cell><Data ss:Type='String'>Telefone</Data></Cell><Cell><Data ss:Type='String'>Nascimento</Data></Cell><Cell><Data ss:Type='String'>Setor</Data></Cell><Cell><Data ss:Type='String'>Empresa</Data></Cell><Cell><Data ss:Type='String'>Cargo</Data></Cell><Cell><Data ss:Type='String'>Status</Data></Cell><Cell><Data ss:Type='String'>Convidado por</Data></Cell></Row>";
   var body=rows.map(function(r){return "<Row>"+r.map(function(v){return"<Cell><Data ss:Type='String'>"+String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</Data></Cell>";}).join("")+"</Row>";}).join("");
   dl("<?xml version='1.0'?><Workbook xmlns='urn:schemas-microsoft-com:office:spreadsheet' xmlns:ss='urn:schemas-microsoft-com:office:spreadsheet'><Worksheet ss:Name='Dados'><Table>"+hdr+body+"</Table></Worksheet></Workbook>","application/vnd.ms-excel",name+".xls");
 }
