@@ -264,6 +264,10 @@ input.err{border-color:#e74c3c}
 </div>
 
 <script>
+const _urlParams=new URLSearchParams(window.location.search);
+const _LOTE_ID=_urlParams.get('lote')||null;
+const _RESP=_urlParams.get('resp')||null;
+const _COD=_urlParams.get('cod')||null;
 const URL_SB="https://wexwcnezjadoutyzkbcj.supabase.co";
 const KEY_SB="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
 
@@ -338,7 +342,10 @@ async function enviarCadastro(){
     const tel=document.getElementById('f-tel').value;
     const nasc=document.getElementById('f-nasc').value;
     // Salva cadastro
-    const cad=await sbFetch('cadastros',{method:'POST',body:JSON.stringify({nome,cpf,rg,email,telefone:tel,nascimento:nasc,setor:setorSelecionado})});
+    var cadBody={nome,cpf,rg,email,telefone:tel,nascimento:nasc,setor:setorSelecionado};
+    if(_LOTE_ID)cadBody.lote_id=parseInt(_LOTE_ID);
+    if(_RESP)cadBody.lote_nome=_RESP;
+    const cad=await sbFetch('cadastros',{method:'POST',body:JSON.stringify(cadBody)});
     const cadId=cad&&cad[0]?cad[0].id:null;
     // Invalida código
     await sbFetch(`codigos?codigo=eq.${codigoValido}`,{method:'PATCH',prefer:'return=minimal',body:JSON.stringify({usado:true,usado_em:new Date().toISOString(),cadastro_id:cadId})});
