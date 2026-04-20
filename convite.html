@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Convite VIP - Agroplay</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#080808;color:#eee;font-family:Arial,sans-serif;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:20px 16px 40px}
+.wrap{width:100%;max-width:420px}
+.conv{background:#0d0d0d;border:1px solid rgba(255,255,255,.07);border-radius:20px;overflow:hidden;margin-bottom:16px;box-shadow:0 20px 60px rgba(0,0,0,.8)}
+.conv-foto{width:100%;max-height:220px;object-fit:cover;display:block}
+.ch{padding:20px;text-align:center;border-bottom:1px solid rgba(45,138,62,.2);background:linear-gradient(160deg,#0d1a0f,#111 60%,#0d1a0f)}
+.logo{font-size:22px;font-weight:900;color:#fff;margin-bottom:8px}
+.logo b{color:#3ab54a}
+.vip{display:inline-block;background:linear-gradient(135deg,#2d8a3e,#3ab54a);color:#fff;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:10px}
+.ctit{font-size:22px;font-weight:900;color:#fff;margin-bottom:4px}
+.csub{font-size:13px;color:#3ab54a;font-style:italic}
+.cb{padding:20px}
+.info-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid #1a1a1a}
+.info-icon{font-size:18px;flex-shrink:0;width:24px;text-align:center}
+.info-text{flex:1}
+.info-label{font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
+.info-val{font-size:14px;color:#fff;font-weight:600}
+.info-link{font-size:14px;color:#3ab54a;font-weight:600;text-decoration:none}
+.arts{display:flex;flex-direction:column;gap:8px;margin:14px 0}
+.art{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);border-radius:9px;padding:11px 14px;display:flex;align-items:center;gap:11px;position:relative;overflow:hidden}
+.art::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,#3ab54a,#2d8a3e)}
+.art.main{background:linear-gradient(135deg,rgba(45,138,62,.1),rgba(45,138,62,.02));border-color:rgba(45,138,62,.25)}
+.art .an{font-size:15px;font-weight:700;color:#fff}
+.art.main .an{font-size:17px}
+.art .ad{font-size:10px;color:rgba(255,255,255,.4);margin-top:2px}
+.cad-box{background:#0d0d0d;border:1px solid rgba(255,255,255,.07);border-radius:20px;padding:22px}
+.cad-tit{font-size:15px;font-weight:700;color:#fff;margin-bottom:4px}
+.cad-sub{font-size:12px;color:rgba(255,255,255,.4);margin-bottom:18px;line-height:1.5}
+.tl{display:none}.tl.on{display:block}
+.fl{margin-bottom:12px}
+label{display:block;font-size:10px;color:#3ab54a;letter-spacing:1px;margin-bottom:4px;text-transform:uppercase}
+input{width:100%;background:#080808;border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:11px 14px;color:#eee;font-size:15px;outline:none}
+input:focus{border-color:#3ab54a}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.setor-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.sb{background:#080808;border:1px solid rgba(255,255,255,.08);border-radius:9px;padding:11px 9px;color:#666;cursor:pointer;font-size:12px;text-align:center;width:100%;display:flex;flex-direction:column;align-items:center;gap:5px;font-family:Arial,sans-serif}
+.sb span{font-size:20px}
+.sb.on{background:rgba(45,138,62,.15);border-color:#3ab54a;color:#fff}
+.ci{width:100%;background:#080808;border:2px solid rgba(255,255,255,.08);border-radius:10px;padding:14px;color:#fff;font-size:26px;font-weight:700;text-align:center;letter-spacing:5px;outline:none;font-family:Arial,sans-serif}
+.ci:focus{border-color:#3ab54a}
+.btn{background:linear-gradient(135deg,#2d8a3e,#3ab54a);color:#fff;border:none;border-radius:10px;padding:13px 20px;font-size:14px;font-weight:700;cursor:pointer;width:100%;margin-top:8px;font-family:Arial,sans-serif}
+.bto{background:transparent;color:#3ab54a;border:1px solid #3ab54a;border-radius:10px;padding:11px 20px;font-size:13px;cursor:pointer;width:100%;font-family:Arial,sans-serif;margin-top:8px}
+.al{padding:10px 13px;border-radius:8px;font-size:13px;margin-bottom:10px}
+.al.err{background:#1a0505;border:1px solid #e74c3c;color:#e74c3c}
+.steps{display:flex;gap:5px;margin-bottom:16px;justify-content:center}
+.step{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.1)}
+.step.on{background:#3ab54a;width:22px;border-radius:4px}
+.em2{font-size:11px;color:#e74c3c;margin-top:4px;display:block}
+.sw{text-align:center;padding:14px 0}
+.si{width:60px;height:60px;background:rgba(45,138,62,.15);border:2px solid #3ab54a;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:26px}
+.stit{font-size:21px;font-weight:700;color:#fff;margin-bottom:8px}
+.stxt{color:rgba(255,255,255,.4);font-size:13px;line-height:1.7}
+#loading{text-align:center;padding:60px 20px;color:#555}
+#erro{display:none;text-align:center;padding:60px 20px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="loading">Carregando convite... 🌿</div>
+  <div id="erro" style="display:none">
+    <div style="font-size:40px;margin-bottom:14px">🎪</div>
+    <div style="font-size:17px;color:#fff;font-weight:700;margin-bottom:8px">Convite nao encontrado</div>
+    <div style="font-size:13px;color:#555">Verifique o link ou contate a Agroplay.</div>
+  </div>
+
+  <div id="main" style="display:none">
+    <div class="conv">
+      <img id="ev-foto" class="conv-foto" style="display:none"/>
+      <div class="ch">
+        <div class="logo">AGRO<b>PLAY</b></div>
+        <div class="vip">⭐ Convite VIP</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.4);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px">Voce e nosso</div>
+        <div class="ctit">Convidado Especial</div>
+        <div class="csub" id="ev-tipo-label"></div>
+      </div>
+      <div class="cb">
+        <div id="ev-data-row" class="info-row" style="display:none">
+          <div class="info-icon">📅</div>
+          <div class="info-text"><div class="info-label">Data</div><div class="info-val" id="ev-data-val"></div></div>
+        </div>
+        <div id="ev-local-row" class="info-row" style="display:none">
+          <div class="info-icon">📍</div>
+          <div class="info-text"><div class="info-label">Local</div><div id="ev-local-val"></div></div>
+        </div>
+        <div id="ev-arts-wrap"></div>
+        <div id="ev-desc-row" class="info-row" style="display:none">
+          <div class="info-icon">📝</div>
+          <div class="info-text"><div class="info-label">Detalhes</div><div class="info-val" id="ev-desc-val" style="font-weight:400;font-size:13px;color:#aaa;line-height:1.6"></div></div>
+        </div>
+      </div>
+    </div>
+
+```
+<div class="cad-box">
+  <div id="t1" class="tl on">
+    <div class="cad-tit">Confirmar presenca</div>
+    <div class="cad-sub">Digite o codigo exclusivo que voce recebeu.</div>
+    <div class="steps"><div class="step on"></div><div class="step"></div><div class="step"></div></div>
+    <div id="al1"></div>
+    <div class="fl"><label>Codigo de acesso</label><input class="ci" id="cod" placeholder="000000" maxlength="6" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'')"/></div>
+    <button class="btn" id="btn1">Continuar</button>
+  </div>
+
+  <div id="t2" class="tl">
+    <div class="cad-tit">Seus dados</div>
+    <div class="cad-sub">Preencha para confirmar sua presenca.</div>
+    <div class="steps"><div class="step"></div><div class="step on"></div><div class="step"></div></div>
+    <div id="al2"></div>
+    <div class="fl"><label>Nome completo</label><input id="fn" placeholder="Seu nome completo"/><span class="em2" id="en"></span></div>
+    <div class="g2">
+      <div class="fl"><label>CPF</label><input id="fc" placeholder="000.000.000-00" oninput="mCPF(this)" inputmode="numeric"/><span class="em2" id="ec"></span></div>
+      <div class="fl"><label>RG</label><input id="fr" placeholder="No do RG"/><span class="em2" id="er"></span></div>
+    </div>
+    <div class="fl"><label>E-mail</label><input id="fe" type="email" placeholder="seu@email.com" inputmode="email"/><span class="em2" id="ee"></span></div>
+    <div class="g2">
+      <div class="fl"><label>Telefone</label><input id="ft" placeholder="(00) 00000-0000" oninput="mTel(this)" inputmode="numeric"/><span class="em2" id="et"></span></div>
+      <div class="fl"><label>Nascimento</label><input id="fn2" type="date"/><span class="em2" id="en2"></span></div>
+    </div>
+    <button class="btn" onclick="irSetor()">Proximo</button>
+    <button class="bto" onclick="ir('t1')">Voltar</button>
+  </div>
+
+  <div id="t3" class="tl">
+    <div class="cad-tit">Seu setor</div>
+    <div class="cad-sub">Selecione sua funcao na Agroplay.</div>
+    <div class="steps"><div class="step"></div><div class="step"></div><div class="step on"></div></div>
+    <div class="setor-grid">
+      <button class="sb" onclick="sel('Artista',this)"><span>🎤</span>Artista</button>
+      <button class="sb" onclick="sel('Influenciador',this)"><span>📲</span>Influenciador</button>
+      <button class="sb" onclick="sel('Diretoria',this)"><span>🏢</span>Diretoria</button>
+      <button class="sb" onclick="sel('Colaborador',this)"><span>🤝</span>Colaborador</button>
+    </div>
+    <span class="em2" id="es" style="margin-bottom:7px;display:block"></span>
+    <div id="al3"></div>
+    <button class="btn" id="btn3">Confirmar presenca</button>
+    <button class="bto" onclick="ir('t2')">Voltar</button>
+  </div>
+
+  <div id="t4" class="tl">
+    <div class="sw">
+      <div class="si">✓</div>
+      <div class="stit">Presenca confirmada!</div>
+      <p class="stxt">Seus dados foram registrados.<br/>A equipe <strong style="color:#3ab54a">Agroplay</strong> entrara em contato.<br/><br/>Nos vemos em breve! 🤠</p>
+    </div>
+  </div>
+</div>
+```
+
+  </div>
+</div>
+
+<script>
+var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
+var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
+var DIAS=["Domingo","Segunda","Terca","Quarta","Quinta","Sexta","Sabado"];
+var MESES=["Janeiro","Fevereiro","Marco","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+var codOk="",setor="",evAtual=null;
+
+function api(p,o){
+  o=o||{};
+  var h={"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json"};
+  if(o.pref)h["Prefer"]=o.pref;
+  return fetch(SB+"/rest/v1/"+p,{method:o.m||"GET",headers:h,body:o.b}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});
+}
+
+async function init(){
+  var p=new URLSearchParams(window.location.search);
+  var id=p.get("ev");
+  if(!id){showErro();return;}
+  try{
+    var d=await api("eventos?id=eq."+id+"&select=*");
+    if(!d||!d.length){showErro();return;}
+    evAtual=d[0];
+    renderEv(d[0]);
+    document.getElementById("loading").style.display="none";
+    document.getElementById("main").style.display="block";
+  }catch(e){showErro();}
+}
+
+function showErro(){
+  document.getElementById("loading").style.display="none";
+  document.getElementById("erro").style.display="block";
+}
+
+function renderEv(ev){
+  if(ev.foto_url){
+    var fi=document.getElementById("ev-foto");
+    fi.src=ev.foto_url;fi.style.display="block";
+  }
+  document.getElementById("ev-tipo-label").textContent="Evento Agroplay";
+  if(ev.data){
+    var d=new Date(ev.data+"T12:00:00");
+    document.getElementById("ev-data-val").textContent=DIAS[d.getDay()]+", "+d.getDate()+" de "+MESES[d.getMonth()]+" de "+d.getFullYear();
+    document.getElementById("ev-data-row").style.display="flex";
+  }
+  if(ev.local){
+    var lv=document.getElementById("ev-local-val");
+    if(ev.maps_url){
+      lv.innerHTML="<a href='"+ev.maps_url+"' target='_blank' class='info-link'>"+ev.local+" 🗺️</a>";
+    } else {
+      lv.innerHTML="<div class='info-val'>"+ev.local+"</div>";
+    }
+    document.getElementById("ev-local-row").style.display="flex";
+  }
+  var arts="";
+  if(ev.atracao1){
+    arts+="<div class='arts'>";
+    arts+="<div class='art main'><div style='font-size:22px'>🤠</div><div><div class='an'>"+ev.atracao1+"</div><div class='ad'>Atracao principal</div></div></div>";
+    if(ev.atracao2){
+      arts+="<div class='art'><div style='font-size:22px'>🎵</div><div><div class='an'>"+ev.atracao2+"</div><div class='ad'>Abertura</div></div></div>";
+    }
+    arts+="</div>";
+  }
+  document.getElementById("ev-arts-wrap").innerHTML=arts;
+  if(ev.descricao){
+    document.getElementById("ev-desc-val").textContent=ev.descricao;
+    document.getElementById("ev-desc-row").style.display="flex";
+  }
+}
+
+function ir(t){document.querySelectorAll(".tl").forEach(function(x){x.classList.remove("on");});document.getElementById(t).classList.add("on");}
+function mCPF(el){var v=el.value.replace(/\D/g,"").slice(0,11);v=v.replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2");el.value=v;}
+function mTel(el){var v=el.value.replace(/\D/g,"").slice(0,11);v=v.replace(/(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2");el.value=v;}
+
+document.getElementById("btn1").onclick=async function(){
+  var c=document.getElementById("cod").value.trim();
+  var al=document.getElementById("al1");al.innerHTML="";
+  if(!c||c.length<6){al.innerHTML='<div class="al err">Digite o codigo de 6 digitos.</div>';return;}
+  var btn=this;btn.textContent="Verificando...";btn.disabled=true;
+  try{
+    var d=await api("codigos?codigo=eq."+c+"&select=*");
+    if(!d||!d.length)al.innerHTML='<div class="al err">Codigo invalido.</div>';
+    else if(d[0].usado)al.innerHTML='<div class="al err">Codigo ja utilizado.</div>';
+    else{codOk=c;ir("t2");}
+  }catch(e){al.innerHTML='<div class="al err">Erro ao verificar.</div>';}
+  finally{btn.textContent="Continuar";btn.disabled=false;}
+};
+
+function irSetor(){
+  var nome=document.getElementById("fn").value.trim();
+  var cpf=document.getElementById("fc").value;
+  var rg=document.getElementById("fr").value.trim();
+  var email=document.getElementById("fe").value.trim();
+  var tel=document.getElementById("ft").value;
+  var nasc=document.getElementById("fn2").value;
+  var ok=true;
+  function se(id,msg){document.getElementById(id).textContent=msg;if(msg)ok=false;}
+  se("en",nome?"":"Nome obrigatorio");
+  se("ec",cpf.replace(/\D/g,"").length===11?"":"CPF invalido");
+  se("er",rg?"":"RG obrigatorio");
+  se("ee",/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)?"":"Email invalido");
+  se("et",tel.replace(/\D/g,"").length>=10?"":"Telefone invalido");
+  se("en2",nasc?"":"Data obrigatoria");
+  if(ok)ir("t3");
+}
+
+function sel(s,btn){setor=s;document.querySelectorAll(".sb").forEach(function(b){b.classList.remove("on");});btn.classList.add("on");document.getElementById("es").textContent="";}
+
+document.getElementById("btn3").onclick=async function(){
+  if(!setor){document.getElementById("es").textContent="Selecione um setor";return;}
+  var btn=this;btn.textContent="Salvando...";btn.disabled=true;
+  var al=document.getElementById("al3");al.innerHTML="";
+  try{
+    var nome=document.getElementById("fn").value.trim();
+    var cpf=document.getElementById("fc").value;
+    var rg=document.getElementById("fr").value.trim();
+    var email=document.getElementById("fe").value.trim();
+    var tel=document.getElementById("ft").value;
+    var nasc=document.getElementById("fn2").value;
+    var evId=evAtual?evAtual.id:null;
+    var cad=await api("cadastros",{m:"POST",b:JSON.stringify({nome:nome,cpf:cpf,rg:rg,email:email,telefone:tel,nascimento:nasc,setor:setor,evento_id:evId})});
+    var cadId=cad&&cad[0]?cad[0].id:null;
+    await api("codigos?codigo=eq."+codOk,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString(),cadastro_id:cadId})});
+    ir("t4");
+  }catch(e){al.innerHTML='<div class="al err">Erro ao salvar. Tente novamente.</div>';}
+  finally{btn.textContent="Confirmar presenca";btn.disabled=false;}
+};
+
+init();
+</script>
+
+</body>
+</html>
