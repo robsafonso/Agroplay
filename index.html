@@ -104,13 +104,19 @@ textarea{height:70px;resize:none}
       <div style="font-size:16px;font-weight:700;color:#fff">Link de Cadastro</div>
       <button class="bto" id="bflinkc">X</button>
     </div>
-    <div style="font-size:12px;color:#888;margin-bottom:14px;line-height:1.6">Envie esse link para colaboradores, artistas e pessoas do escritorio se cadastrarem. Nao precisa de evento.</div>
-    <div style="background:#030503;border:1px solid #1a2a1a;border-radius:10px;padding:12px;margin-bottom:12px">
-      <div style="font-size:10px;color:#555;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Link</div>
-      <div style="font-family:monospace;font-size:12px;color:#2aab47;word-break:break-all">https://robsafonso.github.io/Agroplay/cadastro.html</div>
+    <div id="lc-alert"></div>
+    <div id="lc-form">
+      <div style="font-size:12px;color:#888;margin-bottom:14px;line-height:1.6">Gera um convite com codigo unico para a pessoa se cadastrar no sistema.</div>
+      <button class="btn" id="bgerarlinkc" style="width:100%">Gerar convite de cadastro</button>
     </div>
-    <button class="btn" id="bcopiarlinkc" style="width:100%">Copiar link</button>
-    <div style="margin-top:12px;font-size:11px;color:#555;text-align:center">Pessoas que acessarem vao escolher setor e tirar foto</div>
+    <div id="lc-result" class="gone">
+      <div style="font-size:10px;color:#2aab47;text-transform:uppercase;margin-bottom:4px">Codigo</div>
+      <div class="codt" id="lc-cod"></div>
+      <div style="font-size:10px;color:#2aab47;text-transform:uppercase;margin-bottom:6px">Mensagem</div>
+      <div class="msgt" id="lc-msg"></div>
+      <button class="btn" id="bcopiarlinkc" style="width:100%">Copiar mensagem</button>
+      <button class="bto" id="bnovocadlinkc" style="width:100%;margin-top:8px">Gerar outro</button>
+    </div>
   </div>
 </div>
 <div class="ov" id="ovp">
@@ -209,8 +215,27 @@ function cp2(txt,btn,lbl){if(navigator.clipboard){navigator.clipboard.writeText(
 function dl(cnt,t,n){var b=new Blob([cnt],{type:t});var u=URL.createObjectURL(b);var a=document.createElement("a");a.href=u;a.download=n;a.click();}
 q("r").onclick=load;
 q("blinkc").onclick=function(){q("ovlinkc").classList.add("on");};
-q("bflinkc").onclick=function(){q("ovlinkc").classList.remove("on");};
-q("bcopiarlinkc").onclick=function(){cp2("https://robsafonso.github.io/Agroplay/cadastro.html",q("bcopiarlinkc"),"Copiar link");};
+q("bflinkc").onclick=function(){q("ovlinkc").classList.remove("on");q("lc-result").classList.add("gone");q("lc-form").classList.remove("gone");};
+q("bgerarlinkc").onclick=function(){
+  var btn=q("bgerarlinkc");btn.textContent="Gerando...";btn.disabled=true;
+  q("lc-alert").innerHTML="";
+  fetch(SB+"/rest/v1/codigos?usado=eq.false&order=id.asc&limit=1",{headers:{"apikey":KY,"Authorization":"Bearer "+KY}})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(!d||!d.length){q("lc-alert").innerHTML="<div class='ea'>Nenhum codigo disponivel!</div>";return;}
+      var cod=d[0].codigo;
+      var link=LC+"?cod="+cod;
+      var msg="AGROPLAY - Convite de Cadastro\n\nVoce foi convidado para se cadastrar no sistema Agroplay!\n\nAcesse o link e faca seu cadastro:\n"+link+"\n\nSeu codigo: "+cod+"\n\nCodigo intransferivel e de uso unico.\nAgroplay Music - Londrina PR";
+      q("lc-cod").textContent=cod;
+      q("lc-msg").textContent=msg;
+      q("lc-form").classList.add("gone");
+      q("lc-result").classList.remove("gone");
+    })
+    .catch(function(){q("lc-alert").innerHTML="<div class='ea'>Erro ao gerar</div>";})
+    .finally(function(){btn.textContent="Gerar convite de cadastro";btn.disabled=false;});
+};
+q("bcopiarlinkc").onclick=function(){cp2(q("lc-msg").textContent,q("bcopiarlinkc"),"Copiar mensagem");};
+q("bnovocadlinkc").onclick=function(){q("lc-result").classList.add("gone");q("lc-form").classList.remove("gone");};
 q("bgl").onclick=gerarLst;
 q("bexk").onclick=expCods;
 q("bxls").onclick=expExcel;
