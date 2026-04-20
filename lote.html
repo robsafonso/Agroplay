@@ -144,9 +144,7 @@ q("btn-outro").onclick=function(){
   q("btn-gerar").classList.remove("gone");
 };
 
-var params=new URLSearchParams(window.location.search);
-var senhaUrl=params.get("senha");
-if(senhaUrl){q("inp-senha").value=senhaUrl;q("btn-login").click();}
+// Login manual apenas
 </script>
 
 </body>
