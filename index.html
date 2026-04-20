@@ -172,7 +172,10 @@ textarea{height:70px;resize:none}
         <button class="bto" id="bsall">Todos</button>
         <button class="bto" id="bsnone">Nenhum</button>
       </div>
-      <button class="btn" id="bgconv" style="width:100%;margin-top:12px">Gerar convite</button>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn" id="bgconv" style="flex:1;font-size:12px">Convite Externo</button>
+        <button class="btn" id="bgconvi" style="flex:1;font-size:12px;background:#0891b2">Convite Interno</button>
+      </div>
     </div>
   </div>
 </div>
@@ -208,7 +211,8 @@ q("bcopc").onclick=function(){cp2(q("cmsg").textContent,q("bcopc"),"Copiar mensa
 q("boutro").onclick=function(){q("cres").classList.add("gone");q("csel").classList.remove("gone");};
 q("bsall").onclick=function(){cs=cads.filter(function(c){return cf==="Todos"||c.setor===cf;}).map(function(c){return c.id;});rcp();};
 q("bsnone").onclick=function(){cs=[];rcp();};
-q("bgconv").onclick=gconv;
+q("bgconv").onclick=function(){gconv("externo");};
+q("bgconvi").onclick=function(){gconv("interno");};
 q("ckt").onclick=function(){fk="t";q("ckt").classList.add("on");q("ckd").classList.remove("on");q("cku").classList.remove("on");rCods();};
 q("ckd").onclick=function(){fk="d";q("ckt").classList.remove("on");q("ckd").classList.add("on");q("cku").classList.remove("on");rCods();};
 q("cku").onclick=function(){fk="u";q("ckt").classList.remove("on");q("ckd").classList.remove("on");q("cku").classList.add("on");rCods();};
@@ -395,7 +399,7 @@ function rcp(){
   q("cpess").innerHTML=h;
 }
 function togC(id,v){if(v){if(cs.indexOf(id)<0)cs.push(id);}else{cs=cs.filter(function(x){return x!==id;});}}
-function gconv(){
+function gconv(tipo){
   if(cs.length===0){q("calert").innerHTML="<div class='ea'>Selecione pelo menos 1 pessoa</div>";return;}
   var btn=q("bgconv");btn.textContent="Gerando...";btn.disabled=true;
   q("calert").innerHTML="";
@@ -409,8 +413,9 @@ function gconv(){
       var ev=eva;
       var df=ev.data?ev.data.split("-"):["","",""];
       var dataFmt=ev.data?df[2]+"/"+df[1]+"/"+df[0]:"";
+      var tipoConv=tipo||"externo";
       var msg="AGROPLAY - Convite VIP\n\nOla "+pessoa.nome+"!\n\nVoce esta convidado(a):\n\n"+ev.nome+(dataFmt?"\nData: "+dataFmt:"")+(ev.local?"\nLocal: "+ev.local:"")+(ev.atracao1?"\nAtracoes: "+ev.atracao1+(ev.atracao2?" + "+ev.atracao2:""):"");
-      msg=msg+"\n\nAcesse e confirme presenca:\n"+LCV+"?ev="+ev.id+"\n\nSeu codigo: "+cod+"\n\nCodigo intransferivel.\nAgroplay - Londrina PR";
+      msg=msg+"\n\nAcesse e confirme presenca:\n"+LCV+"?ev="+ev.id+"&tipo="+tipoConv+"\n\nSeu codigo: "+cod+"\n\nCodigo intransferivel.\nAgroplay - Londrina PR";
       q("ccod").textContent=cod;
       q("cmsg").textContent=msg;
       q("cres").classList.remove("gone");
