@@ -156,7 +156,8 @@ var MESES=["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","De
 var codOk="",setor="",evAtual=null;
 
 function api(p){
-return fetch(SB+”/rest/v1/”+p,{headers:{“apikey”:KY,“Authorization”:“Bearer “+KY,“Content-Type”:“application/json”}}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});
+var url=SB+”/rest/v1/”+p+(p.indexOf(”?”)>=0?”&”:”?”)+“apikey=”+KY;
+return fetch(url,{headers:{“Authorization”:“Bearer “+KY}}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});
 }
 function apiPost(p,body,pref){
 var h={“apikey”:KY,“Authorization”:“Bearer “+KY,“Content-Type”:“application/json”};
@@ -186,7 +187,7 @@ document.getElementById(“main”).style.display=“block”;
 }
 
 function renderEv(ev){
-if(ev.foto_url){var fi=document.getElementById(“evfoto”);fi.src=ev.foto_url;fi.style.display=“block”;}
+if(ev.foto_url&&ev.foto_url.length>5){var fi=document.getElementById(“evfoto”);fi.src=ev.foto_url;fi.style.display=“block”;}
 document.getElementById(“evnomeh”).textContent=ev.nome;
 var info=””;
 if(ev.data){var d=new Date(ev.data+“T12:00:00”);info+=”<div class='irow'><div class='iico'>📅</div><div><div class='ilbl'>Data</div><div class='ival'>”+DIAS[d.getDay()]+” “+d.getDate()+” de “+MESES[d.getMonth()]+”</div></div></div>”;}
