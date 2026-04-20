@@ -435,11 +435,8 @@ function tirarFoto(){
   canvas.width = 200; canvas.height = 200;
   var ctx = canvas.getContext('2d');
 
-  // Crop center square
-  var size = Math.min(video.videoWidth, video.videoHeight);
-  var x = (video.videoWidth - size) / 2;
-  var y = (video.videoHeight - size) / 2;
-  ctx.drawImage(video, x, y, size, size, 0, 0, 400, 400);
+  // Use full frame - no crop
+  ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, 200, 200);
 
   fotoDataUrl = canvas.toDataURL('image/jpeg', 0.4);
   preview.src = fotoDataUrl;
