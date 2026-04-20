@@ -126,6 +126,13 @@ textarea{height:70px;resize:none}
       <button class="btn-o" id="btnfp">Fechar</button>
     </div>
     <div id="pcont"></div>
+    <div id="status-btns" style="display:none;margin-top:12px">
+      <div style="font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Aprovacao do convite</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn" id="btnAprovar" style="flex:1;font-size:12px;padding:10px">✓ Aprovar</button>
+        <button class="btn-r" id="btnReprovar" style="flex:1;font-size:12px;padding:10px">✕ Reprovar</button>
+      </div>
+    </div>
     <button class="btn-o" id="btncpy" style="width:100%;margin-top:12px">Copiar dados</button>
     <button class="btn-r" id="btndel" style="width:100%;margin-top:8px">Excluir cadastro</button>
   </div>
@@ -156,6 +163,8 @@ textarea{height:70px;resize:none}
     </div>
     <div class="fl"><label>Atracao principal</label><input id="ev-atr1" placeholder="Ex: Ana Castela"></div>
     <div class="fl"><label>Segunda atracao</label><input id="ev-atr2" placeholder="Ex: CountryBeat"></div>
+    <div class="fl"><label>Instagram atracao 1</label><input id="ev-insta1" placeholder="https://instagram.com/..."></div>
+    <div class="fl"><label>Instagram atracao 2</label><input id="ev-insta2" placeholder="https://instagram.com/..."></div>
     <div class="fl"><label>Descricao</label><textarea id="ev-desc" placeholder="Detalhes do evento..."></textarea></div>
     <div class="fl"><label>Foto do convite (URL da imagem)</label><input id="ev-foto" placeholder="https://...imagem.jpg"></div>
     <div class="fl"><label>Link do Maps (Google Maps)</label><input id="ev-maps" placeholder="https://maps.google.com/..."></div>
@@ -321,10 +330,12 @@ function verP(id){
   var h="<div style='text-align:center;margin-bottom:16px'>"+fotoHtml+
     "<div style='font-size:17px;font-weight:700;color:#fff'>"+c.nome+"</div>"+
     "<span class='badge' style='background:"+cor+";margin-top:6px;display:inline-block'>"+c.setor+"</span></div>";
-  [["CPF",c.cpf],["RG",c.rg],["Email",c.email],["Telefone",c.telefone],["Nascimento",fd(c.nascimento)]].forEach(function(r){
+  var rows=[["CPF",c.cpf],["RG",c.rg],["Email",c.email],["Telefone",c.telefone],["Nascimento",fd(c.nascimento)]];if(c.empresa)rows.push(["Empresa",c.empresa]);if(c.cargo)rows.push(["Cargo",c.cargo]);if(c.status)rows.push(["Status",c.status]);rows.forEach(function(r){
     h+="<div class='prow'><span>"+r[0]+"</span><span>"+r[1]+"</span></div>";
   });
   g("pcont").innerHTML=h;
+  if(c.evento_id){g("status-btns").style.display="block";}
+  else{g("status-btns").style.display="none";}
   g("ov-p").classList.add("on");
 }
 
@@ -334,6 +345,34 @@ function abrirFoto(id){
   g("foto-grande").src=c.foto_url;
   g("ov-foto").classList.add("on");
 }
+
+g("btnAprovar").onclick=function(){
+  if(!pa)return;
+  api("cadastros?id=eq."+pa.id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({status:"aprovado"})}).then(function(){
+    pa.status="aprovado";
+    var si=g("pcont").querySelector(".prow:last-child span:last-child");
+    if(si)si.textContent="aprovado";
+    g("btnAprovar").textContent="✓ Aprovado!";
+    setTimeout(function(){g("btnAprovar").textContent="✓ Aprovar";},2000);
+    rend();
+  });
+};
+
+g("btnReprovar").onclick=function(){
+  if(!pa)return;
+  api("cadastros?id=eq."+pa.id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({status:"reprovado"})}).then(function(){
+    pa.status="reprovado";
+    var msg="Ola "+pa.nome+",
+
+Informamos que sua solicitacao de participacao no evento nao foi confirmada neste momento.
+
+Para mais informacoes, entre em contato com o escritorio Agroplay.
+
+Agroplay Music - Londrina PR";
+    copiar2(msg,g("btnReprovar"),"✕ Reprovar");
+    rend();
+  });
+};
 
 function copiarDados(){
   if(!pa)return;
@@ -385,10 +424,12 @@ function salvarEv(){
     atracao2:g("ev-atr2").value.trim(),
     descricao:g("ev-desc").value.trim(),
     foto_url:g("ev-foto").value.trim(),
-    maps_url:g("ev-maps").value.trim()
+    maps_url:g("ev-maps").value.trim(),
+    insta_atr1:g("ev-insta1").value.trim(),
+    insta_atr2:g("ev-insta2").value.trim()
   })}).then(function(){
     g("ov-ev").classList.remove("on");
-    ["ev-nome","ev-data","ev-local","ev-atr1","ev-atr2","ev-desc","ev-foto","ev-maps"].forEach(function(id){g(id).value="";});
+    ["ev-nome","ev-data","ev-local","ev-atr1","ev-atr2","ev-desc","ev-foto","ev-maps","ev-insta1","ev-insta2"].forEach(function(id){g(id).value="";});
     load();
   }).catch(function(){
     g("ev-alert").innerHTML='<div class="err">Erro ao salvar</div>';
@@ -406,6 +447,8 @@ function editarEv(id){
   g("ev-desc").value=ev.descricao||"";
   g("ev-foto").value=ev.foto_url||"";
   g("ev-maps").value=ev.maps_url||"";
+  g("ev-insta1").value=ev.insta_atr1||"";
+  g("ev-insta2").value=ev.insta_atr2||"";
   g("btnsalvarev").onclick=function(){atualizarEv(id);};
   g("ov-ev").classList.add("on");
 }
@@ -422,7 +465,9 @@ function atualizarEv(id){
     atracao2:g("ev-atr2").value.trim(),
     descricao:g("ev-desc").value.trim(),
     foto_url:g("ev-foto").value.trim(),
-    maps_url:g("ev-maps").value.trim()
+    maps_url:g("ev-maps").value.trim(),
+    insta_atr1:g("ev-insta1").value.trim(),
+    insta_atr2:g("ev-insta2").value.trim()
   })}).then(function(){
     g("ov-ev").classList.remove("on");
     g("btnsalvarev").onclick=salvarEv;
