@@ -56,23 +56,24 @@
 <div id="al3"></div>
 <div class="fl"><label>Empresa</label><input id="femp" placeholder="Nome da empresa"><span class="em" id="eemp"></span></div>
 <div class="fl"><label>Cargo</label><input id="fcar" placeholder="Seu cargo"><span class="em" id="ecar"></span></div>
-<button class="btn" onclick="irSet()">Proximo</button>
+<button class="btn" onclick="irFoto()">Proximo</button>
 <button class="bto" onclick="ir('t2')">Voltar</button>
 </div>
 <div id="t4" class="tl">
-<div class="ttl">Seu Setor</div>
-<div class="sub">Selecione sua funcao na Agroplay.</div>
+<div class="ttl">Foto de Verificacao</div>
+<div class="sub">Tire uma selfie para confirmar sua identidade.</div>
 <div class="steps"><div class="step"></div><div class="step"></div><div class="step"></div><div class="step on"></div></div>
-<div class="sg">
-<button class="sb" onclick="selS('Artista',this)">🎤 Artista</button>
-<button class="sb" onclick="selS('Influenciador',this)">📲 Influenc.</button>
-<button class="sb" onclick="selS('Diretoria',this)">🏢 Diretoria</button>
-<button class="sb" onclick="selS('Colaborador',this)">🤝 Colaborador</button>
-</div>
-<span class="em" id="es"></span>
 <div id="al4"></div>
-<button class="btn" id="btn4">Confirmar Presenca</button>
-<button class="bto" onclick="ir('t3')">Voltar</button>
+<div id="foto-status" style="font-size:13px;color:#2aab47;margin-bottom:10px;text-align:center">Iniciando camera...</div>
+<div id="video-wrap" style="position:relative;width:200px;height:200px;margin:0 auto 12px;border-radius:50%;overflow:hidden;border:3px solid #2aab47">
+  <video id="video" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover"></video>
+</div>
+<canvas id="canvas" style="display:none"></canvas>
+<img id="foto-prev" style="width:200px;height:200px;border-radius:50%;object-fit:cover;border:3px solid #2aab47;display:none;margin:0 auto 12px;display:none"/>
+<button class="btn" id="btn-foto" style="width:100%;display:none">Tirar foto</button>
+<button class="bto" id="btn-refoto" style="width:100%;display:none">Nova foto</button>
+<button class="btn" id="btn4" style="width:100%;display:none">Confirmar Presenca</button>
+<button class="bto" onclick="ir('t3')" id="btn-volta-foto" style="width:100%;display:none">Voltar</button>
 </div>
 <div id="t5" class="tl">
 <div class="sw"><div class="si">✓</div>
@@ -141,18 +142,72 @@ function irEmp(){
   se("en2",g("fn2").value?"":"Data obrigatoria");
   if(ok)ir("t3");
 }
-function irSet(){
+function irFoto(){
   var ok=true;
   function se(id,msg){g(id).textContent=msg;if(msg)ok=false;}
   se("eemp",g("femp").value.trim()?"":"Empresa obrigatoria");
   se("ecar",g("fcar").value.trim()?"":"Cargo obrigatorio");
-  if(ok)ir("t4");
+  if(ok){ir("t4");iniciarCamera();}
 }
+function irSet(){irFoto();}
+var fotoDataUrl=null;
+var streamAtivo=null;
+function iniciarCamera(){
+  var status=g("foto-status");
+  var wrap=g("video-wrap");
+  g("btn-volta-foto").style.display="block";
+  navigator.mediaDevices.getUserMedia({video:{facingMode:"user"},audio:false})
+    .then(function(s){
+      streamAtivo=s;
+      var v=g("video");
+      v.srcObject=s;
+      v.onloadedmetadata=function(){
+        v.play();
+        status.textContent="Olhe para a camera e pisque os olhos";
+        g("btn-foto").style.display="block";
+        setTimeout(function(){
+          if(!fotoDataUrl){
+            status.textContent="Pronto! Toque em Tirar foto";
+          }
+        },3000);
+      };
+    })
+    .catch(function(){
+      status.textContent="Camera nao disponivel. Toque em Tirar foto para continuar.";
+      g("btn-foto").style.display="block";
+    });
+}
+g("btn-foto").onclick=function(){
+  var v=g("video");var c=g("canvas");
+  c.width=200;c.height=200;
+  var ctx=c.getContext("2d");
+  var size=Math.min(v.videoWidth||200,v.videoHeight||200);
+  var x=(v.videoWidth-size)/2;var y=(v.videoHeight-size)/2;
+  ctx.drawImage(v,x,y,size,size,0,0,200,200);
+  fotoDataUrl=c.toDataURL("image/jpeg",0.5);
+  g("foto-prev").src=fotoDataUrl;
+  g("foto-prev").style.display="block";
+  g("video-wrap").style.display="none";
+  g("btn-foto").style.display="none";
+  g("btn-refoto").style.display="block";
+  g("btn4").style.display="block";
+  g("foto-status").textContent="Foto tirada! Confirme ou tire outra.";
+  if(streamAtivo)streamAtivo.getTracks().forEach(function(t){t.stop();});
+};
+g("btn-refoto").onclick=function(){
+  fotoDataUrl=null;
+  g("foto-prev").style.display="none";
+  g("video-wrap").style.display="block";
+  g("btn-refoto").style.display="none";
+  g("btn4").style.display="none";
+  g("foto-status").textContent="Iniciando camera...";
+  iniciarCamera();
+};
 g("btn4").onclick=function(){
-  if(!setor){g("es").textContent="Selecione um setor";return;}
   var btn=this;btn.textContent="Salvando...";btn.disabled=true;
   var al=g("al4");al.innerHTML="";
-  api("cadastros",{m:"POST",pref:"return=representation",b:JSON.stringify({nome:g("fn").value.trim(),cpf:g("fc").value,rg:g("fr").value.trim(),email:g("fe").value.trim(),telefone:g("ft").value,nascimento:g("fn2").value,setor:setor,empresa:g("femp").value.trim(),cargo:g("fcar").value.trim(),evento_id:evAt?evAt.id:null,status:"pendente"})})
+  var fotoUrl=fotoDataUrl||null;
+  api("cadastros",{m:"POST",pref:"return=representation",b:JSON.stringify({nome:g("fn").value.trim(),cpf:g("fc").value,rg:g("fr").value.trim(),email:g("fe").value.trim(),telefone:g("ft").value,nascimento:g("fn2").value,setor:"Convidado",empresa:g("femp").value.trim(),cargo:g("fcar").value.trim(),evento_id:evAt?evAt.id:null,status:"pendente",foto_url:fotoUrl})})
     .then(function(cad){
       var cadId=cad&&cad[0]?cad[0].id:null;
       return api("codigos?codigo=eq."+codOk,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString(),cadastro_id:cadId})});
