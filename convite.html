@@ -106,6 +106,13 @@ function init(){
       evAt=d[0];
       var ev=d[0];
       g("enome").textContent=ev.nome;
+      if(ev.foto_url&&ev.foto_url.length>5){
+        var fi=document.createElement("img");
+        fi.src=ev.foto_url;
+        fi.style.cssText="width:100%;max-height:200px;object-fit:cover;border-radius:10px;margin-bottom:10px;display:block";
+        var einfo=g("einfo");
+        einfo.parentNode.insertBefore(fi,einfo);
+      }
       var info="";
       if(ev.data){var dt=new Date(ev.data+"T12:00:00");info+="<div class='info'><div class='lbl'>Data</div><div class='val'>"+["Dom","Seg","Ter","Qua","Qui","Sex","Sab"][dt.getDay()]+" "+dt.getDate()+"/"+String(dt.getMonth()+1).padStart(2,"0")+"/"+dt.getFullYear()+"</div></div>";}
       if(ev.local){info+="<div class='info'><div class='lbl'>Local</div><div class='val'>"+(ev.maps_url?"<a href='"+ev.maps_url+"' target='_blank'>"+ev.local+" 🗺️</a>":ev.local)+"</div></div>";}
