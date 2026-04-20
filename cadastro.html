@@ -481,14 +481,26 @@ async function salvarComFoto(){
       var filename = 'foto_' + Date.now() + '.jpg';
       var res = await fetch(URL_SB + '/storage/v1/object/fotos/' + filename, {
         method: 'POST',
-        headers: {'apikey': KEY_SB, 'Authorization': 'Bearer ' + KEY_SB, 'Content-Type': 'image/jpeg', 'x-upsert': 'true'},
+        headers: {
+          'apikey': KEY_SB,
+          'Authorization': 'Bearer ' + KEY_SB,
+          'Content-Type': 'image/jpeg',
+          'x-upsert': 'true',
+          'Cache-Control': '3600'
+        },
         body: blob
       });
-      if(res.ok){
+      var resText = await res.text();
+      console.log('Upload status:', res.status, resText);
+      if(res.ok || res.status === 200){
         fotoUrl = URL_SB + '/storage/v1/object/public/fotos/' + filename;
+        console.log('Foto URL:', fotoUrl);
+      } else {
+        console.log('Upload failed:', res.status, resText);
+        // Save without foto but continue
       }
     } catch(e){
-      console.log('Foto upload failed:', e);
+      console.log('Foto upload error:', e.message);
     }
   }
 
