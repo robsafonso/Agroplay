@@ -318,8 +318,15 @@ q("bsalvalote").onclick=function(){
           q("ovlote").classList.remove("on");
           rLotes();
           rSts();
-          cp2(msg,btn,"Criar lote");
-          alert("Lote criado! "+qtd+" links copiados para area de transferencia.");
+          if(navigator.clipboard){
+            navigator.clipboard.writeText(msg).then(function(){
+              var el=document.createElement("div");
+              el.style.cssText="position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#1e7a35;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:700;z-index:999";
+              el.textContent=qtd+" links copiados!";
+              document.body.appendChild(el);
+              setTimeout(function(){el.remove();},3000);
+            });
+          }
         });
       });
   }).catch(function(e){q("lote-alert").innerHTML="<div class='ea'>Erro: "+e.message+"</div>";
