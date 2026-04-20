@@ -399,7 +399,7 @@ function rLotes(){
       h+="<div style='background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:8px;margin-bottom:10px'><div style='font-size:9px;color:#555;margin-bottom:3px;text-transform:uppercase'>Link do painel do colaborador</div><div style='font-family:monospace;font-size:10px;color:#2aab47;word-break:break-all'>"+link+"</div></div>";
       h+="<div style='display:flex;gap:6px'>";
       h+="<button class='btn' onclick='verLinks("+lt.id+")' style='flex:1;font-size:11px;padding:8px'>Ver convites</button>";
-      h+="<button class='bto' onclick='copiarLinkLote(this)' data-link='"+link+"' data-resp='"+lt.responsavel+"' style='font-size:11px;padding:8px'>Copiar link</button>";
+      h+="<button class='bto' onclick='copiarLinkLote(this)' data-link='"+link+"' data-resp='"+lt.responsavel+"' data-senha='"+(lt.senha||"-")+"'  style='font-size:11px;padding:8px'>Copiar link</button>";
       h+="<button class='bto' onclick='addConvites("+lt.id+")' style='font-size:11px;padding:8px'>+ Convites</button>";
       h+="<button class='btr' onclick='delLote("+lt.id+")' style='font-size:11px;padding:8px'>X</button>";
       h+="</div></div>";
@@ -427,7 +427,7 @@ function addConvites(loteId){
     .then(function(){rLotes();rSts();alert(qtd+" convites adicionados!");})
     .catch(function(){alert("Erro ao adicionar convites");});
 }
-function copiarLinkLote(btn){var link=btn.dataset.link;var resp=btn.dataset.resp;var msg="AGROPLAY - Painel de Convites\n\nOla "+resp+"!\n\nAcesse seu painel de convites:\n"+link+"\n\nAgroplay Music - Londrina PR";cp2(msg,btn,"Copiar link");}
+function copiarLinkLote(btn){var link=btn.dataset.link;var resp=btn.dataset.resp;var senha=btn.dataset.senha;var msg="AGROPLAY - Painel de Convites\n\nOla "+resp+"!\n\nVoce tem convites disponiveis para distribuir.\n\nAcesse seu painel:\n"+link+"\n\nSua senha: "+senha+"\n\nAgroplay Music - Londrina PR";cp2(msg,btn,"Copiar link");}
 function copMsg(btn){
   var msg=btn.dataset.msg.replace(/&#39;/g,"'");
   cp2(msg,btn,"Copiar mensagem "+(btn.textContent.match(/\d+/)||[""])[0]);
