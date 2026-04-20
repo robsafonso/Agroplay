@@ -390,7 +390,7 @@ function rLotes(){
     if(!lotes.length){el.innerHTML="<div class='empty'>Nenhum lote criado</div>";return;}
     var h="";
     lotes.forEach(function(lt){
-      var link=lt.link_acesso||"https://robsafonso.github.io/Agroplay/lote.html?senha="+encodeURIComponent(lt.senha||lt.responsavel.toLowerCase());
+      var link="https://robsafonso.github.io/Agroplay/lote.html";
       var convidados=cads.filter(function(c){return c.lote_id===lt.id;}).length;
       h+="<div class='card'>";
       h+="<div style='font-size:15px;font-weight:700;color:#fff;margin-bottom:4px'>"+lt.responsavel+"</div>";
@@ -461,8 +461,13 @@ function copiarLote(btn){
   cp2(msg,btn,"Copiar link");
 }
 function delLote(id){
-  if(!confirm("Excluir lote?"))return;
-  ap("lotes?id=eq."+id,{m:"DELETE",pref:"return=minimal"}).then(function(){lotes=lotes.filter(function(l){return l.id!==id;});rLotes();});
+  if(!confirm("Excluir lote? Os codigos nao usados voltarao ao banco."))return;
+  ap("codigos?lote_id=eq."+id+"&usado=eq.false",{m:"PATCH",pref:"return=minimal",b:JSON.stringify({lote_id:null})}).then(function(){
+    return ap("lotes?id=eq."+id,{m:"DELETE",pref:"return=minimal"});
+  }).then(function(){
+    lotes=lotes.filter(function(l){return l.id!==id;});
+    rLotes();rSts();
+  }).catch(function(){alert("Erro ao excluir lote");});
 }
 function load(){
   q("tbl").innerHTML="<div class='empty'>Carregando...</div>";
