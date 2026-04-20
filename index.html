@@ -159,22 +159,34 @@ textarea{height:70px;resize:none}
       <button class="bto" id="boutro" style="width:100%;margin-top:8px">Gerar outro</button>
     </div>
     <div id="csel">
-      <div style="font-size:12px;color:#888;margin-bottom:10px">Selecione quem vai receber:</div>
-      <div class="chips" id="cchips">
-        <button class="chip on" onclick="fconv('Todos',this)">Todos</button>
-        <button class="chip" onclick="fconv('Artista',this)">Artistas</button>
-        <button class="chip" onclick="fconv('Influenciador',this)">Influenc.</button>
-        <button class="chip" onclick="fconv('Diretoria',this)">Diretoria</button>
-        <button class="chip" onclick="fconv('Colaborador',this)">Colab.</button>
+      <div style="display:flex;gap:8px;margin-bottom:14px">
+        <button class="btn" id="btntipoe" onclick="setTipo('externo')" style="flex:1;font-size:12px">Externo</button>
+        <button class="bto" id="btntipoи" onclick="setTipo('interno')" style="flex:1;font-size:12px">Interno</button>
       </div>
-      <div id="cpess"></div>
-      <div style="display:flex;gap:8px;margin-top:10px">
-        <button class="bto" id="bsall">Todos</button>
-        <button class="bto" id="bsnone">Nenhum</button>
+      <div id="csel-ext">
+        <div style="font-size:12px;color:#888;margin-bottom:8px">Convite para pessoa <b style="color:#2aab47">NOVA</b> — link generico</div>
+        <div style="background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:12px;margin-bottom:10px">
+          <div style="font-size:11px;color:#555;margin-bottom:6px">O link gerado pode ser enviado para qualquer pessoa.</div>
+          <div style="font-family:monospace;font-size:11px;color:#2aab47;word-break:break-all" id="linkext"></div>
+        </div>
+        <button class="btn" id="bgconv" style="width:100%;font-size:12px">Gerar link externo</button>
+        <button class="btn-o" id="bcopext" style="width:100%;margin-top:8px;display:none">Copiar link + mensagem</button>
       </div>
-      <div style="display:flex;gap:8px;margin-top:12px">
-        <button class="btn" id="bgconv" style="flex:1;font-size:12px">Convite Externo</button>
-        <button class="btn" id="bgconvi" style="flex:1;font-size:12px;background:#0891b2">Convite Interno</button>
+      <div id="csel-int" style="display:none">
+        <div style="font-size:12px;color:#888;margin-bottom:10px">Convite para pessoa <b style="color:#0891b2">JA CADASTRADA</b></div>
+        <div class="chips" id="cchips">
+          <button class="chip on" onclick="fconv('Todos',this)">Todos</button>
+          <button class="chip" onclick="fconv('Artista',this)">Artistas</button>
+          <button class="chip" onclick="fconv('Influenciador',this)">Influenc.</button>
+          <button class="chip" onclick="fconv('Diretoria',this)">Diretoria</button>
+          <button class="chip" onclick="fconv('Colaborador',this)">Colab.</button>
+        </div>
+        <div id="cpess"></div>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="bto" id="bsall">Todos</button>
+          <button class="bto" id="bsnone">Nenhum</button>
+        </div>
+        <button class="btn" id="bgconvi" style="width:100%;margin-top:12px;background:#0891b2">Gerar convite interno</button>
       </div>
     </div>
   </div>
@@ -211,7 +223,7 @@ q("bcopc").onclick=function(){cp2(q("cmsg").textContent,q("bcopc"),"Copiar mensa
 q("boutro").onclick=function(){q("cres").classList.add("gone");q("csel").classList.remove("gone");};
 q("bsall").onclick=function(){cs=cads.filter(function(c){return cf==="Todos"||c.setor===cf;}).map(function(c){return c.id;});rcp();};
 q("bsnone").onclick=function(){cs=[];rcp();};
-q("bgconv").onclick=function(){gconv("externo");};
+q("bgconv").onclick=function(){gconvExt();};
 q("bgconvi").onclick=function(){gconv("interno");};
 q("ckt").onclick=function(){fk="t";q("ckt").classList.add("on");q("ckd").classList.remove("on");q("cku").classList.remove("on");rCods();};
 q("ckd").onclick=function(){fk="d";q("ckt").classList.remove("on");q("ckd").classList.add("on");q("cku").classList.remove("on");rCods();};
@@ -399,92 +411,128 @@ function rcp(){
   q("cpess").innerHTML=h;
 }
 function togC(id,v){if(v){if(cs.indexOf(id)<0)cs.push(id);}else{cs=cs.filter(function(x){return x!==id;});}}
+function setTipo(t){
+  if(t==="externo"){
+    q("btntipoe").className="btn";q("btntipoe").style.flex="1";q("btntipoe").style.fontSize="12px";
+    q("btntipoи").className="bto";q("btntipoи").style.flex="1";q("btntipoи").style.fontSize="12px";
+    q("csel-ext").style.display="block";
+    q("csel-int").style.display="none";
+  } else {
+    q("btntipoe").className="bto";q("btntipoe").style.flex="1";q("btntipoe").style.fontSize="12px";
+    q("btntipoи").className="btn";q("btntipoи").style.flex="1";q("btntipoи").style.fontSize="12px";q("btntipoи").style.background="#0891b2";
+    q("csel-ext").style.display="none";
+    q("csel-int").style.display="block";
+    rcp();
+  }
+}
+
+function gconvExt(){
+if(!eva)return;
+var btn=q(“bgconv”);btn.textContent=“Gerando…”;btn.disabled=true;
+q(“calert”).innerHTML=””;
+fetch(SB+”/rest/v1/codigos?usado=eq.false&order=id.asc&limit=1”,{headers:{“apikey”:KY,“Authorization”:“Bearer “+KY}})
+.then(function(r){return r.json();})
+.then(function(d){
+if(!d||!d.length){q(“calert”).innerHTML=”<div class='ea'>Nenhum codigo disponivel!</div>”;return;}
+var cod=d[0].codigo;
+var link=LCV+”?ev=”+eva.id+”&tipo=externo&cod=”+cod;
+var msg=“AGROPLAY - Convite VIP\n\n”+eva.nome+(eva.data?”\nData: “+eva.data.split(”-”).reverse().join(”/”):””)+(eva.local?”\nLocal: “+eva.local:””)+”\n\nAcesse e se cadastre:\n”+link+”\n\nCodigo: “+cod+”\n\nCodigo intransferivel.\nAgroplay - Londrina PR”;
+q(“linkext”).textContent=link;
+q(“bcopext”).style.display=“block”;
+q(“bcopext”).onclick=function(){cp2(msg,q(“bcopext”),“Copiar link + mensagem”);};
+btn.textContent=“Gerar novo link”;btn.disabled=false;
+})
+.catch(function(){q(“calert”).innerHTML=”<div class='ea'>Erro</div>”;btn.textContent=“Gerar link externo”;btn.disabled=false;});
+}
+
 function gconv(tipo){
-  if(cs.length===0){q("calert").innerHTML="<div class='ea'>Selecione pelo menos 1 pessoa</div>";return;}
-  var btn=q("bgconv");btn.textContent="Gerando...";btn.disabled=true;
-  q("calert").innerHTML="";
-  fetch(SB+"/rest/v1/codigos?usado=eq.false&order=id.asc&limit=1",{headers:{"apikey":KY,"Authorization":"Bearer "+KY}})
-    .then(function(r){return r.json();})
-    .then(function(d){
-      if(!d||!d.length){q("calert").innerHTML="<div class='ea'>Nenhum codigo disponivel!</div>";return;}
-      var cod=d[0].codigo;
-      var pessoa=null;
-      for(var i=0;i<cads.length;i++){if(cads[i].id===cs[0]){pessoa=cads[i];break;}}
-      var ev=eva;
-      var df=ev.data?ev.data.split("-"):["","",""];
-      var dataFmt=ev.data?df[2]+"/"+df[1]+"/"+df[0]:"";
-      var tipoConv=tipo||"externo";
-      var msg="AGROPLAY - Convite VIP\n\nOla "+pessoa.nome+"!\n\nVoce esta convidado(a):\n\n"+ev.nome+(dataFmt?"\nData: "+dataFmt:"")+(ev.local?"\nLocal: "+ev.local:"")+(ev.atracao1?"\nAtracoes: "+ev.atracao1+(ev.atracao2?" + "+ev.atracao2:""):"");
-      msg=msg+"\n\nAcesse e confirme presenca:\n"+LCV+"?ev="+ev.id+"&tipo="+tipoConv+"\n\nSeu codigo: "+cod+"\n\nCodigo intransferivel.\nAgroplay - Londrina PR";
-      q("ccod").textContent=cod;
-      q("cmsg").textContent=msg;
-      q("cres").classList.remove("gone");
-      q("csel").classList.add("gone");
-      cs=cs.slice(1);
-    })
-    .catch(function(){q("calert").innerHTML="<div class='ea'>Erro ao gerar</div>";})
-    .finally(function(){btn.textContent="Gerar convite";btn.disabled=false;});
+if(cs.length===0){q(“calert”).innerHTML=”<div class='ea'>Selecione pelo menos 1 pessoa</div>”;return;}
+var btn=q(“bgconv”);btn.textContent=“Gerando…”;btn.disabled=true;
+q(“calert”).innerHTML=””;
+fetch(SB+”/rest/v1/codigos?usado=eq.false&order=id.asc&limit=1”,{headers:{“apikey”:KY,“Authorization”:“Bearer “+KY}})
+.then(function(r){return r.json();})
+.then(function(d){
+if(!d||!d.length){q(“calert”).innerHTML=”<div class='ea'>Nenhum codigo disponivel!</div>”;return;}
+var cod=d[0].codigo;
+var pessoa=null;
+for(var i=0;i<cads.length;i++){if(cads[i].id===cs[0]){pessoa=cads[i];break;}}
+var ev=eva;
+var df=ev.data?ev.data.split(”-”):[””,””,””];
+var dataFmt=ev.data?df[2]+”/”+df[1]+”/”+df[0]:””;
+var tipoConv=tipo||“externo”;
+var tipoConv=tipo||“interno”;
+var msg=“AGROPLAY - Convite VIP\n\nOla “+pessoa.nome+”!\n\nVoce esta convidado(a):\n\n”+ev.nome+(dataFmt?”\nData: “+dataFmt:””)+(ev.local?”\nLocal: “+ev.local:””)+(ev.atracao1?”\nAtracoes: “+ev.atracao1+(ev.atracao2?” + “+ev.atracao2:””):””);
+msg=msg+”\n\nAcesse e confirme presenca:\n”+LCV+”?ev=”+ev.id+”&tipo=”+tipoConv+”\n\nSeu codigo: “+cod+”\n\nCodigo intransferivel.\nAgroplay - Londrina PR”;
+q(“ccod”).textContent=cod;
+q(“cmsg”).textContent=msg;
+q(“cres”).classList.remove(“gone”);
+q(“csel”).classList.add(“gone”);
+cs=cs.slice(1);
+})
+.catch(function(){q(“calert”).innerHTML=”<div class='ea'>Erro ao gerar</div>”;})
+.finally(function(){btn.textContent=“Gerar convite”;btn.disabled=false;});
 }
 function lstEv(evId){
-  var ev=null;
-  for(var i=0;i<evs.length;i++){if(evs[i].id===evId){ev=evs[i];break;}}
-  if(!ev)return;
-  var p=cads.filter(function(c){return c.evento_id===evId;});
-  lista={n:ev.nome,p:p,dt:new Date().toLocaleString("pt-BR")};
-  tab("l");rLst();
+var ev=null;
+for(var i=0;i<evs.length;i++){if(evs[i].id===evId){ev=evs[i];break;}}
+if(!ev)return;
+var p=cads.filter(function(c){return c.evento_id===evId;});
+lista={n:ev.nome,p:p,dt:new Date().toLocaleString(“pt-BR”)};
+tab(“l”);rLst();
 }
 function rCods(){
-  var f=cods.filter(function(c){return fk==="d"?!c.usado:fk==="u"?c.usado:true;});
-  if(!f.length){q("klst").innerHTML="<div class='empty'>Nenhum</div>";return;}
-  var h="<div style='display:grid;grid-template-columns:repeat(2,1fr);gap:5px'>";
-  f.forEach(function(c){
-    h+="<div style='background:#030503;border:1px solid #1a2a1a;border-radius:7px;padding:8px 10px;display:flex;justify-content:space-between;align-items:center'>";
-    h+="<span style='font-family:monospace;font-size:12px;font-weight:700;color:"+(c.usado?"#444":"#fff")+"'>"+c.codigo+"</span>";
-    h+="<span class='badge' style='background:"+(c.usado?"#555":"#1e7a35")+"'>"+(c.usado?"Usado":"Livre")+"</span></div>";
-  });
-  h+="</div>";q("klst").innerHTML=h;
+var f=cods.filter(function(c){return fk===“d”?!c.usado:fk===“u”?c.usado:true;});
+if(!f.length){q(“klst”).innerHTML=”<div class='empty'>Nenhum</div>”;return;}
+var h=”<div style='display:grid;grid-template-columns:repeat(2,1fr);gap:5px'>”;
+f.forEach(function(c){
+h+=”<div style='background:#030503;border:1px solid #1a2a1a;border-radius:7px;padding:8px 10px;display:flex;justify-content:space-between;align-items:center'>”;
+h+=”<span style='font-family:monospace;font-size:12px;font-weight:700;color:"+(c.usado?"#444":"#fff")+"'>”+c.codigo+”</span>”;
+h+=”<span class='badge' style='background:"+(c.usado?"#555":"#1e7a35")+"'>”+(c.usado?“Usado”:“Livre”)+”</span></div>”;
+});
+h+=”</div>”;q(“klst”).innerHTML=h;
 }
-function expCods(){dl("Codigo,Status\n"+cods.map(function(c){return c.codigo+","+(c.usado?"Usado":"Disponivel");}).join("\n"),"text/csv","Codigos.csv");}
+function expCods(){dl(“Codigo,Status\n”+cods.map(function(c){return c.codigo+”,”+(c.usado?“Usado”:“Disponivel”);}).join(”\n”),“text/csv”,“Codigos.csv”);}
 function gerarLst(){
-  var p=cads.filter(function(c){return sel.indexOf(c.id)>=0;});
-  var n=q("evnm").value||"Evento";
-  lista={n:n,p:p,dt:new Date().toLocaleString("pt-BR")};
-  tab("l");rLst();
+var p=cads.filter(function(c){return sel.indexOf(c.id)>=0;});
+var n=q(“evnm”).value||“Evento”;
+lista={n:n,p:p,dt:new Date().toLocaleString(“pt-BR”)};
+tab(“l”);rLst();
 }
 function rLst(){
-  if(!lista){q("llst").innerHTML="<div class='empty'>Selecione cadastros e clique em Gerar Lista.</div>";return;}
-  var h="<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px'>";
-  h+="<div><div style='font-size:15px;color:#fff;font-weight:700'>"+lista.n+"</div>";
-  h+="<div style='font-size:11px;color:#555;margin-top:2px'>"+lista.dt+" - "+lista.p.length+" pessoa(s)</div></div>";
-  h+="<div style='display:flex;gap:6px'><button class='bto' onclick='exXlsL()'>Excel</button><button class='bto' onclick='exCsvL()'>CSV</button></div></div>";
-  h+="<div class='tbl'><table><thead><tr><th>#</th><th>Nome</th><th>Empresa</th><th>Cargo</th><th>Email</th><th>Tel</th><th>Setor</th><th>Status</th></tr></thead><tbody>";
-  lista.p.forEach(function(p,i){
-    var sb=p.status==="aprovado"?"<span class='ab'>Aprov</span>":p.status==="reprovado"?"<span class='rb'>Reprov</span>":"<span class='pb'>Pend</span>";
-    h+="<tr><td style='color:#444'>"+(i+1)+"</td><td style='color:#fff'>"+p.nome+"</td>";
-    h+="<td style='color:#777'>"+(p.empresa||"-")+"</td><td style='color:#777'>"+(p.cargo||"-")+"</td>";
-    h+="<td style='color:#777'>"+p.email+"</td><td style='color:#777'>"+p.telefone+"</td>";
-    h+="<td><span class='badge' style='background:"+(COR[p.setor]||"#555")+"'>"+p.setor+"</span></td>";
-    h+="<td>"+sb+"</td></tr>";
-  });
-  h+="</tbody></table></div>";
-  q("llst").innerHTML=h;
+if(!lista){q(“llst”).innerHTML=”<div class='empty'>Selecione cadastros e clique em Gerar Lista.</div>”;return;}
+var h=”<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px'>”;
+h+=”<div><div style='font-size:15px;color:#fff;font-weight:700'>”+lista.n+”</div>”;
+h+=”<div style='font-size:11px;color:#555;margin-top:2px'>”+lista.dt+” - “+lista.p.length+” pessoa(s)</div></div>”;
+h+=”<div style='display:flex;gap:6px'><button class='bto' onclick='exXlsL()'>Excel</button><button class='bto' onclick='exCsvL()'>CSV</button></div></div>”;
+h+=”<div class='tbl'><table><thead><tr><th>#</th><th>Nome</th><th>Empresa</th><th>Cargo</th><th>Email</th><th>Tel</th><th>Setor</th><th>Status</th></tr></thead><tbody>”;
+lista.p.forEach(function(p,i){
+var sb=p.status===“aprovado”?”<span class='ab'>Aprov</span>”:p.status===“reprovado”?”<span class='rb'>Reprov</span>”:”<span class='pb'>Pend</span>”;
+h+=”<tr><td style='color:#444'>”+(i+1)+”</td><td style='color:#fff'>”+p.nome+”</td>”;
+h+=”<td style='color:#777'>”+(p.empresa||”-”)+”</td><td style='color:#777'>”+(p.cargo||”-”)+”</td>”;
+h+=”<td style='color:#777'>”+p.email+”</td><td style='color:#777'>”+p.telefone+”</td>”;
+h+=”<td><span class='badge' style='background:"+(COR[p.setor]||"#555")+"'>”+p.setor+”</span></td>”;
+h+=”<td>”+sb+”</td></tr>”;
+});
+h+=”</tbody></table></div>”;
+q(“llst”).innerHTML=h;
 }
-function mkR(arr){return arr.map(function(c){return[c.nome,c.cpf,c.rg,c.email,c.telefone,fd(c.nascimento),c.setor,c.empresa||"",c.cargo||"",c.status||""];});}
-function expExcel(){mkXls(mkR(cads),"Cadastros");}
-function exXlsL(){if(lista)mkXls(mkR(lista.p),"Lista_"+lista.n);}
-function expCSV(){dl("Nome,CPF,RG,Email,Telefone,Nascimento,Setor,Empresa,Cargo,Status\n"+mkR(cads).map(function(r){return r.map(function(v){return'"'+v+'"';}).join(",");}).join("\n"),"text/csv","Cadastros.csv");}
-function exCsvL(){if(lista)dl("Nome,CPF,RG,Email,Telefone,Nascimento,Setor,Empresa,Cargo,Status\n"+mkR(lista.p).map(function(r){return r.map(function(v){return'"'+v+'"';}).join(",");}).join("\n"),"text/csv","Lista.csv");}
+function mkR(arr){return arr.map(function(c){return[c.nome,c.cpf,c.rg,c.email,c.telefone,fd(c.nascimento),c.setor,c.empresa||””,c.cargo||””,c.status||””];});}
+function expExcel(){mkXls(mkR(cads),“Cadastros”);}
+function exXlsL(){if(lista)mkXls(mkR(lista.p),“Lista_”+lista.n);}
+function expCSV(){dl(“Nome,CPF,RG,Email,Telefone,Nascimento,Setor,Empresa,Cargo,Status\n”+mkR(cads).map(function(r){return r.map(function(v){return’”’+v+’”’;}).join(”,”);}).join(”\n”),“text/csv”,“Cadastros.csv”);}
+function exCsvL(){if(lista)dl(“Nome,CPF,RG,Email,Telefone,Nascimento,Setor,Empresa,Cargo,Status\n”+mkR(lista.p).map(function(r){return r.map(function(v){return’”’+v+’”’;}).join(”,”);}).join(”\n”),“text/csv”,“Lista.csv”);}
 function mkXls(rows,name){
-  var hdr="<Row><Cell><Data ss:Type='String'>Nome</Data></Cell><Cell><Data ss:Type='String'>CPF</Data></Cell><Cell><Data ss:Type='String'>RG</Data></Cell><Cell><Data ss:Type='String'>Email</Data></Cell><Cell><Data ss:Type='String'>Telefone</Data></Cell><Cell><Data ss:Type='String'>Nascimento</Data></Cell><Cell><Data ss:Type='String'>Setor</Data></Cell><Cell><Data ss:Type='String'>Empresa</Data></Cell><Cell><Data ss:Type='String'>Cargo</Data></Cell><Cell><Data ss:Type='String'>Status</Data></Cell></Row>";
-  var body=rows.map(function(r){return "<Row>"+r.map(function(v){return"<Cell><Data ss:Type='String'>"+String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</Data></Cell>";}).join("")+"</Row>";}).join("");
-  dl("<?xml version='1.0'?><Workbook xmlns='urn:schemas-microsoft-com:office:spreadsheet' xmlns:ss='urn:schemas-microsoft-com:office:spreadsheet'><Worksheet ss:Name='Dados'><Table>"+hdr+body+"</Table></Worksheet></Workbook>","application/vnd.ms-excel",name+".xls");
+var hdr=”<Row><Cell><Data ss:Type='String'>Nome</Data></Cell><Cell><Data ss:Type='String'>CPF</Data></Cell><Cell><Data ss:Type='String'>RG</Data></Cell><Cell><Data ss:Type='String'>Email</Data></Cell><Cell><Data ss:Type='String'>Telefone</Data></Cell><Cell><Data ss:Type='String'>Nascimento</Data></Cell><Cell><Data ss:Type='String'>Setor</Data></Cell><Cell><Data ss:Type='String'>Empresa</Data></Cell><Cell><Data ss:Type='String'>Cargo</Data></Cell><Cell><Data ss:Type='String'>Status</Data></Cell></Row>”;
+var body=rows.map(function(r){return “<Row>”+r.map(function(v){return”<Cell><Data ss:Type='String'>”+String(v).replace(/&/g,”&”).replace(/</g,”<”)+”</Data></Cell>”;}).join(””)+”</Row>”;}).join(””);
+dl(”<?xml version='1.0'?><Workbook xmlns='urn:schemas-microsoft-com:office:spreadsheet' xmlns:ss='urn:schemas-microsoft-com:office:spreadsheet'><Worksheet ss:Name='Dados'><Table>”+hdr+body+”</Table></Worksheet></Workbook>”,“application/vnd.ms-excel”,name+”.xls”);
 }
 function tab(t){
-  ["c","e","k","l"].forEach(function(x){q("s"+x).classList.add("gone");q("t"+x).classList.remove("on");});
-  q("s"+t).classList.remove("gone");q("t"+t).classList.add("on");
-  if(t==="l")rLst();if(t==="k")rCods();if(t==="e")rEvs();
+[“c”,“e”,“k”,“l”].forEach(function(x){q(“s”+x).classList.add(“gone”);q(“t”+x).classList.remove(“on”);});
+q(“s”+t).classList.remove(“gone”);q(“t”+t).classList.add(“on”);
+if(t===“l”)rLst();if(t===“k”)rCods();if(t===“e”)rEvs();
 }
 load();
 </script>
+
 </body>
 </html>
