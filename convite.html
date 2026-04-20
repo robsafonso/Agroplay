@@ -268,7 +268,7 @@ function renderEv(ev){
     grid+="<div class='info-box'><div class='info-ico'>📅</div><div class='info-lbl'>Data</div><div class='info-val'>"+dataFmt+"</div></div>";
   }
   if(ev.local){
-    var localHtml=ev.maps_url?"<a href='"+ev.maps_url+"' target='_blank'>"+ev.local+" 🗺️</a>":ev.local;
+    var localHtml=ev.maps_url?"<a href='"+ev.maps_url+"' target='_blank' style='color:var(--green2);text-decoration:none;font-weight:700'>"+ev.local+" 📍</a>":ev.local;
     grid+="<div class='info-box'><div class='info-ico'>📍</div><div class='info-lbl'>Local</div><div class='info-val'>"+localHtml+"</div></div>";
   }
   document.getElementById("info-grid").innerHTML=grid;
