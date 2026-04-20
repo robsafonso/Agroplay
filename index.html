@@ -157,6 +157,8 @@ textarea{height:70px;resize:none}
     <div class="fl"><label>Atracao principal</label><input id="ev-atr1" placeholder="Ex: Ana Castela"></div>
     <div class="fl"><label>Segunda atracao</label><input id="ev-atr2" placeholder="Ex: CountryBeat"></div>
     <div class="fl"><label>Descricao</label><textarea id="ev-desc" placeholder="Detalhes do evento..."></textarea></div>
+    <div class="fl"><label>Foto do convite (URL da imagem)</label><input id="ev-foto" placeholder="https://...imagem.jpg"></div>
+    <div class="fl"><label>Link do Maps (Google Maps)</label><input id="ev-maps" placeholder="https://maps.google.com/..."></div>
     <button class="btn" id="btnsalvarev" style="width:100%">Salvar evento</button>
   </div>
 </div>
@@ -359,9 +361,10 @@ function rEvs(){
       "<div class='ev-nome'>"+ev.nome+"</div>"+
       "<div class='ev-info'>"+
         (ev.data?"📅 "+d[2]+"/"+d[1]+"/"+d[0]+"<br/>":"")+ 
-        (ev.local?"📍 "+ev.local+"<br/>":"")+
+        (ev.local?"📍 "+(ev.maps_url?"<a href='"+ev.maps_url+"' target='_blank' style='color:#3ab54a'>"+ev.local+"</a>":ev.local)+"<br/>":"")+
         (ev.atracao1?"🎤 "+ev.atracao1+(ev.atracao2?" + "+ev.atracao2:"")+"<br/>":"")+
-        (ev.descricao?"📝 "+ev.descricao:"")+"</div>"+
+        (ev.descricao?"📝 "+ev.descricao+"<br/>":"")+
+        (ev.foto_url?"<img src='"+ev.foto_url+"' style='width:100%;border-radius:8px;margin-top:8px'/>":"")+"</div>"+
       "<div style='display:flex;gap:6px;flex-wrap:wrap'>"+
         "<button class='btn' onclick='abrirConvites("+ev.id+")' style='flex:1;font-size:12px;padding:9px'>📨 Enviar Convites</button>"+
         "<button class='btn-o' onclick='listarEvento("+ev.id+")' style='font-size:12px;padding:9px'>📋 Lista</button>"+
@@ -380,10 +383,12 @@ function salvarEv(){
     local:g("ev-local").value.trim(),
     atracao1:g("ev-atr1").value.trim(),
     atracao2:g("ev-atr2").value.trim(),
-    descricao:g("ev-desc").value.trim()
+    descricao:g("ev-desc").value.trim(),
+    foto_url:g("ev-foto").value.trim(),
+    maps_url:g("ev-maps").value.trim()
   })}).then(function(){
     g("ov-ev").classList.remove("on");
-    ["ev-nome","ev-data","ev-local","ev-atr1","ev-atr2","ev-desc"].forEach(function(id){g(id).value="";});
+    ["ev-nome","ev-data","ev-local","ev-atr1","ev-atr2","ev-desc","ev-foto","ev-maps"].forEach(function(id){g(id).value="";});
     load();
   }).catch(function(){
     g("ev-alert").innerHTML='<div class="err">Erro ao salvar</div>';
