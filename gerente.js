@@ -340,4 +340,5 @@ q(“s”+t).classList.remove(“gone”);q(“t”+t).classList.add(“on”);
 if(t===“l”)rLst();if(t===“k”)rCods();if(t===“e”)rEvs();
 }
 load();
+setTimeout(function(){alert("JS rodando! Cads: "+cads.length);},2000);
 });
