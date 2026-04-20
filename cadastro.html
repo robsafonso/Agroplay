@@ -432,7 +432,7 @@ function tirarFoto(){
   var preview = document.getElementById('foto-preview');
   var container = document.getElementById('video-container');
 
-  canvas.width = 400; canvas.height = 400;
+  canvas.width = 200; canvas.height = 200;
   var ctx = canvas.getContext('2d');
 
   // Crop center square
@@ -441,7 +441,7 @@ function tirarFoto(){
   var y = (video.videoHeight - size) / 2;
   ctx.drawImage(video, x, y, size, size, 0, 0, 400, 400);
 
-  fotoDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+  fotoDataUrl = canvas.toDataURL('image/jpeg', 0.4);
   preview.src = fotoDataUrl;
   preview.style.display = 'block';
   container.style.display = 'none';
@@ -473,7 +473,9 @@ async function salvarComFoto(){
   var btn = document.getElementById('btn-salvar-foto');
   btn.textContent = 'Salvando...'; btn.disabled = true;
   // Save foto as base64 directly in DB
+  console.log('fotoDataUrl length:', fotoDataUrl ? fotoDataUrl.length : 'NULL');
   var fotoUrl = fotoDataUrl || null;
+  console.log('fotoUrl:', fotoUrl ? 'HAS_VALUE' : 'NULL');
   await enviarCadastroComFoto(fotoUrl);
 }
 
