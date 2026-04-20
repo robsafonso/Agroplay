@@ -229,12 +229,15 @@ q("bgerarlinkc").onclick=function(){
     .then(function(d){
       if(!d||!d.length){q("lc-alert").innerHTML="<div class='ea'>Nenhum codigo disponivel!</div>";return;}
       var cod=d[0].codigo;
-      var link=LC+"?cod="+cod;
-      var msg="AGROPLAY - Convite de Cadastro\n\nVoce foi convidado para se cadastrar no sistema Agroplay!\n\nAcesse o link e faca seu cadastro:\n"+link+"\n\nSeu codigo: "+cod+"\n\nCodigo intransferivel e de uso unico.\nAgroplay Music - Londrina PR";
-      q("lc-cod").textContent=cod;
-      q("lc-msg").textContent=msg;
-      q("lc-form").classList.add("gone");
-      q("lc-result").classList.remove("gone");
+      return ap("codigos?codigo=eq."+cod,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString()})}).then(function(){
+        var link=LC+"?cod="+cod;
+        var msg="AGROPLAY - Convite de Cadastro\n\nVoce foi convidado para se cadastrar no sistema Agroplay!\n\nAcesse o link e faca seu cadastro:\n"+link+"\n\nSeu codigo: "+cod+"\n\nCodigo intransferivel e de uso unico.\nAgroplay Music - Londrina PR";
+        q("lc-cod").textContent=cod;
+        q("lc-msg").textContent=msg;
+        q("lc-form").classList.add("gone");
+        q("lc-result").classList.remove("gone");
+        rSts();
+      });
     })
     .catch(function(){q("lc-alert").innerHTML="<div class='ea'>Erro ao gerar</div>";})
     .finally(function(){btn.textContent="Gerar convite de cadastro";btn.disabled=false;});
@@ -462,11 +465,13 @@ function gconv(){
       var dataFmt=ev.data?df[2]+"/"+df[1]+"/"+df[0]:"";
       var msg="AGROPLAY - Convite VIP\n\nOla "+pessoa.nome+"!\n\nVoce esta convidado(a):\n\n"+ev.nome+(dataFmt?"\nData: "+dataFmt:"")+(ev.local?"\nLocal: "+ev.local:"")+(ev.atracao1?"\nAtracoes: "+ev.atracao1+(ev.atracao2?" + "+ev.atracao2:""):"");
       msg=msg+"\n\nAcesse e confirme presenca:\n"+LCV+"?ev="+ev.id+"\n\nSeu codigo: "+cod+"\n\nCodigo intransferivel.\nAgroplay - Londrina PR";
+      ap("codigos?codigo=eq."+cod,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString()})});
       q("ccod").textContent=cod;
       q("cmsg").textContent=msg;
       q("cres").classList.remove("gone");
       q("csel").classList.add("gone");
       cs=cs.slice(1);
+      rSts();
     })
     .catch(function(){q("calert").innerHTML="<div class='ea'>Erro ao gerar</div>";})
     .finally(function(){btn.textContent="Gerar convite";btn.disabled=false;});
