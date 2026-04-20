@@ -176,14 +176,28 @@ function init(){
 var p=new URLSearchParams(window.location.search);
 var id=p.get(“ev”);
 var msg=document.getElementById(“msg”);
-if(!id){msg.textContent=“Convite nao encontrado.”;return;}
-api(“eventos?id=eq.”+id+”&select=*”).then(function(d){
-if(!d||!d.length){msg.textContent=“Evento nao encontrado.”;return;}
+msg.innerHTML=“Iniciando…<br>”;
+if(!id){msg.innerHTML+=“Sem ID na URL”;return;}
+msg.innerHTML+=“ID: “+id+”<br>Chamando API…<br>”;
+var url=SB+”/rest/v1/eventos?id=eq.”+id+”&select=*&apikey=”+KY;
+msg.innerHTML+=“URL OK<br>”;
+fetch(url,{headers:{“Authorization”:“Bearer “+KY}})
+.then(function(r){
+msg.innerHTML+=“Status: “+r.status+”<br>”;
+return r.text();
+})
+.then(function(t){
+msg.innerHTML+=“Resposta: “+t.substring(0,100)+”<br>”;
+var d=JSON.parse(t);
+if(!d||!d.length){msg.innerHTML+=“Evento nao encontrado”;return;}
 evAtual=d[0];
 renderEv(d[0]);
 msg.style.display=“none”;
 document.getElementById(“main”).style.display=“block”;
-}).catch(function(e){msg.textContent=“Erro ao carregar: “+e.message;});
+})
+.catch(function(e){
+msg.innerHTML+=“ERRO: “+e.message;
+});
 }
 
 function renderEv(ev){
