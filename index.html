@@ -55,7 +55,10 @@ textarea{height:70px;resize:none}
 <body>
 <div class="hdr">
   <div style="font-size:18px;font-weight:900;color:#fff">AGRO<span style="color:#2aab47">PLAY</span></div>
-  <button class="bto" id="r">Atualizar</button>
+  <div style="display:flex;gap:6px">
+    <button class="bto" id="blinkc" style="font-size:11px;padding:6px 10px">Link Cadastro</button>
+    <button class="bto" id="r">Atualizar</button>
+  </div>
 </div>
 <div class="stats" id="sts"></div>
 <div class="tabs">
@@ -95,6 +98,21 @@ textarea{height:70px;resize:none}
   <div id="klst"></div>
 </div>
 <div id="sl" class="gone"><div id="llst"></div></div>
+<div class="ov ovc" id="ovlinkc">
+  <div class="mod" style="border-radius:20px;max-width:400px;margin:20px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="font-size:16px;font-weight:700;color:#fff">Link de Cadastro</div>
+      <button class="bto" id="bflinkc">X</button>
+    </div>
+    <div style="font-size:12px;color:#888;margin-bottom:14px;line-height:1.6">Envie esse link para colaboradores, artistas e pessoas do escritorio se cadastrarem. Nao precisa de evento.</div>
+    <div style="background:#030503;border:1px solid #1a2a1a;border-radius:10px;padding:12px;margin-bottom:12px">
+      <div style="font-size:10px;color:#555;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px">Link</div>
+      <div style="font-family:monospace;font-size:12px;color:#2aab47;word-break:break-all">https://robsafonso.github.io/Agroplay/cadastro.html</div>
+    </div>
+    <button class="btn" id="bcopiarlinkc" style="width:100%">Copiar link</button>
+    <div style="margin-top:12px;font-size:11px;color:#555;text-align:center">Pessoas que acessarem vao escolher setor e tirar foto</div>
+  </div>
+</div>
 <div class="ov" id="ovp">
   <div class="mod">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
@@ -190,6 +208,9 @@ function ap(p,o){o=o||{};var h={"apikey":KY,"Authorization":"Bearer "+KY,"Conten
 function cp2(txt,btn,lbl){if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){btn.textContent="Copiado!";setTimeout(function(){btn.textContent=lbl;},2000);});}else{var t=document.createElement("textarea");t.value=txt;document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t);btn.textContent="Copiado!";setTimeout(function(){btn.textContent=lbl;},2000);}}
 function dl(cnt,t,n){var b=new Blob([cnt],{type:t});var u=URL.createObjectURL(b);var a=document.createElement("a");a.href=u;a.download=n;a.click();}
 q("r").onclick=load;
+q("blinkc").onclick=function(){q("ovlinkc").classList.add("on");};
+q("bflinkc").onclick=function(){q("ovlinkc").classList.remove("on");};
+q("bcopiarlinkc").onclick=function(){cp2("https://robsafonso.github.io/Agroplay/cadastro.html",q("bcopiarlinkc"),"Copiar link");};
 q("bgl").onclick=gerarLst;
 q("bexk").onclick=expCods;
 q("bxls").onclick=expExcel;
