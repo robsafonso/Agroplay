@@ -293,12 +293,36 @@ q("bflote").onclick=function(){q("ovlote").classList.remove("on");};
 q("bsalvalote").onclick=function(){
   var resp=q("lote-resp").value.trim();
   if(!resp){q("lote-alert").innerHTML="<div class='ea'>Nome obrigatorio</div>";return;}
-  var qtd=parseInt(q("lote-qtd").value)||50;
-  var btn=q("bsalvalote");btn.textContent="Criando...";btn.disabled=true;
+  var qtd=parseInt(q("lote-qtd").value)||10;
+  if(qtd>200)qtd=200;
+  var btn=q("bsalvalote");btn.textContent="Gerando "+qtd+" links...";btn.disabled=true;
+  q("lote-alert").innerHTML="";
   ap("lotes",{m:"POST",pref:"return=representation",b:JSON.stringify({nome:"Lote "+resp,responsavel:resp,quantidade:qtd})}).then(function(d){
-    q("ovlote").classList.remove("on");
-    rLotes();
-  }).catch(function(){q("lote-alert").innerHTML="<div class='ea'>Erro ao criar</div>";
+    if(!d||!d[0])throw new Error("Erro ao criar lote");
+    var loteId=d[0].id;
+    return fetch(SB+"/rest/v1/codigos?usado=eq.false&order=id.asc&limit="+qtd,{headers:{"apikey":KY,"Authorization":"Bearer "+KY}})
+      .then(function(r){return r.json();})
+      .then(function(cods){
+        if(!cods||cods.length<qtd){
+          q("lote-alert").innerHTML="<div class='ea'>Apenas "+( cods?cods.length:0)+" codigos disponiveis!</div>";
+          return;
+        }
+        var patches=cods.map(function(c){
+          return ap("codigos?codigo=eq."+c.codigo,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString()})});
+        });
+        return Promise.all(patches).then(function(){
+          var links=cods.map(function(c){
+            return LC+"?lote="+loteId+"&resp="+encodeURIComponent(resp)+"&cod="+c.codigo;
+          });
+          var msg="AGROPLAY - Lote de Convites\nResponsavel: "+resp+"\n"+qtd+" convites gerados\n\n"+links.map(function(l,i){return "Convite "+(i+1)+":\n"+l;}).join("\n\n");
+          q("ovlote").classList.remove("on");
+          rLotes();
+          rSts();
+          cp2(msg,btn,"Criar lote");
+          alert("Lote criado! "+qtd+" links copiados para area de transferencia.");
+        });
+      });
+  }).catch(function(e){q("lote-alert").innerHTML="<div class='ea'>Erro: "+e.message+"</div>";
   }).finally(function(){btn.textContent="Criar lote";btn.disabled=false;});
 };
 q("bapv").onclick=function(){
