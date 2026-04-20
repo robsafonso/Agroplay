@@ -8,7 +8,7 @@ var COR={Artista:”#7c3aed”,Influenciador:”#0891b2”,Diretoria:”#b45309�
 var cads=[],cods=[],evs=[],sel=[],fset=“Todos”,fk=“t”,lista=null,pa=null,eva=null,cf=“Todos”,cs=[],eid=null;
 function q(id){return document.getElementById(id);}
 function fd(d){if(!d)return””;var x=d.split(”-”);return x[2]+”/”+x[1]+”/”+x[0];}
-function ap(p,o){o=o||{};var h={“apikey”:KY,“Authorization”:“Bearer “+KY,“Content-Type”:“application/json”};if(o.pref)h[“Prefer”]=o.pref;return fetch(SB+”/rest/v1/”+p,{method:o.m||“GET”,headers:h,body:o.b}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});}
+function ap(p,o){o=o||{};var h={“apikey”:KY,“Authorization”:“Bearer “+KY,“Content-Type”:“application/json”};if(o.pref)h[“Prefer”]=o.pref;return fetch(SB+”/rest/v1/”+p,{method:o.m||“GET”,headers:h,body:o.b}).then(function(r){if(!r.ok){throw new Error(“HTTP “+r.status);}return r.text();}).then(function(t){return t?JSON.parse(t):null;});}
 function cp2(txt,btn,lbl){if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){btn.textContent=“Copiado!”;setTimeout(function(){btn.textContent=lbl;},2000);});}else{var t=document.createElement(“textarea”);t.value=txt;document.body.appendChild(t);t.select();document.execCommand(“copy”);document.body.removeChild(t);btn.textContent=“Copiado!”;setTimeout(function(){btn.textContent=lbl;},2000);}}
 function dl(cnt,t,n){var b=new Blob([cnt],{type:t});var u=URL.createObjectURL(b);var a=document.createElement(“a”);a.href=u;a.download=n;a.click();}
 q(“r”).onclick=load;
@@ -62,7 +62,8 @@ rend();
 };
 function load(){
 q(“tbl”).innerHTML=”<div class='empty'>Carregando…</div>”;
-ap(“cadastros?select=*&order=criado_em.desc”).then(function(d){cads=d||[];rSts();rChips();rend();}).catch(function(){cads=[];rSts();rChips();rend();});
+q(“sts”).innerHTML=”<div class='stat'><strong style='font-size:12px;color:#c9973c'>Conectando…</strong></div>”;
+ap(“cadastros?select=*&order=criado_em.desc”).then(function(d){cads=d||[];rSts();rChips();rend();}).catch(function(e){cads=[];q(“tbl”).innerHTML=”<div class='empty' style='color:#e74c3c'>Erro: “+e.message+”</div>”;rSts();rChips();});
 ap(“codigos?select=*&order=id.asc”).then(function(d){cods=d||[];rSts();rCods();}).catch(function(){cods=[];});
 ap(“eventos?select=*&order=data.asc”).then(function(d){evs=d||[];rSts();rEvs();}).catch(function(){evs=[];});
 }
