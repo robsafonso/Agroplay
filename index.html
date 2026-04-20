@@ -11,6 +11,7 @@ body{background:#0a0a0a;color:#eee;font-family:Arial,sans-serif;font-size:14px;p
 .btn{background:#2d8a3e;color:#fff;border:none;border-radius:8px;padding:12px 18px;font-size:14px;font-weight:700;cursor:pointer;margin:4px;display:inline-block}
 .btn-o{background:transparent;color:#3ab54a;border:1px solid #3ab54a;border-radius:8px;padding:8px 14px;font-size:12px;cursor:pointer;margin:4px}
 .btn-r{background:#c0392b;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:12px;cursor:pointer;margin:4px}
+.btn-b{background:#1a5276;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:12px;cursor:pointer;margin:4px}
 .card{background:#111;border:1px solid #222;border-radius:12px;padding:16px;margin-bottom:12px}
 .hdr{background:#0d0d0d;border-bottom:1px solid #222;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;margin:-16px -16px 16px}
 .logo{font-size:18px;font-weight:900;color:#fff}
@@ -36,15 +37,26 @@ td{padding:8px;border-bottom:1px solid #1a1a1a;color:#bbb}
 .cod{font-family:monospace;font-size:24px;font-weight:900;color:#fff;letter-spacing:4px;margin:8px 0 12px}
 .ov{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:100;display:none;align-items:flex-end;justify-content:center}
 .ov.on{display:flex}
-.ov-center{align-items:center!important;justify-content:center!important}
+.ovc{align-items:center!important;justify-content:center!important}
 .mod{background:#111;border-radius:20px 20px 0 0;padding:20px;width:100%;max-height:88vh;overflow-y:auto}
 .prow{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #1a1a1a;font-size:13px}
 .prow span:first-child{color:#555;font-size:11px;text-transform:uppercase}
 .prow span:last-child{color:#fff;font-weight:600;text-align:right;max-width:60%}
 .empty{text-align:center;padding:28px;color:#555}
 .err{background:#1a0000;border:1px solid #c0392b;color:#e74c3c;padding:10px;border-radius:8px;margin-bottom:10px;font-size:13px}
-input{background:#0d0d0d;border:1px solid #333;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none}
-.gb{background:rgba(58,181,74,.06);border:1px solid rgba(58,181,74,.2);border-radius:10px;padding:10px;margin-bottom:10px;flex-direction:row;gap:8px;align-items:center;flex-wrap:wrap}
+.ok{background:#001a00;border:1px solid #3ab54a;color:#3ab54a;padding:10px;border-radius:8px;margin-bottom:10px;font-size:13px}
+input,select,textarea{background:#0d0d0d;border:1px solid #333;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;width:100%;margin-bottom:8px}
+textarea{height:70px;resize:none}
+.fl label{display:block;font-size:10px;color:#3ab54a;letter-spacing:1px;margin-bottom:4px;text-transform:uppercase}
+.fl{margin-bottom:10px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ev-card{background:#111;border:1px solid #222;border-radius:12px;padding:14px;margin-bottom:10px}
+.ev-nome{font-size:15px;font-weight:700;color:#fff;margin-bottom:4px}
+.ev-info{font-size:11px;color:#666;line-height:1.7;margin-bottom:10px}
+.pessoa-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #1a1a1a}
+.pessoa-check{width:18px;height:18px;cursor:pointer}
+.pessoa-nome{flex:1;font-size:13px;color:#eee}
+.pessoa-badge{font-size:10px}
 </style>
 </head>
 <body>
@@ -57,46 +69,36 @@ input{background:#0d0d0d;border:1px solid #333;border-radius:8px;padding:9px 12p
 
 <div class="tabs">
   <button class="tab on" id="t-cad">Cadastros</button>
-  <button class="tab" id="t-conv">Convite</button>
+  <button class="tab" id="t-ev">Eventos</button>
   <button class="tab" id="t-cod">Codigos</button>
   <button class="tab" id="t-lst">Lista</button>
 </div>
 
+<!-- CADASTROS -->
+
 <div id="s-cad">
   <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
-    <input id="busca" placeholder="Buscar..." style="flex:1;min-width:140px">
+    <input id="busca" placeholder="Buscar..." style="flex:1;min-width:140px;margin:0">
     <button class="btn-o" id="btnxls">Excel</button>
     <button class="btn-o" id="btncsv">CSV</button>
   </div>
   <div class="chips" id="chips"></div>
-  <div id="gbar" class="hide gb">
+  <div id="gbar" class="hide" style="background:rgba(58,181,74,.06);border:1px solid rgba(58,181,74,.2);border-radius:10px;padding:10px;margin-bottom:10px;flex-direction:row;gap:8px;align-items:center;flex-wrap:wrap">
     <span style="color:#3ab54a;font-size:12px;font-weight:700" id="selct"></span>
-    <input id="evnm" placeholder="Nome do evento..." style="flex:1">
-    <button class="btn" style="padding:9px 12px;font-size:12px" id="btngerar">Gerar</button>
+    <input id="evnm" placeholder="Nome do evento..." style="flex:1;margin:0">
+    <button class="btn" style="padding:9px 12px;font-size:12px;margin:0" id="btngerar">Gerar Lista</button>
   </div>
   <div id="tbl"></div>
 </div>
 
-<div id="s-conv" class="hide">
-  <div class="card">
-    <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:4px">Gerar Convite</div>
-    <div style="font-size:12px;color:#666;margin-bottom:12px">Codigo e mensagem WhatsApp</div>
-    <button class="btn" id="btnconv">Gerar convite agora</button>
-  </div>
-  <div id="cvres" class="hide card">
-    <div style="font-size:10px;color:#3ab54a;text-transform:uppercase;margin-bottom:4px">Codigo</div>
-    <div class="cod" id="cvcod"></div>
-    <div style="font-size:10px;color:#3ab54a;text-transform:uppercase;margin-bottom:6px">Mensagem</div>
-    <div class="msg" id="cvmsg"></div>
-    <button class="btn" id="btncop">Copiar mensagem</button>
-    <button class="btn-o" id="btnreset" style="width:100%;margin-top:8px">Gerar outro</button>
-  </div>
-  <div id="cval"></div>
-  <div class="card">
-    <div style="font-size:10px;color:#555;text-transform:uppercase;margin-bottom:10px">Ultimos convites</div>
-    <div id="ultconv"><div class="empty">Nenhum gerado ainda</div></div>
-  </div>
+<!-- EVENTOS -->
+
+<div id="s-ev" class="hide">
+  <button class="btn" id="btnnovoev" style="width:100%;margin-bottom:14px">+ Criar novo evento</button>
+  <div id="ev-lista"><div class="empty">Nenhum evento ainda</div></div>
 </div>
+
+<!-- CODIGOS -->
 
 <div id="s-cod" class="hide">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
@@ -111,7 +113,11 @@ input{background:#0d0d0d;border:1px solid #333;border-radius:8px;padding:9px 12p
   <div id="codlst"></div>
 </div>
 
+<!-- LISTA -->
+
 <div id="s-lst" class="hide"><div id="lstcont"></div></div>
+
+<!-- MODAL PERFIL -->
 
 <div class="ov" id="ov-p">
   <div class="mod">
@@ -121,14 +127,81 @@ input{background:#0d0d0d;border:1px solid #333;border-radius:8px;padding:9px 12p
     </div>
     <div id="pcont"></div>
     <button class="btn-o" id="btncpy" style="width:100%;margin-top:12px">Copiar dados</button>
-    <button class="btn-r" id="btndel" style="width:100%;margin-top:8px">Excluir</button>
+    <button class="btn-r" id="btndel" style="width:100%;margin-top:8px">Excluir cadastro</button>
   </div>
 </div>
 
-<div class="ov ov-center" id="ov-foto">
-  <div style="max-width:90vw;max-height:90vh;text-align:center" id="foto-wrap">
+<!-- MODAL FOTO -->
+
+<div class="ov ovc" id="ov-foto">
+  <div style="max-width:90vw;max-height:90vh;text-align:center">
     <img id="foto-grande" style="max-width:90vw;max-height:80vh;border-radius:12px;display:block;margin:0 auto"/>
     <button class="btn-o" style="margin-top:12px" id="btnfechafoto">Fechar</button>
+  </div>
+</div>
+
+<!-- MODAL NOVO EVENTO -->
+
+<div class="ov" id="ov-ev">
+  <div class="mod">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="font-size:16px;font-weight:700;color:#fff">Novo Evento</div>
+      <button class="btn-o" id="btnfecharev">Fechar</button>
+    </div>
+    <div id="ev-alert"></div>
+    <div class="fl"><label>Nome do evento</label><input id="ev-nome" placeholder="Ex: ExpoLondrina 2026"></div>
+    <div class="g2">
+      <div class="fl"><label>Data</label><input id="ev-data" type="date"></div>
+      <div class="fl"><label>Local</label><input id="ev-local" placeholder="Ex: Parque Ney Braga"></div>
+    </div>
+    <div class="fl"><label>Atracao principal</label><input id="ev-atr1" placeholder="Ex: Ana Castela"></div>
+    <div class="fl"><label>Segunda atracao</label><input id="ev-atr2" placeholder="Ex: CountryBeat"></div>
+    <div class="fl"><label>Descricao</label><textarea id="ev-desc" placeholder="Detalhes do evento..."></textarea></div>
+    <button class="btn" id="btnsalvarev" style="width:100%">Salvar evento</button>
+  </div>
+</div>
+
+<!-- MODAL ENVIAR CONVITES -->
+
+<div class="ov" id="ov-conv">
+  <div class="mod">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <div style="font-size:16px;font-weight:700;color:#fff">Enviar Convites</div>
+      <button class="btn-o" id="btnfecharconv">Fechar</button>
+    </div>
+    <div id="conv-ev-nome" style="font-size:12px;color:#3ab54a;margin-bottom:14px"></div>
+    <div id="conv-alert"></div>
+
+```
+<!-- Resultado de 1 convite gerado -->
+<div id="conv-result" class="hide card">
+  <div style="font-size:10px;color:#3ab54a;text-transform:uppercase;margin-bottom:4px">Convite gerado</div>
+  <div class="cod" id="conv-cod"></div>
+  <div style="font-size:10px;color:#3ab54a;text-transform:uppercase;margin-bottom:6px">Mensagem</div>
+  <div class="msg" id="conv-msg"></div>
+  <button class="btn" id="btncopconv">Copiar mensagem</button>
+  <button class="btn-o" id="btnoutroconv" style="width:100%;margin-top:8px">Gerar outro</button>
+</div>
+
+<!-- Selecionar pessoas -->
+<div id="conv-selecao">
+  <div style="font-size:12px;color:#888;margin-bottom:10px">Selecione quem vai receber:</div>
+  <div class="chips" style="margin-bottom:12px" id="conv-chips">
+    <button class="chip on" onclick="filtrarConv('Todos',this)">Todos</button>
+    <button class="chip" onclick="filtrarConv('Artista',this)">Artistas</button>
+    <button class="chip" onclick="filtrarConv('Influenciador',this)">Influenciadores</button>
+    <button class="chip" onclick="filtrarConv('Diretoria',this)">Diretoria</button>
+    <button class="chip" onclick="filtrarConv('Colaborador',this)">Colaboradores</button>
+  </div>
+  <div id="conv-pessoas"></div>
+  <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+    <button class="btn-o" id="btnseltodos">Selecionar todos</button>
+    <button class="btn-o" id="btndeseltodos">Desmarcar todos</button>
+  </div>
+  <button class="btn" id="btngerarconvs" style="width:100%;margin-top:12px">Gerar convite individual</button>
+</div>
+```
+
   </div>
 </div>
 
@@ -136,238 +209,346 @@ input{background:#0d0d0d;border:1px solid #333;border-radius:8px;padding:9px 12p
 var SB = "https://wexwcnezjadoutyzkbcj.supabase.co";
 var KY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
 var LC = "https://robsafonso.github.io/Agroplay/cadastro.html";
+var LCV = "https://robsafonso.github.io/Agroplay/convite.html";
 var SETS = ["Artista","Influenciador","Diretoria","Colaborador"];
 var COR = {Artista:"#7c3aed",Influenciador:"#0891b2",Diretoria:"#b45309",Colaborador:"#2d8a3e"};
-var cads = [], cods = [], sel = [], fset = "Todos", fcod = "t", lista = null, convs = [], pa = null;
+var cads=[],cods=[],evs=[],sel=[],fset="Todos",fcod="t",lista=null,convs=[],pa=null,evAtual=null,convFiltro="Todos",convSel=[];
 
 function g(id){ return document.getElementById(id); }
 function show(id){ g(id).classList.remove("hide"); }
 function hide(id){ g(id).classList.add("hide"); }
-function fd(d){ if(!d) return ""; var x = d.split("-"); return x[2]+"/"+x[1]+"/"+x[0]; }
+function fd(d){ if(!d) return ""; var x=d.split("-"); return x[2]+"/"+x[1]+"/"+x[0]; }
 
-function api(p, o) {
-  o = o || {};
-  var h = {"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json"};
-  if(o.pref) h["Prefer"] = o.pref;
-  return fetch(SB+"/rest/v1/"+p, {method:o.m||"GET", headers:h, body:o.b})
-    .then(function(r){ return r.text(); })
-    .then(function(t){ return t ? JSON.parse(t) : null; });
+function api(p,o){
+  o=o||{};
+  var h={"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json"};
+  if(o.pref) h["Prefer"]=o.pref;
+  return fetch(SB+"/rest/v1/"+p,{method:o.m||"GET",headers:h,body:o.b})
+    .then(function(r){return r.text();})
+    .then(function(t){return t?JSON.parse(t):null;});
 }
 
+// Botões principais
 g("btnrel").onclick = load;
 g("btngerar").onclick = gerarLst;
-g("btnconv").onclick = gerarConv;
-g("btnreset").onclick = function(){ hide("cvres"); g("cval").innerHTML = ""; };
 g("btnexpcod").onclick = expCods;
 g("btnxls").onclick = expExcel;
 g("btncsv").onclick = expCSV;
-g("btnfp").onclick = function(){ g("ov-p").classList.remove("on"); pa = null; };
+g("btnfp").onclick = function(){ g("ov-p").classList.remove("on"); pa=null; };
 g("btndel").onclick = delP;
 g("busca").oninput = rend;
-g("btncop").onclick = function(){ copiar2(g("cvmsg").textContent, g("btncop"), "Copiar mensagem"); };
 g("btncpy").onclick = copiarDados;
+g("btnfechafoto").onclick = function(){ g("ov-foto").classList.remove("on"); };
+g("btnnovoev").onclick = function(){ g("ov-ev").classList.add("on"); };
+g("btnfecharev").onclick = function(){ g("ov-ev").classList.remove("on"); g("ev-alert").innerHTML=""; };
+g("btnsalvarev").onclick = salvarEv;
+g("btnfecharconv").onclick = function(){ g("ov-conv").classList.remove("on"); hide("conv-result"); show("conv-selecao"); };
+g("btncopconv").onclick = function(){ copiar2(g("conv-msg").textContent, g("btncopconv"), "Copiar mensagem"); };
+g("btnoutroconv").onclick = function(){ hide("conv-result"); show("conv-selecao"); };
+g("btnseltodos").onclick = function(){ convSel=cads.filter(function(c){return convFiltro==="Todos"||c.setor===convFiltro;}).map(function(c){return c.id;}); renderConvPessoas(); };
+g("btndeseltodos").onclick = function(){ convSel=[]; renderConvPessoas(); };
+g("btngerarconvs").onclick = gerarConvIndividual;
+g("cc-t").onclick = function(){ fCod("t",this); };
+g("cc-d").onclick = function(){ fCod("d",this); };
+g("cc-u").onclick = function(){ fCod("u",this); };
 g("t-cad").onclick = function(){ tab("cad"); };
-g("t-conv").onclick = function(){ tab("conv"); };
+g("t-ev").onclick = function(){ tab("ev"); };
 g("t-cod").onclick = function(){ tab("cod"); };
 g("t-lst").onclick = function(){ tab("lst"); };
-g("cc-t").onclick = function(){ fCod("t", this); };
-g("cc-d").onclick = function(){ fCod("d", this); };
-g("cc-u").onclick = function(){ fCod("u", this); };
-g("btnfechafoto").onclick = function(){ g("ov-foto").classList.remove("on"); };
 
-function load() {
+function load(){
   g("tbl").innerHTML = '<div class="empty">Carregando...</div>';
-  api("cadastros?select=*&order=criado_em.desc")
-    .then(function(d){ cads = d||[]; rStats(); rChips(); rend(); })
-    .catch(function(){ cads = []; rStats(); rChips(); rend(); });
-  api("codigos?select=*&order=id.asc")
-    .then(function(d){ cods = d||[]; rStats(); rCods(); })
-    .catch(function(){ cods = []; });
+  api("cadastros?select=*&order=criado_em.desc").then(function(d){cads=d||[];rStats();rChips();rend();}).catch(function(){cads=[];rStats();rChips();rend();});
+  api("codigos?select=*&order=id.asc").then(function(d){cods=d||[];rStats();rCods();}).catch(function(){cods=[];});
+  api("eventos?select=*&order=data.asc").then(function(d){evs=d||[];rStats();rEvs();}).catch(function(){evs=[];});
 }
 
-function rStats() {
-  var d = cods.filter(function(c){ return !c.usado; }).length;
-  var u = cods.filter(function(c){ return c.usado; }).length;
-  g("stats").innerHTML =
+function rStats(){
+  var d=cods.filter(function(c){return !c.usado;}).length;
+  g("stats").innerHTML=
     "<div class='stat'><strong>"+cads.length+"</strong><span>Cadastros</span></div>"+
-    "<div class='stat'><strong>"+d+"</strong><span>Livres</span></div>"+
-    "<div class='stat'><strong>"+u+"</strong><span>Usados</span></div>";
+    "<div class='stat'><strong>"+evs.length+"</strong><span>Eventos</span></div>"+
+    "<div class='stat'><strong>"+d+"</strong><span>Codigos</span></div>";
 }
 
-function rChips() {
-  g("chips").innerHTML = ["Todos"].concat(SETS).map(function(s){
+function rChips(){
+  g("chips").innerHTML=["Todos"].concat(SETS).map(function(s){
     return "<button class='chip"+(fset===s?" on":"")+"' onclick='setF(\""+s+"\")'>" +s+"</button>";
   }).join("");
 }
 
-function setF(s){ fset = s; rChips(); rend(); }
+function setF(s){ fset=s; rChips(); rend(); }
 
-function rend() {
-  var b = g("busca").value.toLowerCase();
-  var f = cads.filter(function(c){
-    return (fset==="Todos"||c.setor===fset) && (!b||c.nome.toLowerCase().indexOf(b)>=0||c.email.toLowerCase().indexOf(b)>=0);
+function rend(){
+  var b=g("busca").value.toLowerCase();
+  var f=cads.filter(function(c){
+    return (fset==="Todos"||c.setor===fset)&&(!b||c.nome.toLowerCase().indexOf(b)>=0||c.email.toLowerCase().indexOf(b)>=0);
   });
-  var gb = g("gbar");
-  if(sel.length > 0){ gb.style.display = "flex"; g("selct").textContent = sel.length+" selecionado(s)"; }
-  else gb.style.display = "none";
-  if(!f.length){ g("tbl").innerHTML = '<div class="empty">Nenhum cadastro</div>'; return; }
-  var all = f.every(function(c){ return sel.indexOf(c.id) >= 0; });
-  var h = '<div class="tbl"><table><thead><tr><th><input type="checkbox"'+(all?" checked":"")+" id='cball'/></th><th>Nome</th><th>Setor</th><th>Tel</th></tr></thead><tbody>";
+  var gb=g("gbar");
+  if(sel.length>0){gb.style.display="flex";g("selct").textContent=sel.length+" selecionado(s)";}
+  else gb.style.display="none";
+  if(!f.length){g("tbl").innerHTML='<div class="empty">Nenhum cadastro</div>';return;}
+  var all=f.every(function(c){return sel.indexOf(c.id)>=0;});
+  var h='<div class="tbl"><table><thead><tr><th><input type="checkbox"'+(all?" checked":"")+" id='cball'/></th><th>Nome</th><th>Setor</th><th>Tel</th></tr></thead><tbody>";
   f.forEach(function(c){
-    var cor = COR[c.setor]||"#555";
-    h += "<tr><td><input type='checkbox'"+(sel.indexOf(c.id)>=0?" checked":"")+" onchange='togS("+c.id+",this.checked)'/></td>"+
+    var cor=COR[c.setor]||"#555";
+    h+="<tr><td><input type='checkbox'"+(sel.indexOf(c.id)>=0?" checked":"")+" onchange='togS("+c.id+",this.checked)'/></td>"+
       "<td><span class='nlink' onclick='verP("+c.id+")'>"+c.nome+"</span></td>"+
       "<td><span class='badge' style='background:"+cor+"'>"+c.setor+"</span></td>"+
       "<td style='color:#777'>"+c.telefone+"</td></tr>";
   });
-  h += "</tbody></table></div>";
-  g("tbl").innerHTML = h;
-  var cb = g("cball");
-  if(cb) cb.onchange = function(){ togAll(f.map(function(c){ return c.id; }), this.checked); };
+  h+="</tbody></table></div>";
+  g("tbl").innerHTML=h;
+  var cb=g("cball");
+  if(cb) cb.onchange=function(){togAll(f.map(function(c){return c.id;}),this.checked);};
 }
 
-function togS(id, v){ if(v){ if(sel.indexOf(id)<0) sel.push(id); } else { sel = sel.filter(function(x){ return x!==id; }); } rend(); }
-function togAll(ids, v){ if(v) ids.forEach(function(id){ if(sel.indexOf(id)<0) sel.push(id); }); else sel = sel.filter(function(x){ return ids.indexOf(x)<0; }); rend(); }
+function togS(id,v){if(v){if(sel.indexOf(id)<0)sel.push(id);}else{sel=sel.filter(function(x){return x!==id;});}rend();}
+function togAll(ids,v){if(v)ids.forEach(function(id){if(sel.indexOf(id)<0)sel.push(id);});else sel=sel.filter(function(x){return ids.indexOf(x)<0;});rend();}
 
-function verP(id) {
-  var c = cads.find(function(x){ return x.id===id; });
-  if(!c) return;
-  pa = c;
-  var cor = COR[c.setor]||"#555";
-  var fotoHtml = "";
-  if(c.foto_url) {
-    fotoHtml = "<img src='"+c.foto_url+"' onclick='abrirFoto("+c.id+")' style='width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid #3ab54a;margin:0 auto 10px;display:block;cursor:pointer'/>";
+function verP(id){
+  var c=cads.find(function(x){return x.id===id;});
+  if(!c)return; pa=c;
+  var cor=COR[c.setor]||"#555";
+  var fotoHtml="";
+  if(c.foto_url){
+    fotoHtml="<img src='"+c.foto_url+"' onclick='abrirFoto("+c.id+")' style='width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid #3ab54a;margin:0 auto 10px;display:block;cursor:pointer'/>";
   } else {
-    fotoHtml = "<div style='width:80px;height:80px;background:"+cor+";border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:28px;color:#fff;font-weight:700'>"+c.nome.charAt(0).toUpperCase()+"</div>";
+    fotoHtml="<div style='width:80px;height:80px;background:"+cor+";border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:28px;color:#fff;font-weight:700'>"+c.nome.charAt(0).toUpperCase()+"</div>";
   }
-  var h = "<div style='text-align:center;margin-bottom:16px'>"+fotoHtml+
+  var h="<div style='text-align:center;margin-bottom:16px'>"+fotoHtml+
     "<div style='font-size:17px;font-weight:700;color:#fff'>"+c.nome+"</div>"+
     "<span class='badge' style='background:"+cor+";margin-top:6px;display:inline-block'>"+c.setor+"</span></div>";
   [["CPF",c.cpf],["RG",c.rg],["Email",c.email],["Telefone",c.telefone],["Nascimento",fd(c.nascimento)]].forEach(function(r){
-    h += "<div class='prow'><span>"+r[0]+"</span><span>"+r[1]+"</span></div>";
+    h+="<div class='prow'><span>"+r[0]+"</span><span>"+r[1]+"</span></div>";
   });
-  g("pcont").innerHTML = h;
+  g("pcont").innerHTML=h;
   g("ov-p").classList.add("on");
 }
 
-function abrirFoto(id) {
-  var c = cads.find(function(x){ return x.id===id; });
-  if(!c||!c.foto_url) return;
-  g("foto-grande").src = c.foto_url;
+function abrirFoto(id){
+  var c=cads.find(function(x){return x.id===id;});
+  if(!c||!c.foto_url)return;
+  g("foto-grande").src=c.foto_url;
   g("ov-foto").classList.add("on");
 }
 
-function copiarDados() {
-  if(!pa) return;
-  var txt = "Nome: "+pa.nome+"\nCPF: "+pa.cpf+"\nRG: "+pa.rg+"\nEmail: "+pa.email+"\nTelefone: "+pa.telefone+"\nNascimento: "+fd(pa.nascimento)+"\nSetor: "+pa.setor;
-  copiar2(txt, g("btncpy"), "Copiar dados");
+function copiarDados(){
+  if(!pa)return;
+  var txt="Nome: "+pa.nome+"\nCPF: "+pa.cpf+"\nRG: "+pa.rg+"\nEmail: "+pa.email+"\nTelefone: "+pa.telefone+"\nNascimento: "+fd(pa.nascimento)+"\nSetor: "+pa.setor;
+  copiar2(txt,g("btncpy"),"Copiar dados");
 }
 
-function delP() {
-  if(!pa) return;
-  if(!confirm("Excluir este cadastro?")) return;
-  api("cadastros?id=eq."+pa.id, {m:"DELETE", pref:"return=minimal"}).then(function(){
-    cads = cads.filter(function(c){ return c.id!==pa.id; });
-    sel = sel.filter(function(x){ return x!==pa.id; });
-    g("ov-p").classList.remove("on"); pa = null; rStats(); rend();
+function delP(){
+  if(!pa)return;
+  if(!confirm("Excluir este cadastro?"))return;
+  api("cadastros?id=eq."+pa.id,{m:"DELETE",pref:"return=minimal"}).then(function(){
+    cads=cads.filter(function(c){return c.id!==pa.id;});
+    sel=sel.filter(function(x){return x!==pa.id;});
+    g("ov-p").classList.remove("on"); pa=null; rStats(); rend();
   });
 }
 
-function gerarConv() {
-  var al = g("cval"); al.innerHTML = "";
-  fetch(SB+"/rest/v1/codigos?usado=eq.false&order=id.asc&limit=1", {headers:{"apikey":KY,"Authorization":"Bearer "+KY}})
-    .then(function(r){ return r.json(); })
-    .then(function(d){
-      if(!d||!d.length){ al.innerHTML = '<div class="err">Nenhum codigo disponivel!</div>'; return; }
-      var cod = d[0].codigo;
-      var msg = "AGROPLAY - Lista de Eventos\n\nOla! Voce foi convidado.\n\nLink:\n"+LC+"\n\nCodigo:\n"+cod+"\n\nUso unico.\n\nAgroplay - Londrina PR";
-      g("cvcod").textContent = cod;
-      g("cvmsg").textContent = msg;
-      show("cvres");
-      convs.unshift({cod:cod, dt:new Date().toLocaleString("pt-BR")});
-      rUC(); rStats();
-    }).catch(function(){ al.innerHTML = '<div class="err">Erro ao gerar.</div>'; });
-}
-
-function rUC() {
-  var el = g("ultconv");
-  if(!convs.length){ el.innerHTML = '<div class="empty">Nenhum gerado ainda</div>'; return; }
-  el.innerHTML = convs.slice(0,8).map(function(c){
-    return "<div style='display:flex;justify-content:space-between;background:#0d0d0d;border:1px solid #222;border-radius:7px;padding:8px 10px;margin-bottom:5px'><span style='font-family:monospace;font-weight:700;color:#fff;font-size:13px;letter-spacing:2px'>"+c.cod+"</span><span style='font-size:10px;color:#555'>"+c.dt+"</span></div>";
+// EVENTOS
+function rEvs(){
+  var el=g("ev-lista");
+  if(!evs.length){el.innerHTML='<div class="empty">Nenhum evento ainda.<br/>Crie o primeiro!</div>';return;}
+  el.innerHTML=evs.map(function(ev){
+    var d=ev.data?ev.data.split("-"):["","",""];
+    return "<div class='ev-card'>"+
+      "<div class='ev-nome'>"+ev.nome+"</div>"+
+      "<div class='ev-info'>"+
+        (ev.data?"📅 "+d[2]+"/"+d[1]+"/"+d[0]+"<br/>":"")+ 
+        (ev.local?"📍 "+ev.local+"<br/>":"")+
+        (ev.atracao1?"🎤 "+ev.atracao1+(ev.atracao2?" + "+ev.atracao2:"")+"<br/>":"")+
+        (ev.descricao?"📝 "+ev.descricao:"")+"</div>"+
+      "<div style='display:flex;gap:6px;flex-wrap:wrap'>"+
+        "<button class='btn' onclick='abrirConvites("+ev.id+")' style='flex:1;font-size:12px;padding:9px'>📨 Enviar Convites</button>"+
+        "<button class='btn-o' onclick='listarEvento("+ev.id+")' style='font-size:12px;padding:9px'>📋 Lista</button>"+
+        "<button class='btn-r' onclick='delEv("+ev.id+")' style='font-size:11px;padding:8px'>✕</button>"+
+      "</div></div>";
   }).join("");
 }
 
-function copiar2(txt, btn, label) {
-  if(navigator.clipboard){
-    navigator.clipboard.writeText(txt).then(function(){ btn.textContent="Copiado!"; setTimeout(function(){ btn.textContent=label; }, 2000); });
-  } else {
-    var t = document.createElement("textarea"); t.value = txt; document.body.appendChild(t); t.select(); document.execCommand("copy"); document.body.removeChild(t);
-    btn.textContent = "Copiado!"; setTimeout(function(){ btn.textContent = label; }, 2000);
+function salvarEv(){
+  var nome=g("ev-nome").value.trim();
+  if(!nome){g("ev-alert").innerHTML='<div class="err">Nome obrigatorio</div>';return;}
+  var btn=g("btnsalvarev");btn.textContent="Salvando...";btn.disabled=true;
+  api("eventos",{m:"POST",b:JSON.stringify({
+    nome:nome,
+    data:g("ev-data").value||null,
+    local:g("ev-local").value.trim(),
+    atracao1:g("ev-atr1").value.trim(),
+    atracao2:g("ev-atr2").value.trim(),
+    descricao:g("ev-desc").value.trim()
+  })}).then(function(){
+    g("ov-ev").classList.remove("on");
+    ["ev-nome","ev-data","ev-local","ev-atr1","ev-atr2","ev-desc"].forEach(function(id){g(id).value="";});
+    load();
+  }).catch(function(){
+    g("ev-alert").innerHTML='<div class="err">Erro ao salvar</div>';
+  }).finally(function(){btn.textContent="Salvar evento";btn.disabled=false;});
+}
+
+function delEv(id){
+  if(!confirm("Excluir evento?"))return;
+  api("eventos?id=eq."+id,{m:"DELETE",pref:"return=minimal"}).then(function(){
+    evs=evs.filter(function(e){return e.id!==id;});
+    rEvs();rStats();
+  });
+}
+
+// CONVITES
+function abrirConvites(evId){
+  evAtual=evs.find(function(e){return e.id===evId;});
+  if(!evAtual)return;
+  convSel=[];
+  convFiltro="Todos";
+  hide("conv-result");
+  show("conv-selecao");
+  g("conv-ev-nome").textContent="Evento: "+evAtual.nome;
+  g("conv-alert").innerHTML="";
+  document.querySelectorAll("#conv-chips .chip").forEach(function(b){b.classList.remove("on");});
+  document.querySelector("#conv-chips .chip").classList.add("on");
+  renderConvPessoas();
+  g("ov-conv").classList.add("on");
+}
+
+function filtrarConv(f,btn){
+  convFiltro=f;
+  document.querySelectorAll("#conv-chips .chip").forEach(function(b){b.classList.remove("on");});
+  btn.classList.add("on");
+  renderConvPessoas();
+}
+
+function renderConvPessoas(){
+  var f=cads.filter(function(c){return convFiltro==="Todos"||c.setor===convFiltro;});
+  if(!f.length){g("conv-pessoas").innerHTML='<div class="empty">Nenhuma pessoa neste filtro</div>';return;}
+  var h="";
+  f.forEach(function(c){
+    var cor=COR[c.setor]||"#555";
+    var checked=convSel.indexOf(c.id)>=0;
+    h+="<div class='pessoa-item'>"+
+      "<input type='checkbox' class='pessoa-check' "+(checked?"checked":"")+" onchange='togConv("+c.id+",this.checked)'/>"+
+      "<div class='pessoa-nome'>"+c.nome+"</div>"+
+      "<span class='badge pessoa-badge' style='background:"+cor+"'>"+c.setor+"</span>"+
+      "</div>";
+  });
+  g("conv-pessoas").innerHTML=h;
+}
+
+function togConv(id,v){
+  if(v){if(convSel.indexOf(id)<0)convSel.push(id);}
+  else{convSel=convSel.filter(function(x){return x!==id;});}
+}
+
+async function gerarConvIndividual(){
+  if(convSel.length===0){g("conv-alert").innerHTML='<div class="err">Selecione pelo menos 1 pessoa</div>';return;}
+  var btn=g("btngerarconvs");
+  btn.textContent="Gerando...";btn.disabled=true;
+  g("conv-alert").innerHTML="";
+  try{
+    var r=await fetch(SB+"/rest/v1/codigos?usado=eq.false&order=id.asc&limit=1",{headers:{"apikey":KY,"Authorization":"Bearer "+KY}});
+    var d=await r.json();
+    if(!d||!d.length){g("conv-alert").innerHTML='<div class="err">Nenhum codigo disponivel!</div>';return;}
+    var cod=d[0].codigo;
+    var pessoa=cads.find(function(c){return c.id===convSel[0];});
+    var ev=evAtual;
+    var df=ev.data?ev.data.split("-"):["","",""];
+    var dataFmt=ev.data?df[2]+"/"+df[1]+"/"+df[0]:"";
+    var msg="AGROPLAY - Convite VIP\n\nOla "+pessoa.nome+"!\n\nVoce esta convidado(a) para:\n\n"+ev.nome+
+      (dataFmt?"\nData: "+dataFmt:"")+
+      (ev.local?"\nLocal: "+ev.local:"")+
+      (ev.atracao1?"\nAtracoes: "+ev.atracao1+(ev.atracao2?" + "+ev.atracao2:""):"")+
+      "\n\nAcesse o link e use seu codigo exclusivo:\n"+LCV+"?ev="+ev.id+
+      "\n\nSeu codigo: "+cod+
+      "\n\nCodigo intransferivel e de uso unico.\n\nAgroplay - Londrina PR";
+    g("conv-cod").textContent=cod;
+    g("conv-msg").textContent=msg;
+    hide("conv-selecao");
+    show("conv-result");
+    convSel=convSel.slice(1);
+  }catch(e){
+    g("conv-alert").innerHTML='<div class="err">Erro ao gerar convite</div>';
+  }finally{
+    btn.textContent="Gerar convite individual";btn.disabled=false;
   }
 }
 
-function fCod(f, btn) {
-  fcod = f;
-  ["cc-t","cc-d","cc-u"].forEach(function(id){ g(id).classList.remove("on"); });
-  btn.classList.add("on"); rCods();
+function listarEvento(evId){
+  var ev=evs.find(function(e){return e.id===evId;});
+  if(!ev)return;
+  var p=cads.filter(function(c){return c.evento_id===evId;});
+  lista={n:ev.nome,p:p,dt:new Date().toLocaleString("pt-BR")};
+  tab("lst");rLst();
 }
 
-function rCods() {
-  var f = cods.filter(function(c){ return fcod==="d"?!c.usado:fcod==="u"?c.usado:true; });
-  if(!f.length){ g("codlst").innerHTML = '<div class="empty">Nenhum</div>'; return; }
-  g("codlst").innerHTML = "<div style='display:grid;grid-template-columns:repeat(2,1fr);gap:5px'>"+f.map(function(c){
+function fCod(f,btn){
+  fcod=f;
+  ["cc-t","cc-d","cc-u"].forEach(function(id){g(id).classList.remove("on");});
+  btn.classList.add("on");rCods();
+}
+
+function rCods(){
+  var f=cods.filter(function(c){return fcod==="d"?!c.usado:fcod==="u"?c.usado:true;});
+  if(!f.length){g("codlst").innerHTML='<div class="empty">Nenhum</div>';return;}
+  g("codlst").innerHTML="<div style='display:grid;grid-template-columns:repeat(2,1fr);gap:5px'>"+f.map(function(c){
     return "<div style='background:#0d0d0d;border:1px solid #222;border-radius:7px;padding:8px 10px;display:flex;justify-content:space-between;align-items:center'><span style='font-family:monospace;font-size:12px;font-weight:700;color:"+(c.usado?"#444":"#fff")+"'>"+c.codigo+"</span><span class='badge' style='background:"+(c.usado?"#555":"#2d8a3e")+"'>"+(c.usado?"Usado":"Livre")+"</span></div>";
   }).join("")+"</div>";
 }
 
-function expCods() {
-  dl("Codigo,Status\n"+cods.map(function(c){ return c.codigo+","+(c.usado?"Usado":"Disponivel"); }).join("\n"), "text/csv", "Codigos.csv");
+function expCods(){dl("Codigo,Status\n"+cods.map(function(c){return c.codigo+","+(c.usado?"Usado":"Disponivel");}).join("\n"),"text/csv","Codigos.csv");}
+
+function gerarLst(){
+  var p=cads.filter(function(c){return sel.indexOf(c.id)>=0;});
+  var n=g("evnm").value||"Evento";
+  lista={n:n,p:p,dt:new Date().toLocaleString("pt-BR")};
+  tab("lst");rLst();
 }
 
-function gerarLst() {
-  var p = cads.filter(function(c){ return sel.indexOf(c.id)>=0; });
-  var n = g("evnm").value||"Evento";
-  lista = {n:n, p:p, dt:new Date().toLocaleString("pt-BR")};
-  tab("lst"); rLst();
-}
-
-function rLst() {
-  if(!lista){ g("lstcont").innerHTML = '<div class="empty">Selecione cadastros e clique em Gerar.</div>'; return; }
-  var h = "<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px'>"+
+function rLst(){
+  if(!lista){g("lstcont").innerHTML='<div class="empty">Selecione cadastros e clique em Gerar Lista.</div>';return;}
+  var h="<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px'>"+
     "<div><div style='font-size:15px;color:#fff;font-weight:700'>"+lista.n+"</div>"+
     "<div style='font-size:11px;color:#555;margin-top:2px'>"+lista.dt+" - "+lista.p.length+" pessoa(s)</div></div>"+
     "<div style='display:flex;gap:6px'><button class='btn-o' onclick='expXlsLst()'>Excel</button><button class='btn-o' onclick='expCsvLst()'>CSV</button></div></div>";
-  h += '<div class="tbl"><table><thead><tr><th>#</th><th>Nome</th><th>CPF</th><th>RG</th><th>Email</th><th>Tel</th><th>Nasc.</th><th>Setor</th></tr></thead><tbody>';
-  lista.p.forEach(function(p, i){
-    h += "<tr><td style='color:#444'>"+(i+1)+"</td><td style='color:#fff'>"+p.nome+"</td>"+
+  h+='<div class="tbl"><table><thead><tr><th>#</th><th>Nome</th><th>CPF</th><th>RG</th><th>Email</th><th>Tel</th><th>Nasc.</th><th>Setor</th></tr></thead><tbody>';
+  lista.p.forEach(function(p,i){
+    h+="<tr><td style='color:#444'>"+(i+1)+"</td><td style='color:#fff'>"+p.nome+"</td>"+
       "<td style='color:#777'>"+p.cpf+"</td><td style='color:#777'>"+p.rg+"</td>"+
       "<td style='color:#777'>"+p.email+"</td><td style='color:#777'>"+p.telefone+"</td>"+
       "<td style='color:#777'>"+fd(p.nascimento)+"</td>"+
       "<td><span class='badge' style='background:"+(COR[p.setor]||"#555")+"'>"+p.setor+"</span></td></tr>";
   });
-  h += "</tbody></table></div>";
-  g("lstcont").innerHTML = h;
+  h+="</tbody></table></div>";
+  g("lstcont").innerHTML=h;
 }
 
-function mkR(arr){ return arr.map(function(c){ return [c.nome,c.cpf,c.rg,c.email,c.telefone,fd(c.nascimento),c.setor]; }); }
-function expExcel(){ mkXls(mkR(cads), "Cadastros"); }
-function expXlsLst(){ if(lista) mkXls(mkR(lista.p), "Lista_"+lista.n); }
-function expCSV(){ dl("Nome,CPF,RG,Email,Telefone,Nascimento,Setor\n"+mkR(cads).map(function(r){ return r.map(function(v){ return '"'+v+'"'; }).join(","); }).join("\n"), "text/csv", "Cadastros.csv"); }
-function expCsvLst(){ if(lista) dl("Nome,CPF,RG,Email,Telefone,Nascimento,Setor\n"+mkR(lista.p).map(function(r){ return r.map(function(v){ return '"'+v+'"'; }).join(","); }).join("\n"), "text/csv", "Lista.csv"); }
+function mkR(arr){return arr.map(function(c){return[c.nome,c.cpf,c.rg,c.email,c.telefone,fd(c.nascimento),c.setor];});}
+function expExcel(){mkXls(mkR(cads),"Cadastros");}
+function expXlsLst(){if(lista)mkXls(mkR(lista.p),"Lista_"+lista.n);}
+function expCSV(){dl("Nome,CPF,RG,Email,Telefone,Nascimento,Setor\n"+mkR(cads).map(function(r){return r.map(function(v){return'"'+v+'"';}).join(",");}).join("\n"),"text/csv","Cadastros.csv");}
+function expCsvLst(){if(lista)dl("Nome,CPF,RG,Email,Telefone,Nascimento,Setor\n"+mkR(lista.p).map(function(r){return r.map(function(v){return'"'+v+'"';}).join(",");}).join("\n"),"text/csv","Lista.csv");}
 
-function mkXls(rows, name) {
-  var hdr = "<Row><Cell><Data ss:Type='String'>Nome</Data></Cell><Cell><Data ss:Type='String'>CPF</Data></Cell><Cell><Data ss:Type='String'>RG</Data></Cell><Cell><Data ss:Type='String'>Email</Data></Cell><Cell><Data ss:Type='String'>Telefone</Data></Cell><Cell><Data ss:Type='String'>Nascimento</Data></Cell><Cell><Data ss:Type='String'>Setor</Data></Cell></Row>";
-  var body = rows.map(function(r){ return "<Row>"+r.map(function(v){ return "<Cell><Data ss:Type='String'>"+String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</Data></Cell>"; }).join("")+"</Row>"; }).join("");
-  dl("<?xml version='1.0'?><Workbook xmlns='urn:schemas-microsoft-com:office:spreadsheet' xmlns:ss='urn:schemas-microsoft-com:office:spreadsheet'><Worksheet ss:Name='Dados'><Table>"+hdr+body+"</Table></Worksheet></Workbook>", "application/vnd.ms-excel", name+".xls");
+function mkXls(rows,name){
+  var hdr="<Row><Cell><Data ss:Type='String'>Nome</Data></Cell><Cell><Data ss:Type='String'>CPF</Data></Cell><Cell><Data ss:Type='String'>RG</Data></Cell><Cell><Data ss:Type='String'>Email</Data></Cell><Cell><Data ss:Type='String'>Telefone</Data></Cell><Cell><Data ss:Type='String'>Nascimento</Data></Cell><Cell><Data ss:Type='String'>Setor</Data></Cell></Row>";
+  var body=rows.map(function(r){return "<Row>"+r.map(function(v){return"<Cell><Data ss:Type='String'>"+String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</Data></Cell>";}).join("")+"</Row>";}).join("");
+  dl("<?xml version='1.0'?><Workbook xmlns='urn:schemas-microsoft-com:office:spreadsheet' xmlns:ss='urn:schemas-microsoft-com:office:spreadsheet'><Worksheet ss:Name='Dados'><Table>"+hdr+body+"</Table></Worksheet></Workbook>","application/vnd.ms-excel",name+".xls");
 }
 
-function dl(c, t, n){ var b = new Blob([c],{type:t}); var u = URL.createObjectURL(b); var a = document.createElement("a"); a.href=u; a.download=n; a.click(); }
+function copiar2(txt,btn,label){
+  if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){btn.textContent="Copiado!";setTimeout(function(){btn.textContent=label;},2000);});}
+  else{var t=document.createElement("textarea");t.value=txt;document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t);btn.textContent="Copiado!";setTimeout(function(){btn.textContent=label;},2000);}
+}
 
-function tab(t) {
-  ["cad","conv","cod","lst"].forEach(function(x){ g("s-"+x).classList.add("hide"); g("t-"+x).classList.remove("on"); });
-  show("s-"+t); g("t-"+t).classList.add("on");
-  if(t==="lst") rLst();
-  if(t==="cod") rCods();
+function dl(c,t,n){var b=new Blob([c],{type:t});var u=URL.createObjectURL(b);var a=document.createElement("a");a.href=u;a.download=n;a.click();}
+
+function tab(t){
+  ["cad","ev","cod","lst"].forEach(function(x){g("s-"+x).classList.add("hide");g("t-"+x).classList.remove("on");});
+  show("s-"+t);g("t-"+t).classList.add("on");
+  if(t==="lst")rLst();
+  if(t==="cod")rCods();
+  if(t==="ev")rEvs();
 }
 
 load();
