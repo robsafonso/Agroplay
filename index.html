@@ -130,7 +130,10 @@ textarea{height:70px;resize:none}
       <div style="font-size:16px;font-weight:700;color:#fff" id="ovlinks-tit">Links do Lote</div>
       <button class="bto" id="bflinks">X</button>
     </div>
-    <div style="font-size:12px;color:#888;margin-bottom:14px">Copie e envie 1 mensagem para cada pessoa:</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="font-size:12px;color:#888">Copie 1 por 1 ou todos de uma vez:</div>
+      <button class="btn" id="bcopiatodos" style="font-size:11px;padding:8px 12px">Copiar todos</button>
+    </div>
     <div id="links-lista"></div>
   </div>
 </div>
@@ -301,6 +304,14 @@ q("tlt").onclick=function(){tab("lt");};
 q("bnovolote").onclick=function(){q("ovlote").classList.add("on");q("lote-alert").innerHTML="";q("lote-resp").value="";q("lote-qtd").value="50";};
 q("bflote").onclick=function(){q("ovlote").classList.remove("on");};
 q("bflinks").onclick=function(){q("ovlinks").classList.remove("on");};
+q("bcopiatodos").onclick=function(){
+  var btns=document.querySelectorAll("#links-lista button[data-msg]");
+  var msgs=[];
+  btns.forEach(function(b){msgs.push(b.dataset.msg.replace(/&#39;/g,"'"));});
+  if(!msgs.length)return;
+  var all=msgs.join("\n\n---\n\n");
+  cp2(all,q("bcopiatodos"),"Copiar todos");
+};
 q("bsalvalote").onclick=function(){
   var resp=q("lote-resp").value.trim();
   if(!resp){q("lote-alert").innerHTML="<div class='ea'>Nome obrigatorio</div>";return;}
