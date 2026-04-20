@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel de Convites - Agroplay</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:20px;max-width:480px;margin:0 auto}
+.logo{font-size:22px;font-weight:900;color:#fff;text-align:center;padding:20px 0}
+.logo b{color:#2aab47}
+.card{background:#090e09;border:1px solid #1a2a1a;border-radius:14px;padding:20px;margin-bottom:14px}
+.ttl{font-size:20px;font-weight:900;color:#fff;margin-bottom:6px}
+.sub{font-size:12px;color:#666;margin-bottom:16px;line-height:1.5}
+.fl{margin-bottom:12px}
+label{display:block;font-size:10px;color:#2aab47;letter-spacing:1px;margin-bottom:4px;text-transform:uppercase;font-weight:700}
+input{width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:11px 14px;color:#eee;font-size:14px;outline:none}
+input:focus{border-color:#2aab47}
+.btn{background:linear-gradient(135deg,#1e7a35,#2aab47);color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;width:100%;margin-top:8px}
+.bto{background:transparent;color:#2aab47;border:1px solid #2aab47;border-radius:10px;padding:11px;font-size:13px;cursor:pointer;width:100%;margin-top:8px}
+.ea{background:#1a0000;border:1px solid #e74c3c;color:#e74c3c;padding:10px;border-radius:8px;margin-bottom:10px;font-size:13px}
+.gone{display:none}
+.stat{background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:16px;text-align:center;margin-bottom:14px}
+.stat strong{font-size:36px;color:#2aab47;display:block}
+.stat small{font-size:11px;color:#555;text-transform:uppercase}
+.msgt{font-size:12px;color:#aaa;line-height:1.7;background:#030503;border-radius:8px;padding:12px;margin-bottom:12px;white-space:pre-wrap;word-break:break-word;border:1px solid #1a2a1a}
+.codt{font-family:monospace;font-size:28px;font-weight:900;color:#fff;letter-spacing:6px;margin:8px 0 14px;text-align:center}
+.badge-disp{background:#1e7a35;color:#fff;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.badge-usado{background:#555;color:#fff;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.hist-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #111;font-size:12px}
+</style>
+</head>
+<body>
+<div class="logo">AGRO<b>PLAY</b></div>
+
+<div id="tela-login" class="card">
+  <div class="ttl">Painel de Convites</div>
+  <div class="sub">Digite sua senha para acessar seus convites disponíveis.</div>
+  <div id="al-login"></div>
+  <div class="fl"><label>Senha de acesso</label><input id="inp-senha" type="password" placeholder="Digite sua senha"></div>
+  <button class="btn" id="btn-login">Entrar</button>
+</div>
+
+<div id="tela-painel" class="gone">
+  <div style="text-align:center;margin-bottom:16px">
+    <div style="font-size:18px;font-weight:900;color:#fff">Ola, <span id="nome-resp" style="color:#2aab47"></span>!</div>
+    <div style="font-size:12px;color:#555;margin-top:4px">Seus convites disponiveis</div>
+  </div>
+
+  <div class="stat">
+    <strong id="qtd-disp">0</strong>
+    <small>Convites disponiveis</small>
+  </div>
+
+  <div id="res-conv" class="card gone">
+    <div style="font-size:10px;color:#2aab47;text-transform:uppercase;margin-bottom:4px">Codigo do convite</div>
+    <div class="codt" id="conv-cod"></div>
+    <div style="font-size:10px;color:#2aab47;text-transform:uppercase;margin-bottom:6px">Mensagem para enviar</div>
+    <div class="msgt" id="conv-msg"></div>
+    <button class="btn" id="btn-copiar">Copiar mensagem</button>
+    <button class="bto" id="btn-outro">Gerar outro convite</button>
+  </div>
+
+  <div id="al-conv"></div>
+
+<button class="btn" id="btn-gerar">Gerar convite</button>
+
+  <div class="card" style="margin-top:14px">
+    <div style="font-size:11px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Historico</div>
+    <div id="hist-lista"><div style="text-align:center;color:#555;font-size:12px;padding:10px">Nenhum convite gerado ainda</div></div>
+  </div>
+</div>
+
+<script>
+var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
+var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
+var LC="https://robsafonso.github.io/Agroplay/cadastro.html";
+var loteAtual=null;
+var codsDisponiveis=[];
+var codsUsados=[];
+
+function q(id){return document.getElementById(id);}
+function ap(p,o){o=o||{};var h={"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json"};if(o.pref)h["Prefer"]=o.pref;return fetch(SB+"/rest/v1/"+p,{method:o.m||"GET",headers:h,body:o.b}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});}
+function cp2(txt,btn,lbl){if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){btn.textContent="Copiado!";setTimeout(function(){btn.textContent=lbl;},2000);});}else{var t=document.createElement("textarea");t.value=txt;document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t);btn.textContent="Copiado!";setTimeout(function(){btn.textContent=lbl;},2000);}}
+
+q("btn-login").onclick=function(){
+  var senha=q("inp-senha").value.trim();
+  var al=q("al-login");al.innerHTML="";
+  if(!senha){al.innerHTML="<div class='ea'>Digite a senha</div>";return;}
+  var btn=this;btn.textContent="Entrando...";btn.disabled=true;
+  ap("lotes?senha=eq."+encodeURIComponent(senha)+"&select=*").then(function(d){
+    if(!d||!d.length){al.innerHTML="<div class='ea'>Senha invalida</div>";return;}
+    loteAtual=d[0];
+    carregarPainel();
+  }).catch(function(){al.innerHTML="<div class='ea'>Erro ao conectar</div>";
+  }).finally(function(){btn.textContent="Entrar";btn.disabled=false;});
+};
+
+function carregarPainel(){
+  q("nome-resp").textContent=loteAtual.responsavel;
+  q("tela-login").classList.add("gone");
+  q("tela-painel").classList.remove("gone");
+  ap("codigos?lote_id=eq."+loteAtual.id+"&select=*&order=id.asc").then(function(d){
+    var todos=d||[];
+    codsDisponiveis=todos.filter(function(c){return !c.usado;});
+    codsUsados=todos.filter(function(c){return c.usado;});
+    q("qtd-disp").textContent=codsDisponiveis.length;
+    renderHist();
+  });
+}
+
+function renderHist(){
+  var h="";
+  if(!codsUsados.length){q("hist-lista").innerHTML="<div style='text-align:center;color:#555;font-size:12px;padding:10px'>Nenhum convite gerado ainda</div>";return;}
+  codsUsados.slice(0,10).forEach(function(c,i){
+    var dt=c.usado_em?new Date(c.usado_em).toLocaleDateString("pt-BR"):"";
+    h+="<div class='hist-item'><span style='font-family:monospace;color:#2aab47'>"+c.codigo+"</span><span class='badge-usado'>Enviado "+dt+"</span></div>";
+  });
+  q("hist-lista").innerHTML=h;
+}
+
+q("btn-gerar").onclick=function(){
+  var al=q("al-conv");al.innerHTML="";
+  if(!codsDisponiveis.length){al.innerHTML="<div class='ea'>Sem convites disponiveis! Contate a Agroplay.</div>";return;}
+  var cod=codsDisponiveis[0];
+  var link=LC+"?lote="+loteAtual.id+"&resp="+encodeURIComponent(loteAtual.responsavel)+"&cod="+cod.codigo;
+  var msg="AGROPLAY - Convite de Cadastro\n\nVoce foi convidado por "+loteAtual.responsavel+" para se cadastrar no sistema Agroplay!\n\nAcesse o link e faca seu cadastro:\n"+link+"\n\nSeu codigo: "+cod.codigo+"\n\nCodigo intransferivel e de uso unico.\nAgroplay Music - Londrina PR";
+  q("conv-cod").textContent=cod.codigo;
+  q("conv-msg").textContent=msg;
+  q("res-conv").classList.remove("gone");
+  q("btn-gerar").classList.add("gone");
+};
+
+q("btn-copiar").onclick=function(){cp2(q("conv-msg").textContent,q("btn-copiar"),"Copiar mensagem");};
+
+q("btn-outro").onclick=function(){
+  var cod=codsDisponiveis[0];
+  codsDisponiveis=codsDisponiveis.slice(1);
+  codsUsados.unshift(cod);
+  q("qtd-disp").textContent=codsDisponiveis.length;
+  renderHist();
+  q("res-conv").classList.add("gone");
+  q("btn-gerar").classList.remove("gone");
+};
+
+var params=new URLSearchParams(window.location.search);
+var senhaUrl=params.get("senha");
+if(senhaUrl){q("inp-senha").value=senhaUrl;q("btn-login").click();}
+</script>
+
+</body>
+</html>
