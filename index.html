@@ -368,7 +368,7 @@ function rEvs(){
       "<div style='display:flex;gap:6px;flex-wrap:wrap'>"+
         "<button class='btn' onclick='abrirConvites("+ev.id+")' style='flex:1;font-size:12px;padding:9px'>📨 Enviar Convites</button>"+
         "<button class='btn-o' onclick='listarEvento("+ev.id+")' style='font-size:12px;padding:9px'>📋 Lista</button>"+
-        "<button class='btn-r' onclick='delEv("+ev.id+")' style='font-size:11px;padding:8px'>✕</button>"+
+        "<button class='btn-b' onclick='editarEv("+ev.id+")' style='font-size:11px;padding:8px'>✏️</button>"+"<button class='btn-r' onclick='delEv("+ev.id+")' style='font-size:11px;padding:8px'>✕</button>"+
       "</div></div>";
   }).join("");
 }
@@ -392,6 +392,43 @@ function salvarEv(){
     load();
   }).catch(function(){
     g("ev-alert").innerHTML='<div class="err">Erro ao salvar</div>';
+  }).finally(function(){btn.textContent="Salvar evento";btn.disabled=false;});
+}
+
+function editarEv(id){
+  var ev=evs.find(function(e){return e.id===id;});
+  if(!ev)return;
+  g("ev-nome").value=ev.nome||"";
+  g("ev-data").value=ev.data||"";
+  g("ev-local").value=ev.local||"";
+  g("ev-atr1").value=ev.atracao1||"";
+  g("ev-atr2").value=ev.atracao2||"";
+  g("ev-desc").value=ev.descricao||"";
+  g("ev-foto").value=ev.foto_url||"";
+  g("ev-maps").value=ev.maps_url||"";
+  g("btnsalvarev").onclick=function(){atualizarEv(id);};
+  g("ov-ev").classList.add("on");
+}
+
+function atualizarEv(id){
+  var nome=g("ev-nome").value.trim();
+  if(!nome){g("ev-alert").innerHTML='<div class="err">Nome obrigatorio</div>';return;}
+  var btn=g("btnsalvarev");btn.textContent="Salvando...";btn.disabled=true;
+  api("eventos?id=eq."+id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({
+    nome:nome,
+    data:g("ev-data").value||null,
+    local:g("ev-local").value.trim(),
+    atracao1:g("ev-atr1").value.trim(),
+    atracao2:g("ev-atr2").value.trim(),
+    descricao:g("ev-desc").value.trim(),
+    foto_url:g("ev-foto").value.trim(),
+    maps_url:g("ev-maps").value.trim()
+  })}).then(function(){
+    g("ov-ev").classList.remove("on");
+    g("btnsalvarev").onclick=salvarEv;
+    load();
+  }).catch(function(){
+    g("ev-alert").innerHTML='<div class="err">Erro ao atualizar</div>';
   }).finally(function(){btn.textContent="Salvar evento";btn.disabled=false;});
 }
 
