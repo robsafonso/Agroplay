@@ -92,7 +92,9 @@ function mCPF(el){var v=el.value.replace(/\D/g,"").slice(0,11);v=v.replace(/(\d{
 function mTel(el){var v=el.value.replace(/\D/g,"").slice(0,11);v=v.replace(/(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2");el.value=v;}
 function selS(s,btn){setor=s;document.querySelectorAll(".sb").forEach(function(b){b.classList.remove("on");});btn.classList.add("on");g("es").textContent="";}
 function api(p,o){o=o||{};var h={"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json"};if(o.pref)h["Prefer"]=o.pref;return fetch(SB+"/rest/v1/"+p,{method:o.m||"GET",headers:h,body:o.b}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});}
-var TIPO=new URLSearchParams(window.location.search).get("tipo")||"externo";
+var _params=new URLSearchParams(window.location.search);
+var TIPO=_params.get("tipo")||"externo";
+var CODPRE=_params.get("cod")||"";
 function init(){
   var id=new URLSearchParams(window.location.search).get("ev");
   if(!id){g("msg").textContent="Convite nao encontrado.";return;}
@@ -110,6 +112,7 @@ function init(){
       if(ev.atracao1){var a="<div style='font-size:10px;color:#555;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px'>Atracoes</div><div class='art'><div class='an'>🤠 "+ev.atracao1+"</div><div class='ai'>"+(ev.insta_atr1?"<a href='"+ev.insta_atr1+"' target='_blank'>Ver Instagram</a>":"")+"</div></div>";if(ev.atracao2)a+="<div class='art'><div class='an'>🎵 "+ev.atracao2+"</div><div class='ai'>"+(ev.insta_atr2?"<a href='"+ev.insta_atr2+"' target='_blank'>Ver Instagram</a>":"")+"</div></div>";g("earts").innerHTML=a;g("earts").classList.remove("gone");}
       g("msg").classList.add("gone");
       g("main").classList.remove("gone");
+      if(CODPRE){if(g("cod"))g("cod").value=CODPRE;if(g("codi"))g("codi").value=CODPRE;}
       if(TIPO==="interno"){g("t1").classList.remove("on");
         g("t1interno").classList.remove("gone");
       }
@@ -162,17 +165,18 @@ g("btn1i").onclick=function(){
   var al=g("al1i");al.innerHTML="";
   if(!c||c.length<6){al.innerHTML="<div class='al err'>Digite o codigo de 6 digitos.</div>";return;}
   var btn=this;btn.textContent="Verificando...";btn.disabled=true;
-  api("codigos?codigo=eq."+c+"&select=*").then(function(d){
-    if(!d||!d.length){al.innerHTML="<div class='al err'>Codigo invalido.</div>";}
-    else if(d[0].usado){al.innerHTML="<div class='al err'>Codigo ja utilizado.</div>";}
-    else{
-      api("codigos?codigo=eq."+c,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString()})}).then(function(){
-        btn.style.display="none";
-        g("t5i").classList.remove("gone");
-      });
-    }
-  }).catch(function(){al.innerHTML="<div class='al err'>Erro.</div>";
-  }).finally(function(){btn.textContent="Confirmar Presenca";btn.disabled=false;});
+  api("codigos?codigo=eq."+c+"&select=cadastro_id,usado").then(function(d){
+    if(!d||!d.length){al.innerHTML="<div class='al err'>Codigo invalido.</div>";btn.textContent="Confirmar Presenca";btn.disabled=false;return;}
+    if(d[0].usado){al.innerHTML="<div class='al err'>Codigo ja utilizado.</div>";btn.textContent="Confirmar Presenca";btn.disabled=false;return;}
+    var cadId=d[0].cadastro_id;
+    var evId=evAt?evAt.id:null;
+    var patches=[api("codigos?codigo=eq."+c,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString()})})];
+    if(cadId&&evId){patches.push(api("cadastros?id=eq."+cadId,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({evento_id:evId,status:"aprovado",tipo_convite:"interno"})}));}
+    Promise.all(patches).then(function(){
+      btn.style.display="none";
+      g("t5i").classList.remove("gone");
+    });
+  }).catch(function(){al.innerHTML="<div class='al err'>Erro.</div>";btn.textContent="Confirmar Presenca";btn.disabled=false;});
 };
 init();
 </script>
