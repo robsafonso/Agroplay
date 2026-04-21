@@ -70,7 +70,6 @@ textarea{height:70px;resize:none}
   <button class="tab" id="tk">Codigos</button>
   <button class="tab" id="tl">Lista</button>
   <button class="tab" id="tlt">Lotes</button>
-  <button class="tab" id="tth">Hist</button>
 </div>
 <div id="sc">
   <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
@@ -103,7 +102,6 @@ textarea{height:70px;resize:none}
   <div id="klst"></div>
 </div>
 <div id="sl" class="gone"><div id="llst"></div></div>
-<div id="sh" class="gone"><div id="hcont"></div></div>
 <div id="slt" class="gone">
   <button class="btn" id="bnovolote" style="width:100%;margin-bottom:14px">+ Criar novo lote</button>
   <div id="loteslst"><div class="empty">Nenhum lote criado</div></div>
@@ -532,7 +530,6 @@ q("te").onclick=function(){tab("e");};
 q("tk").onclick=function(){tab("k");};
 q("tl").onclick=function(){tab("l");};
 q("tlt").onclick=function(){tab("lt");};
-q("tth").onclick=function(){tab("h");};
 q("bnovolote").onclick=function(){
   q("ovlote").classList.add("on");q("lote-alert").innerHTML="";q("lote-resp").value="";q("lote-qtd").value="10";q("lote-senha").value="";
   var sel=q("lote-ev");sel.innerHTML="<option value=''>Nenhum evento</option>";
@@ -711,29 +708,6 @@ function delLote(id){
     rLotes();rSts();
     load();
   }).catch(function(e){alert("Erro ao excluir: "+e.message);});
-}
-function rHist(){
-var el=q("hcont");
-if(!evs.length){el.innerHTML="<div class=\"empty\">Nenhum evento</div>";return;}
-var h="";
-evs.forEach(function(ev){
-var tot=cads.filter(function(c){return c.evento_id===ev.id;}).length;
-var ent=cads.filter(function(c){return c.evento_id===ev.id&&c.entrada_em;}).length;
-var df=ev.data?ev.data.split("-"):["","",""];
-var dt=ev.data?df[2]+"/"+df[1]+"/"+df[0]:"";
-h+="<div class=\"card\">";
-h+="<div style=\"font-size:14px;font-weight:700;color:#fff;margin-bottom:4px\">"+ev.nome+"</div>";
-h+="<div style=\"font-size:11px;color:#555;margin-bottom:10px\">"+dt+(ev.local?" / "+ev.local:"")+"</div>";
-h+="<div style=\"display:flex;gap:8px\">";
-h+="<div style=\"flex:1;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:8px;text-align:center\">";
-h+="<strong style=\"font-size:22px;color:#2aab47\">"+tot+"</strong>";
-h+="<div style=\"font-size:9px;color:#555;text-transform:uppercase\">Convidados</div></div>";
-h+="<div style=\"flex:1;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:8px;text-align:center\">";
-h+="<strong style=\"font-size:22px;color:#0891b2\">"+ent+"</strong>";
-h+="<div style=\"font-size:9px;color:#555;text-transform:uppercase\">Entraram</div></div>";
-h+="</div></div>";
-});
-el.innerHTML=h;
 }
 function load(){
   q("tbl").innerHTML="<div class='empty'>Carregando...</div>";
@@ -1036,9 +1010,9 @@ function mkXls(rows,name){
   dl("<?xml version='1.0'?><Workbook xmlns='urn:schemas-microsoft-com:office:spreadsheet' xmlns:ss='urn:schemas-microsoft-com:office:spreadsheet'><Worksheet ss:Name='Dados'><Table>"+hdr+body+"</Table></Worksheet></Workbook>","application/vnd.ms-excel",name+".xls");
 }
 function tab(t){
-  ["c","e","k","l","lt","h"].forEach(function(x){q("s"+x).classList.add("gone");q("t"+x).classList.remove("on");});
+  ["c","e","k","l","lt"].forEach(function(x){q("s"+x).classList.add("gone");q("t"+x).classList.remove("on");});
   q("s"+t).classList.remove("gone");q("t"+t).classList.add("on");
-  if(t==="l")rLst();if(t==="k")rCods();if(t==="e")rEvs();if(t==="lt")rLotes();if(t==="h")rHist();
+  if(t==="l")rLst();if(t==="k")rCods();if(t==="e")rEvs();if(t==="lt")rLotes();
 }
 load();
 if(MODO==="ver"){
