@@ -70,6 +70,7 @@ textarea{height:70px;resize:none}
   <button class="tab" id="tk">Codigos</button>
   <button class="tab" id="tl">Lista</button>
   <button class="tab" id="tlt">Lotes</button>
+  <button class="tab" id="tth">Hist</button>
 </div>
 <div id="sc">
   <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
@@ -102,6 +103,7 @@ textarea{height:70px;resize:none}
   <div id="klst"></div>
 </div>
 <div id="sl" class="gone"><div id="llst"></div></div>
+<div id="sh" class="gone"><div id="hcont"></div></div>
 <div id="slt" class="gone">
   <button class="btn" id="bnovolote" style="width:100%;margin-bottom:14px">+ Criar novo lote</button>
   <div id="loteslst"><div class="empty">Nenhum lote criado</div></div>
@@ -241,7 +243,11 @@ textarea{height:70px;resize:none}
     <div class="fl"><label>Nome</label><input id="evn" placeholder="Nome do evento"></div>
     <div class="g2">
       <div class="fl"><label>Data</label><input id="evd" type="date"></div>
+      <div class="fl"><label>Horario</label><input id="evh" type="time"></div>
+    </div>
+    <div class="g2">
       <div class="fl"><label>Local</label><input id="evl" placeholder="Ex: Parque Ney Braga"></div>
+      <div class="fl"><label>Capacidade (0=livre)</label><input id="evcap" type="number" value="0"></div>
     </div>
     <div class="fl"><label>Link Maps</label><input id="evm" placeholder="https://maps.google.com/..."></div>
     <div class="fl"><label>Atracao 1</label><input id="eva1" placeholder="Ex: Ana Castela"></div>
@@ -306,6 +312,7 @@ textarea{height:70px;resize:none}
 </div>
 <script>
 var MODO=new URLSearchParams(window.location.search).get("modo")||"edit";
+try{var _s=sessionStorage.getItem("ag_admin");if(!_s){window.location.href="home.html";}else{var _a=JSON.parse(_s);if(!_a||!_a.nome){window.location.href="home.html";}if(_a.nivel==="visualizador")MODO="ver";}}catch(e){window.location.href="home.html";}
 var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
 var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
 var LC="https://robsafonso.github.io/Agroplay/cadastro-externo.html";
@@ -530,6 +537,7 @@ q("te").onclick=function(){tab("e");};
 q("tk").onclick=function(){tab("k");};
 q("tl").onclick=function(){tab("l");};
 q("tlt").onclick=function(){tab("lt");};
+q("tth").onclick=function(){tab("h");};
 q("bnovolote").onclick=function(){
   q("ovlote").classList.add("on");q("lote-alert").innerHTML="";q("lote-resp").value="";q("lote-qtd").value="10";q("lote-senha").value="";
   var sel=q("lote-ev");sel.innerHTML="<option value=''>Nenhum evento</option>";
@@ -707,20 +715,11 @@ function delLote(id){
     lotes=lotes.filter(function(l){return l.id!==id;});
     rLotes();rSts();
     load();
-if(MODO==="ver"){
-  var vb=document.createElement("div");
-  vb.style.cssText="background:#0a1a2a;border:1px solid #0891b2;color:#0891b2;padding:8px 14px;border-radius:8px;font-size:12px;margin-bottom:12px;text-align:center";
-  vb.textContent="Modo visualizacao - apenas leitura";
-  document.body.insertBefore(vb,document.body.children[1]);
-  ["r","bgl","bxls","bcsv","bexk","bnev","blinkc"].forEach(function(id){var el=document.getElementById(id);if(el){el.disabled=true;el.style.opacity="0.3";}});
-  var style=document.createElement("style");
-  style.textContent=".btn{pointer-events:none;opacity:0.3!important}.btr{pointer-events:none;opacity:0.3!important}.bty{pointer-events:none;opacity:0.3!important}";
-  document.head.appendChild(style);
-  document.getElementById("r").disabled=false;
-  document.getElementById("r").style.opacity="1";
-}
   }).catch(function(e){alert("Erro ao excluir: "+e.message);});
 }
+function togLotado(id,val){ap("eventos?id=eq."+id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({lotado:val})}).then(function(){for(var i=0;i<evs.length;i++){if(evs[i].id===id){evs[i].lotado=val;break;}}rEvs();});}
+function rHist(){var el=q("hcont");if(!evs.length){el.innerHTML="<div class='empty'>Nenhum evento</div>";return;}var h="";evs.forEach(function(ev){var tot=cads.filter(function(c){return c.evento_id===ev.id;}).length;var ent=cads.filter(function(c){return c.evento_id===ev.id&&c.entrada_em;}).length;var conf=cads.filter(function(c){return c.evento_id===ev.id&&c.status==="aprovado";}).length;var fat=Math.max(0,conf-ent);var df=ev.data?ev.data.split("-"):["","",""];var dt=ev.data?df[2]+"/"+df[1]+"/"+df[0]:"";h+="<div class='card'><div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:4px'><div style='font-size:14px;font-weight:700;color:#fff'>"+ev.nome+"</div>"+(ev.lotado?"<span style='background:#c0392b;color:#fff;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700'>LOTADO</span>":"")+"</div><div style='font-size:11px;color:#555;margin-bottom:10px'>"+dt+(ev.horario?" as "+ev.horario:"")+(ev.local?" / "+ev.local:"")+"</div><div style='display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px'><div style='background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:8px;text-align:center'><strong style='font-size:20px;color:#2aab47'>"+tot+"</strong><div style='font-size:9px;color:#555;text-transform:uppercase'>Total</div></div><div style='background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:8px;text-align:center'><strong style='font-size:20px;color:#0891b2'>"+ent+"</strong><div style='font-size:9px;color:#555;text-transform:uppercase'>Entraram</div></div><div style='background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:8px;text-align:center'><strong style='font-size:20px;color:#c0392b'>"+fat+"</strong><div style='font-size:9px;color:#555;text-transform:uppercase'>Faltaram</div></div></div><div style='display:flex;gap:6px'><button class='bto' onclick='lstEv("+ev.id+")' style='flex:1;font-size:11px;padding:8px'>Lista</button><button class='bto' onclick='expHistEv("+ev.id+")' style='font-size:11px;padding:8px'>Excel</button></div></div>";});el.innerHTML=h;}
+function expHistEv(id){var ev=null;for(var i=0;i<evs.length;i++){if(evs[i].id===id){ev=evs[i];break;}}if(!ev)return;var p=cads.filter(function(c){return c.evento_id===id;});var csv="Nome,Empresa,Cargo,Setor,Status,Entrada,Validador,Convidado por\n"+p.map(function(c){return[c.nome,c.empresa||"",c.cargo||"",c.setor,c.status||"",c.entrada_em?new Date(c.entrada_em).toLocaleString("pt-BR"):"",c.validador_nome||"",c.lote_nome||""].map(function(v){return'"'+v+'"';}).join(",");}).join("\n");var b=new Blob([csv],{type:"text/csv"});var u=URL.createObjectURL(b);var a=document.createElement("a");a.href=u;a.download=ev.nome+".csv";a.click();}
 function load(){
   q("tbl").innerHTML="<div class='empty'>Carregando...</div>";
   ap("cadastros?select=*&order=criado_em.desc").then(function(d){cads=d||[];rSts();rChips();rend();}).catch(function(){cads=[];rSts();rChips();rend();});
@@ -807,13 +806,13 @@ function abrEv(id){
     for(var i=0;i<evs.length;i++){if(evs[i].id===id){ev=evs[i];break;}}
     if(!ev)return;
     q("evtit").textContent="Editar Evento";
-    q("evn").value=ev.nome||"";q("evd").value=ev.data||"";q("evl").value=ev.local||"";
+    q("evn").value=ev.nome||"";q("evd").value=ev.data||"";q("evh").value=ev.horario||"";q("evl").value=ev.local||"";q("evcap").value=ev.capacidade||0;
     q("evm").value=ev.maps_url||"";q("eva1").value=ev.atracao1||"";q("evi1").value=ev.insta_atr1||"";
     q("eva2").value=ev.atracao2||"";q("evi2").value=ev.insta_atr2||"";
     q("evf").value=ev.foto_url||"";q("evdesc").value=ev.descricao||"";
   }else{
     q("evtit").textContent="Novo Evento";
-    ["evn","evd","evl","evm","eva1","evi1","eva2","evi2","evf","evdesc"].forEach(function(x){q(x).value="";});
+    ["evn","evd","evh","evl","evcap","evm","eva1","evi1","eva2","evi2","evf","evdesc"].forEach(function(x){q(x).value="";});
   }
   q("evalert").innerHTML="";
   q("ovev").classList.add("on");
@@ -823,22 +822,10 @@ function salvEv(){
   var nome=q("evn").value.trim();
   if(!nome){q("evalert").innerHTML="<div class='ea'>Nome obrigatorio</div>";return;}
   var btn=q("bsev");btn.textContent="Salvando...";btn.disabled=true;
-  var body=JSON.stringify({nome:nome,data:q("evd").value||null,local:q("evl").value.trim(),maps_url:q("evm").value.trim(),atracao1:q("eva1").value.trim(),insta_atr1:q("evi1").value.trim(),atracao2:q("eva2").value.trim(),insta_atr2:q("evi2").value.trim(),foto_url:q("evf").value.trim(),descricao:q("evdesc").value.trim()});
+  var body=JSON.stringify({nome:nome,data:q("evd").value||null,horario:q("evh").value||null,capacidade:parseInt(q("evcap").value)||0,local:q("evl").value.trim(),maps_url:q("evm").value.trim(),atracao1:q("eva1").value.trim(),insta_atr1:q("evi1").value.trim(),atracao2:q("eva2").value.trim(),insta_atr2:q("evi2").value.trim(),foto_url:q("evf").value.trim(),descricao:q("evdesc").value.trim()});
   var path=eid?"eventos?id=eq."+eid:"eventos";
   var meth=eid?"PATCH":"POST";
-  ap(path,{m:meth,pref:"return=minimal",b:body}).then(function(){fecEv();load();
-if(MODO==="ver"){
-  var vb=document.createElement("div");
-  vb.style.cssText="background:#0a1a2a;border:1px solid #0891b2;color:#0891b2;padding:8px 14px;border-radius:8px;font-size:12px;margin-bottom:12px;text-align:center";
-  vb.textContent="Modo visualizacao - apenas leitura";
-  document.body.insertBefore(vb,document.body.children[1]);
-  ["r","bgl","bxls","bcsv","bexk","bnev","blinkc"].forEach(function(id){var el=document.getElementById(id);if(el){el.disabled=true;el.style.opacity="0.3";}});
-  var style=document.createElement("style");
-  style.textContent=".btn{pointer-events:none;opacity:0.3!important}.btr{pointer-events:none;opacity:0.3!important}.bty{pointer-events:none;opacity:0.3!important}";
-  document.head.appendChild(style);
-  document.getElementById("r").disabled=false;
-  document.getElementById("r").style.opacity="1";
-}tab("e");}).catch(function(){q("evalert").innerHTML="<div class='ea'>Erro ao salvar</div>";}).finally(function(){btn.textContent="Salvar";btn.disabled=false;});
+  ap(path,{m:meth,pref:"return=minimal",b:body}).then(function(){fecEv();load();tab("e");}).catch(function(){q("evalert").innerHTML="<div class='ea'>Erro ao salvar</div>";}).finally(function(){btn.textContent="Salvar";btn.disabled=false;});
 }
 function rEvs(){
   var el=q("evlst");
@@ -849,12 +836,13 @@ function rEvs(){
     h+="<div class='card'>";
     h+="<div style='font-size:15px;font-weight:700;color:#fff;margin-bottom:4px'>"+ev.nome+"</div>";
     h+="<div style='font-size:11px;color:#555;line-height:1.7;margin-bottom:10px'>";
-    if(ev.data)h+="Data: "+d[2]+"/"+d[1]+"/"+d[0]+"<br>";
+    if(ev.data)h+="Data: "+d[2]+"/"+d[1]+"/"+d[0]+(ev.horario?" as "+ev.horario:"")+"<br>";
     if(ev.local)h+="Local: "+ev.local+"<br>";
     if(ev.atracao1)h+="Atracoes: "+ev.atracao1+(ev.atracao2?" + "+ev.atracao2:"")+"<br>";
     h+="</div>";
     h+="<div style='display:flex;gap:6px;flex-wrap:wrap'>";
     h+="<button class='btn' onclick='abrConv("+ev.id+")' style='flex:1;font-size:11px;padding:8px'>Enviar Convites</button>";
+    h+="<button class='"+(ev.lotado?"btn":"bto")+"' onclick='togLotado("+ev.id+","+(!ev.lotado)+")' style='font-size:11px;padding:8px;background:"+(ev.lotado?"#c0392b":"transparent")+";border-color:#c0392b;color:"+(ev.lotado?"#fff":"#c0392b")+"'>"+(ev.lotado?"LOTADO":"Lotar")+"</button>";
     h+="<button class='bto' onclick='lstEv("+ev.id+")' style='font-size:11px;padding:8px'>Lista</button>";
     h+="<button class='bty' onclick='abrEv("+ev.id+")' style='font-size:11px;padding:8px'>Editar</button>";
     h+="<button class='btr' onclick='delEv("+ev.id+")' style='font-size:11px;padding:8px'>X</button>";
@@ -1034,9 +1022,9 @@ function mkXls(rows,name){
   dl("<?xml version='1.0'?><Workbook xmlns='urn:schemas-microsoft-com:office:spreadsheet' xmlns:ss='urn:schemas-microsoft-com:office:spreadsheet'><Worksheet ss:Name='Dados'><Table>"+hdr+body+"</Table></Worksheet></Workbook>","application/vnd.ms-excel",name+".xls");
 }
 function tab(t){
-  ["c","e","k","l","lt"].forEach(function(x){q("s"+x).classList.add("gone");q("t"+x).classList.remove("on");});
+  ["c","e","k","l","lt","h"].forEach(function(x){q("s"+x).classList.add("gone");q("t"+x).classList.remove("on");});
   q("s"+t).classList.remove("gone");q("t"+t).classList.add("on");
-  if(t==="l")rLst();if(t==="k")rCods();if(t==="e")rEvs();if(t==="lt")rLotes();
+  if(t==="l")rLst();if(t==="k")rCods();if(t==="e")rEvs();if(t==="lt")rLotes();if(t==="h")rHist();
 }
 load();
 if(MODO==="ver"){
