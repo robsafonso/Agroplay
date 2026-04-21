@@ -2,508 +2,225 @@
 
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<title>Agroplay  Cadastro</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadastro Interno - Agroplay</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;overflow:hidden;background:#080808}
-body{font-family:'Segoe UI',Arial,sans-serif;color:#e0e0e0}
-:root{--green:#2d8a3e;--green2:#3ab54a;--silver:#b8b8b8;--dark:#080808;--card:#111;--border:#2a2a2a}
-
-/* TELAS */
-.tela{position:fixed;top:0;left:0;width:100%;height:100%;background:#080808;display:none;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.tela.ativa{display:flex}
-
-/* HEADER */
-.header{background:#0d0d0d;border-bottom:2px solid var(–green);padding:14px 20px;display:flex;align-items:center;gap:12px;flex-shrink:0}
-.header-logo svg{width:100px;height:28px}
-.header-tag{font-size:9px;color:#555;letter-spacing:2px;text-transform:uppercase}
-
-/* CONTEDO */
-.conteudo{flex:1;padding:24px 20px;display:flex;flex-direction:column;justify-content:center}
-.conteudo.top{justify-content:flex-start;padding-top:20px}
-
-/* HOME */
-.home-logo{text-align:center;margin-bottom:24px}
-.home-logo svg{width:180px;height:50px}
-.home-tag{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(–silver);font-weight:600;text-align:center;margin-top:4px}
-.home-divider{width:40px;height:2px;background:linear-gradient(90deg,var(–green),var(–green2));margin:20px auto;border-radius:2px}
-.home-desc{color:#555;font-size:13px;line-height:1.7;text-align:center;margin-bottom:32px}
-
-/* CARD */
-.card{background:var(–card);border:1px solid var(–border);border-radius:14px;padding:24px 20px;margin-bottom:16px}
-.card-title{font-size:18px;font-weight:700;color:#fff;margin-bottom:4px}
-.card-sub{color:#666;font-size:12px;margin-bottom:20px}
-
-/* FIELDS */
-.field{margin-bottom:14px}
-label{display:block;font-size:10px;color:var(–green2);letter-spacing:1.5px;margin-bottom:5px;text-transform:uppercase;font-weight:600}
-input{width:100%;background:#0d0d0d;border:1px solid var(–border);border-radius:8px;padding:12px 14px;color:#e0e0e0;font-size:15px;outline:none;-webkit-appearance:none;transition:border .2s}
-input:focus{border-color:var(–green2)}
-input.err{border-color:#e74c3c}
-.err-msg{font-size:11px;color:#e74c3c;margin-top:4px;display:block}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-
-/* SETOR */
-.setor-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.setor-btn{background:#0d0d0d;border:1px solid var(–border);border-radius:10px;padding:14px 10px;color:#666;cursor:pointer;font-size:13px;text-align:center;width:100%;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:6px}
-.setor-btn span.icon{font-size:22px}
-.setor-btn span.label{font-size:12px}
-.setor-btn.active{background:rgba(45,138,62,.15);border-color:var(–green2);color:#fff}
-
-/* BOTES */
-.btn{background:linear-gradient(135deg,#2d8a3e,#3ab54a);color:#ffffff !important;border:none;border-radius:10px;padding:15px 24px;font-size:15px;font-weight:700;cursor:pointer;width:100%;transition:opacity .2s;letter-spacing:.3px}
-.btn:active{opacity:.85}
-.btn:disabled{opacity:.5}
-.btn-out{background:transparent;color:var(–green2);border:1px solid var(–green2);border-radius:10px;padding:14px 24px;font-size:14px;cursor:pointer;width:100%;transition:all .2s}
-.btn-back{background:none;border:none;color:#555;cursor:pointer;font-size:13px;padding:0;display:flex;align-items:center;gap:6px;margin-bottom:16px}
-
-/* CDIGO */
-.code-input{width:100%;background:#0d0d0d;border:2px solid var(–border);border-radius:10px;padding:16px;color:#fff;font-size:22px;font-weight:700;text-align:center;letter-spacing:4px;outline:none;text-transform:uppercase;-webkit-appearance:none}
-.code-input:focus{border-color:var(–green2)}
-.code-input.err{border-color:#e74c3c}
-.code-hint{font-size:12px;color:#555;text-align:center;margin-top:8px}
-
-/* SUCESSO */
-.success-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 20px;text-align:center}
-.success-circle{width:80px;height:80px;background:rgba(45,138,62,.15);border:2px solid var(–green2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:36px}
-.success-title{font-size:22px;font-weight:700;color:#fff;margin-bottom:12px}
-.success-text{color:#666;font-size:14px;line-height:1.7}
-
-/* ALERT */
-.alert{padding:12px 14px;border-radius:8px;font-size:13px;margin-bottom:14px;display:none}
-.alert.err{background:#1a0505;border:1px solid #e74c3c;color:#e74c3c;display:block}
-.alert.ok{background:#051a08;border:1px solid var(–green2);color:var(–green2);display:block}
-
-/* PROGRESS */
-.progress{display:flex;gap:6px;margin-bottom:24px;justify-content:center}
-.progress-dot{width:8px;height:8px;border-radius:50%;background:var(–border);transition:all .3s}
-.progress-dot.ativo{background:var(–green2);width:24px;border-radius:4px}
-
-.video-wrap{position:relative;width:100%;max-width:320px;margin:0 auto 16px;border-radius:50%;overflow:hidden;aspect-ratio:1;border:3px solid var(–green2)}
-.video-wrap video{width:100%;height:100%;object-fit:cover}
-.video-overlay{position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;pointer-events:none}
-.face-guide{width:80%;height:80%;border-radius:50%;border:2px dashed rgba(58,181,74,.6)}
-.foto-status{text-align:center;font-size:13px;color:var(–green2);margin-bottom:12px;min-height:20px;font-weight:600}
-.foto-preview{width:100%;max-width:320px;border-radius:50%;margin:0 auto 16px;display:block;border:3px solid var(–green2)}
-
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:20px;max-width:480px;margin:0 auto}
+.logo{font-size:22px;font-weight:900;color:#fff;text-align:center;padding:20px 0 10px}
+.logo b{color:#2aab47}
+.card{background:#090e09;border:1px solid #1a2a1a;border-radius:14px;padding:20px;margin-bottom:14px}
+.ttl{font-size:18px;font-weight:900;color:#fff;margin-bottom:4px}
+.sub{font-size:12px;color:#666;margin-bottom:16px;line-height:1.5}
+.fl{margin-bottom:12px}
+label{display:block;font-size:10px;color:#2aab47;letter-spacing:1px;margin-bottom:4px;text-transform:uppercase;font-weight:700}
+input{width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:11px 14px;color:#eee;font-size:14px;outline:none}
+input:focus{border-color:#2aab47}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{background:linear-gradient(135deg,#1e7a35,#2aab47);color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;width:100%;margin-top:8px}
+.bto{background:transparent;color:#2aab47;border:1px solid #2aab47;border-radius:10px;padding:11px;font-size:13px;cursor:pointer;width:100%;margin-top:8px}
+.ea{background:#1a0000;border:1px solid #e74c3c;color:#e74c3c;padding:10px;border-radius:8px;margin-bottom:10px;font-size:13px}
+.em{font-size:11px;color:#e74c3c;margin-top:3px;display:block}
+.gone{display:none}
+.tl{display:none}.tl.on{display:block}
+.steps{display:flex;gap:5px;margin-bottom:16px;justify-content:center}
+.step{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.1)}
+.step.on{background:#2aab47;width:22px;border-radius:4px}
+.sw{text-align:center;padding:16px 0}
+.si{width:60px;height:60px;background:rgba(30,122,53,.12);border:2px solid #2aab47;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:26px}
+.inv{background:#090e09;border:1px solid rgba(42,171,71,.3);border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#2aab47;text-align:center}
 </style>
 </head>
 <body>
+<div class="logo">AGRO<b>PLAY</b></div>
 
-<!--  TELA 1: HOME  -->
+<div id="inv-banner" class="inv gone">Convidado por <b id="inv-nome"></b></div>
 
-<div id="t-home" class="tela ativa">
-  <div class="conteudo">
-    <div class="home-logo">
-      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAABUCAYAAAA4ewptAAABWGlDQ1BJQ0MgUHJvZmlsZQAAeJx9kLFLw1AQxr9WpaB1EB0cHDKJQ5SSCro4tBVEcQhVweqUvqapkMZHkiIFN/+Bgv+BCs5uFoc6OjgIopPo5uSk4KLleS+JpCJ6j+N+fO+74zggOW5wbvcDqDu+W1zKK5ulLSX1jAS9IAzm8Zyur0r+rj/j/T703k7LWb///43Biukxqp+UGcZdH0ioxPqezyXvE4+5tBRxS7IV8onkcsjngWe9WCC+JlZYzagQvxCr5R7d6uG63WDRDnL7tOlsrMk5lBNYxA48cNgw0IQCHdk//LOBv4BdcjfhUp+FGnzqyZEiJ5jEy3DAMAOVWEOGUpN3ju53F91PjbWDJ2ChI4S4iLWVDnA2Rydrx9rUPDAyBFy1ueEagdRHmaxWgddTYLgEjN5Qz7ZXzWrh9uk8MPAoxNskkDoEui0hPo6E6B5T8wNw6XwBA6diE8HYWhMAACJaSURBVHja7Z17XFVV2seftda+HK4qAoLKEdEUwUt5HTUFyS6amlSH8dKrk42Wl9RJe7PUDsdqphlndCpJrd6yxqxgzGtlpQKmGRVe0EjxRqCCIAgcznXvvZ73D89hjqZmjc2Yra8fPvLhnL33Wmuv9VvP86xn7Q0AgAAwEc4jgUAgEFw/+DVpIgAgFe0hEAh+KQjBEggEQrAEAoFACJZAIBCCJRAIBEKwBAKBQAiWQCAQgiUQCARCsAQCgUAIlkAgEIIlEAgEQrAEAoFACJZAIBCCJRAIBEKwBAKBQAiWQCAQgiUQCARCsAQCgUAIlkAgEIIlEAgEQrAEAoFACJZAIBCCJRAIBEKwBAKBQAiWQCAQgiUQCARCsAQCgUAIlkAgEIIlEPwQiEisaKWISERrCH4MkmgCwX8aQggCANrABmAFmgIpFCAVopOLMembJLRlZiKc/45A8P0JDwAmCgET/CcsKwCAzQcLYrIKc7ojYhCByxpZNMWaIqXkWiVLdjYT1tiv3qiaCABIfIL1OwB40/eh/kuvodVqpcXFxZfs4ElJSWiz2fi1MhYQETIzM0lxcTGpqqr63jWjo6Mx4Lroa+9/ux5XIikpCQEAMjMzkVwDSwURyZXq6K/nD9XRilZqIzY8Xl/f6bVdKz7/9syBxhZBkcVhwWGHg2hQYcuWrUpuadPz5G1xN5+Riazr3++KNMWaQlNTUwFSgdvAhkCu3J4Wi4UFljkvL88g/wHrzWq10ry8PBrYPjk5OcbVfv/HlvVSx+fn5+s3iGDpPsFadSNaWD8Yl7NYLOzf6YgpKSkSAPzUcxAAkCwWy3/Kami6nu/3qxIoXx2lqz3mauuYnZ3NAAA2HsodPWHtdLx12e145+ujcdjr9+OI1zJw9KtjGzPemnR00rszc2etn581/+O/PPzCF//4zUnEluwSTZ5iTZGsaL2uYrFXuK/0p/S3q/gagxuXG9bCIufDI4TPmzcv8eDBg801TftXT6EUQ0NDybhx48pGjx592mKxsCvNeBef22Kx0JycHO63HgghwDmnS5cubVVUVBTrcDhi3W53pN1ul5xOJ1BKISIiAjjntS1btmwICQk5NWzYsEqLxVKn6xc0MbNard+z+hCRTp06Nenbb78NvdoG0HUdIiIiICIiQouKiqqbMmVKdVJSUkPg9a5Ub6vVSm02GwGAps8VRYEPPvig5TvvvBPrcDha2+32lk6nM7i2trapjsHBwY3h4eE1UVFRp8aOHXtq8ODBDV6v97J1tOZapedue07/247X/rrl0OY5TmedB0CWEA1KKSFACVBGQZJkYEwCicugEKUmSA7+pnlYxP42EeYv+3YeuDstuuvxQAskOzubWSwW7v8bItI777zT4nK5wnRd5zExMXTmzJnrhwwZchYRyc9hafnb94033ojPzs4earfbDcYYS01NLbHZbDsubn9/Of70pz/12LZt2xC73V4nSRKNjo7G999/fx0hpO5y98x3LAUAY/LkyX2OHTvWg3OunTt3ztSvXz+ycuXKdwgh9T9XXf8bFtYNIVj+G8cYMywWy7MHDhx40uVyUULIxd+DqKiouoyMjOlz5sxZ06tXL7mwsFD7oRnOP9BUVYXHHnssae/evSkNDQ2pDoeju8fjaWsYRigAAOccOOeAiEAIafqhlAIAcEmSamRZPhoREbGvffv2259++umtHTp0qOOcX1wXLCoqajVt2rTSsrIykyRJgHhhf7u4boF/p5QCpVSXJKlWluWSmJiYfWazef1bb721ze12+2d6folZ2gAA2LdvX3RWVlZaSUnJrU6n8zdOpzPB6/W2uLiOvomg6ZqEEJRluSo8PLw0ODh4Z4cOHXJXrly5ixBSFziYfXUk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" style="width:200px;height:auto" alt="Agroplay"/>
-      <div class="home-tag">Lista de Eventos</div>
-    </div>
-    <div class="home-divider"></div>
-    <p class="home-desc">O maior ecossistema independente de msica, entretenimento e cultura popular do Brasil.<br/><strong style="color:#444">Londrina  PR</strong></p>
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <button class="btn" onclick="ir('t-codigo')"> Fazer meu cadastro</button>
-    </div>
-  </div>
+<div id="t-cod" class="card tl on">
+  <div class="ttl">Bem-vindo!</div>
+  <div class="sub">Digite o codigo de acesso que voce recebeu.</div>
+  <div class="steps"><div class="step on"></div><div class="step"></div><div class="step"></div><div class="step"></div></div>
+  <div id="al-cod"></div>
+  <div class="fl"><label>Codigo de acesso</label><input id="f-cod" placeholder="000000" maxlength="6" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div>
+  <button class="btn" id="btn-cod">Continuar</button>
 </div>
 
-<!--  TELA 2: CDIGO  -->
-
-<div id="t-codigo" class="tela">
-  <div class="header">
-    <svg viewBox="0 0 220 56" xmlns="http://www.w3.org/2000/svg" style="width:100px;height:28px">
-      <text x="0" y="42" font-family="Arial Black,sans-serif" font-weight="900" font-size="40" fill="#ffffff">AGRO</text>
-      <text x="122" y="42" font-family="Arial Black,sans-serif" font-weight="900" font-size="40" fill="#ffffff">LAY</text>
-      <g transform="translate(108,4)"><path d="M8 2 L8 28 Q8 34 2 36 Q-2 37 -2 33 Q-2 29 4 28 L6 27 L6 10 L14 8 L14 18 Q14 24 8 26 Q4 27 4 23 Q4 19 10 18 L12 17" stroke="#3ab54a" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M6 36 Q10 32 14 34 Q12 40 6 40 Q4 38 6 36Z" fill="#3ab54a"/></g>
-    </svg>
+<div id="t-dados" class="card tl">
+  <div class="ttl">Seus Dados</div>
+  <div class="sub">Preencha suas informacoes pessoais.</div>
+  <div class="steps"><div class="step"></div><div class="step on"></div><div class="step"></div><div class="step"></div></div>
+  <div id="al-dados"></div>
+  <div class="fl"><label>Nome completo</label><input id="f-nome" placeholder="Seu nome completo"><span class="em" id="e-nome"></span></div>
+  <div class="g2">
+    <div class="fl"><label>CPF</label><input id="f-cpf" placeholder="000.000.000-00" oninput="mCPF(this)" inputmode="numeric"><span class="em" id="e-cpf"></span></div>
+    <div class="fl"><label>RG</label><input id="f-rg" placeholder="RG"><span class="em" id="e-rg"></span></div>
   </div>
-  <div class="conteudo">
-    <button class="btn-back" onclick="ir('t-home')"> Voltar</button>
-    <div class="progress"><div class="progress-dot ativo"></div><div class="progress-dot"></div><div class="progress-dot"></div></div>
-    <div class="card">
-      <div class="card-title">Cdigo de acesso</div>
-      <div class="card-sub">Digite o cdigo que voc recebeu para continuar</div>
-      <div id="cod-alert"></div>
-      <div class="field">
-        <label>Seu cdigo</label>
-        <input class="code-input" id="f-codigo" placeholder="000000" maxlength="6" oninput="this.value=this.value.replace(/\D/g,'')" inputmode="numeric"/>
-        <div class="code-hint">Digite o cdigo de 6 dgitos que voc recebeu</div>
-      </div>
-      <button class="btn" style="margin-top:8px" onclick="validarCodigo()" id="btn-codigo">Continuar </button>
-    </div>
+  <div class="fl"><label>E-mail</label><input id="f-email" type="email" placeholder="email@email.com"><span class="em" id="e-email"></span></div>
+  <div class="g2">
+    <div class="fl"><label>Telefone</label><input id="f-tel" placeholder="(00) 00000-0000" oninput="mTel(this)" inputmode="numeric"><span class="em" id="e-tel"></span></div>
+    <div class="fl"><label>Nascimento</label><input id="f-nasc" type="date"><span class="em" id="e-nasc"></span></div>
   </div>
+  <button class="btn" onclick="irEmp()">Proximo</button>
+  <button class="bto" onclick="ir('t-cod')">Voltar</button>
 </div>
 
-<!--  TELA 3: DADOS PESSOAIS  -->
-
-<div id="t-dados" class="tela">
-  <div class="header">
-    <svg viewBox="0 0 220 56" xmlns="http://www.w3.org/2000/svg" style="width:100px;height:28px">
-      <text x="0" y="42" font-family="Arial Black,sans-serif" font-weight="900" font-size="40" fill="#ffffff">AGRO</text>
-      <text x="122" y="42" font-family="Arial Black,sans-serif" font-weight="900" font-size="40" fill="#ffffff">LAY</text>
-      <g transform="translate(108,4)"><path d="M8 2 L8 28 Q8 34 2 36 Q-2 37 -2 33 Q-2 29 4 28 L6 27 L6 10 L14 8 L14 18 Q14 24 8 26 Q4 27 4 23 Q4 19 10 18 L12 17" stroke="#3ab54a" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M6 36 Q10 32 14 34 Q12 40 6 40 Q4 38 6 36Z" fill="#3ab54a"/></g>
-    </svg>
-  </div>
-  <div class="conteudo top">
-    <button class="btn-back" onclick="ir('t-codigo')"> Voltar</button>
-    <div class="progress"><div class="progress-dot"></div><div class="progress-dot ativo"></div><div class="progress-dot"></div></div>
-    <div class="card">
-      <div class="card-title">Dados pessoais</div>
-      <div class="card-sub">Preencha suas informaes</div>
-      <div id="dados-alert"></div>
-      <div class="field">
-        <label>Nome completo</label>
-        <input id="f-nome" placeholder="Seu nome completo"/>
-        <span class="err-msg" id="e-nome"></span>
-      </div>
-      <div class="grid2">
-        <div class="field">
-          <label>CPF</label>
-          <input id="f-cpf" placeholder="000.000.000-00" oninput="maskCPF(this)" inputmode="numeric"/>
-          <span class="err-msg" id="e-cpf"></span>
-        </div>
-        <div class="field">
-          <label>RG</label>
-          <input id="f-rg" placeholder="N do RG"/>
-          <span class="err-msg" id="e-rg"></span>
-        </div>
-      </div>
-      <div class="field">
-        <label>E-mail</label>
-        <input id="f-email" type="email" placeholder="seu@email.com" inputmode="email"/>
-        <span class="err-msg" id="e-email"></span>
-      </div>
-      <div class="grid2">
-        <div class="field">
-          <label>Telefone</label>
-          <input id="f-tel" placeholder="(00) 00000-0000" oninput="maskTel(this)" inputmode="numeric"/>
-          <span class="err-msg" id="e-tel"></span>
-        </div>
-        <div class="field">
-          <label>Nascimento</label>
-          <input id="f-nasc" type="date"/>
-          <span class="err-msg" id="e-nasc"></span>
-        </div>
-      </div>
-    </div>
-    <button class="btn" onclick="irSetor()" id="btn-dados">Prximo </button>
-  </div>
+<div id="t-emp" class="card tl">
+  <div class="ttl">Empresa e Cargo</div>
+  <div class="sub">Preencha sua atuacao profissional.</div>
+  <div class="steps"><div class="step"></div><div class="step"></div><div class="step on"></div><div class="step"></div></div>
+  <div id="al-emp"></div>
+  <div class="fl"><label>Empresa</label><input id="f-emp" placeholder="Nome da sua empresa"><span class="em" id="e-emp"></span></div>
+  <div class="fl"><label>Funcao</label><input id="f-car" placeholder="Seu cargo"><span class="em" id="e-car"></span></div>
+  <button class="btn" onclick="irFoto()">Proximo</button>
+  <button class="bto" onclick="ir('t-dados')">Voltar</button>
 </div>
 
-<!--  TELA 4: SETOR  -->
-
-<div id="t-setor" class="tela">
-  <div class="header">
-    <svg viewBox="0 0 220 56" xmlns="http://www.w3.org/2000/svg" style="width:100px;height:28px">
-      <text x="0" y="42" font-family="Arial Black,sans-serif" font-weight="900" font-size="40" fill="#ffffff">AGRO</text>
-      <text x="122" y="42" font-family="Arial Black,sans-serif" font-weight="900" font-size="40" fill="#ffffff">LAY</text>
-      <g transform="translate(108,4)"><path d="M8 2 L8 28 Q8 34 2 36 Q-2 37 -2 33 Q-2 29 4 28 L6 27 L6 10 L14 8 L14 18 Q14 24 8 26 Q4 27 4 23 Q4 19 10 18 L12 17" stroke="#3ab54a" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M6 36 Q10 32 14 34 Q12 40 6 40 Q4 38 6 36Z" fill="#3ab54a"/></g>
-    </svg>
+<div id="t-foto" class="card tl">
+  <div class="ttl">Foto de Verificacao</div>
+  <div class="sub">Tire uma selfie para confirmar sua identidade.</div>
+  <div class="steps"><div class="step"></div><div class="step"></div><div class="step"></div><div class="step on"></div></div>
+  <div id="al-foto"></div>
+  <div id="foto-status" style="font-size:13px;color:#2aab47;margin-bottom:10px;text-align:center">Iniciando camera...</div>
+  <div id="video-wrap" style="position:relative;width:200px;height:200px;margin:0 auto 12px;border-radius:50%;overflow:hidden;border:3px solid #2aab47">
+    <video id="video" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover"></video>
   </div>
-  <div class="conteudo">
-    <button class="btn-back" onclick="ir('t-dados')"> Voltar</button>
-    <div class="progress"><div class="progress-dot"></div><div class="progress-dot"></div><div class="progress-dot ativo"></div></div>
-    <div class="card">
-      <div class="card-title">Qual  o seu setor?</div>
-      <div class="card-sub">Selecione sua funo na Agroplay</div>
-      <div class="setor-grid">
-        <button class="setor-btn" onclick="selSetor('Artista',this)"><span class="icon"></span><span class="label">Artista</span></button>
-        <button class="setor-btn" onclick="selSetor('Influenciador',this)"><span class="icon"></span><span class="label">Influenciador</span></button>
-        <button class="setor-btn" onclick="selSetor('Diretoria',this)"><span class="icon"></span><span class="label">Diretoria</span></button>
-        <button class="setor-btn" onclick="selSetor('Colaborador',this)"><span class="icon"></span><span class="label">Colaborador</span></button>
-      </div>
-      <span class="err-msg" id="e-setor" style="margin-top:8px"></span>
-    </div>
-    <div id="setor-alert"></div>
-    <button class="btn" onclick="irParaFoto()" id="btn-setor">Prximo  Foto</button>
-  </div>
+  <canvas id="canvas" style="display:none"></canvas>
+  <img id="foto-prev" style="width:200px;height:200px;border-radius:50%;object-fit:cover;border:3px solid #2aab47;display:none;margin:0 auto 12px"/>
+  <button class="btn" id="btn-foto" style="display:none">Tirar foto</button>
+  <button class="bto" id="btn-refoto" style="display:none">Nova foto</button>
+  <button class="btn" id="btn-salvar" style="display:none">Confirmar e finalizar</button>
+  <button class="bto" onclick="ir('t-emp')" style="margin-top:8px">Voltar</button>
 </div>
 
-<!--  TELA 5: FOTO  -->
-
-<div id="t-foto" class="tela">
-  <div class="tela-header">
-    <div class="step-info">
-      <span class="step-label">Etapa 5 de 5</span>
-      <div class="step-dots">
-        <span class="dot done"></span><span class="dot done"></span>
-        <span class="dot done"></span><span class="dot done"></span>
-        <span class="dot active"></span>
-      </div>
-    </div>
-  </div>
-  <div class="tela-body">
-    <div class="section-title"> Foto de verificao</div>
-    <p class="section-sub">Vamos tirar uma foto para confirmar sua identidade. Posicione seu rosto no crculo.</p>
-    <div id="foto-status" class="foto-status">Iniciando cmera...</div>
-    <div id="video-container" class="video-wrap">
-      <video id="video" autoplay playsinline muted></video>
-      <div class="video-overlay"><div class="face-guide"></div></div>
-    </div>
-    <canvas id="canvas" style="display:none"></canvas>
-    <img id="foto-preview" class="foto-preview" style="display:none"/>
-    <div id="foto-alert"></div>
-    <button class="btn btn-full" id="btn-foto" style="display:none" onclick="tirarFoto()"> Tirar foto</button>
-    <button class="btn btn-full" id="btn-refoto" style="display:none;background:#555" onclick="refoto()"> Nova foto</button>
-    <button class="btn btn-full" id="btn-salvar-foto" style="display:none" onclick="salvarComFoto()"> Confirmar e finalizar</button>
-    <button class="btn-voltar" onclick="ir('t-setor')" style="display:none" id="btn-voltar-foto"> Voltar</button>
-  </div>
-</div>
-
-<!--  TELA 6: SUCESSO  -->
-
-<div id="t-sucesso" class="tela">
-  <div class="success-wrap">
-    <div class="success-circle"></div>
-    <div class="success-title">Cadastro realizado!</div>
-    <p class="success-text">Seus dados foram registrados<br/>com sucesso.<br/><br/>A equipe <strong style="color:var(--green2)">Agroplay</strong> entrar em contato<br/>quando necessrio.</p>
+<div id="t-ok" class="card tl">
+  <div class="sw">
+    <div class="si"></div>
+    <div style="font-size:22px;font-weight:900;color:#fff;margin-bottom:8px">Cadastro realizado!</div>
+    <p style="color:#666;font-size:13px;line-height:1.8">Seus dados foram registrados com sucesso.<br>A equipe <b style="color:#2aab47">Agroplay</b> entrara em contato em breve.<br><br>Obrigado! </p>
   </div>
 </div>
 
 <script>
-const _urlParams=new URLSearchParams(window.location.search);
-const _LOTE_ID=_urlParams.get('lote')||null;
-const _RESP=_urlParams.get('resp')||null;
-const _COD=_urlParams.get('cod')||null;
-const _TIPO=_urlParams.get('tipo')||null;
-const URL_SB="https://wexwcnezjadoutyzkbcj.supabase.co";
-const KEY_SB="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
+var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
+var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
+var p=new URLSearchParams(window.location.search);
+var LOTE_ID=p.get("lote")||null;
+var RESP=p.get("resp")||null;
+var COD_PRE=p.get("cod")||null;
+var EV_ID=p.get("ev")||null;
+var codOk="";
+var fotoData=null;
+var stream=null;
 
-let codigoValido="", setorSelecionado="";
-
-async function sbFetch(path,opts={}){
-  const r=await fetch(`${URL_SB}/rest/v1/${path}`,{...opts,headers:{"apikey":KEY_SB,"Authorization":`Bearer ${KEY_SB}`,"Content-Type":"application/json","Prefer":opts.prefer||"return=representation",...(opts.headers||{})}});
-  const t=await r.text();return t?JSON.parse(t):null;
-}
-
-function ir(id){
-  document.querySelectorAll('.tela').forEach(t=>t.classList.remove('ativa'));
-  document.getElementById(id).classList.add('ativa');
-  document.getElementById(id).scrollTop=0;
-}
-
-function maskCPF(el){let v=el.value.replace(/\D/g,'').slice(0,11);v=v.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');el.value=v;}
-function maskTel(el){let v=el.value.replace(/\D/g,'').slice(0,11);v=v.replace(/(\d{2})(\d)/,'($1) $2').replace(/(\d{5})(\d)/,'$1-$2');el.value=v;}
-
-async function validarCodigo(){
-  const cod=document.getElementById('f-codigo').value.trim().toUpperCase();
-  const alerta=document.getElementById('cod-alert');
-  alerta.className='alert';alerta.textContent='';
-  if(!cod){alerta.className='alert err';alerta.textContent='Digite o cdigo de acesso.';return;}
-  const btn=document.getElementById('btn-codigo');
-  btn.textContent='Verificando...';btn.disabled=true;
-  try{
-    const data=await sbFetch(`codigos?codigo=eq.${cod}&select=*`);
-    if(!data||data.length===0){alerta.className='alert err';alerta.textContent='Cdigo invlido. Verifique e tente novamente.';}
-    else if(data[0].usado){alerta.className='alert err';alerta.textContent='Este cdigo j foi utilizado.';}
-    else{codigoValido=cod;ir('t-dados');}
-  }catch(e){alerta.className='alert err';alerta.textContent='Erro ao verificar. Tente novamente.';}
-  finally{btn.textContent='Continuar ';btn.disabled=false;}
-}
-
-function irSetor(){
-  const nome=document.getElementById('f-nome').value.trim();
-  const cpf=document.getElementById('f-cpf').value;
-  const rg=document.getElementById('f-rg').value.trim();
-  const email=document.getElementById('f-email').value.trim();
-  const tel=document.getElementById('f-tel').value;
-  const nasc=document.getElementById('f-nasc').value;
-  let ok=true;
-  function setErr(id,msg){document.getElementById(id).textContent=msg;if(msg)ok=false;}
-  setErr('e-nome',nome?'':'Nome obrigatrio');
-  setErr('e-cpf',cpf.replace(/\D/g,'').length===11?'':'CPF invlido');
-  setErr('e-rg',rg?'':'RG obrigatrio');
-  setErr('e-email',/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)?'':'E-mail invlido');
-  setErr('e-tel',tel.replace(/\D/g,'').length>=10?'':'Telefone invlido');
-  setErr('e-nasc',nasc?'':'Data obrigatria');
-  if(ok)ir('t-setor');
-}
-
-function selSetor(s,btn){
-  setorSelecionado=s;
-  document.querySelectorAll('.setor-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('e-setor').textContent='';
-}
-
-async function enviarCadastro(){
-  if(!setorSelecionado){document.getElementById('e-setor').textContent='Selecione um setor';return;}
-  const btn=document.getElementById('btn-setor');
-  btn.textContent='Salvando...';btn.disabled=true;
-  const alerta=document.getElementById('setor-alert');
-  alerta.className='alert';alerta.textContent='';
-  try{
-    const nome=document.getElementById('f-nome').value.trim();
-    const cpf=document.getElementById('f-cpf').value;
-    const rg=document.getElementById('f-rg').value.trim();
-    const email=document.getElementById('f-email').value.trim();
-    const tel=document.getElementById('f-tel').value;
-    const nasc=document.getElementById('f-nasc').value;
-    // Salva cadastro
-    var cadBody={nome,cpf,rg,email,telefone:tel,nascimento:nasc,setor:setorSelecionado};
-    if(_LOTE_ID)cadBody.lote_id=parseInt(_LOTE_ID);
-    if(_RESP)cadBody.lote_nome=_RESP;
-    const cad=await sbFetch('cadastros',{method:'POST',body:JSON.stringify(cadBody)});
-    const cadId=cad&&cad[0]?cad[0].id:null;
-    // Invalida cdigo
-    await sbFetch(`codigos?codigo=eq.${codigoValido}`,{method:'PATCH',prefer:'return=minimal',body:JSON.stringify({usado:true,usado_em:new Date().toISOString(),cadastro_id:cadId})});
-    ir('t-sucesso');
-  }catch(e){
-    alerta.className='alert err';alerta.textContent='Erro ao salvar. Tente novamente.';
-  }finally{btn.textContent='Finalizar cadastro ';btn.disabled=false;}
-}
-
-// 
-// FOTO E PROVA DE VIDA
-// 
-var stream = null;
-var fotoDataUrl = null;
-var piscouOlhos = false;
-var detectionInterval = null;
-
-function irParaFoto(){
-  if(!setorSelecionado){document.getElementById('e-setor').textContent='Selecione um setor';return;}
-  ir('t-foto');
-  setTimeout(iniciarCamera, 300);
-  document.getElementById('btn-voltar-foto').style.display='block';
-}
-
-async function iniciarCamera(){
-  var status = document.getElementById('foto-status');
-  try {
-    stream = await navigator.mediaDevices.getUserMedia({
-      video: {facingMode: 'user', width: {ideal: 640}, height: {ideal: 640}},
-      audio: false
-    });
-    var video = document.getElementById('video');
-    video.srcObject = stream;
-    video.onloadedmetadata = function(){
-      video.play();
-      status.textContent = ' Olhe para a cmera e pisque os olhos';
-      document.getElementById('btn-foto').style.display = 'block';
-      document.getElementById('btn-voltar-foto').style.display = 'block';
-      iniciarDeteccao();
-    };
-  } catch(e) {
-    status.textContent = ' Cmera no disponvel. Toque em "Tirar foto" para continuar.';
-    document.getElementById('btn-foto').style.display = 'block';
-  }
-}
-
-function iniciarDeteccao(){
-  var video = document.getElementById('video');
-  var status = document.getElementById('foto-status');
-  var lastBrightness = null;
-  var blinkCount = 0;
-  var frameCount = 0;
-
-  detectionInterval = setInterval(function(){
-    if(!video.videoWidth) return;
-    var canvas = document.createElement('canvas');
-    canvas.width = 100; canvas.height = 100;
-    var ctx = canvas.getContext('2d');
-    ctx.drawImage(video, video.videoWidth*0.3, video.videoHeight*0.2, video.videoWidth*0.4, video.videoHeight*0.3, 0, 0, 100, 100);
-    var data = ctx.getImageData(0, 0, 100, 100).data;
-    var brightness = 0;
-    for(var i=0; i<data.length; i+=4) brightness += (data[i]+data[i+1]+data[i+2])/3;
-    brightness = brightness / (data.length/4);
-
-    if(lastBrightness !== null){
-      var diff = Math.abs(brightness - lastBrightness);
-      if(diff > 8){
-        blinkCount++;
-        if(blinkCount >= 2 && !piscouOlhos){
-          piscouOlhos = true;
-          status.textContent = ' Piscada detectada! Agora sorria e toque em "Tirar foto"';
-          clearInterval(detectionInterval);
-        }
-      }
+if(RESP){
+  document.getElementById("inv-nome").textContent=RESP;
+  document.getElementById("inv-banner").classList.remove("gone");
+} else if(LOTE_ID){
+  fetch(SB+"/rest/v1/lotes?id=eq."+LOTE_ID+"&select=responsavel&apikey="+KY).then(function(r){return r.json();}).then(function(d){
+    if(d&&d[0]){
+      document.getElementById("inv-nome").textContent=d[0].responsavel;
+      document.getElementById("inv-banner").classList.remove("gone");
+      RESP=d[0].responsavel;
     }
-    lastBrightness = brightness;
-    frameCount++;
+  }).catch(function(){});
+}
+if(COD_PRE)document.getElementById("f-cod").value=COD_PRE;
 
-    // After 5 seconds allow photo anyway
-    if(frameCount > 150 && !piscouOlhos){
-      piscouOlhos = true;
-      status.textContent = ' Pronto! Toque em "Tirar foto"';
-      clearInterval(detectionInterval);
-    }
-  }, 100);
+function q(id){return document.getElementById(id);}
+function ir(t){document.querySelectorAll(".tl").forEach(function(x){x.classList.remove("on");});q(t).classList.add("on");}
+function mCPF(el){var v=el.value.replace(/\D/g,"").slice(0,11);v=v.replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2");el.value=v;}
+function mTel(el){var v=el.value.replace(/\D/g,"").slice(0,11);v=v.replace(/(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2");el.value=v;}
+
+function ap(path,o){o=o||{};var h={"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json"};if(o.pref)h["Prefer"]=o.pref;return fetch(SB+"/rest/v1/"+path,{method:o.m||"GET",headers:h,body:o.b}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});}
+
+q("btn-cod").onclick=function(){
+  var c=q("f-cod").value.trim();var al=q("al-cod");al.innerHTML="";
+  if(!c||c.length<6){al.innerHTML="<div class='ea'>Digite o codigo de 6 digitos.</div>";return;}
+  var btn=this;btn.textContent="Verificando...";btn.disabled=true;
+  ap("codigos?codigo=eq."+c+"&select=*").then(function(d){
+    if(!d||!d.length){al.innerHTML="<div class='ea'>Codigo invalido.</div>";return;}
+    codOk=c;ir("t-dados");
+  }).catch(function(){al.innerHTML="<div class='ea'>Erro ao verificar.</div>";
+  }).finally(function(){btn.textContent="Continuar";btn.disabled=false;});
+};
+
+function irEmp(){
+  var ok=true;
+  function se(id,msg){q(id).textContent=msg;if(msg)ok=false;}
+  se("e-nome",q("f-nome").value.trim()?"":"Nome obrigatorio");
+  se("e-cpf",q("f-cpf").value.replace(/\D/g,"").length===11?"":"CPF invalido");
+  se("e-rg",q("f-rg").value.trim()?"":"RG obrigatorio");
+  se("e-email",/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(q("f-email").value.trim())?"":"Email invalido");
+  se("e-tel",q("f-tel").value.replace(/\D/g,"").length>=10?"":"Telefone invalido");
+  se("e-nasc",q("f-nasc").value?"":"Data obrigatoria");
+  if(ok)ir("t-emp");
 }
 
-function tirarFoto(){
-  var video = document.getElementById('video');
-  var canvas = document.getElementById('canvas');
-  var preview = document.getElementById('foto-preview');
-  var container = document.getElementById('video-container');
-
-  canvas.width = 200; canvas.height = 200;
-  var ctx = canvas.getContext('2d');
-
-  // Use full frame - no crop
-  ctx.drawImage(video, 0, 0, video.videoWidth, video.videoHeight, 0, 0, 200, 200);
-
-  fotoDataUrl = canvas.toDataURL('image/jpeg', 0.4);
-  preview.src = fotoDataUrl;
-  preview.style.display = 'block';
-  container.style.display = 'none';
-
-  document.getElementById('btn-foto').style.display = 'none';
-  document.getElementById('btn-refoto').style.display = 'block';
-  document.getElementById('btn-salvar-foto').style.display = 'block';
-  document.getElementById('foto-status').textContent = ' Foto tirada! Confirme ou tire outra.';
-
-  if(stream) stream.getTracks().forEach(function(t){t.stop();});
-  if(detectionInterval) clearInterval(detectionInterval);
-}
-
-function refoto(){
-  fotoDataUrl = null;
-  piscouOlhos = false;
-  var preview = document.getElementById('foto-preview');
-  var container = document.getElementById('video-container');
-  preview.style.display = 'none';
-  container.style.display = 'block';
-  document.getElementById('btn-refoto').style.display = 'none';
-  document.getElementById('btn-salvar-foto').style.display = 'none';
-  document.getElementById('btn-foto').style.display = 'block';
-  document.getElementById('foto-status').textContent = 'Iniciando cmera...';
+function irFoto(){
+  var ok=true;
+  function se(id,msg){q(id).textContent=msg;if(msg)ok=false;}
+  se("e-emp",q("f-emp").value.trim()?"":"Empresa obrigatoria");
+  se("e-car",q("f-car").value.trim()?"":"Cargo obrigatorio");
+  if(!ok)return;
+  ir("t-foto");
   iniciarCamera();
 }
 
-async function salvarComFoto(){
-  var btn = document.getElementById('btn-salvar-foto');
-  btn.textContent = 'Salvando...'; btn.disabled = true;
-  // Salva foto como base64 direto no banco
-  await enviarCadastroComFoto(fotoDataUrl || null);
+function iniciarCamera(){
+  navigator.mediaDevices.getUserMedia({video:{facingMode:"user"},audio:false})
+    .then(function(s){
+      stream=s;var v=q("video");v.srcObject=s;
+      v.onloadedmetadata=function(){v.play();q("foto-status").textContent="Olhe para a camera e pisque";q("btn-foto").style.display="block";};
+    })
+    .catch(function(){q("foto-status").textContent="Camera indisponivel. Toque em Tirar foto.";q("btn-foto").style.display="block";});
 }
 
-async function enviarCadastroComFoto(fotoUrl){
-  var btn = document.getElementById('btn-salvar-foto');
-  var alerta = document.getElementById('foto-alert');
-  try {
-    var nome = document.getElementById('f-nome').value.trim();
-    var cpf = document.getElementById('f-cpf').value;
-    var rg = document.getElementById('f-rg').value.trim();
-    var email = document.getElementById('f-email').value.trim();
-    var tel = document.getElementById('f-tel').value;
-    var nasc = document.getElementById('f-nasc').value;
-    var body = {nome:nome, cpf:cpf, rg:rg, email:email, telefone:tel, nascimento:nasc, setor:setorSelecionado};
-    if(fotoUrl) body.foto_url = fotoUrl;
+q("btn-foto").onclick=function(){
+  var v=q("video");var c=q("canvas");c.width=200;c.height=200;
+  var ctx=c.getContext("2d");
+  var size=Math.min(v.videoWidth||200,v.videoHeight||200);
+  ctx.drawImage(v,(v.videoWidth-size)/2,(v.videoHeight-size)/2,size,size,0,0,200,200);
+  fotoData=c.toDataURL("image/jpeg",0.5);
+  q("foto-prev").src=fotoData;q("foto-prev").style.display="block";
+  q("video-wrap").style.display="none";
+  q("btn-foto").style.display="none";q("btn-refoto").style.display="block";q("btn-salvar").style.display="block";
+  q("foto-status").textContent="Foto tirada! Confirme ou tire outra.";
+  if(stream)stream.getTracks().forEach(function(t){t.stop();});
+};
 
-    var cad = await sbFetch('cadastros', {method:'POST', body:JSON.stringify(body)});
-    var cadId = cad && cad[0] ? cad[0].id : null;
-    await sbFetch('codigos?codigo=eq.' + codigoValido, {method:'PATCH', prefer:'return=minimal', body:JSON.stringify({usado:true, usado_em:new Date().toISOString(), cadastro_id:cadId})});
-    ir('t-sucesso');
-  } catch(e){
-    alerta.innerHTML = '<div class="alert err">Erro ao salvar. Tente novamente.</div>';
-    btn.textContent = ' Confirmar e finalizar'; btn.disabled = false;
-  }
-}
+q("btn-refoto").onclick=function(){
+  fotoData=null;q("foto-prev").style.display="none";q("video-wrap").style.display="block";
+  q("btn-refoto").style.display="none";q("btn-salvar").style.display="none";q("btn-foto").style.display="block";
+  q("foto-status").textContent="Iniciando camera...";iniciarCamera();
+};
 
+q("btn-salvar").onclick=function(){
+  var btn=this;btn.textContent="Salvando...";btn.disabled=true;
+  var al=q("al-foto");al.innerHTML="";
+  var body={
+    nome:q("f-nome").value.trim(),
+    cpf:q("f-cpf").value,
+    rg:q("f-rg").value.trim(),
+    email:q("f-email").value.trim(),
+    telefone:q("f-tel").value,
+    nascimento:q("f-nasc").value,
+    setor:"Convidado",
+    empresa:q("f-emp").value.trim(),
+    cargo:q("f-car").value.trim(),
+    status:"pendente",
+    foto_url:fotoData||null
+  };
+  if(LOTE_ID)body.lote_id=parseInt(LOTE_ID);
+  if(RESP)body.lote_nome=RESP;
+  if(EV_ID)body.evento_id=parseInt(EV_ID);
+  ap("cadastros",{m:"POST",pref:"return=representation",b:JSON.stringify(body)}).then(function(cad){
+    var cadId=cad&&cad[0]?cad[0].id:null;
+    return ap("codigos?codigo=eq."+codOk,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({cadastro_id:cadId})});
+  }).then(function(){ir("t-ok");})
+  .catch(function(){al.innerHTML="<div class='ea'>Erro ao salvar. Tente novamente.</div>";})
+  .finally(function(){btn.textContent="Confirmar e finalizar";btn.disabled=false;});
+};
 </script>
 
 </body>
