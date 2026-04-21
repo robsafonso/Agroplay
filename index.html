@@ -147,6 +147,7 @@ textarea{height:70px;resize:none}
     <div class="fl"><label>Nome do responsavel</label><input id="lote-resp" placeholder="Ex: Albertone"></div>
     <div class="fl"><label>Quantidade de convites</label><input id="lote-qtd" type="number" value="10" min="1" max="200" placeholder="10"></div>
     <div class="fl"><label>Senha de acesso</label><input id="lote-senha" placeholder="Ex: albertone123" type="text"></div>
+    <div class="fl"><label>Evento (opcional)</label><select id="lote-ev" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none"><option value="">Nenhum evento</option></select></div>
     <button class="btn" id="bsalvalote" style="width:100%">Criar lote</button>
   </div>
 </div>
@@ -329,7 +330,11 @@ q("te").onclick=function(){tab("e");};
 q("tk").onclick=function(){tab("k");};
 q("tl").onclick=function(){tab("l");};
 q("tlt").onclick=function(){tab("lt");};
-q("bnovolote").onclick=function(){q("ovlote").classList.add("on");q("lote-alert").innerHTML="";q("lote-resp").value="";q("lote-qtd").value="10";q("lote-senha").value="";};
+q("bnovolote").onclick=function(){
+  q("ovlote").classList.add("on");q("lote-alert").innerHTML="";q("lote-resp").value="";q("lote-qtd").value="10";q("lote-senha").value="";
+  var sel=q("lote-ev");sel.innerHTML="<option value=''>Nenhum evento</option>";
+  evs.forEach(function(ev){sel.innerHTML+="<option value='"+ev.id+"'>"+ev.nome+"</option>";});
+};
 q("bflote").onclick=function(){q("ovlote").classList.remove("on");};
 q("bflinks").onclick=function(){q("ovlinks").classList.remove("on");};
 q("bcopiatodos").onclick=function(){
@@ -359,8 +364,11 @@ q("bsalvalote").onclick=function(){
           q("lote-alert").innerHTML="<div class='ea'>Apenas "+( cods?cods.length:0)+" codigos disponiveis!</div>";
           return;
         }
+        var evLote=q("lote-ev").value||null;
         var patches=cods.map(function(c){
-          return ap("codigos?codigo=eq."+c.codigo,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({lote_id:loteId})});
+          var upd={lote_id:loteId};
+          if(evLote)upd.evento_id=parseInt(evLote);
+          return ap("codigos?codigo=eq."+c.codigo,{m:"PATCH",pref:"return=minimal",b:JSON.stringify(upd)});
         });
         return Promise.all(patches).then(function(){
           var links=cods.map(function(c){
@@ -470,7 +478,8 @@ function verLinks(loteId){
       q("ovlinks-tit").textContent="Lote "+lt.responsavel+" - "+lt.quantidade+" convites";
       var html="";
       cods.forEach(function(c,i){
-        var link=LC+"?lote="+loteId+"&resp="+encodeURIComponent(lt.responsavel)+"&cod="+c.codigo;
+        var evId2=null;if(q("lote-ev"))evId2=q("lote-ev").value||null;
+        var link=LC+"?lote="+loteId+"&resp="+encodeURIComponent(lt.responsavel)+"&cod="+c.codigo+(evId2?"&ev="+evId2:"");
         var msgI="AGROPLAY - Convite de Cadastro\n\nVoce foi convidado por "+lt.responsavel+" para se cadastrar no sistema Agroplay!\n\nAcesse o link e faca seu cadastro:\n"+link+"\n\nSeu codigo: "+c.codigo+"\n\nCodigo intransferivel.\nAgroplay Music - Londrina PR";
         html+="<div style='background:#030503;border:1px solid #1a2a1a;border-radius:10px;padding:12px;margin-bottom:10px'>";
         html+="<div style='font-size:10px;color:#555;margin-bottom:4px;text-transform:uppercase'>Convite "+(i+1)+"</div>";
@@ -667,7 +676,7 @@ function gconvExt(){
     .then(function(d){
       if(!d||!d.length){q("calert-ext").innerHTML="<div class='ea'>Nenhum codigo disponivel!</div>";return;}
       var cod=d[0].codigo;
-      ap("codigos?codigo=eq."+cod,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString()})});
+      ap("codigos?codigo=eq."+cod,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString(),cadastro_id:pessoa?pessoa.id:null})});
       var link="https://robsafonso.github.io/Agroplay/cadastro-externo.html?ev="+eva.id+"&cod="+cod+"&resp="+encodeURIComponent("Robson");
       var df=eva.data?eva.data.split("-"):["","",""];
       var dataFmt=eva.data?df[2]+"/"+df[1]+"/"+df[0]:"";
