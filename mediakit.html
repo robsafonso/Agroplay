@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agroplay — Sistema de Gestão de Eventos</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --verde:#2aab47;
+  --verde2:#1e7a35;
+  --preto:#060a06;
+  --card:#090e09;
+  --borda:#1a2a1a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--preto);color:#eee;font-family:'DM Sans',sans-serif;overflow-x:hidden}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;position:relative;overflow:hidden}
+.hero::before{content:’’;position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(42,171,71,.15) 0%,transparent 70%);pointer-events:none}
+.hero::after{content:’’;position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(–verde),transparent)}
+.logo-hero{font-family:‘Bebas Neue’,sans-serif;font-size:clamp(60px,15vw,120px);letter-spacing:4px;line-height:1;color:#fff;margin-bottom:8px}
+.logo-hero span{color:var(–verde)}
+.tagline{font-size:clamp(13px,3vw,16px);color:#555;letter-spacing:4px;text-transform:uppercase;margin-bottom:40px}
+.hero-desc{font-size:clamp(16px,4vw,22px);color:#aaa;max-width:600px;line-height:1.6;margin-bottom:50px;font-weight:300}
+.hero-desc b{color:#fff;font-weight:700}
+.badge-hero{display:inline-flex;align-items:center;gap:8px;background:rgba(42,171,71,.1);border:1px solid rgba(42,171,71,.3);border-radius:100px;padding:10px 20px;font-size:13px;color:var(–verde);letter-spacing:1px}
+.badge-hero::before{content:‘●’;font-size:8px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* STATS */
+.stats-bar{display:flex;flex-wrap:wrap;justify-content:center;gap:0;border-top:1px solid var(–borda);border-bottom:1px solid var(–borda)}
+.stat-item{flex:1;min-width:140px;padding:30px 20px;text-align:center;border-right:1px solid var(–borda);position:relative}
+.stat-item:last-child{border-right:none}
+.stat-num{font-family:‘Bebas Neue’,sans-serif;font-size:48px;color:var(–verde);line-height:1}
+.stat-lbl{font-size:11px;color:#444;text-transform:uppercase;letter-spacing:2px;margin-top:4px}
+
+/* SECTION */
+.sec{padding:80px 20px;max-width:900px;margin:0 auto}
+.sec-label{font-size:11px;color:var(–verde);letter-spacing:4px;text-transform:uppercase;margin-bottom:12px}
+.sec-title{font-family:‘Bebas Neue’,sans-serif;font-size:clamp(36px,8vw,64px);line-height:1;color:#fff;margin-bottom:20px}
+.sec-sub{font-size:16px;color:#666;line-height:1.7;max-width:600px;font-weight:300}
+
+/* FEATURES GRID */
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1px;background:var(–borda);border:1px solid var(–borda);border-radius:16px;overflow:hidden;margin-top:50px}
+.feat{background:var(–card);padding:28px;transition:background .3s}
+.feat:hover{background:#0d150d}
+.feat-icon{font-size:28px;margin-bottom:14px}
+.feat-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:8px}
+.feat-desc{font-size:13px;color:#555;line-height:1.6}
+
+/* FLOW */
+.flow{display:flex;flex-direction:column;gap:0;margin-top:50px;border:1px solid var(–borda);border-radius:16px;overflow:hidden}
+.flow-item{display:flex;gap:20px;padding:24px 28px;border-bottom:1px solid var(–borda);align-items:flex-start;background:var(–card)}
+.flow-item:last-child{border-bottom:none}
+.flow-num{font-family:‘Bebas Neue’,sans-serif;font-size:32px;color:var(–verde);opacity:.4;min-width:36px;line-height:1}
+.flow-content{}
+.flow-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:4px}
+.flow-desc{font-size:13px;color:#555;line-height:1.5}
+
+/* ROADMAP */
+.road{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:50px}
+.road-item{border:1px solid var(–borda);border-radius:12px;padding:20px;background:var(–card);position:relative;overflow:hidden}
+.road-item::before{content:’’;position:absolute;top:0;left:0;right:0;height:2px}
+.road-item.done::before{background:var(–verde)}
+.road-item.next::before{background:#0891b2}
+.road-item.future::before{background:#555}
+.road-tag{font-size:9px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;font-weight:700}
+.road-item.done .road-tag{color:var(–verde)}
+.road-item.next .road-tag{color:#0891b2}
+.road-item.future .road-tag{color:#444}
+.road-title{font-size:13px;color:#eee;font-weight:600;margin-bottom:4px}
+.road-desc{font-size:11px;color:#444;line-height:1.5}
+
+/* LINKS */
+.links-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:40px}
+.link-card{background:var(–card);border:1px solid var(–borda);border-radius:12px;padding:20px;text-decoration:none;display:block;transition:border-color .3s}
+.link-card:hover{border-color:var(–verde)}
+.link-tag{font-size:9px;color:var(–verde);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.link-url{font-size:12px;color:#555;word-break:break-all;font-family:monospace}
+
+/* FOOTER */
+footer{border-top:1px solid var(–borda);padding:40px 20px;text-align:center}
+.footer-logo{font-family:‘Bebas Neue’,sans-serif;font-size:36px;color:#fff;letter-spacing:4px}
+.footer-logo span{color:var(–verde)}
+.footer-sub{font-size:12px;color:#333;margin-top:8px;letter-spacing:2px;text-transform:uppercase}
+</style>
+
+</head>
+<body>
+
+<!-- HERO -->
+
+<section class="hero">
+  <div class="logo-hero">AGRO<span>PLAY</span></div>
+  <div class="tagline">Sistema de Gestão de Eventos</div>
+  <p class="hero-desc">Uma plataforma completa para <b>gerenciar cadastros, convites e listas</b> de eventos musicais. Do convite ao check-in, tudo em um só lugar.</p>
+  <div class="badge-hero">Sistema ativo — Londrina, PR</div>
+</section>
+
+<!-- STATS -->
+
+<div class="stats-bar">
+  <div class="stat-item"><div class="stat-num">500</div><div class="stat-lbl">Codigos ativos</div></div>
+  <div class="stat-item"><div class="stat-num">5</div><div class="stat-lbl">Paginas do sistema</div></div>
+  <div class="stat-item"><div class="stat-num">3</div><div class="stat-lbl">Tipos de convite</div></div>
+  <div class="stat-item"><div class="stat-num">∞</div><div class="stat-lbl">Eventos e lotes</div></div>
+</div>
+
+<!-- FUNCIONALIDADES -->
+
+<section class="sec">
+  <div class="sec-label">O que o sistema faz</div>
+  <div class="sec-title">FUNCIONALIDADES<br>COMPLETAS</div>
+  <div class="sec-sub">Tudo que um escritório artístico precisa para gerenciar seus eventos com profissionalismo.</div>
+  <div class="features">
+    <div class="feat"><div class="feat-icon">🎛️</div><div class="feat-title">Painel Gerente</div><div class="feat-desc">Visão geral de todos os cadastros, filtros por setor, aprovação e reprovação com mensagem automática.</div></div>
+    <div class="feat"><div class="feat-icon">🎫</div><div class="feat-title">Convite Interno</div><div class="feat-desc">Para pessoas já cadastradas. Apenas confirma presença com código único. Sem preencher dados de novo.</div></div>
+    <div class="feat"><div class="feat-icon">🌐</div><div class="feat-title">Convite Externo</div><div class="feat-desc">Para pessoas novas. Cadastro completo com empresa, cargo e foto com verificação facial.</div></div>
+    <div class="feat"><div class="feat-icon">📦</div><div class="feat-title">Sistema de Lotes</div><div class="feat-desc">Distribui cotas de convites para colaboradores. Cada um tem seu painel com histórico colorido.</div></div>
+    <div class="feat"><div class="feat-icon">📋</div><div class="feat-title">Lista de Eventos</div><div class="feat-desc">Selecione, exclua e restaure pessoas da lista. Exporte em Excel ou CSV na hora.</div></div>
+    <div class="feat"><div class="feat-icon">🔗</div><div class="feat-title">Link de Cadastro</div><div class="feat-desc">Envie convites de cadastro direto pelo WhatsApp com código único e mensagem pronta.</div></div>
+    <div class="feat"><div class="feat-icon">📸</div><div class="feat-title">Prova de Vida</div><div class="feat-desc">Foto obrigatória no cadastro com detecção de presença real. Segurança no acesso aos eventos.</div></div>
+    <div class="feat"><div class="feat-icon">👁️</div><div class="feat-title">Rastreio de Convites</div><div class="feat-desc">Saiba quem convidou quem. Cada cadastro mostra "Convidado por X" no perfil e na lista.</div></div>
+    <div class="feat"><div class="feat-icon">➕</div><div class="feat-title">Incluir em Evento</div><div class="feat-desc">Adicione qualquer pessoa cadastrada a um evento diretamente pelo perfil, sem precisar de convite.</div></div>
+  </div>
+</section>
+
+<!-- FLUXO -->
+
+<section class="sec" style="padding-top:0">
+  <div class="sec-label">Como funciona</div>
+  <div class="sec-title">FLUXO DO<br>SISTEMA</div>
+  <div class="flow">
+    <div class="flow-item"><div class="flow-num">01</div><div class="flow-content"><div class="flow-title">Gerente cria o evento</div><div class="flow-desc">Nome, data, local, link do Maps, atrações com Instagram e foto de divulgação.</div></div></div>
+    <div class="flow-item"><div class="flow-num">02</div><div class="flow-content"><div class="flow-title">Distribui convites</div><div class="flow-desc">Envia convites internos para quem já está no sistema ou externos para novos convidados. Pode criar lotes para colaboradores distribuírem.</div></div></div>
+    <div class="flow-item"><div class="flow-num">03</div><div class="flow-content"><div class="flow-title">Pessoa recebe e se cadastra</div><div class="flow-desc">Clica no link, preenche os dados, tira a selfie e confirma presença com o código único.</div></div></div>
+    <div class="flow-item"><div class="flow-num">04</div><div class="flow-content"><div class="flow-title">Gerente aprova ou reprova</div><div class="flow-desc">Visualiza foto, dados completos e histórico de quem convidou. Aprova com 1 toque.</div></div></div>
+    <div class="flow-item"><div class="flow-num">05</div><div class="flow-content"><div class="flow-title">Gera a lista final</div><div class="flow-desc">Seleciona quem vai, exclui quem não vai, exporta Excel ou CSV para a produção do evento.</div></div></div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+
+<section class="sec" style="padding-top:0">
+  <div class="sec-label">Evolução do sistema</div>
+  <div class="sec-title">PRÓXIMOS<br>PASSOS</div>
+  <div class="sec-sub">Sugestões para tornar o sistema ainda mais poderoso.</div>
+  <div class="road">
+    <div class="road-item done"><div class="road-tag">✅ Concluído</div><div class="road-title">Sistema base</div><div class="road-desc">Gerente, cadastros, convites, lotes e listas funcionando.</div></div>
+    <div class="road-item next"><div class="road-tag">🔵 Próximo</div><div class="road-title">App de check-in</div><div class="road-desc">Scanner de QR Code na porta do evento para confirmar entrada em tempo real.</div></div>
+    <div class="road-item next"><div class="road-tag">🔵 Próximo</div><div class="road-title">Notificações WhatsApp</div><div class="road-desc">Mensagem automática quando cadastro é aprovado ou evento se aproxima.</div></div>
+    <div class="road-item future"><div class="road-tag">🔮 Futuro</div><div class="road-title">Página do evento</div><div class="road-desc">Landing page pública do evento com contagem regressiva e confirmação de presença.</div></div>
+    <div class="road-item future"><div class="road-tag">🔮 Futuro</div><div class="road-title">Dashboard analytics</div><div class="road-desc">Gráficos de cadastros por evento, taxa de confirmação e origem dos convidados.</div></div>
+    <div class="road-item future"><div class="road-tag">🔮 Futuro</div><div class="road-title">App nativo</div><div class="road-desc">Aplicativo iOS/Android com notificações push e acesso offline ao gerente.</div></div>
+  </div>
+</section>
+
+<!-- LINKS -->
+
+<section class="sec" style="padding-top:0">
+  <div class="sec-label">Acesse o sistema</div>
+  <div class="sec-title">LINKS<br>DO SISTEMA</div>
+  <div class="links-grid">
+    <div class="link-card"><div class="link-tag">Gerente</div><div class="link-url">robsafonso.github.io/Agroplay</div></div>
+    <div class="link-card"><div class="link-tag">Cadastro</div><div class="link-url">robsafonso.github.io/Agroplay/cadastro.html</div></div>
+    <div class="link-card"><div class="link-tag">Convite</div><div class="link-url">robsafonso.github.io/Agroplay/convite.html</div></div>
+    <div class="link-card"><div class="link-tag">Painel Lote</div><div class="link-url">robsafonso.github.io/Agroplay/lote.html</div></div>
+    <div class="link-card"><div class="link-tag">Cadastro Externo</div><div class="link-url">robsafonso.github.io/Agroplay/cadastro-externo.html</div></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+
+<footer>
+  <div class="footer-logo">AGRO<span>PLAY</span></div>
+  <div class="footer-sub">Sistema desenvolvido sob medida — Londrina, PR</div>
+</footer>
+
+</body>
+</html>
