@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agroplay - Sistema</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#060a06;color:#eee;font-family:Arial;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+.logo{font-size:36px;font-weight:900;color:#fff;text-align:center;margin-bottom:6px;letter-spacing:2px}
+.logo span{color:#2aab47}
+.sub{font-size:12px;color:#444;letter-spacing:3px;text-transform:uppercase;text-align:center;margin-bottom:40px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:400px}
+.card{background:#090e09;border:1px solid #1a2a1a;border-radius:16px;padding:24px 16px;text-align:center;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:10px;transition:border-color .2s;cursor:pointer}
+.card:active{background:#0d150d;border-color:#2aab47}
+.card-icon{font-size:36px}
+.card-title{font-size:14px;font-weight:700;color:#fff}
+.card-desc{font-size:11px;color:#555;line-height:1.4}
+.card.green{border-color:rgba(42,171,71,.3)}
+.card.blue{border-color:rgba(8,145,178,.3)}
+.card.yellow{border-color:rgba(201,151,60,.3)}
+.card.gray{border-color:rgba(255,255,255,.1)}
+.footer{margin-top:40px;font-size:11px;color:#333;text-align:center;letter-spacing:2px;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="logo">AGRO<span>PLAY</span></div>
+<div class="sub">Sistema de Gestao</div>
+<div class="grid">
+  <a href="index.html" class="card green">
+    <div class="card-icon">🎛️</div>
+    <div class="card-title">Gerente</div>
+    <div class="card-desc">Cadastros, eventos, lotes e listas</div>
+  </a>
+  <a href="admin.html" class="card blue">
+    <div class="card-icon">✅</div>
+    <div class="card-title">Admin</div>
+    <div class="card-desc">Check-in e validadores do evento</div>
+  </a>
+  <a href="checkin.html" class="card yellow">
+    <div class="card-icon">📱</div>
+    <div class="card-title">Scanner</div>
+    <div class="card-desc">Escaner QR na porta do evento</div>
+  </a>
+  <a href="mediakit.html" class="card gray">
+    <div class="card-icon">📋</div>
+    <div class="card-title">Media Kit</div>
+    <div class="card-desc">Apresentacao do sistema</div>
+  </a>
+</div>
+<div class="footer">Londrina - PR</div>
+</body>
+</html>
