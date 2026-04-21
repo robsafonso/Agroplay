@@ -128,6 +128,7 @@ if(RESP){
 if(COD_PRE)document.getElementById("f-cod").value=COD_PRE;
 
 function q(id){return document.getElementById(id);}
+function mudarCargo(v){var wrap=document.getElementById("cargo-outro-wrap");if(v==="outro"){wrap.style.display="block";}else{wrap.style.display="none";}}
 function ir(t){document.querySelectorAll(".tl").forEach(function(x){x.classList.remove("on");});q(t).classList.add("on");}
 function mCPF(el){var v=el.value.replace(/\D/g,"").slice(0,11);v=v.replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2");el.value=v;}
 function mTel(el){var v=el.value.replace(/\D/g,"").slice(0,11);v=v.replace(/(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2");el.value=v;}
