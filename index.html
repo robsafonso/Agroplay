@@ -272,7 +272,7 @@ q("bflinkc").onclick=function(){q("ovlinkc").classList.remove("on");q("lc-result
 q("bgerarlinkc").onclick=function(){
   var btn=q("bgerarlinkc");btn.textContent="Gerando...";btn.disabled=true;
   q("lc-alert").innerHTML="";
-  fetch(SB+"/rest/v1/codigos?usado=eq.false&order=id.asc&limit=1",{headers:{"apikey":KY,"Authorization":"Bearer "+KY}})
+  fetch(SB+"/rest/v1/codigos?usado=eq.false&lote_id=is.null&order=id.asc&limit=1",{headers:{"apikey":KY,"Authorization":"Bearer "+KY}})
     .then(function(r){return r.json();})
     .then(function(d){
       if(!d||!d.length){q("lc-alert").innerHTML="<div class='ea'>Nenhum codigo disponivel!</div>";return;}
@@ -671,7 +671,7 @@ function gconvExt(){
   if(!eva)return;
   var btn=q("bgconv");btn.textContent="Gerando...";btn.disabled=true;
   q("calert-ext").innerHTML="";
-  fetch(SB+"/rest/v1/codigos?usado=eq.false&order=id.asc&limit=1",{headers:{"apikey":KY,"Authorization":"Bearer "+KY}})
+  fetch(SB+"/rest/v1/codigos?usado=eq.false&lote_id=is.null&order=id.asc&limit=1",{headers:{"apikey":KY,"Authorization":"Bearer "+KY}})
     .then(function(r){return r.json();})
     .then(function(d){
       if(!d||!d.length){q("calert-ext").innerHTML="<div class='ea'>Nenhum codigo disponivel!</div>";return;}
@@ -693,7 +693,7 @@ function gconv(){
   if(cs.length===0){q("calert").innerHTML="<div class='ea'>Selecione pelo menos 1 pessoa</div>";return;}
   var btn=q("bgconv");btn.textContent="Gerando...";btn.disabled=true;
   q("calert").innerHTML="";
-  fetch(SB+"/rest/v1/codigos?usado=eq.false&order=id.asc&limit=1",{headers:{"apikey":KY,"Authorization":"Bearer "+KY}})
+  fetch(SB+"/rest/v1/codigos?usado=eq.false&lote_id=is.null&order=id.asc&limit=1",{headers:{"apikey":KY,"Authorization":"Bearer "+KY}})
     .then(function(r){return r.json();})
     .then(function(d){
       if(!d||!d.length){q("calert").innerHTML="<div class='ea'>Nenhum codigo disponivel!</div>";return;}
