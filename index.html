@@ -996,6 +996,7 @@ function gconv(){
       var msg="AGROPLAY - Convite VIP\n\nOla "+pessoa.nome+"!\n\nVoce esta convidado(a):\n\n"+ev.nome+(dataFmt?"\nData: "+dataFmt:"")+(ev.local?"\nLocal: "+ev.local:"")+(ev.atracao1?"\nAtracoes: "+ev.atracao1+(ev.atracao2?" + "+ev.atracao2:""):"");
       msg=msg+"\n\nAcesse e confirme presenca:\n"+LCV+"?ev="+ev.id+"&tipo=interno\n\nSeu codigo: "+cod+"\n\nCodigo intransferivel.\nAgroplay - Londrina PR";
       ap("codigos?codigo=eq."+cod,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString(),cadastro_id:pessoa?pessoa.id:null})});
+      if(pessoa&&ev.id){ap("cadastros?id=eq."+pessoa.id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({evento_id:ev.id,status:"aprovado"})}).then(function(){for(var i=0;i<cads.length;i++){if(cads[i].id===pessoa.id){cads[i].evento_id=ev.id;cads[i].status="aprovado";break;}}});}
       q("ccod").textContent=cod;
       q("cmsg").textContent=msg;
       q("cres").classList.remove("gone");
