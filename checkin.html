@@ -139,6 +139,20 @@ q("btn-buscar").onclick=function(){
   buscarCodigo(c);
 };
 
+function verificarLotado(evId,callback){
+  if(!evId){callback(false);return;}
+  ap("eventos?id=eq."+evId+"&select=lotado,capacidade").then(function(d){
+    if(!d||!d[0]){callback(false);return;}
+    var ev=d[0];
+    if(ev.lotado){callback(true,"Evento marcado como LOTADO pelo organizador.");return;}
+    if(ev.capacidade>0){
+      ap("cadastros?evento_id=eq."+evId+"&entrada_em=not.is.null&select=id").then(function(e){
+        if(e&&e.length>=ev.capacidade){callback(true,"Capacidade maxima atingida ("+ev.capacidade+" pessoas).");}
+        else{callback(false);}
+      }).catch(function(){callback(false);});
+    } else {callback(false);}
+  }).catch(function(){callback(false);});
+}
 function buscarCodigo(cod){
   var btn=q("btn-buscar");btn.textContent="Buscando...";btn.disabled=true;
   q("al-scan").innerHTML="";
@@ -185,11 +199,18 @@ function mostrarPerfil(c){
 q("btn-confirmar").onclick=function(){
   if(!cadAtual||!valAtual)return;
   var btn=this;btn.textContent="Confirmando...";btn.disabled=true;
+  verificarLotado(cadAtual.evento_id,function(lotado,msg){
+    if(lotado){
+      q("al-res").innerHTML="<div class='ea'>"+msg+"</div>";
+      btn.textContent="Confirmar entrada";btn.disabled=false;
+      return;
+    }
   ap("cadastros?id=eq."+cadAtual.id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({entrada_em:new Date().toISOString(),validador_nome:valAtual.nome,status:"aprovado"})}).then(function(){
     btn.style.display="none";
     q("al-res").innerHTML="<div class='ok'>Entrada confirmada! Bem-vindo(a) "+cadAtual.nome+"!</div>";
     cadAtual=null;
-  }).catch(function(){btn.textContent="Confirmar entrada";btn.disabled=false;});
+    }).catch(function(){btn.textContent="Confirmar entrada";btn.disabled=false;});
+  });
 };
 
 q("btn-novo").onclick=function(){
