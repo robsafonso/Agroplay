@@ -127,30 +127,24 @@ textarea{height:70px;resize:none}
       <div class="fl"><label>Nascimento</label><input id="cad-nasc" type="date"></div>
     </div>
     <div class="g2">
-      <div class="fl"><label>Empresa</label>
-        <select id="cad-emp" onchange="mudarEmpCad(this.value)" style="background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;width:100%">
-          <option value="">Selecione a empresa...</option>
-          <optgroup label="Grupo Agroplay">
-            <option value="Ana Castela">Ana Castela</option>
-            <option value="Leo e Raphael">Leo e Raphael</option>
-            <option value="Country Beat">Country Beat</option>
-            <option value="Muierada">Muierada</option>
-            <option value="Francisco">Francisco</option>
-            <option value="Julia e Rafaela">Julia e Rafaela</option>
-            <option value="Julya e Maryana">Julya e Maryana</option>
-            <option value="Duda Bertelli">Duda Bertelli</option>
-            <option value="Kamila e Kavic">Kamila e Kavic</option>
-            <option value="Escritorio Agroplay">Escritorio Agroplay</option>
-          </optgroup>
-          <option value="outra">Outra empresa</option>
-        </select>
-      </div>
-      <div class="fl" id="cad-emp-outra-wrap" style="display:none"><label>Nome da empresa</label><input id="cad-emp-outra" placeholder="Digite o nome da empresa"></div>
-      <div class="fl"><label>Funcao</label>
-        <select id="cad-car" style="background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;width:100%">
-          <option value="">Selecione a empresa primeiro...</option>
-        </select>
-      </div>
+      <div class="fl"><label>Empresa</label><select id="cad-emp" onchange="mudarEmpCad(this.value)" style="background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;width:100%">
+        <option value="">Selecione...</option>
+        <optgroup label="Grupo Agroplay">
+          <option value="Ana Castela">Ana Castela</option>
+          <option value="Leo e Raphael">Leo e Raphael</option>
+          <option value="Country Beat">Country Beat</option>
+          <option value="Muierada">Muierada</option>
+          <option value="Francisco">Francisco</option>
+          <option value="Julia e Rafaela">Julia e Rafaela</option>
+          <option value="Julya e Maryana">Julya e Maryana</option>
+          <option value="Duda Bertelli">Duda Bertelli</option>
+          <option value="Kamila e Kavic">Kamila e Kavic</option>
+          <option value="Escritorio Agroplay">Escritorio Agroplay</option>
+        </optgroup>
+        <option value="outra">Outra empresa</option>
+      </select></div>
+      <div class="fl" id="cad-emp-outra-wrap" style="display:none"><label>Nome da empresa</label><input id="cad-emp-outra" placeholder="Digite o nome"></div>
+      <div class="fl"><label>Funcao</label><select id="cad-car" style="background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;width:100%"><option value="">Selecione a empresa primeiro...</option></select></div>
       <div class="fl" id="cad-car-outro-wrap" style="display:none"><label>Qual funcao?</label><input id="cad-car-outro" placeholder="Digite sua funcao"></div>
     </div>
     <div class="fl"><label>Foto (opcional)</label>
@@ -233,30 +227,9 @@ textarea{height:70px;resize:none}
     </div>
     <button class="bto" id="beditcargo" style="width:100%;margin-top:12px;border-color:#c9973c;color:#c9973c">Editar empresa / funcao</button>
     <div id="editcargo-wrap" style="display:none;margin-top:10px">
-      <div class="fl"><label>Empresa</label>
-        <select id="edit-emp" onchange="mudarEmpEdit(this.value)" style="background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;width:100%">
-          <option value="">Selecione...</option>
-          <optgroup label="Grupo Agroplay">
-            <option value="Ana Castela">Ana Castela</option>
-            <option value="Leo e Raphael">Leo e Raphael</option>
-            <option value="Country Beat">Country Beat</option>
-            <option value="Muierada">Muierada</option>
-            <option value="Francisco">Francisco</option>
-            <option value="Julia e Rafaela">Julia e Rafaela</option>
-            <option value="Julya e Maryana">Julya e Maryana</option>
-            <option value="Duda Bertelli">Duda Bertelli</option>
-            <option value="Kamila e Kavic">Kamila e Kavic</option>
-            <option value="Escritorio Agroplay">Escritorio Agroplay</option>
-          </optgroup>
-          <option value="outra">Outra empresa</option>
-        </select>
-      </div>
+      <div class="fl"><label>Empresa</label><select id="edit-emp" onchange="mudarEmpEdit(this.value)" style="background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;width:100%"><option value="">Selecione...</option><optgroup label="Grupo Agroplay"><option value="Ana Castela">Ana Castela</option><option value="Leo e Raphael">Leo e Raphael</option><option value="Country Beat">Country Beat</option><option value="Muierada">Muierada</option><option value="Francisco">Francisco</option><option value="Julia e Rafaela">Julia e Rafaela</option><option value="Julya e Maryana">Julya e Maryana</option><option value="Duda Bertelli">Duda Bertelli</option><option value="Kamila e Kavic">Kamila e Kavic</option><option value="Escritorio Agroplay">Escritorio Agroplay</option></optgroup><option value="outra">Outra empresa</option></select></div>
       <div id="edit-emp-outra-wrap" style="display:none" class="fl"><label>Nome da empresa</label><input id="edit-emp-outra" placeholder="Digite o nome"></div>
-      <div class="fl"><label>Funcao</label>
-        <select id="edit-car" style="background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;width:100%">
-          <option value="">Selecione a empresa primeiro...</option>
-        </select>
-      </div>
+      <div class="fl"><label>Funcao</label><select id="edit-car" style="background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;width:100%"><option value="">Selecione a empresa primeiro...</option></select></div>
       <div id="edit-car-outro-wrap" style="display:none" class="fl"><label>Qual funcao?</label><input id="edit-car-outro" placeholder="Digite sua funcao"></div>
       <button class="btn" id="btn-salvar-cargo" style="width:100%;font-size:12px;padding:10px;background:#c9973c">Salvar</button>
     </div>
@@ -358,127 +331,6 @@ textarea{height:70px;resize:none}
 </div>
 <script>
 var MODO=new URLSearchParams(window.location.search).get("modo")||"edit";
-var CARGOS_ARTISTA=["Artista / Cantor","Musico / Banda","Bailarino / Dancarino","Diretor de Palco","Producao","Tecnico de Som","Tecnico de Luz","Tecnico de Video","Fotografo","Videomaker","Camarim","Maquiagem","Cabelo","Figurino","Assessoria de Imprensa","Comercial / Agenciamento","Seguranca","Motorista / Transfer","Road Manager","Outro"];
-var CARGOS_ESCRITORIO=["Socio / Fundador","CEO / Presidente","CMO / Diretor de Marketing","CFO / Diretor Financeiro","Diretor Comercial","Diretor de Eventos","Diretor de Operacoes","Gerente de Marketing","Gerente Comercial","Marketing Digital","Publicidade","Licenciamento","Midia e Comunicacao","Assessoria de Imprensa","Producao de Eventos","Setor de Eventos","RH / Recursos Humanos","Financeiro / Contabilidade","Juridico","Administrativo","Secretaria","Suporte / Apoio","Seguranca","Outro"];
-var CARGOS_OUTRA=["Presidente / CEO","Vice-Presidente","Diretor Executivo","Diretor Comercial","Diretor de Marketing","Diretor Financeiro","Diretor de Operacoes","Gerente Geral","Gerente Comercial","Gerente de Marketing","Gerente Financeiro","Coordenador","Supervisor","Analista","Consultor","Assessor","Relacoes Publicas","Marketing","Comunicacao","Comercial / Vendas","Financeiro","Contabilidade","Juridico","RH","Administrativo","Secretaria","Outro"];
-function mudarEmp(v){
-  var empOutra=document.getElementById("emp-outra-wrap");
-  empOutra.style.display=v==="outra"?"block":"none";
-  var sel=document.getElementById("f-car");
-  sel.innerHTML="<option value=''>Selecione sua funcao...</option>";
-  var lista=v==="Escritorio Agroplay"?CARGOS_ESCRITORIO:v==="outra"?CARGOS_OUTRA:v?CARGOS_ARTISTA:[];
-  lista.forEach(function(c){sel.innerHTML+="<option value='"+(c==="Outro"?"outro":c)+"'>"+c+"</option>";});
-  document.getElementById("cargo-outro-wrap").style.display="none";
-  sel.onchange=function(){document.getElementById("cargo-outro-wrap").style.display=this.value==="outro"?"block":"none";};
-}
-function mudarCargo(v){var wrap=document.getElementById("cargo-outro-wrap");if(v==="outro"){wrap.style.display="block";}else{wrap.style.display="none";}}
-function ir(t){document.querySelectorAll(".tl").forEach(function(x){x.classList.remove("on");});q(t).classList.add("on");}
-function mCPF(el){var v=el.value.replace(/\D/g,"").slice(0,11);v=v.replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2");el.value=v;}
-function mTel(el){var v=el.value.replace(/\D/g,"").slice(0,11);v=v.replace(/(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2");el.value=v;}
-
-function ap(path,o){o=o||{};var h={“apikey”:KY,“Authorization”:“Bearer “+KY,“Content-Type”:“application/json”};if(o.pref)h[“Prefer”]=o.pref;return fetch(SB+”/rest/v1/”+path,{method:o.m||“GET”,headers:h,body:o.b}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});}
-
-q(“btn-cod”).onclick=function(){
-var c=q(“f-cod”).value.trim();var al=q(“al-cod”);al.innerHTML=””;
-if(!c||c.length<6){al.innerHTML=”<div class='ea'>Digite o codigo de 6 digitos.</div>”;return;}
-var btn=this;btn.textContent=“Verificando…”;btn.disabled=true;
-ap(“codigos?codigo=eq.”+c+”&select=*”).then(function(d){
-if(!d||!d.length){al.innerHTML=”<div class='ea'>Codigo invalido.</div>”;return;}
-codOk=c;ir(“t-dados”);
-}).catch(function(){al.innerHTML=”<div class='ea'>Erro ao verificar.</div>”;
-}).finally(function(){btn.textContent=“Continuar”;btn.disabled=false;});
-};
-
-function irEmp(){
-var ok=true;
-function se(id,msg){q(id).textContent=msg;if(msg)ok=false;}
-se(“e-nome”,q(“f-nome”).value.trim()?””:“Nome obrigatorio”);
-se(“e-cpf”,q(“f-cpf”).value.replace(/\D/g,””).length===11?””:“CPF invalido”);
-se(“e-rg”,q(“f-rg”).value.trim()?””:“RG obrigatorio”);
-se(“e-email”,/^[^\s@]+@[^\s@]+.[^\s@]+$/.test(q(“f-email”).value.trim())?””:“Email invalido”);
-se(“e-tel”,q(“f-tel”).value.replace(/\D/g,””).length>=10?””:“Telefone invalido”);
-se(“e-nasc”,q(“f-nasc”).value?””:“Data obrigatoria”);
-if(ok)ir(“t-emp”);
-}
-
-function irFoto(){
-var ok=true;
-function se(id,msg){q(id).textContent=msg;if(msg)ok=false;}
-se(“e-emp”,q(“f-emp”).value.trim()?””:“Empresa obrigatoria”);
-se(“e-car”,q(“f-car”).value.trim()?””:“Cargo obrigatorio”);
-if(!ok)return;
-ir(“t-foto”);
-iniciarCamera();
-}
-
-function iniciarCamera(){
-navigator.mediaDevices.getUserMedia({video:{facingMode:“user”},audio:false})
-.then(function(s){
-stream=s;var v=q(“video”);v.srcObject=s;
-v.onloadedmetadata=function(){v.play();q(“foto-status”).textContent=“Olhe para a camera e pisque”;q(“btn-foto”).style.display=“block”;};
-})
-.catch(function(){q(“foto-status”).textContent=“Camera indisponivel. Toque em Tirar foto.”;q(“btn-foto”).style.display=“block”;});
-}
-
-q(“btn-foto”).onclick=function(){
-var v=q(“video”);var c=q(“canvas”);c.width=200;c.height=200;
-var ctx=c.getContext(“2d”);
-var size=Math.min(v.videoWidth||200,v.videoHeight||200);
-ctx.drawImage(v,(v.videoWidth-size)/2,(v.videoHeight-size)/2,size,size,0,0,200,200);
-fotoData=c.toDataURL(“image/jpeg”,0.5);
-q(“foto-prev”).src=fotoData;q(“foto-prev”).style.display=“block”;
-q(“video-wrap”).style.display=“none”;
-q(“btn-foto”).style.display=“none”;q(“btn-refoto”).style.display=“block”;q(“btn-salvar”).style.display=“block”;
-q(“foto-status”).textContent=“Foto tirada! Confirme ou tire outra.”;
-if(stream)stream.getTracks().forEach(function(t){t.stop();});
-};
-
-q(“btn-refoto”).onclick=function(){
-fotoData=null;q(“foto-prev”).style.display=“none”;q(“video-wrap”).style.display=“block”;
-q(“btn-refoto”).style.display=“none”;q(“btn-salvar”).style.display=“none”;q(“btn-foto”).style.display=“block”;
-q(“foto-status”).textContent=“Iniciando camera…”;iniciarCamera();
-};
-
-q(“btn-salvar”).onclick=function(){
-var btn=this;btn.textContent=“Salvando…”;btn.disabled=true;
-var al=q(“al-foto”);al.innerHTML=””;
-var body={
-nome:q(“f-nome”).value.trim(),
-cpf:q(“f-cpf”).value,
-rg:q(“f-rg”).value.trim(),
-email:q(“f-email”).value.trim(),
-telefone:q(“f-tel”).value,
-nascimento:q(“f-nasc”).value,
-setor:“Convidado”,
-empresa:q(“f-emp”).value.trim(),
-cargo:q(“f-car”).value.trim(),
-status:“pendente”,
-foto_url:fotoData||null
-};
-if(LOTE_ID)body.lote_id=parseInt(LOTE_ID);
-if(RESP)body.lote_nome=RESP;
-if(EV_ID)body.evento_id=parseInt(EV_ID);
-ap(“cadastros”,{m:“POST”,pref:“return=representation”,b:JSON.stringify(body)}).then(function(cad){
-var cadId=cad&&cad[0]?cad[0].id:null;
-return ap(“codigos?codigo=eq.”+codOk,{m:“PATCH”,pref:“return=minimal”,b:JSON.stringify({cadastro_id:cadId})});
-}).then(function(){ir(“t-ok”);})
-.catch(function(){al.innerHTML=”<div class='ea'>Erro ao salvar. Tente novamente.</div>”;})
-.finally(function(){btn.textContent=“Confirmar e finalizar”;btn.disabled=false;});
-};
-</script>
-
-</body>
-</html>
-function mudarEmpCad(v){
-  var w=document.getElementById("cad-emp-outra-wrap");
-  if(w)w.style.display=v==="outra"?"block":"none";
-  var sel=document.getElementById("cad-car");
-  sel.innerHTML="<option value=''>Selecione sua funcao...</option>";
-  var lista=v==="Escritorio Agroplay"?CARGOS_ESCRITORIO:v==="outra"?CARGOS_OUTRA:v?CARGOS_ARTISTA:[];
-  lista.forEach(function(c){sel.innerHTML+="<option value='"+(c==="Outro"?"outro":c)+"'>"+c+"</option>";});
-  document.getElementById("cad-car-outro-wrap").style.display="none";
-  sel.onchange=function(){document.getElementById("cad-car-outro-wrap").style.display=this.value==="outro"?"block":"none";};
-}
 var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
 var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
 var LC="https://robsafonso.github.io/Agroplay/cadastro-externo.html";
@@ -495,11 +347,12 @@ q("r").onclick=load;
 q("bnovocad").onclick=function(){
   q("ovcad").classList.add("on");
   q("cad-alert").innerHTML="";
-  ["cad-nome","cad-cpf","cad-rg","cad-email","cad-tel","cad-emp-outra","cad-car-outro"].forEach(function(id){var el=q(id);if(el)el.value="";});
-  var cs1=q("cad-emp");if(cs1)cs1.selectedIndex=0;
-  var cs2=q("cad-car");if(cs2){cs2.innerHTML="<option value=''>Selecione a empresa primeiro...</option>";}
-  var w1=q("cad-emp-outra-wrap");if(w1)w1.style.display="none";
-  var w2=q("cad-car-outro-wrap");if(w2)w2.style.display="none";
+  ["cad-nome","cad-cpf","cad-rg","cad-email","cad-tel"].forEach(function(id){q(id).value="";});
+  q("cad-emp").selectedIndex=0;
+  q("cad-car").innerHTML="<option>Selecione a empresa primeiro...</option>";
+  if(q("cad-emp-outra"))q("cad-emp-outra").value="";
+  if(q("cad-emp-outra-wrap"))q("cad-emp-outra-wrap").style.display="none";
+  if(q("cad-car-outro-wrap"))q("cad-car-outro-wrap").style.display="none";
   q("cad-nasc").value="";
 };
 q("bfcad").onclick=function(){q("ovcad").classList.remove("on");};
@@ -602,48 +455,6 @@ q("bxls").onclick=expExcel;
 q("bcsv").onclick=expCSV;
 q("bfp").onclick=function(){q("ovp").classList.remove("on");pa=null;};
 q("bdel").onclick=delP;
-function mudarEmpEdit(v){
-  var w=document.getElementById("edit-emp-outra-wrap");
-  if(w)w.style.display=v==="outra"?"block":"none";
-  var sel=document.getElementById("edit-car");
-  sel.innerHTML="<option value=''>Selecione sua funcao...</option>";
-  var lista=v==="Escritorio Agroplay"?CARGOS_ESCRITORIO:v==="outra"?CARGOS_OUTRA:v?CARGOS_ARTISTA:[];
-  lista.forEach(function(c){sel.innerHTML+="<option value='"+(c==="Outro"?"outro":c)+"'>"+c+"</option>";});
-  document.getElementById("edit-car-outro-wrap").style.display="none";
-  sel.onchange=function(){document.getElementById("edit-car-outro-wrap").style.display=this.value==="outro"?"block":"none";};
-}
-q("beditcargo").onclick=function(){
-  var wrap=document.getElementById("editcargo-wrap");
-  if(wrap.style.display==="none"){
-    wrap.style.display="block";
-    q("beditcargo").textContent="Fechar edicao";
-    if(pa){
-      var empSel=document.getElementById("edit-emp");
-      var empVal=pa.empresa||"";
-      var inGroup=["Ana Castela","Leo e Raphael","Country Beat","Muierada","Francisco","Julia e Rafaela","Julya e Maryana","Duda Bertelli","Kamila e Kavic","Escritorio Agroplay"];
-      if(inGroup.indexOf(empVal)>=0){empSel.value=empVal;mudarEmpEdit(empVal);document.getElementById("edit-car").value=pa.cargo||"";}
-      else if(empVal){empSel.value="outra";mudarEmpEdit("outra");document.getElementById("edit-emp-outra").value=empVal;document.getElementById("edit-car").value=pa.cargo||"";}
-    }
-  } else {
-    wrap.style.display="none";
-    q("beditcargo").textContent="Editar empresa / funcao";
-  }
-};
-q("btn-salvar-cargo").onclick=function(){
-  if(!pa)return;
-  var empSel=document.getElementById("edit-emp");
-  var emp=empSel.value==="outra"?document.getElementById("edit-emp-outra").value.trim():empSel.value;
-  var carSel=document.getElementById("edit-car");
-  var car=carSel.value==="outro"?document.getElementById("edit-car-outro").value.trim():carSel.value;
-  var btn=q("btn-salvar-cargo");btn.textContent="Salvando...";btn.disabled=true;
-  ap("cadastros?id=eq."+pa.id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({empresa:emp,cargo:car})}).then(function(){
-    pa.empresa=emp;pa.cargo=car;
-    for(var i=0;i<cads.length;i++){if(cads[i].id===pa.id){cads[i].empresa=emp;cads[i].cargo=car;break;}}
-    document.getElementById("editcargo-wrap").style.display="none";
-    q("beditcargo").textContent="Editar empresa / funcao";
-    verP(pa.id);
-  }).catch(function(){}).finally(function(){btn.textContent="Salvar";btn.disabled=false;});
-};
 var _faStream=null;
 q("batualizafoto").onclick=function(){
   var wrap=q("foto-atualiza-wrap");
@@ -928,6 +739,61 @@ function delLote(id){
     load();
   }).catch(function(e){alert("Erro ao excluir: "+e.message);});
 }
+var CARGOS_ARTISTA=["Artista / Cantor","Musico / Banda","Bailarino / Dancarino","Diretor de Palco","Producao","Tecnico de Som","Tecnico de Luz","Fotografo","Videomaker","Camarim","Maquiagem","Assessoria de Imprensa","Comercial / Agenciamento","Seguranca","Motorista / Transfer","Road Manager","Outro"];
+var CARGOS_ESCRITORIO=["Socio / Fundador","CEO / Presidente","CMO / Diretor de Marketing","CFO / Diretor Financeiro","Diretor Comercial","Diretor de Eventos","Gerente de Marketing","Marketing Digital","Publicidade","Licenciamento","Assessoria de Imprensa","Producao de Eventos","RH / Recursos Humanos","Financeiro / Contabilidade","Juridico","Administrativo","Secretaria","Seguranca","Outro"];
+var CARGOS_OUTRA=["Presidente / CEO","Vice-Presidente","Diretor Executivo","Diretor Comercial","Diretor de Marketing","Diretor Financeiro","Gerente Geral","Gerente Comercial","Coordenador","Supervisor","Analista","Consultor","Relacoes Publicas","Marketing","Comercial / Vendas","Financeiro","Juridico","RH","Administrativo","Secretaria","Outro"];
+function mudarEmpCad(v){
+  var w=q("cad-emp-outra-wrap");
+  if(w)w.style.display=v==="outra"?"block":"none";
+  var s=q("cad-car");
+  s.innerHTML="";
+  var l=v==="Escritorio Agroplay"?CARGOS_ESCRITORIO:v==="outra"?CARGOS_OUTRA:v?CARGOS_ARTISTA:[];
+  l.forEach(function(c){s.innerHTML+="<option value='"+(c==="Outro"?"outro":c)+"'>"+c+"</option>";});
+  if(q("cad-car-outro-wrap"))q("cad-car-outro-wrap").style.display="none";
+  s.onchange=function(){if(q("cad-car-outro-wrap"))q("cad-car-outro-wrap").style.display=this.value==="outro"?"block":"none";};
+}
+function mudarEmpEdit(v){
+  var w=q("edit-emp-outra-wrap");
+  if(w)w.style.display=v==="outra"?"block":"none";
+  var s=q("edit-car");
+  s.innerHTML="";
+  var l=v==="Escritorio Agroplay"?CARGOS_ESCRITORIO:v==="outra"?CARGOS_OUTRA:v?CARGOS_ARTISTA:[];
+  l.forEach(function(c){s.innerHTML+="<option value='"+(c==="Outro"?"outro":c)+"'>"+c+"</option>";});
+  if(q("edit-car-outro-wrap"))q("edit-car-outro-wrap").style.display="none";
+  s.onchange=function(){if(q("edit-car-outro-wrap"))q("edit-car-outro-wrap").style.display=this.value==="outro"?"block":"none";};
+}
+q("beditcargo").onclick=function(){
+  var w=q("editcargo-wrap");
+  if(w.style.display==="none"){
+    w.style.display="block";
+    q("beditcargo").textContent="Fechar edicao";
+    if(pa){
+      var es=q("edit-emp");
+      var ev=pa.empresa||"";
+      var ig=["Ana Castela","Leo e Raphael","Country Beat","Muierada","Francisco","Julia e Rafaela","Julya e Maryana","Duda Bertelli","Kamila e Kavic","Escritorio Agroplay"];
+      if(ig.indexOf(ev)>=0){es.value=ev;mudarEmpEdit(ev);q("edit-car").value=pa.cargo||"";}
+      else if(ev){es.value="outra";mudarEmpEdit("outra");q("edit-emp-outra").value=ev;q("edit-car").value=pa.cargo||"";}
+    }
+  } else {
+    w.style.display="none";
+    q("beditcargo").textContent="Editar empresa / funcao";
+  }
+};
+q("btn-salvar-cargo").onclick=function(){
+  if(!pa)return;
+  var es=q("edit-emp");
+  var emp=es.value==="outra"?q("edit-emp-outra").value.trim():es.value;
+  var cs=q("edit-car");
+  var car=cs.value==="outro"?q("edit-car-outro").value.trim():cs.value;
+  var btn=q("btn-salvar-cargo");btn.textContent="Salvando...";btn.disabled=true;
+  ap("cadastros?id=eq."+pa.id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({empresa:emp,cargo:car})}).then(function(){
+    pa.empresa=emp;pa.cargo=car;
+    for(var i=0;i<cads.length;i++){if(cads[i].id===pa.id){cads[i].empresa=emp;cads[i].cargo=car;break;}}
+    q("editcargo-wrap").style.display="none";
+    q("beditcargo").textContent="Editar empresa / funcao";
+    verP(pa.id);
+  }).catch(function(){}).finally(function(){btn.textContent="Salvar";btn.disabled=false;});
+};
 function load(){
   q("tbl").innerHTML="<div class='empty'>Carregando...</div>";
   ap("cadastros?select=*&order=criado_em.desc").then(function(d){cads=d||[];rSts();rChips();rend();}).catch(function(){cads=[];rSts();rChips();rend();});
@@ -941,14 +807,14 @@ function rSts(){
   q("sts").innerHTML="<div class='stat'><strong>"+cads.length+"</strong><small>Cadastros</small></div>"+"<div class='stat'><strong>"+evs.length+"</strong><small>Eventos</small></div>"+"<div class='stat'><strong>"+(pend>0?pend:d)+"</strong><small>"+(pend>0?"Pendentes":"Codigos")+"</small></div>";
 }
 function rChips(){
-  q("chips").innerHTML=["Todos"].concat(SETS).map(function(s){
+  q("chips").innerHTML=SETS.map(function(s){
     return "<button class='chip"+(fset===s?" on":"")+"' onclick='setF(\""+s+"\")'>" +s+"</button>";
   }).join("");
 }
 function setF(s){fset=s;rChips();rend();}
 function rend(){
   var b=q("bsc").value.toLowerCase();
-  var f=cads.filter(function(c){var emp=c.empresa||"";var empMatch=fset==="Todos"||(fset==="Outros"?(!emp||SETS.indexOf(emp)<1):emp===fset);return empMatch&&(!b||c.nome.toLowerCase().indexOf(b)>=0||(c.email||"").toLowerCase().indexOf(b)>=0);});
+  var f=cads.filter(function(c){var emp=c.empresa||"";var em=fset==="Todos"||(fset==="Outros"?(!emp||SETS.indexOf(emp)<1):emp===fset);return em&&(!b||c.nome.toLowerCase().indexOf(b)>=0||(c.email||"").toLowerCase().indexOf(b)>=0);});
   var gb=q("gbar");
   if(sel.length>0){gb.style.display="flex";q("sct").textContent=sel.length+" sel.";}else gb.style.display="none";
   if(!f.length){q("tbl").innerHTML="<div class='empty'>Nenhum cadastro</div>";return;}
