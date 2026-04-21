@@ -707,18 +707,6 @@ function delLote(id){
     lotes=lotes.filter(function(l){return l.id!==id;});
     rLotes();rSts();
     load();
-if(MODO==="ver"){
-  var vb=document.createElement("div");
-  vb.style.cssText="background:#0a1a2a;border:1px solid #0891b2;color:#0891b2;padding:8px 14px;border-radius:8px;font-size:12px;margin-bottom:12px;text-align:center";
-  vb.textContent="Modo visualizacao - apenas leitura";
-  document.body.insertBefore(vb,document.body.children[1]);
-  ["r","bgl","bxls","bcsv","bexk","bnev","blinkc"].forEach(function(id){var el=document.getElementById(id);if(el){el.disabled=true;el.style.opacity="0.3";}});
-  var style=document.createElement("style");
-  style.textContent=".btn{pointer-events:none;opacity:0.3!important}.btr{pointer-events:none;opacity:0.3!important}.bty{pointer-events:none;opacity:0.3!important}";
-  document.head.appendChild(style);
-  document.getElementById("r").disabled=false;
-  document.getElementById("r").style.opacity="1";
-}
   }).catch(function(e){alert("Erro ao excluir: "+e.message);});
 }
 function load(){
@@ -826,19 +814,7 @@ function salvEv(){
   var body=JSON.stringify({nome:nome,data:q("evd").value||null,local:q("evl").value.trim(),maps_url:q("evm").value.trim(),atracao1:q("eva1").value.trim(),insta_atr1:q("evi1").value.trim(),atracao2:q("eva2").value.trim(),insta_atr2:q("evi2").value.trim(),foto_url:q("evf").value.trim(),descricao:q("evdesc").value.trim()});
   var path=eid?"eventos?id=eq."+eid:"eventos";
   var meth=eid?"PATCH":"POST";
-  ap(path,{m:meth,pref:"return=minimal",b:body}).then(function(){fecEv();load();
-if(MODO==="ver"){
-  var vb=document.createElement("div");
-  vb.style.cssText="background:#0a1a2a;border:1px solid #0891b2;color:#0891b2;padding:8px 14px;border-radius:8px;font-size:12px;margin-bottom:12px;text-align:center";
-  vb.textContent="Modo visualizacao - apenas leitura";
-  document.body.insertBefore(vb,document.body.children[1]);
-  ["r","bgl","bxls","bcsv","bexk","bnev","blinkc"].forEach(function(id){var el=document.getElementById(id);if(el){el.disabled=true;el.style.opacity="0.3";}});
-  var style=document.createElement("style");
-  style.textContent=".btn{pointer-events:none;opacity:0.3!important}.btr{pointer-events:none;opacity:0.3!important}.bty{pointer-events:none;opacity:0.3!important}";
-  document.head.appendChild(style);
-  document.getElementById("r").disabled=false;
-  document.getElementById("r").style.opacity="1";
-}tab("e");}).catch(function(){q("evalert").innerHTML="<div class='ea'>Erro ao salvar</div>";}).finally(function(){btn.textContent="Salvar";btn.disabled=false;});
+  ap(path,{m:meth,pref:"return=minimal",b:body}).then(function(){fecEv();load();tab("e");}).catch(function(){q("evalert").innerHTML="<div class='ea'>Erro ao salvar</div>";}).finally(function(){btn.textContent="Salvar";btn.disabled=false;});
 }
 function rEvs(){
   var el=q("evlst");
