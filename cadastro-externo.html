@@ -113,7 +113,18 @@ var codOk="";
 var fotoData=null;
 var stream=null;
 
-if(RESP){document.getElementById("inv-nome").textContent=RESP;document.getElementById("inv-banner").classList.remove("gone");}
+if(RESP){
+  document.getElementById("inv-nome").textContent=RESP;
+  document.getElementById("inv-banner").classList.remove("gone");
+} else if(LOTE_ID){
+  fetch(SB+"/rest/v1/lotes?id=eq."+LOTE_ID+"&select=responsavel&apikey="+KY).then(function(r){return r.json();}).then(function(d){
+    if(d&&d[0]){
+      document.getElementById("inv-nome").textContent=d[0].responsavel;
+      document.getElementById("inv-banner").classList.remove("gone");
+      RESP=d[0].responsavel;
+    }
+  }).catch(function(){});
+}
 if(COD_PRE)document.getElementById("f-cod").value=COD_PRE;
 
 function q(id){return document.getElementById(id);}
