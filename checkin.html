@@ -62,9 +62,17 @@ video{width:100%;display:block}
       <div id="al-scan" style="margin-top:10px"></div>
     </div>
     <div class="manual-wrap">
-      <div style="font-size:11px;color:#555;text-align:center;margin-bottom:10px">ou digite o codigo manualmente</div>
+      <div style="font-size:11px;color:#555;text-align:center;margin-bottom:10px">ou busque manualmente</div>
       <div class="fl"><input id="inp-cod" placeholder="Codigo de 6 digitos" maxlength="6" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div>
-      <button class="btn" id="btn-buscar">Buscar</button>
+      <button class="btn" id="btn-buscar">Buscar por codigo</button>
+      <div style="margin-top:10px;border-top:1px solid #1a2a1a;padding-top:10px">
+        <div style="font-size:11px;color:#555;text-align:center;margin-bottom:8px">ou busque pelo nome</div>
+        <div style="display:flex;gap:8px">
+          <input id="inp-nome-search" placeholder="Nome da pessoa" style="flex:1">
+          <button class="btn" id="btn-buscar-nome" style="width:auto;padding:11px 14px;margin:0">Buscar</button>
+        </div>
+        <div id="lista-nomes" style="margin-top:8px"></div>
+      </div>
     </div>
   </div>
 
@@ -133,26 +141,39 @@ function scanFrame(){
   requestAnimationFrame(scanFrame);
 }
 
+q("btn-buscar-nome").onclick=function(){
+  var nome=q("inp-nome-search").value.trim();
+  if(!nome||nome.length<2){return;}
+  var btn=this;btn.textContent="...";btn.disabled=true;
+  ap("cadastros?nome=ilike.*"+encodeURIComponent(nome)+"*&select=id,nome,empresa,setor,evento_id,entrada_em&limit=10").then(function(d){
+    if(!d||!d.length){q("lista-nomes").innerHTML="<div style='color:#555;font-size:12px;text-align:center;padding:8px'>Nenhum resultado</div>";return;}
+    var h="";
+    d.forEach(function(c){
+      var cor=c.entrada_em?"#2aab47":c.evento_id?"#c9973c":"#555";
+      var status=c.entrada_em?"Entrou":c.evento_id?"Aguardando":"Sem evento";
+      h+="<div onclick='selecionarCad("+c.id+")' style='padding:10px;border:1px solid #1a2a1a;border-radius:8px;margin-bottom:6px;cursor:pointer;background:#030503'>";
+      h+="<div style='font-size:13px;color:#fff;font-weight:600'>"+c.nome+"</div>";
+      h+="<div style='font-size:11px;color:#555;margin-top:2px'>"+(c.empresa||"")+" <span style='color:"+cor+"'>"+status+"</span></div>";
+      h+="</div>";
+    });
+    q("lista-nomes").innerHTML=h;
+  }).catch(function(){}).finally(function(){btn.textContent="Buscar";btn.disabled=false;});
+};
+function selecionarCad(id){
+  q("lista-nomes").innerHTML="";
+  q("inp-nome-search").value="";
+  ap("cadastros?id=eq."+id+"&select=*").then(function(d){
+    if(!d||!d.length)return;
+    cadAtual=d[0];
+    mostrarPerfil(d[0]);
+  });
+}
 q("btn-buscar").onclick=function(){
   var c=q("inp-cod").value.trim();
   if(!c||c.length<6){q("al-scan").innerHTML="<div class='ea'>Digite 6 digitos</div>";return;}
   buscarCodigo(c);
 };
 
-function verificarLotado(evId,callback){
-  if(!evId){callback(false);return;}
-  ap("eventos?id=eq."+evId+"&select=lotado,capacidade").then(function(d){
-    if(!d||!d[0]){callback(false);return;}
-    var ev=d[0];
-    if(ev.lotado){callback(true,"Evento marcado como LOTADO pelo organizador.");return;}
-    if(ev.capacidade>0){
-      ap("cadastros?evento_id=eq."+evId+"&entrada_em=not.is.null&select=id").then(function(e){
-        if(e&&e.length>=ev.capacidade){callback(true,"Capacidade maxima atingida ("+ev.capacidade+" pessoas).");}
-        else{callback(false);}
-      }).catch(function(){callback(false);});
-    } else {callback(false);}
-  }).catch(function(){callback(false);});
-}
 function buscarCodigo(cod){
   var btn=q("btn-buscar");btn.textContent="Buscando...";btn.disabled=true;
   q("al-scan").innerHTML="";
@@ -199,18 +220,11 @@ function mostrarPerfil(c){
 q("btn-confirmar").onclick=function(){
   if(!cadAtual||!valAtual)return;
   var btn=this;btn.textContent="Confirmando...";btn.disabled=true;
-  verificarLotado(cadAtual.evento_id,function(lotado,msg){
-    if(lotado){
-      q("al-res").innerHTML="<div class='ea'>"+msg+"</div>";
-      btn.textContent="Confirmar entrada";btn.disabled=false;
-      return;
-    }
   ap("cadastros?id=eq."+cadAtual.id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({entrada_em:new Date().toISOString(),validador_nome:valAtual.nome,status:"aprovado"})}).then(function(){
     btn.style.display="none";
     q("al-res").innerHTML="<div class='ok'>Entrada confirmada! Bem-vindo(a) "+cadAtual.nome+"!</div>";
     cadAtual=null;
-    }).catch(function(){btn.textContent="Confirmar entrada";btn.disabled=false;});
-  });
+  }).catch(function(){btn.textContent="Confirmar entrada";btn.disabled=false;});
 };
 
 q("btn-novo").onclick=function(){
