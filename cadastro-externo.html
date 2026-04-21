@@ -71,7 +71,46 @@ input:focus{border-color:#2aab47}
   <div class="steps"><div class="step"></div><div class="step"></div><div class="step on"></div><div class="step"></div></div>
   <div id="al-emp"></div>
   <div class="fl"><label>Empresa</label><input id="f-emp" placeholder="Nome da sua empresa"><span class="em" id="e-emp"></span></div>
-  <div class="fl"><label>Funcao</label><input id="f-car" placeholder="Seu cargo"><span class="em" id="e-car"></span></div>
+  <div class="fl"><label>Funcao</label>
+    <select id="f-car" onchange="mudarCargo(this.value)" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:11px 14px;color:#eee;font-size:14px;outline:none">
+      <option value="">Selecione sua funcao...</option>
+      <optgroup label="Artistas Agroplay">
+        <option value="Artista - Ana Castela">Ana Castela</option>
+        <option value="Artista - Leo e Raphael">Leo e Raphael</option>
+        <option value="Artista - Country Beat">Country Beat</option>
+        <option value="Artista - Muierada">Muierada</option>
+        <option value="Artista - Francisco">Francisco</option>
+        <option value="Artista - Julia e Rafaela">Julia e Rafaela</option>
+        <option value="Artista - Julya e Maryana">Julya e Maryana</option>
+        <option value="Artista - Duda Bertelli">Duda Bertelli</option>
+        <option value="Artista - Kamila e Kavic">Kamila e Kavic</option>
+      </optgroup>
+      <optgroup label="Escritorio">
+        <option value="Diretoria">Diretoria</option>
+        <option value="Marketing">Marketing</option>
+        <option value="Assessoria">Assessoria</option>
+        <option value="Financeiro">Financeiro</option>
+        <option value="Administrativo">Administrativo</option>
+      </optgroup>
+      <optgroup label="Evento">
+        <option value="Producao">Producao</option>
+        <option value="Seguranca">Seguranca</option>
+        <option value="Fotografo / Videomaker">Fotografo / Videomaker</option>
+        <option value="Imprensa">Imprensa</option>
+        <option value="Camarim">Camarim</option>
+        <option value="Tecnico de Som">Tecnico de Som</option>
+        <option value="Tecnico de Luz">Tecnico de Luz</option>
+      </optgroup>
+      <optgroup label="Outros">
+        <option value="Influenciador">Influenciador</option>
+        <option value="Parceiro Comercial">Parceiro Comercial</option>
+        <option value="Convidado VIP">Convidado VIP</option>
+        <option value="outro">Outro (digitar)</option>
+      </optgroup>
+    </select>
+    <span class="em" id="e-car"></span>
+  </div>
+  <div class="fl" id="cargo-outro-wrap" style="display:none"><label>Qual funcao?</label><input id="f-car-outro" placeholder="Digite sua funcao"></div>
   <button class="btn" onclick="irFoto()">Proximo</button>
   <button class="bto" onclick="ir('t-dados')">Voltar</button>
 </div>
@@ -128,6 +167,7 @@ if(RESP){
 if(COD_PRE)document.getElementById("f-cod").value=COD_PRE;
 
 function q(id){return document.getElementById(id);}
+function mudarCargo(v){var w=document.getElementById("cargo-outro-wrap");if(w)w.style.display=v==="outro"?"block":"none";}
 function mudarCargo(v){var wrap=document.getElementById("cargo-outro-wrap");if(v==="outro"){wrap.style.display="block";}else{wrap.style.display="none";}}
 function ir(t){document.querySelectorAll(".tl").forEach(function(x){x.classList.remove("on");});q(t).classList.add("on");}
 function mCPF(el){var v=el.value.replace(/\D/g,"").slice(0,11);v=v.replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2");el.value=v;}
