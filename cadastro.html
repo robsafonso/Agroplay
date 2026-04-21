@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<title>Agroplay — Cadastro</title>
+<title>Agroplay  Cadastro</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden;background:#080808}
@@ -22,7 +22,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;color:#e0e0e0}
 .header-logo svg{width:100px;height:28px}
 .header-tag{font-size:9px;color:#555;letter-spacing:2px;text-transform:uppercase}
 
-/* CONTEÚDO */
+/* CONTEDO */
 .conteudo{flex:1;padding:24px 20px;display:flex;flex-direction:column;justify-content:center}
 .conteudo.top{justify-content:flex-start;padding-top:20px}
 
@@ -54,14 +54,14 @@ input.err{border-color:#e74c3c}
 .setor-btn span.label{font-size:12px}
 .setor-btn.active{background:rgba(45,138,62,.15);border-color:var(–green2);color:#fff}
 
-/* BOTÕES */
+/* BOTES */
 .btn{background:linear-gradient(135deg,#2d8a3e,#3ab54a);color:#ffffff !important;border:none;border-radius:10px;padding:15px 24px;font-size:15px;font-weight:700;cursor:pointer;width:100%;transition:opacity .2s;letter-spacing:.3px}
 .btn:active{opacity:.85}
 .btn:disabled{opacity:.5}
 .btn-out{background:transparent;color:var(–green2);border:1px solid var(–green2);border-radius:10px;padding:14px 24px;font-size:14px;cursor:pointer;width:100%;transition:all .2s}
 .btn-back{background:none;border:none;color:#555;cursor:pointer;font-size:13px;padding:0;display:flex;align-items:center;gap:6px;margin-bottom:16px}
 
-/* CÓDIGO */
+/* CDIGO */
 .code-input{width:100%;background:#0d0d0d;border:2px solid var(–border);border-radius:10px;padding:16px;color:#fff;font-size:22px;font-weight:700;text-align:center;letter-spacing:4px;outline:none;text-transform:uppercase;-webkit-appearance:none}
 .code-input:focus{border-color:var(–green2)}
 .code-input.err{border-color:#e74c3c}
@@ -94,7 +94,7 @@ input.err{border-color:#e74c3c}
 </head>
 <body>
 
-<!-- ══ TELA 1: HOME ══ -->
+<!--  TELA 1: HOME  -->
 
 <div id="t-home" class="tela ativa">
   <div class="conteudo">
@@ -103,14 +103,14 @@ input.err{border-color:#e74c3c}
       <div class="home-tag">Lista de Eventos</div>
     </div>
     <div class="home-divider"></div>
-    <p class="home-desc">O maior ecossistema independente de música, entretenimento e cultura popular do Brasil.<br/><strong style="color:#444">Londrina — PR</strong></p>
+    <p class="home-desc">O maior ecossistema independente de msica, entretenimento e cultura popular do Brasil.<br/><strong style="color:#444">Londrina  PR</strong></p>
     <div style="display:flex;flex-direction:column;gap:10px">
-      <button class="btn" onclick="ir('t-codigo')">🎵 Fazer meu cadastro</button>
+      <button class="btn" onclick="ir('t-codigo')"> Fazer meu cadastro</button>
     </div>
   </div>
 </div>
 
-<!-- ══ TELA 2: CÓDIGO ══ -->
+<!--  TELA 2: CDIGO  -->
 
 <div id="t-codigo" class="tela">
   <div class="header">
@@ -121,23 +121,23 @@ input.err{border-color:#e74c3c}
     </svg>
   </div>
   <div class="conteudo">
-    <button class="btn-back" onclick="ir('t-home')">← Voltar</button>
+    <button class="btn-back" onclick="ir('t-home')"> Voltar</button>
     <div class="progress"><div class="progress-dot ativo"></div><div class="progress-dot"></div><div class="progress-dot"></div></div>
     <div class="card">
-      <div class="card-title">Código de acesso</div>
-      <div class="card-sub">Digite o código que você recebeu para continuar</div>
+      <div class="card-title">Cdigo de acesso</div>
+      <div class="card-sub">Digite o cdigo que voc recebeu para continuar</div>
       <div id="cod-alert"></div>
       <div class="field">
-        <label>Seu código</label>
+        <label>Seu cdigo</label>
         <input class="code-input" id="f-codigo" placeholder="000000" maxlength="6" oninput="this.value=this.value.replace(/\D/g,'')" inputmode="numeric"/>
-        <div class="code-hint">Digite o código de 6 dígitos que você recebeu</div>
+        <div class="code-hint">Digite o cdigo de 6 dgitos que voc recebeu</div>
       </div>
-      <button class="btn" style="margin-top:8px" onclick="validarCodigo()" id="btn-codigo">Continuar →</button>
+      <button class="btn" style="margin-top:8px" onclick="validarCodigo()" id="btn-codigo">Continuar </button>
     </div>
   </div>
 </div>
 
-<!-- ══ TELA 3: DADOS PESSOAIS ══ -->
+<!--  TELA 3: DADOS PESSOAIS  -->
 
 <div id="t-dados" class="tela">
   <div class="header">
@@ -148,11 +148,11 @@ input.err{border-color:#e74c3c}
     </svg>
   </div>
   <div class="conteudo top">
-    <button class="btn-back" onclick="ir('t-codigo')">← Voltar</button>
+    <button class="btn-back" onclick="ir('t-codigo')"> Voltar</button>
     <div class="progress"><div class="progress-dot"></div><div class="progress-dot ativo"></div><div class="progress-dot"></div></div>
     <div class="card">
       <div class="card-title">Dados pessoais</div>
-      <div class="card-sub">Preencha suas informações</div>
+      <div class="card-sub">Preencha suas informaes</div>
       <div id="dados-alert"></div>
       <div class="field">
         <label>Nome completo</label>
@@ -167,7 +167,7 @@ input.err{border-color:#e74c3c}
         </div>
         <div class="field">
           <label>RG</label>
-          <input id="f-rg" placeholder="Nº do RG"/>
+          <input id="f-rg" placeholder="N do RG"/>
           <span class="err-msg" id="e-rg"></span>
         </div>
       </div>
@@ -189,11 +189,11 @@ input.err{border-color:#e74c3c}
         </div>
       </div>
     </div>
-    <button class="btn" onclick="irSetor()" id="btn-dados">Próximo →</button>
+    <button class="btn" onclick="irSetor()" id="btn-dados">Prximo </button>
   </div>
 </div>
 
-<!-- ══ TELA 4: SETOR ══ -->
+<!--  TELA 4: SETOR  -->
 
 <div id="t-setor" class="tela">
   <div class="header">
@@ -204,25 +204,25 @@ input.err{border-color:#e74c3c}
     </svg>
   </div>
   <div class="conteudo">
-    <button class="btn-back" onclick="ir('t-dados')">← Voltar</button>
+    <button class="btn-back" onclick="ir('t-dados')"> Voltar</button>
     <div class="progress"><div class="progress-dot"></div><div class="progress-dot"></div><div class="progress-dot ativo"></div></div>
     <div class="card">
-      <div class="card-title">Qual é o seu setor?</div>
-      <div class="card-sub">Selecione sua função na Agroplay</div>
+      <div class="card-title">Qual  o seu setor?</div>
+      <div class="card-sub">Selecione sua funo na Agroplay</div>
       <div class="setor-grid">
-        <button class="setor-btn" onclick="selSetor('Artista',this)"><span class="icon">🎤</span><span class="label">Artista</span></button>
-        <button class="setor-btn" onclick="selSetor('Influenciador',this)"><span class="icon">📲</span><span class="label">Influenciador</span></button>
-        <button class="setor-btn" onclick="selSetor('Diretoria',this)"><span class="icon">🏢</span><span class="label">Diretoria</span></button>
-        <button class="setor-btn" onclick="selSetor('Colaborador',this)"><span class="icon">🤝</span><span class="label">Colaborador</span></button>
+        <button class="setor-btn" onclick="selSetor('Artista',this)"><span class="icon"></span><span class="label">Artista</span></button>
+        <button class="setor-btn" onclick="selSetor('Influenciador',this)"><span class="icon"></span><span class="label">Influenciador</span></button>
+        <button class="setor-btn" onclick="selSetor('Diretoria',this)"><span class="icon"></span><span class="label">Diretoria</span></button>
+        <button class="setor-btn" onclick="selSetor('Colaborador',this)"><span class="icon"></span><span class="label">Colaborador</span></button>
       </div>
       <span class="err-msg" id="e-setor" style="margin-top:8px"></span>
     </div>
     <div id="setor-alert"></div>
-    <button class="btn" onclick="irParaFoto()" id="btn-setor">Próximo → Foto</button>
+    <button class="btn" onclick="irParaFoto()" id="btn-setor">Prximo  Foto</button>
   </div>
 </div>
 
-<!-- ══ TELA 5: FOTO ══ -->
+<!--  TELA 5: FOTO  -->
 
 <div id="t-foto" class="tela">
   <div class="tela-header">
@@ -236,9 +236,9 @@ input.err{border-color:#e74c3c}
     </div>
   </div>
   <div class="tela-body">
-    <div class="section-title">📸 Foto de verificação</div>
-    <p class="section-sub">Vamos tirar uma foto para confirmar sua identidade. Posicione seu rosto no círculo.</p>
-    <div id="foto-status" class="foto-status">Iniciando câmera...</div>
+    <div class="section-title"> Foto de verificao</div>
+    <p class="section-sub">Vamos tirar uma foto para confirmar sua identidade. Posicione seu rosto no crculo.</p>
+    <div id="foto-status" class="foto-status">Iniciando cmera...</div>
     <div id="video-container" class="video-wrap">
       <video id="video" autoplay playsinline muted></video>
       <div class="video-overlay"><div class="face-guide"></div></div>
@@ -246,20 +246,20 @@ input.err{border-color:#e74c3c}
     <canvas id="canvas" style="display:none"></canvas>
     <img id="foto-preview" class="foto-preview" style="display:none"/>
     <div id="foto-alert"></div>
-    <button class="btn btn-full" id="btn-foto" style="display:none" onclick="tirarFoto()">📸 Tirar foto</button>
-    <button class="btn btn-full" id="btn-refoto" style="display:none;background:#555" onclick="refoto()">↻ Nova foto</button>
-    <button class="btn btn-full" id="btn-salvar-foto" style="display:none" onclick="salvarComFoto()">✓ Confirmar e finalizar</button>
-    <button class="btn-voltar" onclick="ir('t-setor')" style="display:none" id="btn-voltar-foto">← Voltar</button>
+    <button class="btn btn-full" id="btn-foto" style="display:none" onclick="tirarFoto()"> Tirar foto</button>
+    <button class="btn btn-full" id="btn-refoto" style="display:none;background:#555" onclick="refoto()"> Nova foto</button>
+    <button class="btn btn-full" id="btn-salvar-foto" style="display:none" onclick="salvarComFoto()"> Confirmar e finalizar</button>
+    <button class="btn-voltar" onclick="ir('t-setor')" style="display:none" id="btn-voltar-foto"> Voltar</button>
   </div>
 </div>
 
-<!-- ══ TELA 6: SUCESSO ══ -->
+<!--  TELA 6: SUCESSO  -->
 
 <div id="t-sucesso" class="tela">
   <div class="success-wrap">
-    <div class="success-circle">✓</div>
+    <div class="success-circle"></div>
     <div class="success-title">Cadastro realizado!</div>
-    <p class="success-text">Seus dados foram registrados<br/>com sucesso.<br/><br/>A equipe <strong style="color:var(--green2)">Agroplay</strong> entrará em contato<br/>quando necessário.</p>
+    <p class="success-text">Seus dados foram registrados<br/>com sucesso.<br/><br/>A equipe <strong style="color:var(--green2)">Agroplay</strong> entrar em contato<br/>quando necessrio.</p>
   </div>
 </div>
 
@@ -292,16 +292,16 @@ async function validarCodigo(){
   const cod=document.getElementById('f-codigo').value.trim().toUpperCase();
   const alerta=document.getElementById('cod-alert');
   alerta.className='alert';alerta.textContent='';
-  if(!cod){alerta.className='alert err';alerta.textContent='Digite o código de acesso.';return;}
+  if(!cod){alerta.className='alert err';alerta.textContent='Digite o cdigo de acesso.';return;}
   const btn=document.getElementById('btn-codigo');
   btn.textContent='Verificando...';btn.disabled=true;
   try{
     const data=await sbFetch(`codigos?codigo=eq.${cod}&select=*`);
-    if(!data||data.length===0){alerta.className='alert err';alerta.textContent='Código inválido. Verifique e tente novamente.';}
-    else if(data[0].usado){alerta.className='alert err';alerta.textContent='Este código já foi utilizado.';}
+    if(!data||data.length===0){alerta.className='alert err';alerta.textContent='Cdigo invlido. Verifique e tente novamente.';}
+    else if(data[0].usado){alerta.className='alert err';alerta.textContent='Este cdigo j foi utilizado.';}
     else{codigoValido=cod;ir('t-dados');}
   }catch(e){alerta.className='alert err';alerta.textContent='Erro ao verificar. Tente novamente.';}
-  finally{btn.textContent='Continuar →';btn.disabled=false;}
+  finally{btn.textContent='Continuar ';btn.disabled=false;}
 }
 
 function irSetor(){
@@ -313,12 +313,12 @@ function irSetor(){
   const nasc=document.getElementById('f-nasc').value;
   let ok=true;
   function setErr(id,msg){document.getElementById(id).textContent=msg;if(msg)ok=false;}
-  setErr('e-nome',nome?'':'Nome obrigatório');
-  setErr('e-cpf',cpf.replace(/\D/g,'').length===11?'':'CPF inválido');
-  setErr('e-rg',rg?'':'RG obrigatório');
-  setErr('e-email',/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)?'':'E-mail inválido');
-  setErr('e-tel',tel.replace(/\D/g,'').length>=10?'':'Telefone inválido');
-  setErr('e-nasc',nasc?'':'Data obrigatória');
+  setErr('e-nome',nome?'':'Nome obrigatrio');
+  setErr('e-cpf',cpf.replace(/\D/g,'').length===11?'':'CPF invlido');
+  setErr('e-rg',rg?'':'RG obrigatrio');
+  setErr('e-email',/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)?'':'E-mail invlido');
+  setErr('e-tel',tel.replace(/\D/g,'').length>=10?'':'Telefone invlido');
+  setErr('e-nasc',nasc?'':'Data obrigatria');
   if(ok)ir('t-setor');
 }
 
@@ -348,17 +348,17 @@ async function enviarCadastro(){
     if(_RESP)cadBody.lote_nome=_RESP;
     const cad=await sbFetch('cadastros',{method:'POST',body:JSON.stringify(cadBody)});
     const cadId=cad&&cad[0]?cad[0].id:null;
-    // Invalida código
+    // Invalida cdigo
     await sbFetch(`codigos?codigo=eq.${codigoValido}`,{method:'PATCH',prefer:'return=minimal',body:JSON.stringify({usado:true,usado_em:new Date().toISOString(),cadastro_id:cadId})});
     ir('t-sucesso');
   }catch(e){
     alerta.className='alert err';alerta.textContent='Erro ao salvar. Tente novamente.';
-  }finally{btn.textContent='Finalizar cadastro ✓';btn.disabled=false;}
+  }finally{btn.textContent='Finalizar cadastro ';btn.disabled=false;}
 }
 
-// ═══════════════════════════════
+// 
 // FOTO E PROVA DE VIDA
-// ═══════════════════════════════
+// 
 var stream = null;
 var fotoDataUrl = null;
 var piscouOlhos = false;
@@ -382,13 +382,13 @@ async function iniciarCamera(){
     video.srcObject = stream;
     video.onloadedmetadata = function(){
       video.play();
-      status.textContent = '😊 Olhe para a câmera e pisque os olhos';
+      status.textContent = ' Olhe para a cmera e pisque os olhos';
       document.getElementById('btn-foto').style.display = 'block';
       document.getElementById('btn-voltar-foto').style.display = 'block';
       iniciarDeteccao();
     };
   } catch(e) {
-    status.textContent = '⚠️ Câmera não disponível. Toque em "Tirar foto" para continuar.';
+    status.textContent = ' Cmera no disponvel. Toque em "Tirar foto" para continuar.';
     document.getElementById('btn-foto').style.display = 'block';
   }
 }
@@ -417,7 +417,7 @@ function iniciarDeteccao(){
         blinkCount++;
         if(blinkCount >= 2 && !piscouOlhos){
           piscouOlhos = true;
-          status.textContent = '✅ Piscada detectada! Agora sorria e toque em "Tirar foto"';
+          status.textContent = ' Piscada detectada! Agora sorria e toque em "Tirar foto"';
           clearInterval(detectionInterval);
         }
       }
@@ -428,7 +428,7 @@ function iniciarDeteccao(){
     // After 5 seconds allow photo anyway
     if(frameCount > 150 && !piscouOlhos){
       piscouOlhos = true;
-      status.textContent = '✅ Pronto! Toque em "Tirar foto"';
+      status.textContent = ' Pronto! Toque em "Tirar foto"';
       clearInterval(detectionInterval);
     }
   }, 100);
@@ -454,7 +454,7 @@ function tirarFoto(){
   document.getElementById('btn-foto').style.display = 'none';
   document.getElementById('btn-refoto').style.display = 'block';
   document.getElementById('btn-salvar-foto').style.display = 'block';
-  document.getElementById('foto-status').textContent = '✅ Foto tirada! Confirme ou tire outra.';
+  document.getElementById('foto-status').textContent = ' Foto tirada! Confirme ou tire outra.';
 
   if(stream) stream.getTracks().forEach(function(t){t.stop();});
   if(detectionInterval) clearInterval(detectionInterval);
@@ -470,7 +470,7 @@ function refoto(){
   document.getElementById('btn-refoto').style.display = 'none';
   document.getElementById('btn-salvar-foto').style.display = 'none';
   document.getElementById('btn-foto').style.display = 'block';
-  document.getElementById('foto-status').textContent = 'Iniciando câmera...';
+  document.getElementById('foto-status').textContent = 'Iniciando cmera...';
   iniciarCamera();
 }
 
@@ -500,7 +500,7 @@ async function enviarCadastroComFoto(fotoUrl){
     ir('t-sucesso');
   } catch(e){
     alerta.innerHTML = '<div class="alert err">Erro ao salvar. Tente novamente.</div>';
-    btn.textContent = '✓ Confirmar e finalizar'; btn.disabled = false;
+    btn.textContent = ' Confirmar e finalizar'; btn.disabled = false;
   }
 }
 
