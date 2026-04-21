@@ -306,13 +306,6 @@ textarea{height:70px;resize:none}
 </div>
 <script>
 var MODO=new URLSearchParams(window.location.search).get("modo")||"edit";
-try{
-  var _sess=sessionStorage.getItem("ag_admin");
-  if(!_sess){window.location.href="home.html";throw new Error("redirect");}
-  var _admin=JSON.parse(_sess);
-  if(!_admin||!_admin.nome){window.location.href="home.html";throw new Error("redirect");}
-  if(_admin.nivel==="visualizador")MODO="ver";
-}catch(e){if(e.message!=="redirect")window.location.href="home.html";}
 var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
 var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
 var LC="https://robsafonso.github.io/Agroplay/cadastro-externo.html";
@@ -412,7 +405,7 @@ q("bgerarlinkc").onclick=function(){
       if(!d||!d.length){q("lc-alert").innerHTML="<div class='ea'>Nenhum codigo disponivel!</div>";return;}
       var cod=d[0].codigo;
       return ap("codigos?codigo=eq."+cod,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString()})}).then(function(){
-        var link=LC+"?cod="+cod;
+        var link=LC+"?cod="+cod+"&resp="+encodeURIComponent("Robson");
         var msg="AGROPLAY - Convite de Cadastro\n\nVoce foi convidado por Robson para se cadastrar no sistema Agroplay!\n\nAcesse o link e faca seu cadastro:\n"+link+"\n\nSeu codigo: "+cod+"\n\nCodigo intransferivel e de uso unico.\nAgroplay Music - Londrina PR";
         q("lc-cod").textContent=cod;
         q("lc-msg").textContent=msg;
@@ -914,7 +907,7 @@ function gconvExt(){
       if(!d||!d.length){q("calert-ext").innerHTML="<div class='ea'>Nenhum codigo disponivel!</div>";return;}
       var cod=d[0].codigo;
       ap("codigos?codigo=eq."+cod,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString()})});
-      var link="https://robsafonso.github.io/Agroplay/cadastro-externo.html?ev="+eva.id+"&cod="+cod;
+      var link="https://robsafonso.github.io/Agroplay/cadastro-externo.html?ev="+eva.id+"&cod="+cod+"&resp="+encodeURIComponent("Robson");
       var df=eva.data?eva.data.split("-"):["","",""];
       var dataFmt=eva.data?df[2]+"/"+df[1]+"/"+df[0]:"";
       var msg="AGROPLAY - Convite VIP\n\n"+eva.nome+(dataFmt?"\nData: "+dataFmt:"")+(eva.local?"\nLocal: "+eva.local:"")+(eva.atracao1?"\nAtracoes: "+eva.atracao1+(eva.atracao2?" + "+eva.atracao2:""):"")+"\n\nAcesse e se cadastre:\n"+link+"\n\nSeu codigo: "+cod+"\n\nCodigo intransferivel.\nAgroplay - Londrina PR";
