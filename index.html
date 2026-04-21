@@ -166,6 +166,11 @@ textarea{height:70px;resize:none}
       </div>
     </div>
     <button class="bto" id="bcpy" style="width:100%;margin-top:12px">Copiar dados</button>
+    <button class="bto" id="bincl" style="width:100%;margin-top:8px;border-color:#0891b2;color:#0891b2">Incluir em Evento</button>
+    <div id="incl-wrap" style="display:none;margin-top:10px">
+      <select id="incl-ev" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;margin-bottom:8px"><option value="">Selecione o evento...</option></select>
+      <button class="btn" id="bconfincl" style="width:100%;font-size:12px;padding:10px;background:#0891b2">Confirmar inclusao</button>
+    </div>
     <button class="btr" id="bdel" style="width:100%;margin-top:8px">Excluir</button>
   </div>
 </div>
@@ -298,6 +303,30 @@ q("bxls").onclick=expExcel;
 q("bcsv").onclick=expCSV;
 q("bfp").onclick=function(){q("ovp").classList.remove("on");pa=null;};
 q("bdel").onclick=delP;
+q("bincl").onclick=function(){
+  var wrap=q("incl-wrap");
+  if(wrap.style.display==="none"){
+    var sel=q("incl-ev");
+    sel.innerHTML="<option value=''>Selecione o evento...</option>";
+    evs.forEach(function(ev){sel.innerHTML+="<option value='"+ev.id+"'>"+ev.nome+"</option>";});
+    wrap.style.display="block";
+  } else {
+    wrap.style.display="none";
+  }
+};
+q("bconfincl").onclick=function(){
+  if(!pa)return;
+  var evId=q("incl-ev").value;
+  if(!evId){alert("Selecione um evento!");return;}
+  var btn=q("bconfincl");btn.textContent="Salvando...";btn.disabled=true;
+  ap("cadastros?id=eq."+pa.id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({evento_id:parseInt(evId),status:"aprovado"})}).then(function(){
+    for(var i=0;i<cads.length;i++){if(cads[i].id===pa.id){cads[i].evento_id=parseInt(evId);cads[i].status="aprovado";break;}}
+    btn.textContent="Incluido!";
+    q("incl-wrap").style.display="none";
+    setTimeout(function(){btn.textContent="Confirmar inclusao";btn.disabled=false;},2000);
+    rend();
+  }).catch(function(){btn.textContent="Confirmar inclusao";btn.disabled=false;alert("Erro ao incluir");});
+};
 q("bsc").oninput=rend;
 q("bcpy").onclick=copDados;
 q("bffoto").onclick=function(){q("ovfoto").classList.remove("on");};
