@@ -68,6 +68,7 @@ textarea{height:70px;resize:none}
   <button class="tab" id="tk">Codigos</button>
   <button class="tab" id="tl">Lista</button>
   <button class="tab" id="tlt">Lotes</button>
+  <button class="tab" id="tld">Dashboard</button>
 </div>
 <div id="sc">
   <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
@@ -100,6 +101,9 @@ textarea{height:70px;resize:none}
   <div id="klst"></div>
 </div>
 <div id="sl" class="gone"><div id="llst"></div></div>
+<div id="sd" class="gone">
+  <div id="dash-content"></div>
+</div>
 <div id="slt" class="gone">
   <button class="btn" id="bnovolote" style="width:100%;margin-bottom:14px">+ Criar novo lote</button>
   <div id="loteslst"><div class="empty">Nenhum lote criado</div></div>
@@ -360,6 +364,7 @@ q("te").onclick=function(){tab("e");};
 q("tk").onclick=function(){tab("k");};
 q("tl").onclick=function(){tab("l");};
 q("tlt").onclick=function(){tab("lt");};
+q("tld").onclick=function(){tab("d");};
 q("bnovolote").onclick=function(){
   q("ovlote").classList.add("on");q("lote-alert").innerHTML="";q("lote-resp").value="";q("lote-qtd").value="10";q("lote-senha").value="";
   var sel=q("lote-ev");sel.innerHTML="<option value=''>Nenhum evento</option>";
@@ -539,311 +544,388 @@ function delLote(id){
     load();
   }).catch(function(e){alert("Erro ao excluir: "+e.message);});
 }
+function rDash(){
+  var el=q("dash-content");
+  if(!cads.length){el.innerHTML="<div class='empty'>Sem dados ainda</div>";return;}
+
+// Stats gerais
+var total=cads.length;
+var aprovados=cads.filter(function(c){return c.status===“aprovado”;}).length;
+var pendentes=cads.filter(function(c){return c.status===“pendente”;}).length;
+var reprovados=cads.filter(function(c){return c.status===“reprovado”;}).length;
+var comFoto=cads.filter(function(c){return c.foto_url;}).length;
+var taxa=total>0?Math.round(aprovados/total*100):0;
+
+var h=””;
+
+// Cards de stats
+h+=”<div style='display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px'>”;
+h+=”<div class='card' style='text-align:center;padding:16px'><div style='font-size:32px;font-weight:900;color:#2aab47'>”+total+”</div><div style='font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-top:4px'>Total cadastros</div></div>”;
+h+=”<div class='card' style='text-align:center;padding:16px'><div style='font-size:32px;font-weight:900;color:#2aab47'>”+taxa+”%</div><div style='font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-top:4px'>Taxa aprovacao</div></div>”;
+h+=”<div class='card' style='text-align:center;padding:16px'><div style='font-size:32px;font-weight:900;color:#c9973c'>”+pendentes+”</div><div style='font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-top:4px'>Pendentes</div></div>”;
+h+=”<div class='card' style='text-align:center;padding:16px'><div style='font-size:32px;font-weight:900;color:#0891b2'>”+comFoto+”</div><div style='font-size:10px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-top:4px'>Com foto</div></div>”;
+h+=”</div>”;
+
+// Por setor
+h+=”<div class='card' style='margin-bottom:14px'>”;
+h+=”<div style='font-size:11px;color:#2aab47;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px'>Por Setor</div>”;
+var setores=[“Artista”,“Influenciador”,“Diretoria”,“Colaborador”,“Convidado”];
+setores.forEach(function(s){
+var n=cads.filter(function(c){return c.setor===s;}).length;
+if(!n)return;
+var pct=Math.round(n/total*100);
+var cor=COR[s]||”#555”;
+h+=”<div style='margin-bottom:10px'>”;
+h+=”<div style='display:flex;justify-content:space-between;margin-bottom:4px'><span style='font-size:12px;color:#eee'>”+s+”</span><span style='font-size:12px;color:#555'>”+n+” (”+pct+”%)</span></div>”;
+h+=”<div style='background:#1a2a1a;border-radius:4px;height:6px;overflow:hidden'><div style='background:"+cor+";height:100%;width:"+pct+"%'></div></div>”;
+h+=”</div>”;
+});
+h+=”</div>”;
+
+// Por evento
+if(evs.length){
+h+=”<div class='card' style='margin-bottom:14px'>”;
+h+=”<div style='font-size:11px;color:#2aab47;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px'>Por Evento</div>”;
+evs.forEach(function(ev){
+var n=cads.filter(function(c){return c.evento_id===ev.id;}).length;
+var apr=cads.filter(function(c){return c.evento_id===ev.id&&c.status===“aprovado”;}).length;
+if(!n)return;
+h+=”<div style='padding:10px 0;border-bottom:1px solid #111'>”;
+h+=”<div style='font-size:13px;color:#fff;font-weight:600;margin-bottom:4px'>”+ev.nome+”</div>”;
+h+=”<div style='display:flex;gap:10px'>”;
+h+=”<span style='font-size:11px;color:#555'>”+n+” convidados</span>”;
+h+=”<span style='font-size:11px;color:#2aab47'>”+apr+” confirmados</span>”;
+h+=”</div></div>”;
+});
+h+=”</div>”;
+}
+
+// Por colaborador (lote_nome)
+var lotesMap={};
+cads.forEach(function(c){if(c.lote_nome){lotesMap[c.lote_nome]=(lotesMap[c.lote_nome]||0)+1;}});
+var lotesKeys=Object.keys(lotesMap);
+if(lotesKeys.length){
+h+=”<div class='card'>”;
+h+=”<div style='font-size:11px;color:#2aab47;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px'>Por Colaborador</div>”;
+lotesKeys.sort(function(a,b){return lotesMap[b]-lotesMap[a];}).forEach(function(nome){
+var n=lotesMap[nome];
+var pct=Math.round(n/total*100);
+h+=”<div style='margin-bottom:10px'>”;
+h+=”<div style='display:flex;justify-content:space-between;margin-bottom:4px'><span style='font-size:12px;color:#eee'>”+nome+”</span><span style='font-size:12px;color:#555'>”+n+” convites</span></div>”;
+h+=”<div style='background:#1a2a1a;border-radius:4px;height:6px;overflow:hidden'><div style='background:#0891b2;height:100%;width:"+pct+"%'></div></div>”;
+h+=”</div>”;
+});
+h+=”</div>”;
+}
+
+el.innerHTML=h;
+}
 function load(){
-  q("tbl").innerHTML="<div class='empty'>Carregando...</div>";
-  ap("cadastros?select=*&order=criado_em.desc").then(function(d){cads=d||[];rSts();rChips();rend();}).catch(function(){cads=[];rSts();rChips();rend();});
-  ap("codigos?select=*&order=id.asc").then(function(d){cods=d||[];rSts();rCods();}).catch(function(){cods=[];});
-  ap("eventos?select=*&order=data.asc").then(function(d){evs=d||[];rSts();rEvs();}).catch(function(){evs=[];});
-  ap("lotes?select=*&order=criado_em.desc").then(function(d){lotes=d||[];rLotes();}).catch(function(){lotes=[];});
+q(“tbl”).innerHTML=”<div class='empty'>Carregando…</div>”;
+ap(“cadastros?select=*&order=criado_em.desc”).then(function(d){cads=d||[];rSts();rChips();rend();}).catch(function(){cads=[];rSts();rChips();rend();});
+ap(“codigos?select=*&order=id.asc”).then(function(d){cods=d||[];rSts();rCods();}).catch(function(){cods=[];});
+ap(“eventos?select=*&order=data.asc”).then(function(d){evs=d||[];rSts();rEvs();}).catch(function(){evs=[];});
+ap(“lotes?select=*&order=criado_em.desc”).then(function(d){lotes=d||[];rLotes();}).catch(function(){lotes=[];});
 }
 function rSts(){
-  var d=cods.filter(function(c){return !c.usado;}).length;
-  var pend=cads.filter(function(c){return c.status==="pendente"&&c.evento_id;}).length;
-  q("sts").innerHTML="<div class='stat'><strong>"+cads.length+"</strong><small>Cadastros</small></div>"+"<div class='stat'><strong>"+evs.length+"</strong><small>Eventos</small></div>"+"<div class='stat'><strong>"+(pend>0?pend:d)+"</strong><small>"+(pend>0?"Pendentes":"Codigos")+"</small></div>";
+var d=cods.filter(function(c){return !c.usado;}).length;
+var pend=cads.filter(function(c){return c.status===“pendente”&&c.evento_id;}).length;
+q(“sts”).innerHTML=”<div class='stat'><strong>”+cads.length+”</strong><small>Cadastros</small></div>”+”<div class='stat'><strong>”+evs.length+”</strong><small>Eventos</small></div>”+”<div class='stat'><strong>”+(pend>0?pend:d)+”</strong><small>”+(pend>0?“Pendentes”:“Codigos”)+”</small></div>”;
 }
 function rChips(){
-  q("chips").innerHTML=["Todos"].concat(SETS).map(function(s){
-    return "<button class='chip"+(fset===s?" on":"")+"' onclick='setF(\""+s+"\")'>" +s+"</button>";
-  }).join("");
+q(“chips”).innerHTML=[“Todos”].concat(SETS).map(function(s){
+return “<button class='chip"+(fset===s?" on":"")+"' onclick='setF(\""+s+"\")'>” +s+”</button>”;
+}).join(””);
 }
 function setF(s){fset=s;rChips();rend();}
 function rend(){
-  var b=q("bsc").value.toLowerCase();
-  var f=cads.filter(function(c){return (fset==="Todos"||c.setor===fset)&&(!b||c.nome.toLowerCase().indexOf(b)>=0||c.email.toLowerCase().indexOf(b)>=0);});
-  var gb=q("gbar");
-  if(sel.length>0){gb.style.display="flex";q("sct").textContent=sel.length+" sel.";}else gb.style.display="none";
-  if(!f.length){q("tbl").innerHTML="<div class='empty'>Nenhum cadastro</div>";return;}
-  var all=f.every(function(c){return sel.indexOf(c.id)>=0;});
-  var h="<div class='tbl'><table><thead><tr><th><input type='checkbox'"+(all?" checked":"")+" id='cball'></th><th>Nome</th><th>Setor</th><th>Status</th></tr></thead><tbody>";
-  f.forEach(function(c){
-    var cor=COR[c.setor]||"#555";
-    var sb=c.status==="aprovado"?"<span class='ab'>Aprov</span>":c.status==="reprovado"?"<span class='rb'>Reprov</span>":c.evento_id?"<span class='pb'>Pend</span>":"";
-    if(c.lote_nome)sb=(sb||"")+"<span style='background:#0891b2;color:#fff;padding:2px 6px;border-radius:10px;font-size:9px;display:block;margin-top:3px'>"+c.lote_nome+"</span>";
-    h+="<tr><td><input type='checkbox'"+(sel.indexOf(c.id)>=0?" checked":"")+" onchange='togS("+c.id+",this.checked)'></td><td><span class='nlink' onclick='verP("+c.id+")'>"+c.nome+"</span></td><td><span class='badge' style='background:"+cor+"'>"+c.setor+"</span></td><td>"+sb+"</td></tr>";
-  });
-  h+="</tbody></table></div>";
-  q("tbl").innerHTML=h;
-  var cb=q("cball");
-  if(cb)cb.onchange=function(){togAll(f.map(function(c){return c.id;}),this.checked);};
+var b=q(“bsc”).value.toLowerCase();
+var f=cads.filter(function(c){return (fset===“Todos”||c.setor===fset)&&(!b||c.nome.toLowerCase().indexOf(b)>=0||c.email.toLowerCase().indexOf(b)>=0);});
+var gb=q(“gbar”);
+if(sel.length>0){gb.style.display=“flex”;q(“sct”).textContent=sel.length+” sel.”;}else gb.style.display=“none”;
+if(!f.length){q(“tbl”).innerHTML=”<div class='empty'>Nenhum cadastro</div>”;return;}
+var all=f.every(function(c){return sel.indexOf(c.id)>=0;});
+var h=”<div class='tbl'><table><thead><tr><th><input type=‘checkbox’”+(all?” checked”:””)+” id=‘cball’></th><th>Nome</th><th>Setor</th><th>Status</th></tr></thead><tbody>”;
+f.forEach(function(c){
+var cor=COR[c.setor]||”#555”;
+var sb=c.status===“aprovado”?”<span class='ab'>Aprov</span>”:c.status===“reprovado”?”<span class='rb'>Reprov</span>”:c.evento_id?”<span class='pb'>Pend</span>”:””;
+if(c.lote_nome)sb=(sb||””)+”<span style='background:#0891b2;color:#fff;padding:2px 6px;border-radius:10px;font-size:9px;display:block;margin-top:3px'>”+c.lote_nome+”</span>”;
+h+=”<tr><td><input type=‘checkbox’”+(sel.indexOf(c.id)>=0?” checked”:””)+” onchange=‘togS(”+c.id+”,this.checked)’></td><td><span class='nlink' onclick='verP("+c.id+")'>”+c.nome+”</span></td><td><span class='badge' style='background:"+cor+"'>”+c.setor+”</span></td><td>”+sb+”</td></tr>”;
+});
+h+=”</tbody></table></div>”;
+q(“tbl”).innerHTML=h;
+var cb=q(“cball”);
+if(cb)cb.onchange=function(){togAll(f.map(function(c){return c.id;}),this.checked);};
 }
 function togS(id,v){if(v){if(sel.indexOf(id)<0)sel.push(id);}else{sel=sel.filter(function(x){return x!==id;});}rend();}
 function togAll(ids,v){if(v)ids.forEach(function(id){if(sel.indexOf(id)<0)sel.push(id);});else sel=sel.filter(function(x){return ids.indexOf(x)<0;});rend();}
 function verP(id){
-  var c=null;
-  for(var i=0;i<cads.length;i++){if(cads[i].id===id){c=cads[i];break;}}
-  if(!c)return;pa=c;
-  var cor=COR[c.setor]||"#555";
-  var fh=c.foto_url?"<img src='"+c.foto_url+"' onclick='verFoto("+c.id+")' style='width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid #2aab47;margin:0 auto 10px;display:block;cursor:pointer'/>":"<div style='width:80px;height:80px;background:"+cor+";border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:28px;color:#fff;font-weight:700'>"+c.nome.charAt(0).toUpperCase()+"</div>";
-  var loteTag=c.lote_nome?"<div style='font-size:11px;color:#0891b2;margin-top:6px'>Convidado por <b>"+c.lote_nome+"</b></div>":""; var h="<div style='text-align:center;margin-bottom:16px'>"+fh+"<div style='font-size:17px;font-weight:700;color:#fff'>"+c.nome+"</div><span class='badge' style='background:"+cor+";margin-top:6px;display:inline-block'>"+c.setor+"</span>"+loteTag+"</div>";
-  var rows=[["CPF",c.cpf],["RG",c.rg],["Email",c.email],["Telefone",c.telefone],["Nascimento",fd(c.nascimento)]];
-  if(c.empresa)rows.push(["Empresa",c.empresa]);
-  if(c.cargo)rows.push(["Cargo",c.cargo]);
-  if(c.lote_nome)rows.push(["Convidado por",c.lote_nome]);
-  if(c.status&&c.evento_id)rows.push(["Status",c.status]);
-  rows.forEach(function(row){h+="<div class='prow'><span>"+row[0]+"</span><span>"+row[1]+"</span></div>";});
-  q("pcont").innerHTML=h;
-  if(c.status==="pendente")q("aprovd").style.display="block";else q("aprovd").style.display="none";
-  q("ovp").classList.add("on");
+var c=null;
+for(var i=0;i<cads.length;i++){if(cads[i].id===id){c=cads[i];break;}}
+if(!c)return;pa=c;
+var cor=COR[c.setor]||”#555”;
+var fh=c.foto_url?”<img src='"+c.foto_url+"' onclick='verFoto("+c.id+")' style='width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid #2aab47;margin:0 auto 10px;display:block;cursor:pointer'/>”:”<div style='width:80px;height:80px;background:"+cor+";border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:28px;color:#fff;font-weight:700'>”+c.nome.charAt(0).toUpperCase()+”</div>”;
+var loteTag=c.lote_nome?”<div style='font-size:11px;color:#0891b2;margin-top:6px'>Convidado por <b>”+c.lote_nome+”</b></div>”:””; var h=”<div style='text-align:center;margin-bottom:16px'>”+fh+”<div style='font-size:17px;font-weight:700;color:#fff'>”+c.nome+”</div><span class='badge' style='background:"+cor+";margin-top:6px;display:inline-block'>”+c.setor+”</span>”+loteTag+”</div>”;
+var rows=[[“CPF”,c.cpf],[“RG”,c.rg],[“Email”,c.email],[“Telefone”,c.telefone],[“Nascimento”,fd(c.nascimento)]];
+if(c.empresa)rows.push([“Empresa”,c.empresa]);
+if(c.cargo)rows.push([“Cargo”,c.cargo]);
+if(c.lote_nome)rows.push([“Convidado por”,c.lote_nome]);
+if(c.status&&c.evento_id)rows.push([“Status”,c.status]);
+rows.forEach(function(row){h+=”<div class='prow'><span>”+row[0]+”</span><span>”+row[1]+”</span></div>”;});
+q(“pcont”).innerHTML=h;
+if(c.status===“pendente”)q(“aprovd”).style.display=“block”;else q(“aprovd”).style.display=“none”;
+q(“ovp”).classList.add(“on”);
 }
 function verFoto(id){
-  var c=null;
-  for(var i=0;i<cads.length;i++){if(cads[i].id===id){c=cads[i];break;}}
-  if(!c||!c.foto_url)return;
-  q("fgrd").src=c.foto_url;q("ovfoto").classList.add("on");
+var c=null;
+for(var i=0;i<cads.length;i++){if(cads[i].id===id){c=cads[i];break;}}
+if(!c||!c.foto_url)return;
+q(“fgrd”).src=c.foto_url;q(“ovfoto”).classList.add(“on”);
 }
 function copDados(){
-  if(!pa)return;
-  var txt="Nome: "+pa.nome+"\nCPF: "+pa.cpf+"\nRG: "+pa.rg+"\nEmail: "+pa.email+"\nTelefone: "+pa.telefone+"\nNascimento: "+fd(pa.nascimento)+"\nSetor: "+pa.setor;
-  if(pa.empresa)txt=txt+"\nEmpresa: "+pa.empresa;
-  if(pa.cargo)txt=txt+"\nCargo: "+pa.cargo;
-  cp2(txt,q("bcpy"),"Copiar dados");
+if(!pa)return;
+var txt=“Nome: “+pa.nome+”\nCPF: “+pa.cpf+”\nRG: “+pa.rg+”\nEmail: “+pa.email+”\nTelefone: “+pa.telefone+”\nNascimento: “+fd(pa.nascimento)+”\nSetor: “+pa.setor;
+if(pa.empresa)txt=txt+”\nEmpresa: “+pa.empresa;
+if(pa.cargo)txt=txt+”\nCargo: “+pa.cargo;
+cp2(txt,q(“bcpy”),“Copiar dados”);
 }
 function delP(){
-  if(!pa)return;if(!confirm("Excluir?"))return;
-  var pid=pa.id;
-  ap("cadastros?id=eq."+pid,{m:"DELETE",pref:"return=minimal"}).then(function(){
-    cads=cads.filter(function(c){return c.id!==pid;});
-    sel=sel.filter(function(x){return x!==pid;});
-    q("ovp").classList.remove("on");pa=null;rSts();rend();
-  });
+if(!pa)return;if(!confirm(“Excluir?”))return;
+var pid=pa.id;
+ap(“cadastros?id=eq.”+pid,{m:“DELETE”,pref:“return=minimal”}).then(function(){
+cads=cads.filter(function(c){return c.id!==pid;});
+sel=sel.filter(function(x){return x!==pid;});
+q(“ovp”).classList.remove(“on”);pa=null;rSts();rend();
+});
 }
 function abrEv(id){
-  eid=id;
-  if(id){
-    var ev=null;
-    for(var i=0;i<evs.length;i++){if(evs[i].id===id){ev=evs[i];break;}}
-    if(!ev)return;
-    q("evtit").textContent="Editar Evento";
-    q("evn").value=ev.nome||"";q("evd").value=ev.data||"";q("evl").value=ev.local||"";
-    q("evm").value=ev.maps_url||"";q("eva1").value=ev.atracao1||"";q("evi1").value=ev.insta_atr1||"";
-    q("eva2").value=ev.atracao2||"";q("evi2").value=ev.insta_atr2||"";
-    q("evf").value=ev.foto_url||"";q("evdesc").value=ev.descricao||"";
-  }else{
-    q("evtit").textContent="Novo Evento";
-    ["evn","evd","evl","evm","eva1","evi1","eva2","evi2","evf","evdesc"].forEach(function(x){q(x).value="";});
-  }
-  q("evalert").innerHTML="";
-  q("ovev").classList.add("on");
+eid=id;
+if(id){
+var ev=null;
+for(var i=0;i<evs.length;i++){if(evs[i].id===id){ev=evs[i];break;}}
+if(!ev)return;
+q(“evtit”).textContent=“Editar Evento”;
+q(“evn”).value=ev.nome||””;q(“evd”).value=ev.data||””;q(“evl”).value=ev.local||””;
+q(“evm”).value=ev.maps_url||””;q(“eva1”).value=ev.atracao1||””;q(“evi1”).value=ev.insta_atr1||””;
+q(“eva2”).value=ev.atracao2||””;q(“evi2”).value=ev.insta_atr2||””;
+q(“evf”).value=ev.foto_url||””;q(“evdesc”).value=ev.descricao||””;
+}else{
+q(“evtit”).textContent=“Novo Evento”;
+[“evn”,“evd”,“evl”,“evm”,“eva1”,“evi1”,“eva2”,“evi2”,“evf”,“evdesc”].forEach(function(x){q(x).value=””;});
 }
-function fecEv(){q("ovev").classList.remove("on");eid=null;}
+q(“evalert”).innerHTML=””;
+q(“ovev”).classList.add(“on”);
+}
+function fecEv(){q(“ovev”).classList.remove(“on”);eid=null;}
 function salvEv(){
-  var nome=q("evn").value.trim();
-  if(!nome){q("evalert").innerHTML="<div class='ea'>Nome obrigatorio</div>";return;}
-  var btn=q("bsev");btn.textContent="Salvando...";btn.disabled=true;
-  var body=JSON.stringify({nome:nome,data:q("evd").value||null,local:q("evl").value.trim(),maps_url:q("evm").value.trim(),atracao1:q("eva1").value.trim(),insta_atr1:q("evi1").value.trim(),atracao2:q("eva2").value.trim(),insta_atr2:q("evi2").value.trim(),foto_url:q("evf").value.trim(),descricao:q("evdesc").value.trim()});
-  var path=eid?"eventos?id=eq."+eid:"eventos";
-  var meth=eid?"PATCH":"POST";
-  ap(path,{m:meth,pref:"return=minimal",b:body}).then(function(){fecEv();load();tab("e");}).catch(function(){q("evalert").innerHTML="<div class='ea'>Erro ao salvar</div>";}).finally(function(){btn.textContent="Salvar";btn.disabled=false;});
+var nome=q(“evn”).value.trim();
+if(!nome){q(“evalert”).innerHTML=”<div class='ea'>Nome obrigatorio</div>”;return;}
+var btn=q(“bsev”);btn.textContent=“Salvando…”;btn.disabled=true;
+var body=JSON.stringify({nome:nome,data:q(“evd”).value||null,local:q(“evl”).value.trim(),maps_url:q(“evm”).value.trim(),atracao1:q(“eva1”).value.trim(),insta_atr1:q(“evi1”).value.trim(),atracao2:q(“eva2”).value.trim(),insta_atr2:q(“evi2”).value.trim(),foto_url:q(“evf”).value.trim(),descricao:q(“evdesc”).value.trim()});
+var path=eid?“eventos?id=eq.”+eid:“eventos”;
+var meth=eid?“PATCH”:“POST”;
+ap(path,{m:meth,pref:“return=minimal”,b:body}).then(function(){fecEv();load();tab(“e”);}).catch(function(){q(“evalert”).innerHTML=”<div class='ea'>Erro ao salvar</div>”;}).finally(function(){btn.textContent=“Salvar”;btn.disabled=false;});
 }
 function rEvs(){
-  var el=q("evlst");
-  if(!evs.length){el.innerHTML="<div class='empty'>Nenhum evento</div>";return;}
-  var h="";
-  evs.forEach(function(ev){
-    var d=ev.data?ev.data.split("-"):["","",""];
-    h+="<div class='card'>";
-    h+="<div style='font-size:15px;font-weight:700;color:#fff;margin-bottom:4px'>"+ev.nome+"</div>";
-    h+="<div style='font-size:11px;color:#555;line-height:1.7;margin-bottom:10px'>";
-    if(ev.data)h+="Data: "+d[2]+"/"+d[1]+"/"+d[0]+"<br>";
-    if(ev.local)h+="Local: "+ev.local+"<br>";
-    if(ev.atracao1)h+="Atracoes: "+ev.atracao1+(ev.atracao2?" + "+ev.atracao2:"")+"<br>";
-    h+="</div>";
-    h+="<div style='display:flex;gap:6px;flex-wrap:wrap'>";
-    h+="<button class='btn' onclick='abrConv("+ev.id+")' style='flex:1;font-size:11px;padding:8px'>Enviar Convites</button>";
-    h+="<button class='bto' onclick='lstEv("+ev.id+")' style='font-size:11px;padding:8px'>Lista</button>";
-    h+="<button class='bty' onclick='abrEv("+ev.id+")' style='font-size:11px;padding:8px'>Editar</button>";
-    h+="<button class='btr' onclick='delEv("+ev.id+")' style='font-size:11px;padding:8px'>X</button>";
-    h+="</div></div>";
-  });
-  el.innerHTML=h;
+var el=q(“evlst”);
+if(!evs.length){el.innerHTML=”<div class='empty'>Nenhum evento</div>”;return;}
+var h=””;
+evs.forEach(function(ev){
+var d=ev.data?ev.data.split(”-”):[””,””,””];
+h+=”<div class='card'>”;
+h+=”<div style='font-size:15px;font-weight:700;color:#fff;margin-bottom:4px'>”+ev.nome+”</div>”;
+h+=”<div style='font-size:11px;color:#555;line-height:1.7;margin-bottom:10px'>”;
+if(ev.data)h+=“Data: “+d[2]+”/”+d[1]+”/”+d[0]+”<br>”;
+if(ev.local)h+=“Local: “+ev.local+”<br>”;
+if(ev.atracao1)h+=“Atracoes: “+ev.atracao1+(ev.atracao2?” + “+ev.atracao2:””)+”<br>”;
+h+=”</div>”;
+h+=”<div style='display:flex;gap:6px;flex-wrap:wrap'>”;
+h+=”<button class='btn' onclick='abrConv("+ev.id+")' style='flex:1;font-size:11px;padding:8px'>Enviar Convites</button>”;
+h+=”<button class='bto' onclick='lstEv("+ev.id+")' style='font-size:11px;padding:8px'>Lista</button>”;
+h+=”<button class='bty' onclick='abrEv("+ev.id+")' style='font-size:11px;padding:8px'>Editar</button>”;
+h+=”<button class='btr' onclick='delEv("+ev.id+")' style='font-size:11px;padding:8px'>X</button>”;
+h+=”</div></div>”;
+});
+el.innerHTML=h;
 }
 function delEv(id){
-  if(!confirm("Excluir evento?"))return;
-  ap("cadastros?evento_id=eq."+id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({evento_id:null,status:"pendente"})}).then(function(){
-    return ap("eventos?id=eq."+id,{m:"DELETE",pref:"return=minimal"});
-  }).then(function(){evs=evs.filter(function(e){return e.id!==id;});rEvs();rSts();});
+if(!confirm(“Excluir evento?”))return;
+ap(“cadastros?evento_id=eq.”+id,{m:“PATCH”,pref:“return=minimal”,b:JSON.stringify({evento_id:null,status:“pendente”})}).then(function(){
+return ap(“eventos?id=eq.”+id,{m:“DELETE”,pref:“return=minimal”});
+}).then(function(){evs=evs.filter(function(e){return e.id!==id;});rEvs();rSts();});
 }
 function abrConv(evId){
-  eva=null;
-  for(var i=0;i<evs.length;i++){if(evs[i].id===evId){eva=evs[i];break;}}
-  if(!eva)return;
-  cs=[];cf="Todos";
-  q("cres").classList.add("gone");q("csel").classList.remove("gone");
-  q("cevinfo").textContent="Evento: "+eva.nome;
-  q("calert").innerHTML="";
-  document.querySelectorAll("#cchips .chip").forEach(function(b){b.classList.remove("on");});
-  document.querySelector("#cchips .chip").classList.add("on");
-  rcp();
-  q("ovconv").classList.add("on");
+eva=null;
+for(var i=0;i<evs.length;i++){if(evs[i].id===evId){eva=evs[i];break;}}
+if(!eva)return;
+cs=[];cf=“Todos”;
+q(“cres”).classList.add(“gone”);q(“csel”).classList.remove(“gone”);
+q(“cevinfo”).textContent=“Evento: “+eva.nome;
+q(“calert”).innerHTML=””;
+document.querySelectorAll(”#cchips .chip”).forEach(function(b){b.classList.remove(“on”);});
+document.querySelector(”#cchips .chip”).classList.add(“on”);
+rcp();
+q(“ovconv”).classList.add(“on”);
 }
-function fconv(f,btn){cf=f;document.querySelectorAll("#cchips .chip").forEach(function(b){b.classList.remove("on");});btn.classList.add("on");rcp();}
+function fconv(f,btn){cf=f;document.querySelectorAll(”#cchips .chip”).forEach(function(b){b.classList.remove(“on”);});btn.classList.add(“on”);rcp();}
 function rcp(){
-  var f=cads.filter(function(c){return cf==="Todos"||c.setor===cf;});
-  if(!f.length){q("cpess").innerHTML="<div class='empty'>Nenhuma pessoa</div>";return;}
-  var h="";
-  f.forEach(function(c){
-    var cor=COR[c.setor]||"#555";
-    var chk=cs.indexOf(c.id)>=0;
-    h+="<div style='display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #111'>";
-    h+="<input type='checkbox' style='width:18px;height:18px;cursor:pointer' "+(chk?"checked":"")+" onchange='togC("+c.id+",this.checked)'>";
-    h+="<div style='flex:1;font-size:13px;color:#eee'>"+c.nome+"</div>";
-    h+="<span class='badge' style='background:"+cor+"'>"+c.setor+"</span></div>";
-  });
-  q("cpess").innerHTML=h;
+var f=cads.filter(function(c){return cf===“Todos”||c.setor===cf;});
+if(!f.length){q(“cpess”).innerHTML=”<div class='empty'>Nenhuma pessoa</div>”;return;}
+var h=””;
+f.forEach(function(c){
+var cor=COR[c.setor]||”#555”;
+var chk=cs.indexOf(c.id)>=0;
+h+=”<div style='display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #111'>”;
+h+=”<input type=‘checkbox’ style=‘width:18px;height:18px;cursor:pointer’ “+(chk?“checked”:””)+” onchange=‘togC(”+c.id+”,this.checked)’>”;
+h+=”<div style='flex:1;font-size:13px;color:#eee'>”+c.nome+”</div>”;
+h+=”<span class='badge' style='background:"+cor+"'>”+c.setor+”</span></div>”;
+});
+q(“cpess”).innerHTML=h;
 }
 function togC(id,v){if(v){if(cs.indexOf(id)<0)cs.push(id);}else{cs=cs.filter(function(x){return x!==id;});}}
 function gconvExt(){
-  if(!eva)return;
-  var btn=q("bgconv");btn.textContent="Gerando...";btn.disabled=true;
-  q("calert-ext").innerHTML="";
-  fetch(SB+"/rest/v1/codigos?usado=eq.false&lote_id=is.null&order=id.asc&limit=1",{headers:{"apikey":KY,"Authorization":"Bearer "+KY}})
-    .then(function(r){return r.json();})
-    .then(function(d){
-      if(!d||!d.length){q("calert-ext").innerHTML="<div class='ea'>Nenhum codigo disponivel!</div>";return;}
-      var cod=d[0].codigo;
-      ap("codigos?codigo=eq."+cod,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString()})});
-      var link="https://robsafonso.github.io/Agroplay/cadastro-externo.html?ev="+eva.id+"&cod="+cod+"&resp="+encodeURIComponent("Robson");
-      var df=eva.data?eva.data.split("-"):["","",""];
-      var dataFmt=eva.data?df[2]+"/"+df[1]+"/"+df[0]:"";
-      var msg="AGROPLAY - Convite VIP\n\n"+eva.nome+(dataFmt?"\nData: "+dataFmt:"")+(eva.local?"\nLocal: "+eva.local:"")+(eva.atracao1?"\nAtracoes: "+eva.atracao1+(eva.atracao2?" + "+eva.atracao2:""):"")+"\n\nAcesse e se cadastre:\n"+link+"\n\nSeu codigo: "+cod+"\n\nCodigo intransferivel.\nAgroplay - Londrina PR";
-      q("linkext").textContent=link;
-      q("bcopext").style.display="block";
-      q("bcopext").onclick=function(){cp2(msg,q("bcopext"),"Copiar mensagem");};
-      rSts();
-    })
-    .catch(function(){q("calert-ext").innerHTML="<div class='ea'>Erro</div>";})
-    .finally(function(){btn.textContent="Gerar link externo";btn.disabled=false;});
+if(!eva)return;
+var btn=q(“bgconv”);btn.textContent=“Gerando…”;btn.disabled=true;
+q(“calert-ext”).innerHTML=””;
+fetch(SB+”/rest/v1/codigos?usado=eq.false&lote_id=is.null&order=id.asc&limit=1”,{headers:{“apikey”:KY,“Authorization”:“Bearer “+KY}})
+.then(function(r){return r.json();})
+.then(function(d){
+if(!d||!d.length){q(“calert-ext”).innerHTML=”<div class='ea'>Nenhum codigo disponivel!</div>”;return;}
+var cod=d[0].codigo;
+ap(“codigos?codigo=eq.”+cod,{m:“PATCH”,pref:“return=minimal”,b:JSON.stringify({usado:true,usado_em:new Date().toISOString()})});
+var link=“https://robsafonso.github.io/Agroplay/cadastro-externo.html?ev=”+eva.id+”&cod=”+cod+”&resp=”+encodeURIComponent(“Robson”);
+var df=eva.data?eva.data.split(”-”):[””,””,””];
+var dataFmt=eva.data?df[2]+”/”+df[1]+”/”+df[0]:””;
+var msg=“AGROPLAY - Convite VIP\n\n”+eva.nome+(dataFmt?”\nData: “+dataFmt:””)+(eva.local?”\nLocal: “+eva.local:””)+(eva.atracao1?”\nAtracoes: “+eva.atracao1+(eva.atracao2?” + “+eva.atracao2:””):””)+”\n\nAcesse e se cadastre:\n”+link+”\n\nSeu codigo: “+cod+”\n\nCodigo intransferivel.\nAgroplay - Londrina PR”;
+q(“linkext”).textContent=link;
+q(“bcopext”).style.display=“block”;
+q(“bcopext”).onclick=function(){cp2(msg,q(“bcopext”),“Copiar mensagem”);};
+rSts();
+})
+.catch(function(){q(“calert-ext”).innerHTML=”<div class='ea'>Erro</div>”;})
+.finally(function(){btn.textContent=“Gerar link externo”;btn.disabled=false;});
 }
 function gconv(){
-  if(cs.length===0){q("calert").innerHTML="<div class='ea'>Selecione pelo menos 1 pessoa</div>";return;}
-  var btn=q("bgconv");btn.textContent="Gerando...";btn.disabled=true;
-  q("calert").innerHTML="";
-  fetch(SB+"/rest/v1/codigos?usado=eq.false&lote_id=is.null&order=id.asc&limit=1",{headers:{"apikey":KY,"Authorization":"Bearer "+KY}})
-    .then(function(r){return r.json();})
-    .then(function(d){
-      if(!d||!d.length){q("calert").innerHTML="<div class='ea'>Nenhum codigo disponivel!</div>";return;}
-      var cod=d[0].codigo;
-      var pessoa=null;
-      for(var i=0;i<cads.length;i++){if(cads[i].id===cs[0]){pessoa=cads[i];break;}}
-      var ev=eva;
-      var df=ev.data?ev.data.split("-"):["","",""];
-      var dataFmt=ev.data?df[2]+"/"+df[1]+"/"+df[0]:"";
-      var msg="AGROPLAY - Convite VIP\n\nOla "+pessoa.nome+"!\n\nVoce esta convidado(a):\n\n"+ev.nome+(dataFmt?"\nData: "+dataFmt:"")+(ev.local?"\nLocal: "+ev.local:"")+(ev.atracao1?"\nAtracoes: "+ev.atracao1+(ev.atracao2?" + "+ev.atracao2:""):"");
-      msg=msg+"\n\nAcesse e confirme presenca:\n"+LCV+"?ev="+ev.id+"&tipo=interno\n\nSeu codigo: "+cod+"\n\nCodigo intransferivel.\nAgroplay - Londrina PR";
-      ap("codigos?codigo=eq."+cod,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString(),cadastro_id:pessoa?pessoa.id:null})});
-      q("ccod").textContent=cod;
-      q("cmsg").textContent=msg;
-      q("cres").classList.remove("gone");
-      q("csel").classList.add("gone");
-      cs=cs.slice(1);
-      rSts();
-    })
-    .catch(function(){q("calert").innerHTML="<div class='ea'>Erro ao gerar</div>";})
-    .finally(function(){btn.textContent="Gerar convite";btn.disabled=false;});
+if(cs.length===0){q(“calert”).innerHTML=”<div class='ea'>Selecione pelo menos 1 pessoa</div>”;return;}
+var btn=q(“bgconv”);btn.textContent=“Gerando…”;btn.disabled=true;
+q(“calert”).innerHTML=””;
+fetch(SB+”/rest/v1/codigos?usado=eq.false&lote_id=is.null&order=id.asc&limit=1”,{headers:{“apikey”:KY,“Authorization”:“Bearer “+KY}})
+.then(function(r){return r.json();})
+.then(function(d){
+if(!d||!d.length){q(“calert”).innerHTML=”<div class='ea'>Nenhum codigo disponivel!</div>”;return;}
+var cod=d[0].codigo;
+var pessoa=null;
+for(var i=0;i<cads.length;i++){if(cads[i].id===cs[0]){pessoa=cads[i];break;}}
+var ev=eva;
+var df=ev.data?ev.data.split(”-”):[””,””,””];
+var dataFmt=ev.data?df[2]+”/”+df[1]+”/”+df[0]:””;
+var msg=“AGROPLAY - Convite VIP\n\nOla “+pessoa.nome+”!\n\nVoce esta convidado(a):\n\n”+ev.nome+(dataFmt?”\nData: “+dataFmt:””)+(ev.local?”\nLocal: “+ev.local:””)+(ev.atracao1?”\nAtracoes: “+ev.atracao1+(ev.atracao2?” + “+ev.atracao2:””):””);
+msg=msg+”\n\nAcesse e confirme presenca:\n”+LCV+”?ev=”+ev.id+”&tipo=interno\n\nSeu codigo: “+cod+”\n\nCodigo intransferivel.\nAgroplay - Londrina PR”;
+ap(“codigos?codigo=eq.”+cod,{m:“PATCH”,pref:“return=minimal”,b:JSON.stringify({usado:true,usado_em:new Date().toISOString(),cadastro_id:pessoa?pessoa.id:null})});
+q(“ccod”).textContent=cod;
+q(“cmsg”).textContent=msg;
+q(“cres”).classList.remove(“gone”);
+q(“csel”).classList.add(“gone”);
+cs=cs.slice(1);
+rSts();
+})
+.catch(function(){q(“calert”).innerHTML=”<div class='ea'>Erro ao gerar</div>”;})
+.finally(function(){btn.textContent=“Gerar convite”;btn.disabled=false;});
 }
 function lstEv(evId){
-  var ev=null;
-  for(var i=0;i<evs.length;i++){if(evs[i].id===evId){ev=evs[i];break;}}
-  if(!ev)return;
-  var p=cads.filter(function(c){return c.evento_id===evId;});
-  lista={n:ev.nome,p:p,dt:new Date().toLocaleString("pt-BR"),evId:evId};
-  lstExcluidos=[];lstSel=[];
-  tab("l");rLst();
+var ev=null;
+for(var i=0;i<evs.length;i++){if(evs[i].id===evId){ev=evs[i];break;}}
+if(!ev)return;
+var p=cads.filter(function(c){return c.evento_id===evId;});
+lista={n:ev.nome,p:p,dt:new Date().toLocaleString(“pt-BR”),evId:evId};
+lstExcluidos=[];lstSel=[];
+tab(“l”);rLst();
 }
 function rCods(){
-  var f=cods.filter(function(c){return fk==="d"?!c.usado:fk==="u"?c.usado:true;});
-  if(!f.length){q("klst").innerHTML="<div class='empty'>Nenhum</div>";return;}
-  var h="<div style='display:grid;grid-template-columns:repeat(2,1fr);gap:5px'>";
-  f.forEach(function(c){
-    h+="<div style='background:#030503;border:1px solid #1a2a1a;border-radius:7px;padding:8px 10px;display:flex;justify-content:space-between;align-items:center'>";
-    h+="<span style='font-family:monospace;font-size:12px;font-weight:700;color:"+(c.usado?"#444":"#fff")+"'>"+c.codigo+"</span>";
-    h+="<span class='badge' style='background:"+(c.usado?"#555":"#1e7a35")+"'>"+(c.usado?"Usado":"Livre")+"</span></div>";
-  });
-  h+="</div>";q("klst").innerHTML=h;
+var f=cods.filter(function(c){return fk===“d”?!c.usado:fk===“u”?c.usado:true;});
+if(!f.length){q(“klst”).innerHTML=”<div class='empty'>Nenhum</div>”;return;}
+var h=”<div style='display:grid;grid-template-columns:repeat(2,1fr);gap:5px'>”;
+f.forEach(function(c){
+h+=”<div style='background:#030503;border:1px solid #1a2a1a;border-radius:7px;padding:8px 10px;display:flex;justify-content:space-between;align-items:center'>”;
+h+=”<span style='font-family:monospace;font-size:12px;font-weight:700;color:"+(c.usado?"#444":"#fff")+"'>”+c.codigo+”</span>”;
+h+=”<span class='badge' style='background:"+(c.usado?"#555":"#1e7a35")+"'>”+(c.usado?“Usado”:“Livre”)+”</span></div>”;
+});
+h+=”</div>”;q(“klst”).innerHTML=h;
 }
-function expCods(){dl("Codigo,Status\n"+cods.map(function(c){return c.codigo+","+(c.usado?"Usado":"Disponivel");}).join("\n"),"text/csv","Codigos.csv");}
+function expCods(){dl(“Codigo,Status\n”+cods.map(function(c){return c.codigo+”,”+(c.usado?“Usado”:“Disponivel”);}).join(”\n”),“text/csv”,“Codigos.csv”);}
 function gerarLst(){
-  var p=cads.filter(function(c){return sel.indexOf(c.id)>=0;});
-  var n=q("evnm").value||"Evento";
-  lista={n:n,p:p,dt:new Date().toLocaleString("pt-BR")};
-  tab("l");rLst();
+var p=cads.filter(function(c){return sel.indexOf(c.id)>=0;});
+var n=q(“evnm”).value||“Evento”;
+lista={n:n,p:p,dt:new Date().toLocaleString(“pt-BR”)};
+tab(“l”);rLst();
 }
 var lstExcluidos=[];
 var lstSel=[];
 function rLst(){
-  if(!lista){q("llst").innerHTML="<div class='empty'>Selecione cadastros e clique em Gerar Lista.</div>";return;}
-  var ativos=lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)<0;});
-  var excl=lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)>=0;});
-  var h="<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px'>";
-  h+="<div><div style='font-size:15px;color:#fff;font-weight:700'>"+lista.n+"</div>";
-  h+="<div style='font-size:11px;color:#555;margin-top:2px'>"+lista.dt+" - "+ativos.length+" confirmado(s)</div></div>";
-  h+="<div style='display:flex;gap:6px;flex-wrap:wrap'>";
-  h+="<button class='bto' onclick='exXlsL()' style='font-size:11px;padding:7px 10px'>Excel</button>";
-  h+="<button class='bto' onclick='exCsvL()' style='font-size:11px;padding:7px 10px'>CSV</button>";
-  h+="<button class='btr' onclick='exclSel()' style='font-size:11px;padding:7px 10px'>Excluir sel.</button>";
-  h+="</div></div>";
-  h+="<div style='font-size:10px;color:#2aab47;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px'>Confirmados ("+ativos.length+")</div>";
-  h+="<div class='tbl'><table><thead><tr><th><input type='checkbox' id='lball' onchange='togLstAll(this.checked)'></th><th>Nome</th><th>Empresa</th><th>Status</th><th>Convidado por</th><th></th></tr></thead><tbody>";
-  ativos.forEach(function(p,i){
-    var chk=lstSel.indexOf(p.id)>=0;
-    var sb=p.status==="aprovado"?"<span class='ab'>Aprov</span>":p.status==="reprovado"?"<span class='rb'>Reprov</span>":"<span class='pb'>Pend</span>";
-    h+="<tr><td><input type='checkbox' "+(chk?"checked":"")+" onchange='togLst("+p.id+",this.checked)'></td>";
-    h+="<td style='color:#fff'>"+p.nome+"</td>";
-    h+="<td style='color:#777'>"+(p.empresa||"-")+"</td>";
-    h+="<td>"+sb+"</td>";
-    h+="<td style='color:#0891b2;font-size:11px'>"+(p.lote_nome||"-")+"</td>";
-    h+="<td><button class='btr' onclick='exclP("+p.id+")' style='font-size:10px;padding:3px 8px'>X</button></td></tr>";
-  });
-  h+="</tbody></table></div>";
-  if(excl.length){
-    h+="<div style='font-size:10px;color:#e74c3c;text-transform:uppercase;letter-spacing:1px;margin:14px 0 8px'>Excluidos ("+excl.length+")</div>";
-    h+="<div class='tbl'><table><thead><tr><th>Nome</th><th>Empresa</th><th>Convidado por</th><th></th></tr></thead><tbody>";
-    excl.forEach(function(p){
-      h+="<tr><td style='color:#777'>"+p.nome+"</td>";
-      h+="<td style='color:#555'>"+(p.empresa||"-")+"</td>";
-      h+="<td style='color:#555;font-size:11px'>"+(p.lote_nome||"-")+"</td>";
-      h+="<td><button class='bto' onclick='restP("+p.id+")' style='font-size:10px;padding:3px 8px'>Restaurar</button></td></tr>";
-    });
-    h+="</tbody></table></div>";
-  }
-  q("llst").innerHTML=h;
+if(!lista){q(“llst”).innerHTML=”<div class='empty'>Selecione cadastros e clique em Gerar Lista.</div>”;return;}
+var ativos=lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)<0;});
+var excl=lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)>=0;});
+var h=”<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px'>”;
+h+=”<div><div style='font-size:15px;color:#fff;font-weight:700'>”+lista.n+”</div>”;
+h+=”<div style='font-size:11px;color:#555;margin-top:2px'>”+lista.dt+” - “+ativos.length+” confirmado(s)</div></div>”;
+h+=”<div style='display:flex;gap:6px;flex-wrap:wrap'>”;
+h+=”<button class='bto' onclick='exXlsL()' style='font-size:11px;padding:7px 10px'>Excel</button>”;
+h+=”<button class='bto' onclick='exCsvL()' style='font-size:11px;padding:7px 10px'>CSV</button>”;
+h+=”<button class='btr' onclick='exclSel()' style='font-size:11px;padding:7px 10px'>Excluir sel.</button>”;
+h+=”</div></div>”;
+h+=”<div style='font-size:10px;color:#2aab47;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px'>Confirmados (”+ativos.length+”)</div>”;
+h+=”<div class='tbl'><table><thead><tr><th><input type='checkbox' id='lball' onchange='togLstAll(this.checked)'></th><th>Nome</th><th>Empresa</th><th>Status</th><th>Convidado por</th><th></th></tr></thead><tbody>”;
+ativos.forEach(function(p,i){
+var chk=lstSel.indexOf(p.id)>=0;
+var sb=p.status===“aprovado”?”<span class='ab'>Aprov</span>”:p.status===“reprovado”?”<span class='rb'>Reprov</span>”:”<span class='pb'>Pend</span>”;
+h+=”<tr><td><input type=‘checkbox’ “+(chk?“checked”:””)+” onchange=‘togLst(”+p.id+”,this.checked)’></td>”;
+h+=”<td style='color:#fff'>”+p.nome+”</td>”;
+h+=”<td style='color:#777'>”+(p.empresa||”-”)+”</td>”;
+h+=”<td>”+sb+”</td>”;
+h+=”<td style='color:#0891b2;font-size:11px'>”+(p.lote_nome||”-”)+”</td>”;
+h+=”<td><button class='btr' onclick='exclP("+p.id+")' style='font-size:10px;padding:3px 8px'>X</button></td></tr>”;
+});
+h+=”</tbody></table></div>”;
+if(excl.length){
+h+=”<div style='font-size:10px;color:#e74c3c;text-transform:uppercase;letter-spacing:1px;margin:14px 0 8px'>Excluidos (”+excl.length+”)</div>”;
+h+=”<div class='tbl'><table><thead><tr><th>Nome</th><th>Empresa</th><th>Convidado por</th><th></th></tr></thead><tbody>”;
+excl.forEach(function(p){
+h+=”<tr><td style='color:#777'>”+p.nome+”</td>”;
+h+=”<td style='color:#555'>”+(p.empresa||”-”)+”</td>”;
+h+=”<td style='color:#555;font-size:11px'>”+(p.lote_nome||”-”)+”</td>”;
+h+=”<td><button class='bto' onclick='restP("+p.id+")' style='font-size:10px;padding:3px 8px'>Restaurar</button></td></tr>”;
+});
+h+=”</tbody></table></div>”;
+}
+q(“llst”).innerHTML=h;
 }
 function togLst(id,v){if(v){if(lstSel.indexOf(id)<0)lstSel.push(id);}else{lstSel=lstSel.filter(function(x){return x!==id;});}rLst();}
 function togLstAll(v){
-  var ativos=lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)<0;});
-  if(v)ativos.forEach(function(p){if(lstSel.indexOf(p.id)<0)lstSel.push(p.id);});
-  else lstSel=[];
-  rLst();
+var ativos=lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)<0;});
+if(v)ativos.forEach(function(p){if(lstSel.indexOf(p.id)<0)lstSel.push(p.id);});
+else lstSel=[];
+rLst();
 }
 function exclP(id){lstExcluidos.push(id);lstSel=lstSel.filter(function(x){return x!==id;});rLst();}
 function restP(id){lstExcluidos=lstExcluidos.filter(function(x){return x!==id;});rLst();}
 function exclSel(){lstSel.forEach(function(id){if(lstExcluidos.indexOf(id)<0)lstExcluidos.push(id);});lstSel=[];rLst();}
-function mkR(arr){return arr.map(function(c){return[c.nome,c.cpf,c.rg,c.email,c.telefone,fd(c.nascimento),c.setor,c.empresa||"",c.cargo||"",c.status||"",c.lote_nome||""];});}
-function expExcel(){mkXls(mkR(cads),"Cadastros");}
-function exXlsL(){if(lista){var ativos=lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)<0;});mkXls(mkR(lstSel.length?lista.p.filter(function(p){return lstSel.indexOf(p.id)>=0;}):ativos),"Lista_"+lista.n);}}
-function expCSV(){dl("Nome,CPF,RG,Email,Telefone,Nascimento,Setor,Empresa,Cargo,Status,Convidado por\n"+mkR(cads).map(function(r){return r.map(function(v){return'"'+v+'"';}).join(",");}).join("\n"),"text/csv","Cadastros.csv");}
-function exCsvL(){if(lista){var ativos=lstSel.length?lista.p.filter(function(p){return lstSel.indexOf(p.id)>=0;}):lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)<0;});dl("Nome,CPF,RG,Email,Telefone,Nascimento,Setor,Empresa,Cargo,Status,Convidado por\n"+mkR(ativos).map(function(r){return r.map(function(v){return'"'+v+'"';}).join(",");}).join("\n"),"text/csv","Lista.csv");}}
+function mkR(arr){return arr.map(function(c){return[c.nome,c.cpf,c.rg,c.email,c.telefone,fd(c.nascimento),c.setor,c.empresa||””,c.cargo||””,c.status||””,c.lote_nome||””];});}
+function expExcel(){mkXls(mkR(cads),“Cadastros”);}
+function exXlsL(){if(lista){var ativos=lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)<0;});mkXls(mkR(lstSel.length?lista.p.filter(function(p){return lstSel.indexOf(p.id)>=0;}):ativos),“Lista_”+lista.n);}}
+function expCSV(){dl(“Nome,CPF,RG,Email,Telefone,Nascimento,Setor,Empresa,Cargo,Status,Convidado por\n”+mkR(cads).map(function(r){return r.map(function(v){return’”’+v+’”’;}).join(”,”);}).join(”\n”),“text/csv”,“Cadastros.csv”);}
+function exCsvL(){if(lista){var ativos=lstSel.length?lista.p.filter(function(p){return lstSel.indexOf(p.id)>=0;}):lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)<0;});dl(“Nome,CPF,RG,Email,Telefone,Nascimento,Setor,Empresa,Cargo,Status,Convidado por\n”+mkR(ativos).map(function(r){return r.map(function(v){return’”’+v+’”’;}).join(”,”);}).join(”\n”),“text/csv”,“Lista.csv”);}}
 function mkXls(rows,name){
-  var hdr="<Row><Cell><Data ss:Type='String'>Nome</Data></Cell><Cell><Data ss:Type='String'>CPF</Data></Cell><Cell><Data ss:Type='String'>RG</Data></Cell><Cell><Data ss:Type='String'>Email</Data></Cell><Cell><Data ss:Type='String'>Telefone</Data></Cell><Cell><Data ss:Type='String'>Nascimento</Data></Cell><Cell><Data ss:Type='String'>Setor</Data></Cell><Cell><Data ss:Type='String'>Empresa</Data></Cell><Cell><Data ss:Type='String'>Cargo</Data></Cell><Cell><Data ss:Type='String'>Status</Data></Cell><Cell><Data ss:Type='String'>Convidado por</Data></Cell></Row>";
-  var body=rows.map(function(r){return "<Row>"+r.map(function(v){return"<Cell><Data ss:Type='String'>"+String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</Data></Cell>";}).join("")+"</Row>";}).join("");
-  dl("<?xml version='1.0'?><Workbook xmlns='urn:schemas-microsoft-com:office:spreadsheet' xmlns:ss='urn:schemas-microsoft-com:office:spreadsheet'><Worksheet ss:Name='Dados'><Table>"+hdr+body+"</Table></Worksheet></Workbook>","application/vnd.ms-excel",name+".xls");
+var hdr=”<Row><Cell><Data ss:Type='String'>Nome</Data></Cell><Cell><Data ss:Type='String'>CPF</Data></Cell><Cell><Data ss:Type='String'>RG</Data></Cell><Cell><Data ss:Type='String'>Email</Data></Cell><Cell><Data ss:Type='String'>Telefone</Data></Cell><Cell><Data ss:Type='String'>Nascimento</Data></Cell><Cell><Data ss:Type='String'>Setor</Data></Cell><Cell><Data ss:Type='String'>Empresa</Data></Cell><Cell><Data ss:Type='String'>Cargo</Data></Cell><Cell><Data ss:Type='String'>Status</Data></Cell><Cell><Data ss:Type='String'>Convidado por</Data></Cell></Row>”;
+var body=rows.map(function(r){return “<Row>”+r.map(function(v){return”<Cell><Data ss:Type='String'>”+String(v).replace(/&/g,”&”).replace(/</g,”<”)+”</Data></Cell>”;}).join(””)+”</Row>”;}).join(””);
+dl(”<?xml version='1.0'?><Workbook xmlns='urn:schemas-microsoft-com:office:spreadsheet' xmlns:ss='urn:schemas-microsoft-com:office:spreadsheet'><Worksheet ss:Name='Dados'><Table>”+hdr+body+”</Table></Worksheet></Workbook>”,“application/vnd.ms-excel”,name+”.xls”);
 }
 function tab(t){
-  ["c","e","k","l","lt"].forEach(function(x){q("s"+x).classList.add("gone");q("t"+x).classList.remove("on");});
-  q("s"+t).classList.remove("gone");q("t"+t).classList.add("on");
-  if(t==="l")rLst();if(t==="k")rCods();if(t==="e")rEvs();if(t==="lt")rLotes();
+[“c”,“e”,“k”,“l”,“lt”,“d”].forEach(function(x){q(“s”+x).classList.add(“gone”);q(“t”+x).classList.remove(“on”);});
+q(“s”+t).classList.remove(“gone”);q(“t”+t).classList.add(“on”);
+if(t===“l”)rLst();if(t===“k”)rCods();if(t===“e”)rEvs();if(t===“lt”)rLotes();if(t===“d”)rDash();
 }
 load();
 </script>
+
 </body>
 </html>
