@@ -154,7 +154,14 @@ function rLista(){
 }
 function load(){
   q("lista-checkin").innerHTML="<div class='empty'>Carregando...</div>";
-  ap("cadastros?select=*,codigos(codigo)&order=nome.asc").then(function(d){cads=(d||[]).map(function(c){c.codigo=c.codigos&&c.codigos[0]?c.codigos[0].codigo:'';return c;});rLista();}).catch(function(){cads=[];rLista();});
+  ap("cadastros?select=*&order=nome.asc").then(function(d){
+    cads=d||[];
+    ap("codigos?cadastro_id=not.is.null&select=codigo,cadastro_id").then(function(cods){
+      var map={};(cods||[]).forEach(function(c){map[c.cadastro_id]=c.codigo;});
+      cads.forEach(function(c){c.codigo=map[c.id]||'';});
+      rLista();
+    }).catch(function(){rLista();});
+  }).catch(function(){cads=[];rLista();});
   ap("eventos?select=*&order=data.asc").then(function(d){
     evs=d||[];
     var sel=q("ev-sel");
