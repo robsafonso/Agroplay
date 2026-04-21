@@ -712,7 +712,29 @@ function delLote(id){
     load();
   }).catch(function(e){alert("Erro ao excluir: "+e.message);});
 }
-function rHist(){var el=q("hcont");if(!evs.length){el.innerHTML="<div class='empty'>Nenhum evento</div>";return;}var h="";evs.forEach(function(ev){var tot=cads.filter(function(c){return c.evento_id===ev.id;}).length;var ent=cads.filter(function(c){return c.evento_id===ev.id&&c.entrada_em;}).length;var df=ev.data?ev.data.split("-"):["","",""];var dt=ev.data?df[2]+"/"+df[1]+"/"+df[0]:"";h+="<div class='card'><div style='font-size:14px;font-weight:700;color:#fff;margin-bottom:4px'>"+ev.nome+"</div><div style='font-size:11px;color:#555;margin-bottom:10px'>"+dt+(ev.local?" / "+ev.local:"")+"</div><div style='display:flex;gap:8px'><div style='flex:1;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:8px;text-align:center'><strong style='font-size:22px;color:#2aab47'>"+tot+"</strong><div style='font-size:9px;color:#555;text-transform:uppercase'>Convidados</div></div><div style='flex:1;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:8px;text-align:center'><strong style='font-size:22px;color:#0891b2'>"+ent+"</strong><div style='font-size:9px;color:#555;text-transform:uppercase'>Entraram</div></div></div></div>";});el.innerHTML=h;}
+function rHist(){
+var el=q("hcont");
+if(!evs.length){el.innerHTML="<div class=\"empty\">Nenhum evento</div>";return;}
+var h="";
+evs.forEach(function(ev){
+var tot=cads.filter(function(c){return c.evento_id===ev.id;}).length;
+var ent=cads.filter(function(c){return c.evento_id===ev.id&&c.entrada_em;}).length;
+var df=ev.data?ev.data.split("-"):["","",""];
+var dt=ev.data?df[2]+"/"+df[1]+"/"+df[0]:"";
+h+="<div class=\"card\">";
+h+="<div style=\"font-size:14px;font-weight:700;color:#fff;margin-bottom:4px\">"+ev.nome+"</div>";
+h+="<div style=\"font-size:11px;color:#555;margin-bottom:10px\">"+dt+(ev.local?" / "+ev.local:"")+"</div>";
+h+="<div style=\"display:flex;gap:8px\">";
+h+="<div style=\"flex:1;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:8px;text-align:center\">";
+h+="<strong style=\"font-size:22px;color:#2aab47\">"+tot+"</strong>";
+h+="<div style=\"font-size:9px;color:#555;text-transform:uppercase\">Convidados</div></div>";
+h+="<div style=\"flex:1;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:8px;text-align:center\">";
+h+="<strong style=\"font-size:22px;color:#0891b2\">"+ent+"</strong>";
+h+="<div style=\"font-size:9px;color:#555;text-transform:uppercase\">Entraram</div></div>";
+h+="</div></div>";
+});
+el.innerHTML=h;
+}
 function load(){
   q("tbl").innerHTML="<div class='empty'>Carregando...</div>";
   ap("cadastros?select=*&order=criado_em.desc").then(function(d){cads=d||[];rSts();rChips();rend();}).catch(function(){cads=[];rSts();rChips();rend();});
