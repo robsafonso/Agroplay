@@ -130,6 +130,18 @@ textarea{height:70px;resize:none}
       <div class="fl"><label>Empresa</label><input id="cad-emp" placeholder="Empresa"></div>
       <div class="fl"><label>Cargo</label><input id="cad-car" placeholder="Cargo"></div>
     </div>
+    <div class="fl"><label>Foto (opcional)</label>
+      <div id="cad-foto-wrap" style="text-align:center;margin-bottom:8px">
+        <div id="cad-video-wrap" style="width:120px;height:120px;border-radius:50%;overflow:hidden;border:2px solid #1a2a1a;margin:0 auto 8px;display:none"><video id="cad-video" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover"></video></div>
+        <canvas id="cad-canvas" style="display:none"></canvas>
+        <img id="cad-foto-prev" style="width:120px;height:120px;border-radius:50%;object-fit:cover;border:2px solid #2aab47;margin:0 auto 8px;display:none"/>
+        <div style="display:flex;gap:8px;justify-content:center">
+          <button type="button" id="btn-cad-cam" class="bto" style="font-size:11px;padding:6px 12px">Abrir camera</button>
+          <button type="button" id="btn-cad-foto" class="bto" style="font-size:11px;padding:6px 12px;display:none">Tirar foto</button>
+          <button type="button" id="btn-cad-refoto" class="bto" style="font-size:11px;padding:6px 12px;display:none">Nova foto</button>
+        </div>
+      </div>
+    </div>
     <button class="btn" id="btn-salvcad" style="width:100%">Salvar cadastro</button>
     <button class="bto" id="btn-cancelcad" style="width:100%;margin-top:8px">Cancelar</button>
   </div>
@@ -196,7 +208,13 @@ textarea{height:70px;resize:none}
         <button class="btr" id="brpv" style="flex:1;font-size:12px;padding:10px">Reprovar</button>
       </div>
     </div>
-    <button class="bto" id="bqr" style="width:100%;margin-top:12px;border-color:#c9973c;color:#c9973c">Ver QR Code</button>
+    <button class="bto" id="batualizafoto" style="width:100%;margin-top:12px;border-color:#0891b2;color:#0891b2">Atualizar foto</button>
+    <div id="foto-atualiza-wrap" style="display:none;margin-top:10px;text-align:center">
+      <div id="fa-video-wrap" style="width:120px;height:120px;border-radius:50%;overflow:hidden;border:2px solid #0891b2;margin:0 auto 8px"><video id="fa-video" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover"></video></div>
+      <canvas id="fa-canvas" style="display:none"></canvas>
+      <button type="button" id="btn-fa-foto" class="bto" style="font-size:11px;padding:6px 12px;border-color:#0891b2;color:#0891b2">Tirar foto</button>
+    </div>
+    <button class="bto" id="bqr" style="width:100%;margin-top:8px;border-color:#c9973c;color:#c9973c">Ver QR Code</button>
     <div id="qr-wrap" style="display:none;text-align:center;margin-top:12px;padding:16px;background:#fff;border-radius:12px"><div id="qr-box"></div><div id="qr-cod" style="font-family:monospace;font-size:18px;font-weight:900;color:#060a06;margin-top:8px;letter-spacing:4px"></div></div>
     <button class="bto" id="bcpy" style="width:100%;margin-top:12px">Copiar dados</button>
     <button class="bto" id="bincl" style="width:100%;margin-top:8px;border-color:#0891b2;color:#0891b2">Incluir em Evento</button>
@@ -325,7 +343,8 @@ q("btn-salvcad").onclick=function(){
     empresa:q("cad-emp").value.trim(),
     cargo:q("cad-car").value.trim(),
     status:"aprovado",
-    lote_nome:"Robson"
+    lote_nome:"Robson",
+    foto_url:window._cadFoto||null
   };
   ap("cadastros",{m:"POST",pref:"return=minimal",b:JSON.stringify(body)}).then(function(){
     al.innerHTML="<div style='background:#0a1f0a;border:1px solid #2aab47;color:#2aab47;padding:8px;border-radius:8px;font-size:13px'>Cadastro salvo!</div>";
@@ -333,6 +352,42 @@ q("btn-salvcad").onclick=function(){
     setTimeout(function(){q("ovcad").classList.remove("on");},1500);
   }).catch(function(){al.innerHTML="<div class='ea'>Erro ao salvar</div>";
   }).finally(function(){btn.textContent="Salvar cadastro";btn.disabled=false;});
+};
+var _cadStream=null;
+q("btn-cad-cam").onclick=function(){
+  window._cadFoto=null;
+  q("cad-foto-prev").style.display="none";
+  q("btn-cad-refoto").style.display="none";
+  q("cad-video-wrap").style.display="block";
+  q("btn-cad-cam").style.display="none";
+  q("btn-cad-foto").style.display="inline-block";
+  navigator.mediaDevices.getUserMedia({video:{facingMode:"user"},audio:false}).then(function(s){
+    _cadStream=s;q("cad-video").srcObject=s;q("cad-video").play();
+  }).catch(function(){q("cad-alert").innerHTML="<div class='ea'>Camera indisponivel</div>";});
+};
+q("btn-cad-foto").onclick=function(){
+  var v=q("cad-video");var c=q("cad-canvas");
+  c.width=200;c.height=200;
+  var ctx=c.getContext("2d");
+  var size=Math.min(v.videoWidth||200,v.videoHeight||200);
+  ctx.drawImage(v,(v.videoWidth-size)/2,(v.videoHeight-size)/2,size,size,0,0,200,200);
+  window._cadFoto=c.toDataURL("image/jpeg",0.5);
+  q("cad-foto-prev").src=window._cadFoto;
+  q("cad-foto-prev").style.display="block";
+  q("cad-video-wrap").style.display="none";
+  q("btn-cad-foto").style.display="none";
+  q("btn-cad-refoto").style.display="inline-block";
+  if(_cadStream)_cadStream.getTracks().forEach(function(t){t.stop();});
+};
+q("btn-cad-refoto").onclick=function(){
+  window._cadFoto=null;
+  q("cad-foto-prev").style.display="none";
+  q("btn-cad-refoto").style.display="none";
+  q("cad-video-wrap").style.display="block";
+  q("btn-cad-foto").style.display="inline-block";
+  navigator.mediaDevices.getUserMedia({video:{facingMode:"user"},audio:false}).then(function(s){
+    _cadStream=s;q("cad-video").srcObject=s;q("cad-video").play();
+  });
 };
 q("blinkc").onclick=function(){
   q("ovlinkc").classList.add("on");
@@ -370,13 +425,44 @@ q("bxls").onclick=expExcel;
 q("bcsv").onclick=expCSV;
 q("bfp").onclick=function(){q("ovp").classList.remove("on");pa=null;};
 q("bdel").onclick=delP;
+var _faStream=null;
+q("batualizafoto").onclick=function(){
+  var wrap=q("foto-atualiza-wrap");
+  if(wrap.style.display==="none"){
+    wrap.style.display="block";
+    q("batualizafoto").textContent="Fechar camera";
+    navigator.mediaDevices.getUserMedia({video:{facingMode:"user"},audio:false}).then(function(s){
+      _faStream=s;q("fa-video").srcObject=s;q("fa-video").play();
+    }).catch(function(){wrap.style.display="none";alert("Camera indisponivel");});
+  } else {
+    wrap.style.display="none";
+    q("batualizafoto").textContent="Atualizar foto";
+    if(_faStream)_faStream.getTracks().forEach(function(t){t.stop();});
+  }
+};
+q("btn-fa-foto").onclick=function(){
+  if(!pa)return;
+  var v=q("fa-video");var c=q("fa-canvas");
+  c.width=200;c.height=200;
+  var ctx=c.getContext("2d");
+  var size=Math.min(v.videoWidth||200,v.videoHeight||200);
+  ctx.drawImage(v,(v.videoWidth-size)/2,(v.videoHeight-size)/2,size,size,0,0,200,200);
+  var foto=c.toDataURL("image/jpeg",0.5);
+  ap("cadastros?id=eq."+pa.id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({foto_url:foto})}).then(function(){
+    pa.foto_url=foto;
+    for(var i=0;i<cads.length;i++){if(cads[i].id===pa.id){cads[i].foto_url=foto;break;}}
+    q("foto-atualiza-wrap").style.display="none";
+    q("batualizafoto").textContent="Atualizar foto";
+    if(_faStream)_faStream.getTracks().forEach(function(t){t.stop();});
+    verP(pa.id);
+  });
+};
 q("bqr").onclick=function(){
   var wrap=q("qr-wrap");
   if(wrap.style.display==="none"){
     if(!pa)return;
     ap("codigos?cadastro_id=eq."+pa.id+"&select=codigo&limit=1").then(function(d){
-      var cod=d&&d[0]?d[0].codigo:"";
-      if(!cod){wrap.innerHTML="<div style='color:#555;font-size:12px;padding:10px'>Nenhum codigo vinculado</div>";wrap.style.display="block";return;}
+      var cod=d&&d[0]?d[0].codigo:"CAD"+pa.id;
       q("qr-box").innerHTML="";
       new QRCode(q("qr-box"),{text:cod,width:180,height:180,colorDark:"#000000",colorLight:"#ffffff"});
       q("qr-cod").textContent=cod;
