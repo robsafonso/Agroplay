@@ -131,20 +131,21 @@ q("btn-gerar").onclick=function(){
   var evParam=loteAtual.evento_id?"&ev="+loteAtual.evento_id:"";
   var link=LC+"?lote="+loteAtual.id+"&resp="+encodeURIComponent(loteAtual.responsavel)+"&cod="+cod.codigo+evParam;
   var msg="AGROPLAY - Convite de Cadastro\n\nVoce foi convidado por "+loteAtual.responsavel+" para se cadastrar no sistema Agroplay!\n\nAcesse o link e faca seu cadastro:\n"+link+"\n\nSeu codigo: "+cod.codigo+"\n\nCodigo intransferivel e de uso unico.\nAgroplay Music - Londrina PR";
+  ap("codigos?codigo=eq."+cod.codigo,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString()})});
+  cod.usado=true;
+  codsDisponiveis=codsDisponiveis.slice(1);
+  codsUsados.unshift(cod);
+  q("qtd-disp").textContent=codsDisponiveis.length;
   q("conv-cod").textContent=cod.codigo;
   q("conv-msg").textContent=msg;
   q("res-conv").classList.remove("gone");
   q("btn-gerar").classList.add("gone");
+  renderHist();
 };
 
 q("btn-copiar").onclick=function(){cp2(q("conv-msg").textContent,q("btn-copiar"),"Copiar mensagem");};
 
 q("btn-outro").onclick=function(){
-  var cod=codsDisponiveis[0];
-  codsDisponiveis=codsDisponiveis.slice(1);
-  codsUsados.unshift(cod);
-  q("qtd-disp").textContent=codsDisponiveis.length;
-  renderHist();
   q("res-conv").classList.add("gone");
   q("btn-gerar").classList.remove("gone");
 };
