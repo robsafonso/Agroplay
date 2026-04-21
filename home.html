@@ -47,10 +47,8 @@ select{width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;
 
 <div id="tela-login" class="card">
   <div id="al-login"></div>
-  <div style="margin-bottom:16px">
-    <div style="font-size:10px;color:#2aab47;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Senha de acesso</div>
-    <input id="inp-senha" type="password" placeholder="Digite sua senha">
-  </div>
+  <div class="fl"><label>Nome</label><input id="inp-nome" placeholder="Seu nome"></div>
+  <div class="fl"><label>Senha</label><input id="inp-senha" type="password" placeholder="Sua senha"></div>
   <button class="btn" id="btn-login">Entrar</button>
 </div>
 
@@ -109,15 +107,21 @@ var adminAtual=null;
 function q(id){return document.getElementById(id);}
 function ap(p,o){o=o||{};var h={"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json"};if(o.pref)h["Prefer"]=o.pref;return fetch(SB+"/rest/v1/"+p,{method:o.m||"GET",headers:h,body:o.b}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});}
 q("btn-login").onclick=function(){
+  var nome=q("inp-nome").value.trim();
   var s=q("inp-senha").value.trim();
   var al=q("al-login");al.innerHTML="";
-  if(!s){al.innerHTML="<div class='ea'>Digite a senha</div>";return;}
+  if(!nome||!s){al.innerHTML="<div class='ea'>Preencha nome e senha</div>";return;}
   var btn=this;btn.textContent="Entrando...";btn.disabled=true;
-  ap("admins?senha=eq."+encodeURIComponent(s)+"&ativo=eq.true&select=*").then(function(d){
-    if(!d||!d.length){al.innerHTML="<div class='ea'>Senha invalida</div>";btn.textContent="Entrar";btn.disabled=false;return;}
+  ap("admins?nome=eq."+encodeURIComponent(nome)+"&senha=eq."+encodeURIComponent(s)+"&ativo=eq.true&select=*").then(function(d){
+    if(!d||!d.length){al.innerHTML="<div class='ea'>Nome ou senha invalidos</div>";btn.textContent="Entrar";btn.disabled=false;return;}
     adminAtual=d[0];
     q("admin-nome").textContent=adminAtual.nome;
     q("tela-login").classList.add("gone");
+    if(adminAtual.primeiro_acesso){
+      q("ov-trocar").classList.add("on");
+      q("trocar-alert").innerHTML="<div style='background:#0a1a2a;border:1px solid #0891b2;color:#0891b2;padding:8px;border-radius:8px;font-size:13px;margin-bottom:10px'>Primeiro acesso! Crie uma nova senha.</div>";
+      q("nova-senha").value="";q("conf-senha").value="";
+    }
     q("tela-menu").classList.remove("gone");
     if(adminAtual.nivel==="master")q("menu-master").classList.remove("gone");
     var vis=adminAtual.nivel==="visualizador";
@@ -138,8 +142,8 @@ q("btn-salvarsenha").onclick=function(){
   if(!nova||nova.length<4){al.innerHTML="<div class='ea'>Senha muito curta (minimo 4 caracteres)</div>";return;}
   if(nova!==conf){al.innerHTML="<div class='ea'>Senhas nao conferem</div>";return;}
   var btn=q("btn-salvarsenha");btn.textContent="Salvando...";btn.disabled=true;
-  ap("admins?id=eq."+adminAtual.id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({senha:nova})}).then(function(){
-    adminAtual.senha=nova;
+  ap("admins?id=eq."+adminAtual.id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({senha:nova,primeiro_acesso:false})}).then(function(){
+    adminAtual.senha=nova;adminAtual.primeiro_acesso=false;
     al.innerHTML="<div style='background:#0a1f0a;border:1px solid #2aab47;color:#2aab47;padding:8px;border-radius:8px;font-size:13px'>Senha alterada com sucesso!</div>";
     setTimeout(function(){q("ov-trocar").classList.remove("on");},2000);
   }).catch(function(){al.innerHTML="<div class='ea'>Erro ao salvar</div>";
@@ -153,7 +157,7 @@ q("btn-addadm").onclick=function(){
   var al=q("adm-alert");al.innerHTML="";
   if(!nome||!senha){al.innerHTML="<div class='ea'>Preencha nome e senha</div>";return;}
   var btn=this;btn.textContent="Salvando...";btn.disabled=true;
-  ap("admins",{m:"POST",pref:"return=minimal",b:JSON.stringify({nome:nome,senha:senha,nivel:nivel})}).then(function(){
+  ap("admins",{m:"POST",pref:"return=minimal",b:JSON.stringify({nome:nome,senha:senha,nivel:nivel,primeiro_acesso:true})}).then(function(){
     q("adm-nome").value="";q("adm-senha").value="";
     al.innerHTML="<div style='background:#0a1f0a;border:1px solid #2aab47;color:#2aab47;padding:8px;border-radius:8px;font-size:13px'>Admin adicionado!</div>";
     carregarAdmins();
