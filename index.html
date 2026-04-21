@@ -353,8 +353,11 @@ q("bsalvalote").onclick=function(){
   var btn=q("bsalvalote");btn.textContent="Gerando "+qtd+" links...";btn.disabled=true;
   q("lote-alert").innerHTML="";
   var senha=q("lote-senha").value.trim()||resp.toLowerCase().replace(/\s/g,"");
+  var evLoteId=q("lote-ev").value||null;
   var linkAcesso="https://robsafonso.github.io/Agroplay/lote.html?senha="+encodeURIComponent(senha);
-  ap("lotes",{m:"POST",pref:"return=representation",b:JSON.stringify({nome:"Lote "+resp,responsavel:resp,quantidade:qtd,senha:senha,link_acesso:linkAcesso})}).then(function(d){
+  var loteBody={nome:"Lote "+resp,responsavel:resp,quantidade:qtd,senha:senha,link_acesso:linkAcesso};
+  if(evLoteId)loteBody.evento_id=parseInt(evLoteId);
+  ap("lotes",{m:"POST",pref:"return=representation",b:JSON.stringify(loteBody)}).then(function(d){
     if(!d||!d[0])throw new Error("Erro ao criar lote");
     var loteId=d[0].id;
     return fetch(SB+"/rest/v1/codigos?usado=eq.false&order=id.asc&limit="+qtd,{headers:{"apikey":KY,"Authorization":"Bearer "+KY}})
