@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Check-in - Agroplay</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#060a06;color:#eee;font-family:Arial;padding:20px;max-width:480px;margin:0 auto}
+.logo{font-size:22px;font-weight:900;color:#fff;text-align:center;padding:16px 0 8px}
+.logo b{color:#2aab47}
+.card{background:#090e09;border:1px solid #1a2a1a;border-radius:14px;padding:20px;margin-bottom:14px}
+.btn{background:linear-gradient(135deg,#1e7a35,#2aab47);color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;width:100%;margin-top:8px}
+.bto{background:transparent;color:#2aab47;border:1px solid #2aab47;border-radius:10px;padding:11px;font-size:13px;cursor:pointer;width:100%;margin-top:8px}
+.btr{background:#c0392b;color:#fff;border:none;border-radius:10px;padding:11px;font-size:13px;cursor:pointer;width:100%;margin-top:8px}
+.ea{background:#1a0000;border:1px solid #e74c3c;color:#e74c3c;padding:10px;border-radius:8px;margin-bottom:10px;font-size:13px}
+.ok{background:#0a1f0a;border:1px solid #2aab47;color:#2aab47;padding:10px;border-radius:8px;margin-bottom:10px;font-size:13px}
+input{width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:11px;color:#eee;font-size:14px;outline:none}
+input:focus{border-color:#2aab47}
+label{display:block;font-size:10px;color:#2aab47;letter-spacing:1px;margin-bottom:4px;text-transform:uppercase;font-weight:700}
+.fl{margin-bottom:12px}
+.gone{display:none}
+.perfil{text-align:center;padding:16px 0}
+.foto{width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid #2aab47;margin:0 auto 12px;display:block}
+.avatar{width:100px;height:100px;border-radius:50%;background:#1e7a35;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:36px;color:#fff;font-weight:700}
+.pnome{font-size:20px;font-weight:900;color:#fff;margin-bottom:6px}
+.pbadge{display:inline-block;padding:4px 14px;border-radius:20px;font-size:11px;font-weight:700;color:#fff;margin-bottom:12px}
+.prow{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #111;font-size:13px}
+.prow span:first-child{color:#555;font-size:11px;text-transform:uppercase}
+.prow span:last-child{color:#fff;font-weight:600}
+.scan-wrap{position:relative;width:100%;max-width:320px;margin:0 auto;border-radius:12px;overflow:hidden;border:2px solid #2aab47}
+video{width:100%;display:block}
+.scan-line{position:absolute;top:0;left:0;right:0;height:2px;background:#2aab47;animation:scan 2s linear infinite}
+@keyframes scan{0%{top:0}100%{top:100%}}
+.manual-wrap{margin-top:14px}
+</style>
+</head>
+<body>
+<div class="logo">AGRO<b>PLAY</b> Check-in</div>
+
+<div id="tela-login" class="card">
+  <div style="font-size:16px;font-weight:900;color:#fff;margin-bottom:4px">Validador</div>
+  <div style="font-size:12px;color:#666;margin-bottom:16px">Entre com sua senha de validador.</div>
+  <div id="al-login"></div>
+  <div class="fl"><label>Senha</label><input id="inp-senha" type="password" placeholder="Sua senha"></div>
+  <button class="btn" id="btn-login">Entrar</button>
+</div>
+
+<div id="tela-checkin" class="gone">
+  <div style="text-align:center;margin-bottom:14px">
+    <div style="font-size:16px;font-weight:700;color:#fff">Ola, <span id="val-nome" style="color:#2aab47"></span>!</div>
+    <div style="font-size:11px;color:#555;margin-top:2px">Escaneie o QR Code do convidado</div>
+  </div>
+
+  <div class="card">
+    <div id="scanner-wrap">
+      <div class="scan-wrap">
+        <video id="video" autoplay playsinline muted></video>
+        <div class="scan-line"></div>
+      </div>
+      <div id="al-scan" style="margin-top:10px"></div>
+    </div>
+    <div class="manual-wrap">
+      <div style="font-size:11px;color:#555;text-align:center;margin-bottom:10px">ou digite o codigo manualmente</div>
+      <div class="fl"><input id="inp-cod" placeholder="Codigo de 6 digitos" maxlength="6" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div>
+      <button class="btn" id="btn-buscar">Buscar</button>
+    </div>
+  </div>
+
+  <div id="resultado" class="card gone">
+    <div id="al-res"></div>
+    <div id="perfil-wrap"></div>
+    <button class="btn" id="btn-confirmar" style="display:none">Confirmar entrada</button>
+    <button class="bto" id="btn-novo" style="margin-top:8px">Proximo</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.js"></script>
+
+<script>
+var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
+var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
+var valAtual=null;
+var cadAtual=null;
+var stream=null;
+var scanning=false;
+
+function q(id){return document.getElementById(id);}
+function ap(p,o){o=o||{};var h={"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json"};if(o.pref)h["Prefer"]=o.pref;return fetch(SB+"/rest/v1/"+p,{method:o.m||"GET",headers:h,body:o.b}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});}
+
+q("btn-login").onclick=function(){
+  var senha=q("inp-senha").value.trim();
+  var al=q("al-login");al.innerHTML="";
+  if(!senha){al.innerHTML="<div class='ea'>Digite a senha</div>";return;}
+  var btn=this;btn.textContent="Entrando...";btn.disabled=true;
+  ap("validadores?senha=eq."+encodeURIComponent(senha)+"&select=*").then(function(d){
+    if(!d||!d.length){al.innerHTML="<div class='ea'>Senha invalida</div>";btn.textContent="Entrar";btn.disabled=false;return;}
+    valAtual=d[0];
+    q("val-nome").textContent=valAtual.nome;
+    q("tela-login").classList.add("gone");
+    q("tela-checkin").classList.remove("gone");
+    iniciarScanner();
+  }).catch(function(){al.innerHTML="<div class='ea'>Erro</div>";btn.textContent="Entrar";btn.disabled=false;});
+};
+
+function iniciarScanner(){
+  if(!navigator.mediaDevices){return;}
+  navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}}).then(function(s){
+    stream=s;
+    var v=q("video");v.srcObject=s;v.play();
+    scanning=true;
+    requestAnimationFrame(scanFrame);
+  }).catch(function(){q("al-scan").innerHTML="<div class='ea'>Camera indisponivel. Use o campo manual.</div>";});
+}
+
+var canvas=document.createElement("canvas");
+var ctx=canvas.getContext("2d");
+function scanFrame(){
+  if(!scanning)return;
+  var v=q("video");
+  if(v.readyState===v.HAVE_ENOUGH_DATA){
+    canvas.width=v.videoWidth;canvas.height=v.videoHeight;
+    ctx.drawImage(v,0,0);
+    var img=ctx.getImageData(0,0,canvas.width,canvas.height);
+    var code=jsQR(img.data,img.width,img.height);
+    if(code&&code.data){
+      scanning=false;
+      buscarCodigo(code.data.trim());
+      return;
+    }
+  }
+  requestAnimationFrame(scanFrame);
+}
+
+q("btn-buscar").onclick=function(){
+  var c=q("inp-cod").value.trim();
+  if(!c||c.length<6){q("al-scan").innerHTML="<div class='ea'>Digite 6 digitos</div>";return;}
+  buscarCodigo(c);
+};
+
+function buscarCodigo(cod){
+  var btn=q("btn-buscar");btn.textContent="Buscando...";btn.disabled=true;
+  q("al-scan").innerHTML="";
+  ap("codigos?codigo=eq."+cod+"&select=cadastro_id").then(function(d){
+    if(!d||!d.length){mostrarErro("Codigo invalido.");btn.textContent="Buscar";btn.disabled=false;return;}
+    var cadId=d[0].cadastro_id;
+    if(!cadId){mostrarErro("Codigo sem cadastro vinculado.");btn.textContent="Buscar";btn.disabled=false;return;}
+    return ap("cadastros?id=eq."+cadId+"&select=*").then(function(c){
+      if(!c||!c.length){mostrarErro("Cadastro nao encontrado.");return;}
+      cadAtual=c[0];
+      mostrarPerfil(c[0]);
+    });
+  }).catch(function(){mostrarErro("Erro ao buscar.");}).finally(function(){btn.textContent="Buscar";btn.disabled=false;});
+}
+
+function mostrarErro(msg){
+  q("al-res").innerHTML="<div class='ea'>"+msg+"</div>";
+  q("perfil-wrap").innerHTML="";
+  q("btn-confirmar").style.display="none";
+  q("resultado").classList.remove("gone");
+  scanning=true;requestAnimationFrame(scanFrame);
+}
+
+var COR={Artista:"#7c3aed",Influenciador:"#0891b2",Diretoria:"#b45309",Colaborador:"#1e7a35",Convidado:"#555"};
+function mostrarPerfil(c){
+  var cor=COR[c.setor]||"#555";
+  var fh=c.foto_url?"<img class='foto' src='"+c.foto_url+"'/>":"<div class='avatar'>"+c.nome.charAt(0).toUpperCase()+"</div>";
+  var jaEntrou=c.entrada_em;
+  var h="<div class='perfil'>"+fh;
+  h+="<div class='pnome'>"+c.nome+"</div>";
+  h+="<span class='pbadge' style='background:"+cor+"'>"+c.setor+"</span>";
+  if(jaEntrou){h+="<div style='background:#1a0a00;border:1px solid #c9973c;color:#c9973c;padding:8px;border-radius:8px;margin:8px 0;font-size:13px'>Ja entrou as "+new Date(jaEntrou).toLocaleTimeString("pt-BR")+"</div>";}
+  if(c.lote_nome)h+="<div style='font-size:12px;color:#0891b2;margin-bottom:8px'>Convidado por "+c.lote_nome+"</div>";
+  h+="</div>";
+  h+="<div class='prow'><span>Empresa</span><span>"+(c.empresa||"-")+"</span></div>";
+  h+="<div class='prow'><span>Cargo</span><span>"+(c.cargo||"-")+"</span></div>";
+  h+="<div class='prow'><span>Status</span><span style='color:"+(c.status==="aprovado"?"#2aab47":c.status==="reprovado"?"#e74c3c":"#c9973c")+"'>"+c.status+"</span></div>";
+  q("perfil-wrap").innerHTML=h;
+  q("al-res").innerHTML="";
+  q("btn-confirmar").style.display=jaEntrou?"none":"block";
+  q("resultado").classList.remove("gone");
+}
+
+q("btn-confirmar").onclick=function(){
+  if(!cadAtual||!valAtual)return;
+  var btn=this;btn.textContent="Confirmando...";btn.disabled=true;
+  ap("cadastros?id=eq."+cadAtual.id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({entrada_em:new Date().toISOString(),validador_nome:valAtual.nome,status:"aprovado"})}).then(function(){
+    btn.style.display="none";
+    q("al-res").innerHTML="<div class='ok'>Entrada confirmada! Bem-vindo(a) "+cadAtual.nome+"!</div>";
+    cadAtual=null;
+  }).catch(function(){btn.textContent="Confirmar entrada";btn.disabled=false;});
+};
+
+q("btn-novo").onclick=function(){
+  cadAtual=null;
+  q("resultado").classList.add("gone");
+  q("inp-cod").value="";
+  scanning=true;
+  requestAnimationFrame(scanFrame);
+};
+</script>
+
+</body>
+</html>
