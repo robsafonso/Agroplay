@@ -2,15 +2,22 @@
 
 <html>
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="background:#060a06;color:#eee;padding:30px;font-family:Arial;text-align:center">
-<div id="msg" style="font-size:20px;margin-bottom:30px;color:#555">JS nao rodou</div>
-<button id="btn" style="background:#1e7a35;color:#fff;border:none;border-radius:8px;padding:16px 32px;font-size:18px;font-weight:700">Tocar aqui</button>
+<body style="background:#060a06;color:#eee;padding:20px;font-family:Arial">
+<div style="display:flex;gap:8px;margin-bottom:20px">
+  <button id="t1" onclick="tab('1')" style="background:#1e7a35;color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:13px">Aba 1</button>
+  <button id="t2" onclick="tab('2')" style="background:transparent;color:#2aab47;border:1px solid #2aab47;border-radius:8px;padding:10px 16px;font-size:13px">Aba 2</button>
+  <button id="t3" onclick="tab('3')" style="background:transparent;color:#2aab47;border:1px solid #2aab47;border-radius:8px;padding:10px 16px;font-size:13px">Aba 3</button>
+</div>
+<div id="s1" style="background:#090e09;border:1px solid #1a2a1a;border-radius:12px;padding:20px">Conteudo da Aba 1</div>
+<div id="s2" style="display:none;background:#090e09;border:1px solid #1a2a1a;border-radius:12px;padding:20px">Conteudo da Aba 2</div>
+<div id="s3" style="display:none;background:#090e09;border:1px solid #1a2a1a;border-radius:12px;padding:20px">Conteudo da Aba 3</div>
 <script>
-document.getElementById("msg").textContent = "JS rodou!";
-document.getElementById("msg").style.color = "#2aab47";
-document.getElementById("btn").onclick = function(){
-  document.getElementById("msg").textContent = "Botao funcionou!";
-};
+function tab(t) {
+  document.getElementById('s1').style.display='none';
+  document.getElementById('s2').style.display='none';
+  document.getElementById('s3').style.display='none';
+  document.getElementById('s'+t).style.display='block';
+}
 </script>
 </body>
 </html>
