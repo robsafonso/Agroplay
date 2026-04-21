@@ -58,6 +58,7 @@ textarea{height:70px;resize:none}
   <div style="font-size:18px;font-weight:900;color:#fff">AGRO<span style="color:#2aab47">PLAY</span></div>
   <div style="display:flex;gap:6px">
     <button class="bto" id="blinkc" style="font-size:11px;padding:6px 10px">Link Cadastro</button>
+    <button class="bto" id="bnovocad" style="font-size:11px;padding:6px 10px;border-color:#c9973c;color:#c9973c">+ Cadastrar</button>
     <a href="https://robsafonso.github.io/Agroplay/mediakit.html" target="_blank" style="background:transparent;color:#2aab47;border:1px solid #2aab47;border-radius:8px;padding:6px 10px;font-size:11px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center">Kit</a>
     <button class="bto" id="r">Atualizar</button>
   </div>
@@ -104,6 +105,34 @@ textarea{height:70px;resize:none}
 <div id="slt" class="gone">
   <button class="btn" id="bnovolote" style="width:100%;margin-bottom:14px">+ Criar novo lote</button>
   <div id="loteslst"><div class="empty">Nenhum lote criado</div></div>
+</div>
+<div class="ov" id="ovcad">
+  <div class="mod">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="font-size:16px;font-weight:700;color:#fff">Novo Cadastro</div>
+      <button class="bto" id="bfcad">X</button>
+    </div>
+    <div id="cad-alert"></div>
+    <div class="g2">
+      <div class="fl"><label>Nome</label><input id="cad-nome" placeholder="Nome completo"></div>
+      <div class="fl"><label>Setor</label><select id="cad-setor" style="background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;width:100%"><option value="Artista">Artista</option><option value="Influenciador">Influenciador</option><option value="Diretoria">Diretoria</option><option value="Colaborador">Colaborador</option><option value="Convidado">Convidado</option></select></div>
+    </div>
+    <div class="g2">
+      <div class="fl"><label>CPF</label><input id="cad-cpf" placeholder="000.000.000-00"></div>
+      <div class="fl"><label>RG</label><input id="cad-rg" placeholder="RG"></div>
+    </div>
+    <div class="fl"><label>E-mail</label><input id="cad-email" placeholder="email@email.com" type="email"></div>
+    <div class="g2">
+      <div class="fl"><label>Telefone</label><input id="cad-tel" placeholder="(00) 00000-0000"></div>
+      <div class="fl"><label>Nascimento</label><input id="cad-nasc" type="date"></div>
+    </div>
+    <div class="g2">
+      <div class="fl"><label>Empresa</label><input id="cad-emp" placeholder="Empresa"></div>
+      <div class="fl"><label>Cargo</label><input id="cad-car" placeholder="Cargo"></div>
+    </div>
+    <button class="btn" id="btn-salvcad" style="width:100%">Salvar cadastro</button>
+    <button class="bto" id="btn-cancelcad" style="width:100%;margin-top:8px">Cancelar</button>
+  </div>
 </div>
 <div class="ov ovc" id="ovlinkc">
   <div class="mod" style="border-radius:20px;max-width:400px;margin:20px">
@@ -272,6 +301,39 @@ function ap(p,o){o=o||{};var h={"apikey":KY,"Authorization":"Bearer "+KY,"Conten
 function cp2(txt,btn,lbl){if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){btn.textContent="Copiado!";setTimeout(function(){btn.textContent=lbl;},2000);});}else{var t=document.createElement("textarea");t.value=txt;document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t);btn.textContent="Copiado!";setTimeout(function(){btn.textContent=lbl;},2000);}}
 function dl(cnt,t,n){var b=new Blob([cnt],{type:t});var u=URL.createObjectURL(b);var a=document.createElement("a");a.href=u;a.download=n;a.click();}
 q("r").onclick=load;
+q("bnovocad").onclick=function(){
+  q("ovcad").classList.add("on");
+  q("cad-alert").innerHTML="";
+  ["cad-nome","cad-cpf","cad-rg","cad-email","cad-tel","cad-emp","cad-car"].forEach(function(id){q(id).value="";});
+  q("cad-nasc").value="";
+};
+q("bfcad").onclick=function(){q("ovcad").classList.remove("on");};
+q("btn-cancelcad").onclick=function(){q("ovcad").classList.remove("on");};
+q("btn-salvcad").onclick=function(){
+  var nome=q("cad-nome").value.trim();
+  var al=q("cad-alert");al.innerHTML="";
+  if(!nome){al.innerHTML="<div class='ea'>Nome obrigatorio</div>";return;}
+  var btn=q("btn-salvcad");btn.textContent="Salvando...";btn.disabled=true;
+  var body={
+    nome:nome,
+    setor:q("cad-setor").value,
+    cpf:q("cad-cpf").value,
+    rg:q("cad-rg").value.trim(),
+    email:q("cad-email").value.trim(),
+    telefone:q("cad-tel").value,
+    nascimento:q("cad-nasc").value||null,
+    empresa:q("cad-emp").value.trim(),
+    cargo:q("cad-car").value.trim(),
+    status:"aprovado",
+    lote_nome:"Robson"
+  };
+  ap("cadastros",{m:"POST",pref:"return=minimal",b:JSON.stringify(body)}).then(function(){
+    al.innerHTML="<div style='background:#0a1f0a;border:1px solid #2aab47;color:#2aab47;padding:8px;border-radius:8px;font-size:13px'>Cadastro salvo!</div>";
+    load();
+    setTimeout(function(){q("ovcad").classList.remove("on");},1500);
+  }).catch(function(){al.innerHTML="<div class='ea'>Erro ao salvar</div>";
+  }).finally(function(){btn.textContent="Salvar cadastro";btn.disabled=false;});
+};
 q("blinkc").onclick=function(){
   q("ovlinkc").classList.add("on");
   q("lc-result").classList.add("gone");
