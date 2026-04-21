@@ -128,9 +128,8 @@ q("btn-cod").onclick=function(){
   if(!c||c.length<6){al.innerHTML="<div class='ea'>Digite o codigo de 6 digitos.</div>";return;}
   var btn=this;btn.textContent="Verificando...";btn.disabled=true;
   ap("codigos?codigo=eq."+c+"&select=*").then(function(d){
-    if(!d||!d.length)al.innerHTML="<div class='ea'>Codigo invalido.</div>";
-    else if(d[0].usado)al.innerHTML="<div class='ea'>Codigo ja utilizado.</div>";
-    else{codOk=c;ir("t-dados");}
+    if(!d||!d.length){al.innerHTML="<div class='ea'>Codigo invalido.</div>";return;}
+    codOk=c;ir("t-dados");
   }).catch(function(){al.innerHTML="<div class='ea'>Erro ao verificar.</div>";
   }).finally(function(){btn.textContent="Continuar";btn.disabled=false;});
 };
@@ -206,7 +205,7 @@ q("btn-salvar").onclick=function(){
   if(EV_ID)body.evento_id=parseInt(EV_ID);
   ap("cadastros",{m:"POST",pref:"return=representation",b:JSON.stringify(body)}).then(function(cad){
     var cadId=cad&&cad[0]?cad[0].id:null;
-    return ap("codigos?codigo=eq."+codOk,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString(),cadastro_id:cadId})});
+    return ap("codigos?codigo=eq."+codOk,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({cadastro_id:cadId})});
   }).then(function(){ir("t-ok");})
   .catch(function(){al.innerHTML="<div class='ea'>Erro ao salvar. Tente novamente.</div>";})
   .finally(function(){btn.textContent="Confirmar e finalizar";btn.disabled=false;});
