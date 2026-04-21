@@ -146,7 +146,7 @@ function rLista(){
   var h="<div class='tbl'><table><thead><tr><th>Nome</th><th>Status</th><th>Entrada</th><th>Validador</th></tr></thead><tbody>";
   f.forEach(function(c){
     var ent=c.entrada_em?new Date(c.entrada_em).toLocaleTimeString("pt-BR"):"";
-    var sb=c.entrada_em?"<span class='badge ab'>Entrou "+ent+"</span>":c.evento_id?"<span class='badge pb'>Aguardando</span>":"";
+    var codshow=(!c.entrada_em&&c.evento_id&&c.codigo)?"<div style='font-family:monospace;font-size:11px;color:#c9973c;margin-top:3px'>Cod: "+c.codigo+"</div>":""; var sb=c.entrada_em?"<span class='badge ab'>Entrou "+ent+"</span>":c.evento_id?"<span class='badge pb'>Aguardando</span>"+codshow:"";
     h+="<tr><td style='color:#fff'>"+c.nome+"</td><td>"+sb+"</td><td style='color:#555;font-size:11px'>"+ent+"</td><td style='color:#555;font-size:11px'>"+(c.validador_nome||"")+"</td></tr>";
   });
   h+="</tbody></table></div>";
@@ -154,7 +154,7 @@ function rLista(){
 }
 function load(){
   q("lista-checkin").innerHTML="<div class='empty'>Carregando...</div>";
-  ap("cadastros?select=*&order=nome.asc").then(function(d){cads=d||[];rLista();}).catch(function(){cads=[];rLista();});
+  ap("cadastros?select=*,codigos(codigo)&order=nome.asc").then(function(d){cads=(d||[]).map(function(c){c.codigo=c.codigos&&c.codigos[0]?c.codigos[0].codigo:'';return c;});rLista();}).catch(function(){cads=[];rLista();});
   ap("eventos?select=*&order=data.asc").then(function(d){
     evs=d||[];
     var sel=q("ev-sel");
