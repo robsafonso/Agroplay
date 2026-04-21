@@ -132,9 +132,8 @@ g("btn1").onclick=function(){
   if(!c||c.length<6){al.innerHTML="<div class='al err'>Digite o codigo de 6 digitos.</div>";return;}
   var btn=this;btn.textContent="Verificando...";btn.disabled=true;
   api("codigos?codigo=eq."+c+"&select=*").then(function(d){
-    if(!d||!d.length)al.innerHTML="<div class='al err'>Codigo invalido.</div>";
-    else if(d[0].usado)al.innerHTML="<div class='al err'>Codigo ja utilizado.</div>";
-    else{codOk=c;ir("t2");}
+    if(!d||!d.length){al.innerHTML="<div class='al err'>Codigo invalido.</div>";return;}
+    codOk=c;ir("t2");
   }).catch(function(){al.innerHTML="<div class='al err'>Erro.</div>";
   }).finally(function(){btn.textContent="Continuar";btn.disabled=false;});
 };
@@ -229,7 +228,6 @@ g("btn1i").onclick=function(){
   var btn=this;btn.textContent="Verificando...";btn.disabled=true;
   api("codigos?codigo=eq."+c+"&select=cadastro_id,usado").then(function(d){
     if(!d||!d.length){al.innerHTML="<div class='al err'>Codigo invalido.</div>";btn.textContent="Confirmar Presenca";btn.disabled=false;return;}
-    if(d[0].usado){al.innerHTML="<div class='al err'>Codigo ja utilizado.</div>";btn.textContent="Confirmar Presenca";btn.disabled=false;return;}
     var cadId=d[0].cadastro_id;
     var evId=evAt?evAt.id:null;
     var patches=[api("codigos?codigo=eq."+c,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString()})})];
