@@ -723,7 +723,7 @@ function lstEv(evId){
   for(var i=0;i<evs.length;i++){if(evs[i].id===evId){ev=evs[i];break;}}
   if(!ev)return;
   var p=cads.filter(function(c){return c.evento_id===evId;});
-  lista={n:ev.nome,p:p,dt:new Date().toLocaleString("pt-BR")};
+  lista={n:ev.nome,p:p,dt:new Date().toLocaleString("pt-BR"),evId:evId};
   tab("l");rLst();
 }
 function rCods(){
