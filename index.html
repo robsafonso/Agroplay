@@ -260,8 +260,7 @@ var LC="https://robsafonso.github.io/Agroplay/cadastro-externo.html";
 var LCV="https://robsafonso.github.io/Agroplay/convite.html";
 var SETS=["Artista","Influenciador","Diretoria","Colaborador","Convidado"];
 var COR={Artista:"#7c3aed",Influenciador:"#0891b2",Diretoria:"#b45309",Colaborador:"#1e7a35",Convidado:"#555"};
-var MODO="edit";
-try{var _ss=sessionStorage.getItem("ag_admin");if(_ss){var _aa=JSON.parse(_ss);if(_aa&&_aa.nivel==="visualizador")MODO="ver";}}catch(e){}
+var MODO=new URLSearchParams(window.location.search).get("modo")||"edit";
 var cads=[],cods=[],evs=[],lotes=[],sel=[],fset="Todos",fk="t",lista=null,pa=null,eva=null,cf="Todos",cs=[],eid=null;
 var lstExcluidos=[],lstSel=[];
 function q(id){return document.getElementById(id);}
