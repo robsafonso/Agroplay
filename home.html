@@ -45,7 +45,7 @@ input:focus,select:focus{border-color:#2aab47}
 <div class="logo">AGRO<span>PLAY</span></div>
 <div class="sub">Sistema de Gestao</div>
 
-<div id="tela-login" class="card">
+<div id="tela-login" class="card gone">
   <div id="al-login"></div>
   <div class="fl"><label>Nome</label><input id="inp-nome" placeholder="Seu nome"></div>
   <div class="fl"><label>Senha</label><input id="inp-senha" type="password" placeholder="Sua senha"></div>
@@ -150,12 +150,15 @@ q("btn-salvar-senha").onclick=function(){
   }).catch(function(){al.innerHTML="<div class='ea'>Erro ao salvar</div>";btn.textContent="Salvar e entrar";btn.disabled=false;});
 };
 
+function salvarSessao(){try{sessionStorage.setItem("ag_admin",JSON.stringify(adminAtual));}catch(e){}}
+function carregarSessao(){try{var s=sessionStorage.getItem("ag_admin");if(s){adminAtual=JSON.parse(s);entrarNoMenu();return true;}}catch(e){}return false;}
 function entrarNoMenu(){
   q("admin-nome").textContent=adminAtual.nome;
   q("tela-login").classList.add("gone");
   q("tela-troca").classList.add("gone");
   q("tela-menu").classList.remove("gone");
   if(adminAtual.nivel==="master"){q("menu-master").classList.remove("gone");}
+  salvarSessao();
   if(adminAtual.nivel==="visualizador"){
     q("link-gerente").href="index.html?modo=ver";
     q("link-admin").href="admin.html?modo=ver";
@@ -164,6 +167,7 @@ function entrarNoMenu(){
 
 q("btn-sair").onclick=function(){
   adminAtual=null;
+  try{sessionStorage.removeItem("ag_admin");}catch(e){}
   q("tela-menu").classList.add("gone");
   q("tela-login").classList.remove("gone");
   q("inp-nome").value="";q("inp-senha").value="";
@@ -252,6 +256,7 @@ function delAdmin(id){
   if(!confirm("Excluir este administrador?"))return;
   ap("admins?id=eq."+id,{m:"DELETE",pref:"return=minimal"}).then(function(){carregarAdmins();});
 }
+if(!carregarSessao()){q("tela-login").classList.remove("gone");}
 function enviarLink(nome,senha){
   var link="https://robsafonso.github.io/Agroplay/home.html";
   var msg="AGROPLAY - Acesso ao Sistema\n\nOla "+nome+"!\n\nVoce foi cadastrado no sistema Agroplay.\n\nAcesse pelo link:\n"+link+"\n\nSeu nome: "+nome+"\nSua senha: "+senha+"\n\nNo primeiro acesso voce sera solicitado a criar uma nova senha.\n\nAgroplay Music - Londrina PR";
