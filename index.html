@@ -70,7 +70,6 @@ textarea{height:70px;resize:none}
   <button class="tab" id="tk">Codigos</button>
   <button class="tab" id="tl">Lista</button>
   <button class="tab" id="tlt">Lotes</button>
-  <button class="tab" id="tth">Hist</button>
 </div>
 <div id="sc">
   <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
@@ -103,7 +102,6 @@ textarea{height:70px;resize:none}
   <div id="klst"></div>
 </div>
 <div id="sl" class="gone"><div id="llst"></div></div>
-<div id="sh" class="gone"><div id="hcont"></div></div>
 <div id="slt" class="gone">
   <button class="btn" id="bnovolote" style="width:100%;margin-bottom:14px">+ Criar novo lote</button>
   <div id="loteslst"><div class="empty">Nenhum lote criado</div></div>
@@ -532,7 +530,6 @@ q("te").onclick=function(){tab("e");};
 q("tk").onclick=function(){tab("k");};
 q("tl").onclick=function(){tab("l");};
 q("tlt").onclick=function(){tab("lt");};
-q("tth").onclick=function(){tab("h");};
 q("bnovolote").onclick=function(){
   q("ovlote").classList.add("on");q("lote-alert").innerHTML="";q("lote-resp").value="";q("lote-qtd").value="10";q("lote-senha").value="";
   var sel=q("lote-ev");sel.innerHTML="<option value=''>Nenhum evento</option>";
@@ -710,9 +707,20 @@ function delLote(id){
     lotes=lotes.filter(function(l){return l.id!==id;});
     rLotes();rSts();
     load();
+if(MODO==="ver"){
+  var vb=document.createElement("div");
+  vb.style.cssText="background:#0a1a2a;border:1px solid #0891b2;color:#0891b2;padding:8px 14px;border-radius:8px;font-size:12px;margin-bottom:12px;text-align:center";
+  vb.textContent="Modo visualizacao - apenas leitura";
+  document.body.insertBefore(vb,document.body.children[1]);
+  ["r","bgl","bxls","bcsv","bexk","bnev","blinkc"].forEach(function(id){var el=document.getElementById(id);if(el){el.disabled=true;el.style.opacity="0.3";}});
+  var style=document.createElement("style");
+  style.textContent=".btn{pointer-events:none;opacity:0.3!important}.btr{pointer-events:none;opacity:0.3!important}.bty{pointer-events:none;opacity:0.3!important}";
+  document.head.appendChild(style);
+  document.getElementById("r").disabled=false;
+  document.getElementById("r").style.opacity="1";
+}
   }).catch(function(e){alert("Erro ao excluir: "+e.message);});
 }
-function rHist(){var el=q("hcont");if(!evs.length){el.innerHTML="<div class='empty'>Nenhum evento</div>";return;}var h="";evs.forEach(function(ev){var tot=cads.filter(function(c){return c.evento_id===ev.id;}).length;var ent=cads.filter(function(c){return c.evento_id===ev.id&&c.entrada_em;}).length;var conf=cads.filter(function(c){return c.evento_id===ev.id&&c.status==="aprovado";}).length;var fat=Math.max(0,conf-ent);var df=ev.data?ev.data.split("-"):["","",""];var dt=ev.data?df[2]+"/"+df[1]+"/"+df[0]:"";h+="<div class='card'><div style='font-size:14px;font-weight:700;color:#fff;margin-bottom:4px'>"+ev.nome+"</div><div style='font-size:11px;color:#555;margin-bottom:10px'>"+dt+(ev.local?" / "+ev.local:"")+"</div><div style='display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px'><div style='background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:8px;text-align:center'><strong style='font-size:20px;color:#2aab47'>"+tot+"</strong><div style='font-size:9px;color:#555;text-transform:uppercase'>Total</div></div><div style='background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:8px;text-align:center'><strong style='font-size:20px;color:#0891b2'>"+ent+"</strong><div style='font-size:9px;color:#555;text-transform:uppercase'>Entraram</div></div><div style='background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:8px;text-align:center'><strong style='font-size:20px;color:#c0392b'>"+fat+"</strong><div style='font-size:9px;color:#555;text-transform:uppercase'>Faltaram</div></div></div></div>";});el.innerHTML=h;}
 function load(){
   q("tbl").innerHTML="<div class='empty'>Carregando...</div>";
   ap("cadastros?select=*&order=criado_em.desc").then(function(d){cads=d||[];rSts();rChips();rend();}).catch(function(){cads=[];rSts();rChips();rend();});
@@ -818,7 +826,19 @@ function salvEv(){
   var body=JSON.stringify({nome:nome,data:q("evd").value||null,local:q("evl").value.trim(),maps_url:q("evm").value.trim(),atracao1:q("eva1").value.trim(),insta_atr1:q("evi1").value.trim(),atracao2:q("eva2").value.trim(),insta_atr2:q("evi2").value.trim(),foto_url:q("evf").value.trim(),descricao:q("evdesc").value.trim()});
   var path=eid?"eventos?id=eq."+eid:"eventos";
   var meth=eid?"PATCH":"POST";
-  ap(path,{m:meth,pref:"return=minimal",b:body}).then(function(){fecEv();load();tab("e");}).catch(function(){q("evalert").innerHTML="<div class='ea'>Erro ao salvar</div>";}).finally(function(){btn.textContent="Salvar";btn.disabled=false;});
+  ap(path,{m:meth,pref:"return=minimal",b:body}).then(function(){fecEv();load();
+if(MODO==="ver"){
+  var vb=document.createElement("div");
+  vb.style.cssText="background:#0a1a2a;border:1px solid #0891b2;color:#0891b2;padding:8px 14px;border-radius:8px;font-size:12px;margin-bottom:12px;text-align:center";
+  vb.textContent="Modo visualizacao - apenas leitura";
+  document.body.insertBefore(vb,document.body.children[1]);
+  ["r","bgl","bxls","bcsv","bexk","bnev","blinkc"].forEach(function(id){var el=document.getElementById(id);if(el){el.disabled=true;el.style.opacity="0.3";}});
+  var style=document.createElement("style");
+  style.textContent=".btn{pointer-events:none;opacity:0.3!important}.btr{pointer-events:none;opacity:0.3!important}.bty{pointer-events:none;opacity:0.3!important}";
+  document.head.appendChild(style);
+  document.getElementById("r").disabled=false;
+  document.getElementById("r").style.opacity="1";
+}tab("e");}).catch(function(){q("evalert").innerHTML="<div class='ea'>Erro ao salvar</div>";}).finally(function(){btn.textContent="Salvar";btn.disabled=false;});
 }
 function rEvs(){
   var el=q("evlst");
@@ -1014,9 +1034,9 @@ function mkXls(rows,name){
   dl("<?xml version='1.0'?><Workbook xmlns='urn:schemas-microsoft-com:office:spreadsheet' xmlns:ss='urn:schemas-microsoft-com:office:spreadsheet'><Worksheet ss:Name='Dados'><Table>"+hdr+body+"</Table></Worksheet></Workbook>","application/vnd.ms-excel",name+".xls");
 }
 function tab(t){
-  ["c","e","k","l","lt","h"].forEach(function(x){q("s"+x).classList.add("gone");q("t"+x).classList.remove("on");});
+  ["c","e","k","l","lt"].forEach(function(x){q("s"+x).classList.add("gone");q("t"+x).classList.remove("on");});
   q("s"+t).classList.remove("gone");q("t"+t).classList.add("on");
-  if(t==="l")rLst();if(t==="k")rCods();if(t==="e")rEvs();if(t==="lt")rLotes();if(t==="h")rHist();
+  if(t==="l")rLst();if(t==="k")rCods();if(t==="e")rEvs();if(t==="lt")rLotes();
 }
 load();
 if(MODO==="ver"){
