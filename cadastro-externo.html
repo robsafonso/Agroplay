@@ -235,7 +235,7 @@ q("btn-refoto").onclick=function(){
 };
 
 q("btn-salvar").onclick=function(){
-  var btn=this;btn.textContent="Salvando...";btn.disabled=true;
+  var btn=this;btn.textContent="Verificando...";btn.disabled=true;
   var al=q("al-foto");al.innerHTML="";
   var body={
     nome:q("f-nome").value.trim(),
@@ -245,20 +245,33 @@ q("btn-salvar").onclick=function(){
     telefone:q("f-tel").value,
     nascimento:q("f-nasc").value,
     setor:"Convidado",
-    empresa:q("f-emp").value.trim(),
-    cargo:q("f-car").value.trim(),
+    empresa:q("f-emp").value==="outra"?q("f-emp-outra").value.trim():q("f-emp").value,
+    cargo:(q("f-car").value==="outro"?q("f-car-outro").value.trim():q("f-car").value),
     status:"pendente",
     foto_url:fotoData||null
   };
   if(LOTE_ID)body.lote_id=parseInt(LOTE_ID);
   if(RESP)body.lote_nome=RESP;
   if(EV_ID)body.evento_id=parseInt(EV_ID);
-  ap("cadastros",{m:"POST",pref:"return=representation",b:JSON.stringify(body)}).then(function(cad){
-    var cadId=cad&&cad[0]?cad[0].id:null;
-    return ap("codigos?codigo=eq."+codOk,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({cadastro_id:cadId})});
-  }).then(function(){ir("t-ok");})
-  .catch(function(){al.innerHTML="<div class='ea'>Erro ao salvar. Tente novamente.</div>";})
-  .finally(function(){btn.textContent="Confirmar e finalizar";btn.disabled=false;});
+  function salvar(){
+    ap("cadastros",{m:"POST",pref:"return=representation",b:JSON.stringify(body)}).then(function(cad){
+      var cadId=cad&&cad[0]?cad[0].id:null;
+      return ap("codigos?codigo=eq."+codOk,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({cadastro_id:cadId})});
+    }).then(function(){ir("t-ok");})
+    .catch(function(){al.innerHTML="<div class='ea'>Erro ao salvar. Tente novamente.</div>";})
+    .finally(function(){btn.textContent="Confirmar e finalizar";btn.disabled=false;});
+  }
+  var cpfRaw=q("f-cpf").value.replace(/[^0-9]/g,"");
+  if(cpfRaw.length===11){
+    fetch(SB+"/rest/v1/cadastros?cpf=eq."+encodeURIComponent(q("f-cpf").value)+"&select=id",{headers:{"apikey":KY,"Authorization":"Bearer "+KY}})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(d&&d.length){
+        al.innerHTML="<div class='ea'>Este CPF ja esta cadastrado no sistema!</div>";
+        btn.textContent="Confirmar e finalizar";btn.disabled=false;
+      } else { salvar(); }
+    }).catch(function(){salvar();});
+  } else { salvar(); }
 };
 </script>
 
