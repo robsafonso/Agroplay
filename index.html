@@ -214,27 +214,43 @@ textarea{height:70px;resize:none}
       <button class="bto" id="boutro" style="width:100%;margin-top:8px">Gerar outro</button>
     </div>
     <div id="csel">
-      <div style="font-size:12px;color:#888;margin-bottom:10px">Selecione quem vai receber:</div>
-      <div class="chips" id="cchips">
-        <button class="chip on" onclick="fconv('Todos',this)">Todos</button>
-        <button class="chip" onclick="fconv('Artista',this)">Artistas</button>
-        <button class="chip" onclick="fconv('Influenciador',this)">Influenc.</button>
-        <button class="chip" onclick="fconv('Diretoria',this)">Diretoria</button>
-        <button class="chip" onclick="fconv('Colaborador',this)">Colab.</button>
+      <div style="display:flex;gap:8px;margin-bottom:14px">
+        <button class="btn" id="btntipoe" style="flex:1;font-size:12px">Externo</button>
+        <button class="bto" id="btntipoi" style="flex:1;font-size:12px">Interno</button>
       </div>
-      <div id="cpess"></div>
-      <div style="display:flex;gap:8px;margin-top:10px">
-        <button class="bto" id="bsall">Todos</button>
-        <button class="bto" id="bsnone">Nenhum</button>
+      <div id="csel-ext">
+        <div style="font-size:12px;color:#888;margin-bottom:8px">Pessoa <b style="color:#2aab47">NOVA</b> — link de cadastro</div>
+        <div style="background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:10px;margin-bottom:10px">
+          <div style="font-size:10px;color:#555;margin-bottom:4px">Link gerado com codigo unico para pessoa nova se cadastrar.</div>
+          <div style="font-family:monospace;font-size:11px;color:#2aab47;word-break:break-all" id="linkext"></div>
+        </div>
+        <div id="calert-ext"></div>
+        <button class="btn" id="bgconv" style="width:100%;font-size:12px">Gerar link externo</button>
+        <button class="bto" id="bcopext" style="width:100%;margin-top:8px;display:none">Copiar mensagem</button>
       </div>
-      <button class="btn" id="bgconv" style="width:100%;margin-top:12px">Gerar convite</button>
+      <div id="csel-int" style="display:none">
+        <div style="font-size:12px;color:#888;margin-bottom:10px">Pessoa <b style="color:#0891b2">JA CADASTRADA</b></div>
+        <div class="chips" id="cchips">
+          <button class="chip on" onclick="fconv('Todos',this)">Todos</button>
+          <button class="chip" onclick="fconv('Artista',this)">Artistas</button>
+          <button class="chip" onclick="fconv('Influenciador',this)">Influenc.</button>
+          <button class="chip" onclick="fconv('Diretoria',this)">Diretoria</button>
+          <button class="chip" onclick="fconv('Colaborador',this)">Colab.</button>
+        </div>
+        <div id="cpess"></div>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="bto" id="bsall">Todos</button>
+          <button class="bto" id="bsnone">Nenhum</button>
+        </div>
+        <button class="btn" id="bgconvi" style="width:100%;margin-top:12px;background:#0891b2">Gerar convite interno</button>
+      </div>
     </div>
   </div>
 </div>
 <script>
 var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
 var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
-var LC="https://robsafonso.github.io/Agroplay/cadastro.html";
+var LC="https://robsafonso.github.io/Agroplay/cadastro-externo.html";
 var LCV="https://robsafonso.github.io/Agroplay/convite.html";
 var SETS=["Artista","Influenciador","Diretoria","Colaborador"];
 var COR={Artista:"#7c3aed",Influenciador:"#0891b2",Diretoria:"#b45309",Colaborador:"#1e7a35"};
@@ -293,7 +309,18 @@ q("bcopc").onclick=function(){cp2(q("cmsg").textContent,q("bcopc"),"Copiar mensa
 q("boutro").onclick=function(){q("cres").classList.add("gone");q("csel").classList.remove("gone");};
 q("bsall").onclick=function(){cs=cads.filter(function(c){return cf==="Todos"||c.setor===cf;}).map(function(c){return c.id;});rcp();};
 q("bsnone").onclick=function(){cs=[];rcp();};
-q("bgconv").onclick=gconv;
+q("bgconv").onclick=gconvExt;
+q("bgconvi").onclick=function(){gconv("interno");};
+q("btntipoe").onclick=function(){
+  q("btntipoe").className="btn";q("btntipoe").style.flex="1";q("btntipoe").style.fontSize="12px";
+  q("btntipoi").className="bto";q("btntipoi").style.flex="1";q("btntipoi").style.fontSize="12px";
+  q("csel-ext").style.display="block";q("csel-int").style.display="none";
+};
+q("btntipoi").onclick=function(){
+  q("btntipoe").className="bto";q("btntipoe").style.flex="1";q("btntipoe").style.fontSize="12px";
+  q("btntipoi").className="btn";q("btntipoi").style.flex="1";q("btntipoi").style.fontSize="12px";q("btntipoi").style.background="#0891b2";
+  q("csel-ext").style.display="none";q("csel-int").style.display="block";rcp();
+};
 q("ckt").onclick=function(){fk="t";q("ckt").classList.add("on");q("ckd").classList.remove("on");q("cku").classList.remove("on");rCods();};
 q("ckd").onclick=function(){fk="d";q("ckt").classList.remove("on");q("ckd").classList.add("on");q("cku").classList.remove("on");rCods();};
 q("cku").onclick=function(){fk="u";q("ckt").classList.remove("on");q("ckd").classList.remove("on");q("cku").classList.add("on");rCods();};
@@ -523,7 +550,7 @@ function verP(id){
   if(c.status&&c.evento_id)rows.push(["Status",c.status]);
   rows.forEach(function(row){h+="<div class='prow'><span>"+row[0]+"</span><span>"+row[1]+"</span></div>";});
   q("pcont").innerHTML=h;
-  if(c.evento_id)q("aprovd").style.display="block";else q("aprovd").style.display="none";
+  if(c.status==="pendente")q("aprovd").style.display="block";else q("aprovd").style.display="none";
   q("ovp").classList.add("on");
 }
 function verFoto(id){
@@ -631,6 +658,28 @@ function rcp(){
   q("cpess").innerHTML=h;
 }
 function togC(id,v){if(v){if(cs.indexOf(id)<0)cs.push(id);}else{cs=cs.filter(function(x){return x!==id;});}}
+function gconvExt(){
+  if(!eva)return;
+  var btn=q("bgconv");btn.textContent="Gerando...";btn.disabled=true;
+  q("calert-ext").innerHTML="";
+  fetch(SB+"/rest/v1/codigos?usado=eq.false&order=id.asc&limit=1",{headers:{"apikey":KY,"Authorization":"Bearer "+KY}})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(!d||!d.length){q("calert-ext").innerHTML="<div class='ea'>Nenhum codigo disponivel!</div>";return;}
+      var cod=d[0].codigo;
+      ap("codigos?codigo=eq."+cod,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString()})});
+      var link="https://robsafonso.github.io/Agroplay/cadastro-externo.html?ev="+eva.id+"&cod="+cod;
+      var df=eva.data?eva.data.split("-"):["","",""];
+      var dataFmt=eva.data?df[2]+"/"+df[1]+"/"+df[0]:"";
+      var msg="AGROPLAY - Convite VIP\n\n"+eva.nome+(dataFmt?"\nData: "+dataFmt:"")+(eva.local?"\nLocal: "+eva.local:"")+(eva.atracao1?"\nAtracoes: "+eva.atracao1+(eva.atracao2?" + "+eva.atracao2:""):"")+"\n\nAcesse e se cadastre:\n"+link+"\n\nSeu codigo: "+cod+"\n\nCodigo intransferivel.\nAgroplay - Londrina PR";
+      q("linkext").textContent=link;
+      q("bcopext").style.display="block";
+      q("bcopext").onclick=function(){cp2(msg,q("bcopext"),"Copiar mensagem");};
+      rSts();
+    })
+    .catch(function(){q("calert-ext").innerHTML="<div class='ea'>Erro</div>";})
+    .finally(function(){btn.textContent="Gerar link externo";btn.disabled=false;});
+}
 function gconv(){
   if(cs.length===0){q("calert").innerHTML="<div class='ea'>Selecione pelo menos 1 pessoa</div>";return;}
   var btn=q("bgconv");btn.textContent="Gerando...";btn.disabled=true;
