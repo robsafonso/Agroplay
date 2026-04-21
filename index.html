@@ -261,8 +261,8 @@ q("bgerarlinkc").onclick=function(){
       if(!d||!d.length){q("lc-alert").innerHTML="<div class='ea'>Nenhum codigo disponivel!</div>";return;}
       var cod=d[0].codigo;
       return ap("codigos?codigo=eq."+cod,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString()})}).then(function(){
-        var link=LC+"?cod="+cod;
-        var msg="AGROPLAY - Convite de Cadastro\n\nVoce foi convidado para se cadastrar no sistema Agroplay!\n\nAcesse o link e faca seu cadastro:\n"+link+"\n\nSeu codigo: "+cod+"\n\nCodigo intransferivel e de uso unico.\nAgroplay Music - Londrina PR";
+        var link=LC+"?cod="+cod+"&resp="+encodeURIComponent("Robson");
+        var msg="AGROPLAY - Convite de Cadastro\n\nVoce foi convidado por Robson para se cadastrar no sistema Agroplay!\n\nAcesse o link e faca seu cadastro:\n"+link+"\n\nSeu codigo: "+cod+"\n\nCodigo intransferivel e de uso unico.\nAgroplay Music - Londrina PR";
         q("lc-cod").textContent=cod;
         q("lc-msg").textContent=msg;
         q("lc-form").classList.add("gone");
@@ -646,7 +646,7 @@ function gconv(){
       var df=ev.data?ev.data.split("-"):["","",""];
       var dataFmt=ev.data?df[2]+"/"+df[1]+"/"+df[0]:"";
       var msg="AGROPLAY - Convite VIP\n\nOla "+pessoa.nome+"!\n\nVoce esta convidado(a):\n\n"+ev.nome+(dataFmt?"\nData: "+dataFmt:"")+(ev.local?"\nLocal: "+ev.local:"")+(ev.atracao1?"\nAtracoes: "+ev.atracao1+(ev.atracao2?" + "+ev.atracao2:""):"");
-      msg=msg+"\n\nAcesse e confirme presenca:\n"+LCV+"?ev="+ev.id+"\n\nSeu codigo: "+cod+"\n\nCodigo intransferivel.\nAgroplay - Londrina PR";
+      msg=msg+"\n\nAcesse e confirme presenca:\n"+LCV+"?ev="+ev.id+"&tipo=interno\n\nSeu codigo: "+cod+"\n\nCodigo intransferivel.\nAgroplay - Londrina PR";
       ap("codigos?codigo=eq."+cod,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString()})});
       q("ccod").textContent=cod;
       q("cmsg").textContent=msg;
