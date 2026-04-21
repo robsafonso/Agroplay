@@ -348,8 +348,6 @@ if(wrap.style.display===“none”){
 if(!pa)return;
 ap(“codigos?cadastro_id=eq.”+pa.id+”&select=codigo&limit=1”).then(function(d){
 var cod=d&&d[0]?d[0].codigo:“CAD”+pa.id;
-q(“qr-box”).innerHTML=””;
-new QRCode(q(“qr-box”),{text:cod,width:180,height:180,colorDark:”#000000”,colorLight:”#ffffff”});
 q(“qr-cod”).textContent=cod;
 wrap.style.display=“block”;q(“bqr”).textContent=“Fechar QR”;
 });
@@ -810,8 +808,6 @@ document.head.appendChild(vstyle);
 document.getElementById(“r”).disabled=false;document.getElementById(“r”).style.opacity=“1”;
 }
 </script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" async></script>
 
 </body>
 </html>
