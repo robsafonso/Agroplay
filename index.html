@@ -727,6 +727,7 @@ function lstEv(evId){
   if(!ev)return;
   var p=cads.filter(function(c){return c.evento_id===evId;});
   lista={n:ev.nome,p:p,dt:new Date().toLocaleString("pt-BR"),evId:evId};
+  lstExcluidos=[];lstSel=[];
   tab("l");rLst();
 }
 function rCods(){
@@ -747,29 +748,61 @@ function gerarLst(){
   lista={n:n,p:p,dt:new Date().toLocaleString("pt-BR")};
   tab("l");rLst();
 }
+var lstExcluidos=[];
+var lstSel=[];
 function rLst(){
   if(!lista){q("llst").innerHTML="<div class='empty'>Selecione cadastros e clique em Gerar Lista.</div>";return;}
+  var ativos=lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)<0;});
+  var excl=lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)>=0;});
   var h="<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px'>";
   h+="<div><div style='font-size:15px;color:#fff;font-weight:700'>"+lista.n+"</div>";
-  h+="<div style='font-size:11px;color:#555;margin-top:2px'>"+lista.dt+" - "+lista.p.length+" pessoa(s)</div></div>";
-  h+="<div style='display:flex;gap:6px'><button class='bto' onclick='exXlsL()'>Excel</button><button class='bto' onclick='exCsvL()'>CSV</button></div></div>";
-  h+="<div class='tbl'><table><thead><tr><th>#</th><th>Nome</th><th>Empresa</th><th>Cargo</th><th>Email</th><th>Tel</th><th>Setor</th><th>Status</th><th>Convidado por</th></tr></thead><tbody>";
-  lista.p.forEach(function(p,i){
+  h+="<div style='font-size:11px;color:#555;margin-top:2px'>"+lista.dt+" - "+ativos.length+" confirmado(s)</div></div>";
+  h+="<div style='display:flex;gap:6px;flex-wrap:wrap'>";
+  h+="<button class='bto' onclick='exXlsL()' style='font-size:11px;padding:7px 10px'>Excel</button>";
+  h+="<button class='bto' onclick='exCsvL()' style='font-size:11px;padding:7px 10px'>CSV</button>";
+  h+="<button class='btr' onclick='exclSel()' style='font-size:11px;padding:7px 10px'>Excluir sel.</button>";
+  h+="</div></div>";
+  h+="<div style='font-size:10px;color:#2aab47;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px'>Confirmados ("+ativos.length+")</div>";
+  h+="<div class='tbl'><table><thead><tr><th><input type='checkbox' id='lball' onchange='togLstAll(this.checked)'></th><th>Nome</th><th>Empresa</th><th>Status</th><th>Convidado por</th><th></th></tr></thead><tbody>";
+  ativos.forEach(function(p,i){
+    var chk=lstSel.indexOf(p.id)>=0;
     var sb=p.status==="aprovado"?"<span class='ab'>Aprov</span>":p.status==="reprovado"?"<span class='rb'>Reprov</span>":"<span class='pb'>Pend</span>";
-    h+="<tr><td style='color:#444'>"+(i+1)+"</td><td style='color:#fff'>"+p.nome+"</td>";
-    h+="<td style='color:#777'>"+(p.empresa||"-")+"</td><td style='color:#777'>"+(p.cargo||"-")+"</td>";
-    h+="<td style='color:#777'>"+p.email+"</td><td style='color:#777'>"+p.telefone+"</td>";
-    h+="<td><span class='badge' style='background:"+(COR[p.setor]||"#555")+"'>"+p.setor+"</span></td>";
-    h+="<td>"+sb+"</td><td style='color:#0891b2;font-size:11px'>"+(p.lote_nome||"-")+"</td></tr>";
+    h+="<tr><td><input type='checkbox' "+(chk?"checked":"")+" onchange='togLst("+p.id+",this.checked)'></td>";
+    h+="<td style='color:#fff'>"+p.nome+"</td>";
+    h+="<td style='color:#777'>"+(p.empresa||"-")+"</td>";
+    h+="<td>"+sb+"</td>";
+    h+="<td style='color:#0891b2;font-size:11px'>"+(p.lote_nome||"-")+"</td>";
+    h+="<td><button class='btr' onclick='exclP("+p.id+")' style='font-size:10px;padding:3px 8px'>X</button></td></tr>";
   });
   h+="</tbody></table></div>";
+  if(excl.length){
+    h+="<div style='font-size:10px;color:#e74c3c;text-transform:uppercase;letter-spacing:1px;margin:14px 0 8px'>Excluidos ("+excl.length+")</div>";
+    h+="<div class='tbl'><table><thead><tr><th>Nome</th><th>Empresa</th><th>Convidado por</th><th></th></tr></thead><tbody>";
+    excl.forEach(function(p){
+      h+="<tr><td style='color:#777'>"+p.nome+"</td>";
+      h+="<td style='color:#555'>"+(p.empresa||"-")+"</td>";
+      h+="<td style='color:#555;font-size:11px'>"+(p.lote_nome||"-")+"</td>";
+      h+="<td><button class='bto' onclick='restP("+p.id+")' style='font-size:10px;padding:3px 8px'>Restaurar</button></td></tr>";
+    });
+    h+="</tbody></table></div>";
+  }
   q("llst").innerHTML=h;
 }
+function togLst(id,v){if(v){if(lstSel.indexOf(id)<0)lstSel.push(id);}else{lstSel=lstSel.filter(function(x){return x!==id;});}rLst();}
+function togLstAll(v){
+  var ativos=lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)<0;});
+  if(v)ativos.forEach(function(p){if(lstSel.indexOf(p.id)<0)lstSel.push(p.id);});
+  else lstSel=[];
+  rLst();
+}
+function exclP(id){lstExcluidos.push(id);lstSel=lstSel.filter(function(x){return x!==id;});rLst();}
+function restP(id){lstExcluidos=lstExcluidos.filter(function(x){return x!==id;});rLst();}
+function exclSel(){lstSel.forEach(function(id){if(lstExcluidos.indexOf(id)<0)lstExcluidos.push(id);});lstSel=[];rLst();}
 function mkR(arr){return arr.map(function(c){return[c.nome,c.cpf,c.rg,c.email,c.telefone,fd(c.nascimento),c.setor,c.empresa||"",c.cargo||"",c.status||"",c.lote_nome||""];});}
 function expExcel(){mkXls(mkR(cads),"Cadastros");}
-function exXlsL(){if(lista)mkXls(mkR(lista.p),"Lista_"+lista.n);}
+function exXlsL(){if(lista){var ativos=lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)<0;});mkXls(mkR(lstSel.length?lista.p.filter(function(p){return lstSel.indexOf(p.id)>=0;}):ativos),"Lista_"+lista.n);}}
 function expCSV(){dl("Nome,CPF,RG,Email,Telefone,Nascimento,Setor,Empresa,Cargo,Status,Convidado por\n"+mkR(cads).map(function(r){return r.map(function(v){return'"'+v+'"';}).join(",");}).join("\n"),"text/csv","Cadastros.csv");}
-function exCsvL(){if(lista)dl("Nome,CPF,RG,Email,Telefone,Nascimento,Setor,Empresa,Cargo,Status,Convidado por\n"+mkR(lista.p).map(function(r){return r.map(function(v){return'"'+v+'"';}).join(",");}).join("\n"),"text/csv","Lista.csv");}
+function exCsvL(){if(lista){var ativos=lstSel.length?lista.p.filter(function(p){return lstSel.indexOf(p.id)>=0;}):lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)<0;});dl("Nome,CPF,RG,Email,Telefone,Nascimento,Setor,Empresa,Cargo,Status,Convidado por\n"+mkR(ativos).map(function(r){return r.map(function(v){return'"'+v+'"';}).join(",");}).join("\n"),"text/csv","Lista.csv");}}
 function mkXls(rows,name){
   var hdr="<Row><Cell><Data ss:Type='String'>Nome</Data></Cell><Cell><Data ss:Type='String'>CPF</Data></Cell><Cell><Data ss:Type='String'>RG</Data></Cell><Cell><Data ss:Type='String'>Email</Data></Cell><Cell><Data ss:Type='String'>Telefone</Data></Cell><Cell><Data ss:Type='String'>Nascimento</Data></Cell><Cell><Data ss:Type='String'>Setor</Data></Cell><Cell><Data ss:Type='String'>Empresa</Data></Cell><Cell><Data ss:Type='String'>Cargo</Data></Cell><Cell><Data ss:Type='String'>Status</Data></Cell><Cell><Data ss:Type='String'>Convidado por</Data></Cell></Row>";
   var body=rows.map(function(r){return "<Row>"+r.map(function(v){return"<Cell><Data ss:Type='String'>"+String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</Data></Cell>";}).join("")+"</Row>";}).join("");
