@@ -153,9 +153,9 @@ if(RESP){
 if(COD_PRE)document.getElementById("f-cod").value=COD_PRE;
 
 function q(id){return document.getElementById(id);}
-var CARGOS_ARTISTA=["Artista / Cantor","Musico / Banda","Bailarino / Dancario","Producao","Camarim","Seguranca","Imprensa","Fotografo / Videomaker","Outro"];
-var CARGOS_ESCRITORIO=["Diretoria","RH","Financeiro","Juridico","Marketing","Eventos","Administrativo","Outro"];
-var CARGOS_OUTRA=["Presidente","Diretor","Gerente","Marketing","Comercial","Juridico","Financeiro","Outro"];
+var CARGOS_ARTISTA=["Artista / Cantor","Musico / Banda","Bailarino / Dancarino","Diretor de Palco","Producao","Tecnico de Som","Tecnico de Luz","Tecnico de Video","Fotografo","Videomaker","Camarim","Maquiagem","Cabelo","Figurino","Assessoria de Imprensa","Comercial / Agenciamento","Seguranca","Motorista / Transfer","Road Manager","Outro"];
+var CARGOS_ESCRITORIO=["Socio / Fundador","CEO / Presidente","CMO / Diretor de Marketing","CFO / Diretor Financeiro","Diretor Comercial","Diretor de Eventos","Diretor de Operacoes","Gerente de Marketing","Gerente Comercial","Marketing Digital","Publicidade","Licenciamento","Midia e Comunicacao","Assessoria de Imprensa","Producao de Eventos","Setor de Eventos","RH / Recursos Humanos","Financeiro / Contabilidade","Juridico","Administrativo","Secretaria","Suporte / Apoio","Seguranca","Outro"];
+var CARGOS_OUTRA=["Presidente / CEO","Vice-Presidente","Diretor Executivo","Diretor Comercial","Diretor de Marketing","Diretor Financeiro","Diretor de Operacoes","Gerente Geral","Gerente Comercial","Gerente de Marketing","Gerente Financeiro","Coordenador","Supervisor","Analista","Consultor","Assessor","Relacoes Publicas","Marketing","Comunicacao","Comercial / Vendas","Financeiro","Contabilidade","Juridico","RH","Administrativo","Secretaria","Outro"];
 function mudarEmp(v){
   var empOutra=document.getElementById("emp-outra-wrap");
   empOutra.style.display=v==="outra"?"block":"none";
