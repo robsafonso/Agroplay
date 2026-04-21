@@ -188,12 +188,24 @@ function irEmp(){
   var ok=true;
   function se(id,msg){q(id).textContent=msg;if(msg)ok=false;}
   se("e-nome",q("f-nome").value.trim()?"":"Nome obrigatorio");
-  se("e-cpf",q("f-cpf").value.replace(/\D/g,"").length===11?"":"CPF invalido");
+  se("e-cpf",q("f-cpf").value.replace(/[^0-9]/g,"").length===11?"":"CPF invalido");
   se("e-rg",q("f-rg").value.trim()?"":"RG obrigatorio");
   se("e-email",/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(q("f-email").value.trim())?"":"Email invalido");
-  se("e-tel",q("f-tel").value.replace(/\D/g,"").length>=10?"":"Telefone invalido");
+  se("e-tel",q("f-tel").value.replace(/[^0-9]/g,"").length>=10?"":"Telefone invalido");
   se("e-nasc",q("f-nasc").value?"":"Data obrigatoria");
-  if(ok)ir("t-emp");
+  if(!ok)return;
+  var cpfEl=q("e-cpf");
+  cpfEl.textContent="Verificando CPF...";
+  fetch(SB+"/rest/v1/cadastros?cpf=eq."+encodeURIComponent(q("f-cpf").value)+"&select=id",{headers:{"apikey":KY,"Authorization":"Bearer "+KY}})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if(d&&d.length){
+      cpfEl.textContent="Este CPF ja esta cadastrado no sistema!";
+    } else {
+      cpfEl.textContent="";
+      ir("t-emp");
+    }
+  }).catch(function(){cpfEl.textContent="";ir("t-emp");});
 }
 
 function irFoto(){
