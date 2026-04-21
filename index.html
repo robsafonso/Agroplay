@@ -312,7 +312,7 @@ textarea{height:70px;resize:none}
 </div>
 <script>
 var MODO=new URLSearchParams(window.location.search).get("modo")||"edit";
-try{var _s=sessionStorage.getItem("ag_admin");if(!_s){window.location.href="home.html";}else{var _a=JSON.parse(_s);if(!_a||!_a.nome){window.location.href="home.html";}if(_a.nivel==="visualizador")MODO="ver";}}catch(e){window.location.href="home.html";}
+try{var _s=sessionStorage.getItem("ag_admin");if(_s){var _a=JSON.parse(_s);if(_a&&_a.nivel==="visualizador")MODO="ver";}}catch(e){}
 var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
 var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
 var LC="https://robsafonso.github.io/Agroplay/cadastro-externo.html";
