@@ -4,276 +4,203 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agroplay</title>
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Agroplay">
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512' viewBox='0 0 512 512'><rect width='512' height='512' rx='80' fill='%230d1a0d'/><text x='256' y='210' font-family='Arial Black,Arial' font-weight='900' font-size='155' fill='%23ffffff' text-anchor='middle'>AGRO</text><text x='256' y='380' font-family='Arial Black,Arial' font-weight='900' font-size='155' fill='%232aab47' text-anchor='middle'>PLAY</text><rect x='80' y='230' width='352' height='6' rx='3' fill='%232aab47' opacity='0.5'/></svg>">
-<meta name="theme-color" content="#060a06">
+<title>Agroplay - Manual do Sistema</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#060a06;color:#eee;font-family:Arial;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
-.logo{font-size:36px;font-weight:900;color:#fff;text-align:center;margin-bottom:6px;letter-spacing:2px}
+body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:20px;max-width:480px;margin:0 auto}
+.logo{font-size:22px;font-weight:900;color:#fff;text-align:center;padding:20px 0 4px;letter-spacing:2px}
 .logo span{color:#2aab47}
-.sub{font-size:12px;color:#444;letter-spacing:3px;text-transform:uppercase;text-align:center;margin-bottom:40px}
-.card{background:#090e09;border:1px solid #1a2a1a;border-radius:16px;padding:28px 24px;width:100%;max-width:360px}
-input,select{width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:11px 14px;color:#eee;font-size:14px;outline:none;margin-bottom:8px}
-input:focus,select:focus{border-color:#2aab47}
-.btn{background:linear-gradient(135deg,#1e7a35,#2aab47);color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;width:100%}
-.bto{background:transparent;color:#2aab47;border:1px solid #2aab47;border-radius:8px;padding:8px 14px;font-size:12px;cursor:pointer}
-.ea{background:#1a0000;border:1px solid #e74c3c;color:#e74c3c;padding:10px;border-radius:8px;margin-bottom:10px;font-size:13px}
-.ok{background:#0a1f0a;border:1px solid #2aab47;color:#2aab47;padding:10px;border-radius:8px;margin-bottom:10px;font-size:13px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:400px}
-.gc{background:#090e09;border:1px solid #1a2a1a;border-radius:16px;padding:20px 16px;text-align:center;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:8px}
-.gc:active{background:#0d150d;border-color:#2aab47}
-.gc-icon{font-size:30px}
-.gc-title{font-size:14px;font-weight:700;color:#fff}
-.gc-desc{font-size:11px;color:#555;line-height:1.4}
-.gc.green{border-color:rgba(42,171,71,.3)}
-.gc.blue{border-color:rgba(8,145,178,.3)}
-.gc.yellow{border-color:rgba(201,151,60,.3)}
-.gc.gray{border-color:rgba(255,255,255,.1)}
-.gone{display:none}
-.ov{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:100;display:none;align-items:flex-end;justify-content:center}
-.ov.on{display:flex}
-.mod{background:#090e09;border-radius:20px 20px 0 0;padding:20px;width:100%;max-height:90vh;overflow-y:auto}
-.fl{margin-bottom:10px}
-.fl label{display:block;font-size:10px;color:#2aab47;letter-spacing:1px;margin-bottom:4px;text-transform:uppercase}
-.acard{border:1px solid #1a2a1a;border-radius:10px;padding:12px;margin-bottom:8px;background:#030503}
-.btr{background:#c0392b;color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer}
-.btb{background:#0891b2;color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer}
-.bty{background:#b8860b;color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer}
-.btg{background:#1e7a35;color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer}
+.sub{font-size:11px;color:#444;text-align:center;letter-spacing:2px;text-transform:uppercase;margin-bottom:24px}
+.section{margin-bottom:20px}
+.section-title{font-size:13px;color:#2aab47;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #1a2a1a}
+.card{background:#090e09;border:1px solid #1a2a1a;border-radius:12px;padding:16px;margin-bottom:10px}
+.card-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.card-title span{font-size:18px}
+.card-desc{font-size:12px;color:#888;line-height:1.7}
+.step{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid #111}
+.step:last-child{border-bottom:none}
+.step-num{width:22px;height:22px;background:#1e7a35;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;margin-top:1px}
+.step-text{font-size:12px;color:#bbb;line-height:1.6;flex:1}
+.step-text b{color:#fff}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;color:#fff}
+.green{background:#1e7a35}.blue{background:#0891b2}.yellow{background:#b8860b}.red{background:#c0392b}
+.tip{background:#0a1a0a;border:1px solid rgba(42,171,71,.3);border-radius:8px;padding:10px;margin-top:8px;font-size:11px;color:#2aab47;line-height:1.6}
+.warn{background:#1a0a00;border:1px solid rgba(201,151,60,.3);border-radius:8px;padding:10px;margin-top:8px;font-size:11px;color:#c9973c;line-height:1.6}
+.link-box{background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;margin-top:8px}
+.link-url{font-family:monospace;font-size:11px;color:#2aab47;word-break:break-all}
+.divider{border:none;border-top:1px solid #1a2a1a;margin:20px 0}
 </style>
 </head>
 <body>
+
 <div class="logo">AGRO<span>PLAY</span></div>
-<div class="sub">Sistema de Gestao</div>
+<div class="sub">Manual do Sistema</div>
 
-<div id="tela-login" class="card gone">
-  <div id="al-login"></div>
-  <div class="fl"><label>Nome</label><input id="inp-nome" placeholder="Seu nome"></div>
-  <div class="fl"><label>Senha</label><input id="inp-senha" type="password" placeholder="Sua senha"></div>
-  <button class="btn" id="btn-login">Entrar</button>
-</div>
+<!-- ACESSO -->
 
-<div id="tela-troca" class="card gone">
-  <div style="font-size:16px;font-weight:900;color:#fff;margin-bottom:4px">Primeiro acesso</div>
-  <div style="font-size:12px;color:#666;margin-bottom:16px">Crie sua senha pessoal para continuar.</div>
-  <div id="al-troca"></div>
-  <div class="fl"><label>Nova senha</label><input id="nova-senha" type="password" placeholder="Nova senha (minimo 4 caracteres)"></div>
-  <div class="fl"><label>Confirmar</label><input id="conf-senha" type="password" placeholder="Repita a senha"></div>
-  <button class="btn" id="btn-salvar-senha">Salvar e entrar</button>
-</div>
-
-<div id="tela-menu" class="gone" style="width:100%;max-width:400px">
-  <div style="text-align:center;margin-bottom:20px">
-    <div style="font-size:14px;color:#555">Bem-vindo, <span id="admin-nome" style="color:#2aab47;font-weight:700"></span>!</div>
+<div class="section">
+  <div class="section-title">Acesso ao Sistema</div>
+  <div class="card">
+    <div class="card-title"><span>🔐</span>Link oficial</div>
+    <div class="link-box"><div class="link-url">robsafonso.github.io/Agroplay/home.html</div></div>
+    <div class="card-desc" style="margin-top:8px">Entre com seu <b style="color:#fff">nome</b> e <b style="color:#fff">senha</b>. No primeiro acesso voce sera solicitado a criar uma nova senha.</div>
+    <div class="tip">Adicione o link na tela inicial do iPhone: Safari > Compartilhar > Adicionar a Tela de Inicio</div>
   </div>
-  <div class="grid">
-    <a id="link-gerente" href="index.html" class="gc green"><div class="gc-icon">&#128507;</div><div class="gc-title">Gerente</div><div class="gc-desc">Cadastros, eventos e lotes</div></a>
-    <a id="link-admin" href="admin.html" class="gc blue"><div class="gc-icon">&#9989;</div><div class="gc-title">Admin</div><div class="gc-desc">Check-in e validadores</div></a>
-    <a href="checkin.html" class="gc yellow"><div class="gc-icon">&#128241;</div><div class="gc-title">Scanner</div><div class="gc-desc">Escanear QR na porta</div></a>
-    <a href="mediakit.html" class="gc gray"><div class="gc-icon">&#128203;</div><div class="gc-title">Media Kit</div><div class="gc-desc">Apresentacao do sistema</div></a>
-  </div>
-  <div id="menu-master" class="gone" style="margin-top:14px">
-    <button class="bto" id="btn-admins" style="width:100%">Gerenciar Administradores</button>
-  </div>
-  <div style="text-align:center;margin-top:12px;display:flex;gap:8px;justify-content:center">
-    <button class="bto" id="btn-trocar-menu" style="font-size:11px;padding:6px 14px">Trocar senha</button>
-    <button class="bto" id="btn-sair" style="font-size:11px;padding:6px 14px">Sair</button>
+  <div class="card">
+    <div class="card-title"><span>👥</span>Niveis de acesso</div>
+    <div class="step"><div class="step-num" style="background:#c9973c">M</div><div class="step-text"><b>Master</b> — acesso total + gerenciar administradores</div></div>
+    <div class="step"><div class="step-num">A</div><div class="step-text"><b>Admin</b> — acesso total ao sistema</div></div>
+    <div class="step"><div class="step-num" style="background:#555">V</div><div class="step-text"><b>Visualizador</b> — apenas leitura, nao pode editar</div></div>
   </div>
 </div>
 
-<div class="ov" id="ov-admins">
-  <div class="mod">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <div style="font-size:16px;font-weight:700;color:#fff">Administradores</div>
-      <button class="bto" id="btn-fad">X</button>
-    </div>
-    <div id="adm-alert"></div>
-    <div id="adm-form">
-      <div class="fl"><label>Nome</label><input id="adm-nome" placeholder="Nome do administrador"></div>
-      <div class="fl"><label>Senha temporaria</label><input id="adm-senha" placeholder="Senha inicial" type="text"></div>
-      <div class="fl"><label>Nivel</label><select id="adm-nivel"><option value="visualizador">Visualizador</option><option value="admin">Admin</option><option value="master">Master</option></select></div>
-      <button class="btn" id="btn-addadm" style="margin-bottom:16px">Adicionar</button>
-    </div>
-    <div id="adm-lista"></div>
+<!-- GERENTE -->
+
+<div class="section">
+  <div class="section-title">Painel Gerente</div>
+  <div class="card">
+    <div class="card-title"><span>🎛️</span>O que e o Gerente</div>
+    <div class="card-desc">O painel principal do sistema. Aqui voce gerencia todos os cadastros, eventos, lotes e convites.</div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span>➕</span>Cadastrar pessoa</div>
+    <div class="step"><div class="step-num">1</div><div class="step-text">Toque no botao <b>+ Cadastrar</b> (laranja) no topo</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-text">Preencha nome, setor e dados</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-text">Opcionalmente tire uma foto</div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-text">Toque em <b>Salvar cadastro</b></div></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span>🔗</span>Enviar link de cadastro</div>
+    <div class="step"><div class="step-num">1</div><div class="step-text">Toque em <b>Link Cadastro</b> no topo</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-text">Toque em <b>Gerar convite</b></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-text">Toque em <b>Copiar mensagem</b> e envie pelo WhatsApp</div></div>
+    <div class="tip">Cada codigo e de uso unico e intransferivel.</div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span>✅</span>Aprovar ou reprovar cadastro</div>
+    <div class="step"><div class="step-num">1</div><div class="step-text">Toque no nome da pessoa na lista</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-text">Aparece o perfil com foto e dados</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-text">Toque em <b>Aprovar</b> ou <b>Reprovar</b></div></div>
+    <div class="warn">Apenas pessoas com evento vinculado aparecem como Pendente.</div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span>📱</span>QR Code da pessoa</div>
+    <div class="step"><div class="step-num">1</div><div class="step-text">Abra o perfil da pessoa</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-text">Toque em <b>Ver QR Code</b></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-text">O QR aparece para o validador escanear na porta</div></div>
   </div>
 </div>
 
-<div class="ov" id="ov-trocar">
-  <div class="mod">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <div style="font-size:16px;font-weight:700;color:#fff">Trocar senha</div>
-      <button class="bto" id="btn-ftrocar">X</button>
-    </div>
-    <div id="trocar-alert"></div>
-    <div class="fl"><label>Nova senha</label><input id="trocar-nova" type="password" placeholder="Nova senha"></div>
-    <div class="fl"><label>Confirmar</label><input id="trocar-conf" type="password" placeholder="Repita a senha"></div>
-    <button class="btn" id="btn-confirmar-troca">Salvar nova senha</button>
+<!-- EVENTOS -->
+
+<div class="section">
+  <div class="section-title">Eventos</div>
+  <div class="card">
+    <div class="card-title"><span>🎵</span>Criar evento</div>
+    <div class="step"><div class="step-num">1</div><div class="step-text">Aba <b>Eventos</b> > <b>+ Criar novo evento</b></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-text">Preencha nome, data, local, atracoes</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-text">Adicione URL da foto para aparecer no convite</div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-text">Toque em <b>Salvar</b></div></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span>💌</span>Enviar convites</div>
+    <div class="step"><div class="step-num">1</div><div class="step-text">No card do evento toque em <b>Enviar Convites</b></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-text"><b>Externo</b> — pessoa nova que ainda nao e cadastrada</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-text"><b>Interno</b> — pessoa ja cadastrada no sistema</div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-text">Copie a mensagem e envie pelo WhatsApp</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span>📋</span>Incluir pessoa em evento</div>
+    <div class="step"><div class="step-num">1</div><div class="step-text">Abra o perfil da pessoa</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-text">Toque em <b>Incluir em Evento</b></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-text">Selecione o evento e confirme</div></div>
   </div>
 </div>
 
+<!-- LOTES -->
+
+<div class="section">
+  <div class="section-title">Lotes de Convites</div>
+  <div class="card">
+    <div class="card-title"><span>🎟️</span>O que e um lote</div>
+    <div class="card-desc">Um pacote de convites dado a um colaborador. Ele acessa o painel com uma senha e distribui os convites.</div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span>➕</span>Criar lote</div>
+    <div class="step"><div class="step-num">1</div><div class="step-text">Aba <b>Lotes</b> > <b>+ Criar novo lote</b></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-text">Digite o nome do responsavel</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-text">Defina a quantidade de convites</div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-text">Crie uma senha para o colaborador</div></div>
+    <div class="step"><div class="step-num">5</div><div class="step-text">Vincule a um evento (opcional)</div></div>
+    <div class="step"><div class="step-num">6</div><div class="step-text">Toque em <b>Copiar link</b> e envie para o colaborador</div></div>
+  </div>
+</div>
+
+<!-- CHECK-IN -->
+
+<div class="section">
+  <div class="section-title">Check-in no Evento</div>
+  <div class="card">
+    <div class="card-title"><span>🔍</span>Validadores</div>
+    <div class="card-desc">Pessoas responsaveis por fazer o check-in na porta. Cada um tem uma senha propria.</div>
+    <div class="link-box" style="margin-top:8px"><div style="font-size:10px;color:#555;margin-bottom:4px">Link do check-in</div><div class="link-url">robsafonso.github.io/Agroplay/checkin.html</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span>📱</span>Como fazer check-in</div>
+    <div class="step"><div class="step-num">1</div><div class="step-text">Abra o link do check-in e entre com sua senha</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-text">Aponte a camera para o QR Code do convidado</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-text">Aparece foto, nome e status da pessoa</div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-text">Toque em <b>Confirmar entrada</b></div></div>
+    <div class="tip">Se a pessoa nao tiver o QR, busque pelo nome ou codigo de 6 digitos.</div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span>📊</span>Acompanhar presenca</div>
+    <div class="step"><div class="step-num">1</div><div class="step-text">Acesse o painel Admin</div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-text">Aba <b>Check-in</b> — veja quem entrou e quem nao entrou</div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-text">Aba <b>Historico</b> — estatisticas por evento</div></div>
+    <div class="link-box" style="margin-top:8px"><div class="link-url">robsafonso.github.io/Agroplay/admin.html</div></div>
+  </div>
+</div>
+
+<!-- DICAS -->
+
+<div class="section">
+  <div class="section-title">Dicas Importantes</div>
+  <div class="card">
+    <div class="card-title"><span>💡</span>Boas praticas</div>
+    <div class="step"><div class="step-num" style="background:#0891b2">1</div><div class="step-text">Sempre toque em <b>Atualizar</b> antes de usar para ter os dados mais recentes</div></div>
+    <div class="step"><div class="step-num" style="background:#0891b2">2</div><div class="step-text">Cada codigo de convite e de <b>uso unico</b> — nao compartilhe o mesmo codigo com duas pessoas</div></div>
+    <div class="step"><div class="step-num" style="background:#0891b2">3</div><div class="step-text">Fotos sao salvas automaticamente — nao precisa salvar manualmente</div></div>
+    <div class="step"><div class="step-num" style="background:#0891b2">4</div><div class="step-text">O sistema funciona 100% pelo celular — nao precisa de computador</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><span>🆘</span>Suporte</div>
+    <div class="card-desc">Em caso de duvidas ou problemas, entre em contato com o administrador master do sistema.</div>
+    <div class="warn">Nunca compartilhe sua senha com outras pessoas.</div>
+  </div>
+</div>
+
+<div class="card" style="margin-bottom:20px">
+  <div style="font-size:11px;color:#2aab47;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Link oficial do sistema</div>
+  <div style="font-family:monospace;font-size:11px;color:#eee;margin-bottom:8px;word-break:break-all">robsafonso.github.io/Agroplay/home.html</div>
+  <button onclick="copiarSistema()" id="btn-sys" style="background:transparent;color:#2aab47;border:1px solid #2aab47;border-radius:8px;padding:10px;font-size:13px;cursor:pointer;width:100%">Copiar link do sistema</button>
+</div>
+<div style="text-align:center;padding:20px 0">
+  <button onclick="copiarLink()" style="background:transparent;color:#2aab47;border:1px solid #2aab47;border-radius:8px;padding:10px 20px;font-size:13px;cursor:pointer;margin-bottom:12px" id="btn-cop">Copiar link do manual</button>
+  <div style="font-size:11px;color:#333;letter-spacing:2px;text-transform:uppercase">Agroplay Music - Londrina PR</div>
+</div>
 <script>
-var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
-var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
-var adminAtual=null;
-function q(id){return document.getElementById(id);}
-function ap(p,o){o=o||{};var h={"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json"};if(o.pref)h["Prefer"]=o.pref;return fetch(SB+"/rest/v1/"+p,{method:o.m||"GET",headers:h,body:o.b}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});}
-function cp2(txt,btn,lbl){if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){btn.textContent="Copiado!";setTimeout(function(){btn.textContent=lbl;},2000);});}else{var t=document.createElement("textarea");t.value=txt;document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t);btn.textContent="Copiado!";setTimeout(function(){btn.textContent=lbl;},2000);}}
-
-q("btn-login").onclick=function(){
-  var nome=q("inp-nome").value.trim();
-  var senha=q("inp-senha").value.trim();
-  var al=q("al-login");al.innerHTML="";
-  if(!nome||!senha){al.innerHTML="<div class='ea'>Preencha nome e senha</div>";return;}
-  var btn=this;btn.textContent="Entrando...";btn.disabled=true;
-  ap("admins?nome=eq."+encodeURIComponent(nome)+"&senha=eq."+encodeURIComponent(senha)+"&ativo=eq.true&select=*").then(function(d){
-    if(!d||!d.length){al.innerHTML="<div class='ea'>Nome ou senha invalidos</div>";btn.textContent="Entrar";btn.disabled=false;return;}
-    adminAtual=d[0];
-    if(adminAtual.primeiro_acesso){
-      q("tela-login").classList.add("gone");
-      q("tela-troca").classList.remove("gone");
-      return;
-    }
-    entrarNoMenu();
-  }).catch(function(){al.innerHTML="<div class='ea'>Erro de conexao</div>";btn.textContent="Entrar";btn.disabled=false;});
-};
-
-q("btn-salvar-senha").onclick=function(){
-  var nova=q("nova-senha").value.trim();
-  var conf=q("conf-senha").value.trim();
-  var al=q("al-troca");al.innerHTML="";
-  if(!nova||nova.length<4){al.innerHTML="<div class='ea'>Senha muito curta (minimo 4)</div>";return;}
-  if(nova!==conf){al.innerHTML="<div class='ea'>Senhas nao conferem</div>";return;}
-  var btn=this;btn.textContent="Salvando...";btn.disabled=true;
-  ap("admins?id=eq."+adminAtual.id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({senha:nova,primeiro_acesso:false})}).then(function(){
-    adminAtual.senha=nova;adminAtual.primeiro_acesso=false;
-    q("tela-troca").classList.add("gone");
-    entrarNoMenu();
-  }).catch(function(){al.innerHTML="<div class='ea'>Erro ao salvar</div>";btn.textContent="Salvar e entrar";btn.disabled=false;});
-};
-
-function salvarSessao(){try{sessionStorage.setItem("ag_admin",JSON.stringify(adminAtual));}catch(e){}}
-function carregarSessao(){try{var s=sessionStorage.getItem("ag_admin");if(s){adminAtual=JSON.parse(s);entrarNoMenu();return true;}}catch(e){}return false;}
-function entrarNoMenu(){
-  q("admin-nome").textContent=adminAtual.nome;
-  q("tela-login").classList.add("gone");
-  q("tela-troca").classList.add("gone");
-  q("tela-menu").classList.remove("gone");
-  if(adminAtual.nivel==="master"){q("menu-master").classList.remove("gone");}
-  salvarSessao();
-  if(adminAtual.nivel==="visualizador"){
-    q("link-gerente").href="index.html?modo=ver";
-    q("link-admin").href="admin.html?modo=ver";
-  }
-}
-
-q("btn-sair").onclick=function(){
-  adminAtual=null;
-  try{sessionStorage.removeItem("ag_admin");}catch(e){}
-  q("tela-menu").classList.add("gone");
-  q("tela-login").classList.remove("gone");
-  q("inp-nome").value="";q("inp-senha").value="";
-};
-
-q("btn-trocar-menu").onclick=function(){
-  q("trocar-alert").innerHTML="";
-  q("trocar-nova").value="";q("trocar-conf").value="";
-  q("ov-trocar").classList.add("on");
-};
-q("btn-ftrocar").onclick=function(){q("ov-trocar").classList.remove("on");};
-q("btn-confirmar-troca").onclick=function(){
-  var nova=q("trocar-nova").value.trim();
-  var conf=q("trocar-conf").value.trim();
-  var al=q("trocar-alert");al.innerHTML="";
-  if(!nova||nova.length<4){al.innerHTML="<div class='ea'>Senha muito curta</div>";return;}
-  if(nova!==conf){al.innerHTML="<div class='ea'>Senhas nao conferem</div>";return;}
-  var btn=this;btn.textContent="Salvando...";btn.disabled=true;
-  ap("admins?id=eq."+adminAtual.id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({senha:nova})}).then(function(){
-    adminAtual.senha=nova;
-    al.innerHTML="<div class='ok'>Senha alterada!</div>";
-    setTimeout(function(){q("ov-trocar").classList.remove("on");},1500);
-  }).catch(function(){al.innerHTML="<div class='ea'>Erro</div>";
-  }).finally(function(){btn.textContent="Salvar nova senha";btn.disabled=false;});
-};
-
-q("btn-admins").onclick=function(){q("ov-admins").classList.add("on");carregarAdmins();};
-q("btn-fad").onclick=function(){q("ov-admins").classList.remove("on");};
-
-q("btn-addadm").onclick=function(){
-  var nome=q("adm-nome").value.trim();
-  var senha=q("adm-senha").value.trim();
-  var nivel=q("adm-nivel").value;
-  var al=q("adm-alert");al.innerHTML="";
-  if(!nome||!senha){al.innerHTML="<div class='ea'>Preencha nome e senha</div>";return;}
-  var btn=this;btn.textContent="Salvando...";btn.disabled=true;
-  ap("admins",{m:"POST",pref:"return=minimal",b:JSON.stringify({nome:nome,senha:senha,nivel:nivel,primeiro_acesso:true,ativo:true})}).then(function(){
-    q("adm-nome").value="";q("adm-senha").value="";
-    al.innerHTML="<div class='ok'>Admin adicionado!</div>";
-    carregarAdmins();
-  }).catch(function(){al.innerHTML="<div class='ea'>Erro</div>";
-  }).finally(function(){btn.textContent="Adicionar";btn.disabled=false;});
-};
-
-function carregarAdmins(){
-  ap("admins?select=*&order=criado_em.asc").then(function(d){
-    if(!d||!d.length){q("adm-lista").innerHTML="<div style='color:#555;font-size:12px;text-align:center;padding:10px'>Nenhum admin cadastrado</div>";return;}
-    var count=d.filter(function(a){return a.ativo;}).length;
-    var h="<div style='font-size:11px;color:#555;margin-bottom:10px'>"+count+"/10 admins ativos</div>";
-    d.forEach(function(a){
-      var minha=(a.id===adminAtual.id);
-      var cor=a.ativo?"#2aab47":"#555";
-      h+="<div class='acard'>";
-      h+="<div style='font-size:13px;color:#fff;font-weight:700;margin-bottom:2px'>"+a.nome+"</div>";
-      h+="<div style='font-size:11px;color:"+cor+";margin-bottom:8px'>"+a.nivel+" - "+(a.ativo?"Ativo":"Inativo")+(a.primeiro_acesso?" (primeiro acesso)":"")+"</div>";
-      if(minha){
-        h+="<div style='font-size:11px;color:#444;font-style:italic'>Esta e sua conta</div>";
-      } else {
-        h+="<select onchange='mudarNivel("+a.id+",this.value)' style='width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:6px;padding:6px;color:#eee;font-size:12px;margin-bottom:8px'>";
-        h+="<option value='visualizador'"+(a.nivel==="visualizador"?" selected":"")+" >Visualizador</option>";
-        h+="<option value='admin'"+(a.nivel==="admin"?" selected":"")+" >Admin</option>";
-        h+="<option value='master'"+(a.nivel==="master"?" selected":"")+" >Master</option>";
-        h+="</select>";
-        h+="<div style='display:flex;gap:5px'>";
-        if(a.ativo){h+="<button class='bty' onclick='toggleAdmin("+a.id+",false)'>Inativar</button>";}
-        else{h+="<button class='btg' onclick='toggleAdmin("+a.id+",true)'>Ativar</button>";}
-        h+="<button class='btr' onclick='delAdmin("+a.id+")'>Excluir</button>";
-        h+="<button class='btb' onclick='enviarLink(\""+a.nome+"\",\""+a.senha+"\")'>Enviar link</button>";
-        h+="</div>";
-      }
-      h+="</div>";
-    });
-    q("adm-lista").innerHTML=h;
-    if(count>=10){q("adm-form").style.display="none";}
-    else{q("adm-form").style.display="block";}
-  });
-}
-
-function mudarNivel(id,nivel){
-  ap("admins?id=eq."+id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({nivel:nivel})}).then(function(){carregarAdmins();});
-}
-function toggleAdmin(id,ativo){
-  ap("admins?id=eq."+id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({ativo:ativo})}).then(function(){carregarAdmins();});
-}
-function delAdmin(id){
-  if(!confirm("Excluir este administrador?"))return;
-  ap("admins?id=eq."+id,{m:"DELETE",pref:"return=minimal"}).then(function(){carregarAdmins();});
-}
-if(!carregarSessao()){q("tela-login").classList.remove("gone");}
-function enviarLink(nome,senha){
+function copiarSistema(){
   var link="https://robsafonso.github.io/Agroplay/home.html";
-  var msg="AGROPLAY - Acesso ao Sistema\n\nOla "+nome+"!\n\nVoce foi cadastrado no sistema Agroplay.\n\nAcesse pelo link:\n"+link+"\n\nSeu nome: "+nome+"\nSua senha: "+senha+"\n\nNo primeiro acesso voce sera solicitado a criar uma nova senha.\n\nAgroplay Music - Londrina PR";
-  if(navigator.clipboard){
-    navigator.clipboard.writeText(msg).then(function(){
-      var el=document.createElement("div");
-      el.style.cssText="position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#0891b2;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:700;z-index:999";
-      el.textContent="Link copiado!";
-      document.body.appendChild(el);
-      setTimeout(function(){el.remove();},2000);
-    });
-  }
+  var btn=document.getElementById("btn-sys");
+  if(navigator.clipboard){navigator.clipboard.writeText(link).then(function(){btn.textContent="Copiado!";setTimeout(function(){btn.textContent="Copiar link do sistema";},2000);});}
+  else{var t=document.createElement("textarea");t.value=link;document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t);btn.textContent="Copiado!";setTimeout(function(){btn.textContent="Copiar link do sistema";},2000);}
+}
+function copiarLink(){
+  var link="https://robsafonso.github.io/Agroplay/manual.html";
+  var btn=document.getElementById("btn-cop");
+  if(navigator.clipboard){navigator.clipboard.writeText(link).then(function(){btn.textContent="Copiado!";setTimeout(function(){btn.textContent="Copiar link do manual";},2000);});}
+  else{var t=document.createElement("textarea");t.value=link;document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t);btn.textContent="Copiado!";setTimeout(function(){btn.textContent="Copiar link do manual";},2000);}
 }
 </script>
 
