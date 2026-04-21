@@ -51,6 +51,7 @@ textarea{height:70px;resize:none}
 .ab{background:#1e7a35;color:#fff;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700}
 .rb{background:#c0392b;color:#fff;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 <div class="hdr">
@@ -166,6 +167,8 @@ textarea{height:70px;resize:none}
         <button class="btr" id="brpv" style="flex:1;font-size:12px;padding:10px">Reprovar</button>
       </div>
     </div>
+    <button class="bto" id="bqr" style="width:100%;margin-top:12px;border-color:#c9973c;color:#c9973c">Ver QR Code</button>
+    <div id="qr-wrap" style="display:none;text-align:center;margin-top:12px;padding:16px;background:#fff;border-radius:12px"><div id="qr-box"></div><div id="qr-cod" style="font-family:monospace;font-size:18px;font-weight:900;color:#060a06;margin-top:8px;letter-spacing:4px"></div></div>
     <button class="bto" id="bcpy" style="width:100%;margin-top:12px">Copiar dados</button>
     <button class="bto" id="bincl" style="width:100%;margin-top:8px;border-color:#0891b2;color:#0891b2">Incluir em Evento</button>
     <div id="incl-wrap" style="display:none;margin-top:10px">
@@ -305,6 +308,24 @@ q("bxls").onclick=expExcel;
 q("bcsv").onclick=expCSV;
 q("bfp").onclick=function(){q("ovp").classList.remove("on");pa=null;};
 q("bdel").onclick=delP;
+q("bqr").onclick=function(){
+  var wrap=q("qr-wrap");
+  if(wrap.style.display==="none"){
+    if(!pa)return;
+    ap("codigos?cadastro_id=eq."+pa.id+"&select=codigo&limit=1").then(function(d){
+      var cod=d&&d[0]?d[0].codigo:"";
+      if(!cod){wrap.innerHTML="<div style='color:#555;font-size:12px;padding:10px'>Nenhum codigo vinculado</div>";wrap.style.display="block";return;}
+      q("qr-box").innerHTML="";
+      new QRCode(q("qr-box"),{text:cod,width:180,height:180,colorDark:"#000000",colorLight:"#ffffff"});
+      q("qr-cod").textContent=cod;
+      wrap.style.display="block";
+      q("bqr").textContent="Fechar QR";
+    });
+  } else {
+    wrap.style.display="none";
+    q("bqr").textContent="Ver QR Code";
+  }
+};
 q("bincl").onclick=function(){
   var wrap=q("incl-wrap");
   if(wrap.style.display==="none"){
@@ -607,6 +628,7 @@ function verP(id){
   q("pcont").innerHTML=h;
   if(c.status==="pendente")q("aprovd").style.display="block";else q("aprovd").style.display="none";
   q("ovp").classList.add("on");
+  q("qr-wrap").style.display="none";q("bqr").textContent="Ver QR Code";
 }
 function verFoto(id){
   var c=null;
