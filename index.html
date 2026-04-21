@@ -676,7 +676,7 @@ function gconvExt(){
     .then(function(d){
       if(!d||!d.length){q("calert-ext").innerHTML="<div class='ea'>Nenhum codigo disponivel!</div>";return;}
       var cod=d[0].codigo;
-      ap("codigos?codigo=eq."+cod,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString(),cadastro_id:pessoa?pessoa.id:null})});
+      ap("codigos?codigo=eq."+cod,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString()})});
       var link="https://robsafonso.github.io/Agroplay/cadastro-externo.html?ev="+eva.id+"&cod="+cod+"&resp="+encodeURIComponent("Robson");
       var df=eva.data?eva.data.split("-"):["","",""];
       var dataFmt=eva.data?df[2]+"/"+df[1]+"/"+df[0]:"";
