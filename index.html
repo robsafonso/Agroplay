@@ -69,7 +69,7 @@ textarea{height:70px;resize:none}
   <button class="tab" id="te">Eventos</button>
   <button class="tab" id="tk">Codigos</button>
   <button class="tab" id="tl">Lista</button>
-  <button class="tab" id="tlt">Lotes</button>
+  <button class="tab" id="tlt">Lotes</button><button class="tab" id="tth">Hist</button>
 </div>
 <div id="sc">
   <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
@@ -102,6 +102,7 @@ textarea{height:70px;resize:none}
   <div id="klst"></div>
 </div>
 <div id="sl" class="gone"><div id="llst"></div></div>
+<div id="sh" class="gone"><div id="hcont"></div></div>
 <div id="slt" class="gone">
   <button class="btn" id="bnovolote" style="width:100%;margin-bottom:14px">+ Criar novo lote</button>
   <div id="loteslst"><div class="empty">Nenhum lote criado</div></div>
@@ -128,7 +129,7 @@ textarea{height:70px;resize:none}
     </div>
     <div class="g2">
       <div class="fl"><label>Empresa</label><input id="cad-emp" placeholder="Empresa"></div>
-      <div class="fl"><label>Cargo</label><input id="cad-car" placeholder="Cargo"></div>
+      <div class="fl"><label>Funcao</label><select id="cad-car" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none"><option value="">Selecione a funcao</option><option value="Presidente">Presidente</option><option value="Vice-Presidente">Vice-Presidente</option><option value="Diretor Executivo">Diretor Executivo</option><option value="Diretor Artistico">Diretor Artistico</option><option value="Diretor de Marketing (CMO)">Diretor de Marketing (CMO)</option><option value="Diretor Financeiro">Diretor Financeiro</option><option value="Diretor de Operacoes">Diretor de Operacoes</option><option value="Gerente de Projetos">Gerente de Projetos</option><option value="Coordenador de Eventos">Coordenador de Eventos</option><option value="Empresario(a)">Empresario(a)</option><option value="Agente / Agenda Comercial">Agente / Agenda Comercial</option><option value="Assessor(a) Comercial">Assessor(a) Comercial</option><option value="Artista / Cantor(a)">Artista / Cantor(a)</option><option value="Musico - Banda Ana Castela">Musico - Banda Ana Castela</option><option value="Musico - Banda Luan Pereira">Musico - Banda Luan Pereira</option><option value="Musico - Leo e Raphael">Musico - Leo e Raphael</option><option value="Musico - Julia e Rafaela">Musico - Julia e Rafaela</option><option value="Musico - Julya e Maryana">Musico - Julya e Maryana</option><option value="Musico - Francisco">Musico - Francisco</option><option value="Musico - Guilherme e Manuel">Musico - Guilherme e Manuel</option><option value="Musico - Duda Bertelli">Musico - Duda Bertelli</option><option value="DJ">DJ</option><option value="Influenciador(a) Digital">Influenciador(a) Digital</option><option value="Criador(a) de Conteudo">Criador(a) de Conteudo</option><option value="Editor de Video">Editor de Video</option><option value="Social Media">Social Media</option><option value="Designer Grafico / Arte">Designer Grafico / Arte</option><option value="Fotografo(a)">Fotografo(a)</option><option value="Videomaker">Videomaker</option><option value="Produtor(a) de Eventos">Produtor(a) de Eventos</option><option value="Promoter">Promoter</option><option value="Assessor(a) de Imprensa">Assessor(a) de Imprensa</option><option value="Tecnico de Som">Tecnico de Som</option><option value="Tecnico de Iluminacao">Tecnico de Iluminacao</option><option value="Seguranca / Portaria">Seguranca / Portaria</option><option value="Produtor Musical">Produtor Musical</option><option value="Engenheiro de Som">Engenheiro de Som</option><option value="A&R - Descoberta de Talentos">A&R - Descoberta de Talentos</option><option value="Distribuicao Digital (Paraloji)">Distribuicao Digital (Paraloji)</option><option value="Funcionario Rancho">Funcionario Rancho</option><option value="Motorista / Logistica">Motorista / Logistica</option><option value="Administrativo">Administrativo</option><option value="Financeiro / Contabil">Financeiro / Contabil</option><option value="Juridico / Advogado">Juridico / Advogado</option><option value="Convidado VIP">Convidado VIP</option><option value="Patrocinador / Parceiro">Patrocinador / Parceiro</option><option value="Imprensa / Jornalista">Imprensa / Jornalista</option><option value="Promoter Externo">Promoter Externo</option></select></div>
     </div>
     <div class="fl"><label>Foto (opcional)</label>
       <div id="cad-foto-wrap" style="text-align:center;margin-bottom:8px">
@@ -241,7 +242,11 @@ textarea{height:70px;resize:none}
     <div class="fl"><label>Nome</label><input id="evn" placeholder="Nome do evento"></div>
     <div class="g2">
       <div class="fl"><label>Data</label><input id="evd" type="date"></div>
+      <div class="fl"><label>Horario</label><input id="evh" type="time" placeholder="20:00"></div>
+    </div>
+    <div class="g2">
       <div class="fl"><label>Local</label><input id="evl" placeholder="Ex: Parque Ney Braga"></div>
+      <div class="fl"><label>Capacidade (0=ilimitado)</label><input id="evcap" type="number" placeholder="0" value="0"></div>
     </div>
     <div class="fl"><label>Link Maps</label><input id="evm" placeholder="https://maps.google.com/..."></div>
     <div class="fl"><label>Atracao 1</label><input id="eva1" placeholder="Ex: Ana Castela"></div>
@@ -306,6 +311,13 @@ textarea{height:70px;resize:none}
 </div>
 <script>
 var MODO=new URLSearchParams(window.location.search).get("modo")||"edit";
+try{
+  var _sess=sessionStorage.getItem("ag_admin");
+  if(!_sess){window.location.href="home.html";throw new Error("redirect");}
+  var _admin=JSON.parse(_sess);
+  if(!_admin||!_admin.nome){window.location.href="home.html";throw new Error("redirect");}
+  if(_admin.nivel==="visualizador")MODO="ver";
+}catch(e){if(e.message!=="redirect")window.location.href="home.html";}
 var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
 var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
 var LC="https://robsafonso.github.io/Agroplay/cadastro-externo.html";
@@ -405,7 +417,7 @@ q("bgerarlinkc").onclick=function(){
       if(!d||!d.length){q("lc-alert").innerHTML="<div class='ea'>Nenhum codigo disponivel!</div>";return;}
       var cod=d[0].codigo;
       return ap("codigos?codigo=eq."+cod,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString()})}).then(function(){
-        var link=LC+"?cod="+cod+"&resp="+encodeURIComponent("Robson");
+        var link=LC+"?cod="+cod;
         var msg="AGROPLAY - Convite de Cadastro\n\nVoce foi convidado por Robson para se cadastrar no sistema Agroplay!\n\nAcesse o link e faca seu cadastro:\n"+link+"\n\nSeu codigo: "+cod+"\n\nCodigo intransferivel e de uso unico.\nAgroplay Music - Londrina PR";
         q("lc-cod").textContent=cod;
         q("lc-msg").textContent=msg;
@@ -530,6 +542,7 @@ q("te").onclick=function(){tab("e");};
 q("tk").onclick=function(){tab("k");};
 q("tl").onclick=function(){tab("l");};
 q("tlt").onclick=function(){tab("lt");};
+q("tth").onclick=function(){tab("h");};
 q("bnovolote").onclick=function(){
   q("ovlote").classList.add("on");q("lote-alert").innerHTML="";q("lote-resp").value="";q("lote-qtd").value="10";q("lote-senha").value="";
   var sel=q("lote-ev");sel.innerHTML="<option value=''>Nenhum evento</option>";
@@ -721,6 +734,9 @@ if(MODO==="ver"){
 }
   }).catch(function(e){alert("Erro ao excluir: "+e.message);});
 }
+function toggleLotado(id,val){ap("eventos?id=eq."+id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({lotado:val})}).then(function(){for(var i=0;i<evs.length;i++){if(evs[i].id===id){evs[i].lotado=val;break;}}rEvs();});}
+function rHist(){var el=q("hcont");if(!evs.length){el.innerHTML="<div class='empty'>Nenhum evento</div>";return;}var h="";evs.forEach(function(ev){var tot=cads.filter(function(c){return c.evento_id===ev.id;}).length;var ent=cads.filter(function(c){return c.evento_id===ev.id&&c.entrada_em;}).length;var conf=cads.filter(function(c){return c.evento_id===ev.id&&c.status==="aprovado";}).length;var fat=Math.max(0,conf-ent);var df=ev.data?ev.data.split("-"):["","",""];var dt=ev.data?df[2]+"/"+df[1]+"/"+df[0]:"";var hr=ev.horario?" as "+ev.horario:"";h+="<div class='card'><div style='font-size:14px;font-weight:700;color:#fff;margin-bottom:3px'>"+ev.nome+"</div><div style='font-size:11px;color:#555;margin-bottom:10px'>"+dt+hr+(ev.local?" / "+ev.local:"")+"</div><div style='display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px'><div style='background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:8px;text-align:center'><strong style='font-size:20px;color:#2aab47'>"+tot+"</strong><div style='font-size:9px;color:#555;text-transform:uppercase'>Total</div></div><div style='background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:8px;text-align:center'><strong style='font-size:20px;color:#0891b2'>"+ent+"</strong><div style='font-size:9px;color:#555;text-transform:uppercase'>Entraram</div></div><div style='background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:8px;text-align:center'><strong style='font-size:20px;color:#c0392b'>"+fat+"</strong><div style='font-size:9px;color:#555;text-transform:uppercase'>Faltaram</div></div></div><div style='display:flex;gap:6px'><button class='bto' onclick='lstEv("+ev.id+")' style='flex:1;font-size:11px;padding:8px'>Lista</button><button class='bto' onclick='expHistEv("+ev.id+")' style='font-size:11px;padding:8px'>Excel</button></div></div>";});el.innerHTML=h;}
+function expHistEv(id){var ev=null;for(var i=0;i<evs.length;i++){if(evs[i].id===id){ev=evs[i];break;}}if(!ev)return;var p=cads.filter(function(c){return c.evento_id===id;});var csv="Nome,Empresa,Cargo,Setor,Status,Entrada,Validador,Convidado por\n"+p.map(function(c){return[c.nome,c.empresa||"",c.cargo||"",c.setor,c.status||"",c.entrada_em?new Date(c.entrada_em).toLocaleString("pt-BR"):"",c.validador_nome||"",c.lote_nome||""].map(function(v){return'"'+v+'"';}).join(",");}).join("\n");var b=new Blob([csv],{type:"text/csv"});var u=URL.createObjectURL(b);var a=document.createElement("a");a.href=u;a.download=ev.nome+".csv";a.click();}
 function load(){
   q("tbl").innerHTML="<div class='empty'>Carregando...</div>";
   ap("cadastros?select=*&order=criado_em.desc").then(function(d){cads=d||[];rSts();rChips();rend();}).catch(function(){cads=[];rSts();rChips();rend();});
@@ -807,13 +823,13 @@ function abrEv(id){
     for(var i=0;i<evs.length;i++){if(evs[i].id===id){ev=evs[i];break;}}
     if(!ev)return;
     q("evtit").textContent="Editar Evento";
-    q("evn").value=ev.nome||"";q("evd").value=ev.data||"";q("evl").value=ev.local||"";
+    q("evn").value=ev.nome||"";q("evd").value=ev.data||"";q("evh").value=ev.horario||"";q("evl").value=ev.local||"";q("evcap").value=ev.capacidade||0;
     q("evm").value=ev.maps_url||"";q("eva1").value=ev.atracao1||"";q("evi1").value=ev.insta_atr1||"";
     q("eva2").value=ev.atracao2||"";q("evi2").value=ev.insta_atr2||"";
     q("evf").value=ev.foto_url||"";q("evdesc").value=ev.descricao||"";
   }else{
     q("evtit").textContent="Novo Evento";
-    ["evn","evd","evl","evm","eva1","evi1","eva2","evi2","evf","evdesc"].forEach(function(x){q(x).value="";});
+    ["evn","evd","evh","evl","evcap","evm","eva1","evi1","eva2","evi2","evf","evdesc"].forEach(function(x){q(x).value="";});
   }
   q("evalert").innerHTML="";
   q("ovev").classList.add("on");
@@ -823,7 +839,7 @@ function salvEv(){
   var nome=q("evn").value.trim();
   if(!nome){q("evalert").innerHTML="<div class='ea'>Nome obrigatorio</div>";return;}
   var btn=q("bsev");btn.textContent="Salvando...";btn.disabled=true;
-  var body=JSON.stringify({nome:nome,data:q("evd").value||null,local:q("evl").value.trim(),maps_url:q("evm").value.trim(),atracao1:q("eva1").value.trim(),insta_atr1:q("evi1").value.trim(),atracao2:q("eva2").value.trim(),insta_atr2:q("evi2").value.trim(),foto_url:q("evf").value.trim(),descricao:q("evdesc").value.trim()});
+  var body=JSON.stringify({nome:nome,data:q("evd").value||null,local:q("evl").value.trim(),horario:q("evh").value||null,capacidade:parseInt(q("evcap").value)||0,maps_url:q("evm").value.trim(),atracao1:q("eva1").value.trim(),insta_atr1:q("evi1").value.trim(),atracao2:q("eva2").value.trim(),insta_atr2:q("evi2").value.trim(),foto_url:q("evf").value.trim(),descricao:q("evdesc").value.trim()});
   var path=eid?"eventos?id=eq."+eid:"eventos";
   var meth=eid?"PATCH":"POST";
   ap(path,{m:meth,pref:"return=minimal",b:body}).then(function(){fecEv();load();
@@ -849,12 +865,13 @@ function rEvs(){
     h+="<div class='card'>";
     h+="<div style='font-size:15px;font-weight:700;color:#fff;margin-bottom:4px'>"+ev.nome+"</div>";
     h+="<div style='font-size:11px;color:#555;line-height:1.7;margin-bottom:10px'>";
-    if(ev.data)h+="Data: "+d[2]+"/"+d[1]+"/"+d[0]+"<br>";
+    if(ev.data)h+="Data: "+d[2]+"/"+d[1]+"/"+d[0]+(ev.horario?" as "+ev.horario:"")+"<br>";
     if(ev.local)h+="Local: "+ev.local+"<br>";
     if(ev.atracao1)h+="Atracoes: "+ev.atracao1+(ev.atracao2?" + "+ev.atracao2:"")+"<br>";
     h+="</div>";
     h+="<div style='display:flex;gap:6px;flex-wrap:wrap'>";
     h+="<button class='btn' onclick='abrConv("+ev.id+")' style='flex:1;font-size:11px;padding:8px'>Enviar Convites</button>";
+    h+="<button class='"+(ev.lotado?"btn":"bto")+"' onclick='toggleLotado("+ev.id+","+(!ev.lotado)+")' style='font-size:11px;padding:8px;background:"+(ev.lotado?"#c0392b":"transparent")+"'>"+(ev.lotado?"LOTADO":"Lotar")+"</button>";
     h+="<button class='bto' onclick='lstEv("+ev.id+")' style='font-size:11px;padding:8px'>Lista</button>";
     h+="<button class='bty' onclick='abrEv("+ev.id+")' style='font-size:11px;padding:8px'>Editar</button>";
     h+="<button class='btr' onclick='delEv("+ev.id+")' style='font-size:11px;padding:8px'>X</button>";
@@ -907,7 +924,7 @@ function gconvExt(){
       if(!d||!d.length){q("calert-ext").innerHTML="<div class='ea'>Nenhum codigo disponivel!</div>";return;}
       var cod=d[0].codigo;
       ap("codigos?codigo=eq."+cod,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString()})});
-      var link="https://robsafonso.github.io/Agroplay/cadastro-externo.html?ev="+eva.id+"&cod="+cod+"&resp="+encodeURIComponent("Robson");
+      var link="https://robsafonso.github.io/Agroplay/cadastro-externo.html?ev="+eva.id+"&cod="+cod;
       var df=eva.data?eva.data.split("-"):["","",""];
       var dataFmt=eva.data?df[2]+"/"+df[1]+"/"+df[0]:"";
       var msg="AGROPLAY - Convite VIP\n\n"+eva.nome+(dataFmt?"\nData: "+dataFmt:"")+(eva.local?"\nLocal: "+eva.local:"")+(eva.atracao1?"\nAtracoes: "+eva.atracao1+(eva.atracao2?" + "+eva.atracao2:""):"")+"\n\nAcesse e se cadastre:\n"+link+"\n\nSeu codigo: "+cod+"\n\nCodigo intransferivel.\nAgroplay - Londrina PR";
@@ -1029,14 +1046,14 @@ function exXlsL(){if(lista){var ativos=lista.p.filter(function(p){return lstExcl
 function expCSV(){dl("Nome,CPF,RG,Email,Telefone,Nascimento,Setor,Empresa,Cargo,Status,Convidado por\n"+mkR(cads).map(function(r){return r.map(function(v){return'"'+v+'"';}).join(",");}).join("\n"),"text/csv","Cadastros.csv");}
 function exCsvL(){if(lista){var ativos=lstSel.length?lista.p.filter(function(p){return lstSel.indexOf(p.id)>=0;}):lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)<0;});dl("Nome,CPF,RG,Email,Telefone,Nascimento,Setor,Empresa,Cargo,Status,Convidado por\n"+mkR(ativos).map(function(r){return r.map(function(v){return'"'+v+'"';}).join(",");}).join("\n"),"text/csv","Lista.csv");}}
 function mkXls(rows,name){
-  var hdr="<Row><Cell><Data ss:Type='String'>Nome</Data></Cell><Cell><Data ss:Type='String'>CPF</Data></Cell><Cell><Data ss:Type='String'>RG</Data></Cell><Cell><Data ss:Type='String'>Email</Data></Cell><Cell><Data ss:Type='String'>Telefone</Data></Cell><Cell><Data ss:Type='String'>Nascimento</Data></Cell><Cell><Data ss:Type='String'>Setor</Data></Cell><Cell><Data ss:Type='String'>Empresa</Data></Cell><Cell><Data ss:Type='String'>Cargo</Data></Cell><Cell><Data ss:Type='String'>Status</Data></Cell><Cell><Data ss:Type='String'>Convidado por</Data></Cell></Row>";
+  var hdr="<Row><Cell><Data ss:Type='String'>Nome</Data></Cell><Cell><Data ss:Type='String'>CPF</Data></Cell><Cell><Data ss:Type='String'>RG</Data></Cell><Cell><Data ss:Type='String'>Email</Data></Cell><Cell><Data ss:Type='String'>Telefone</Data></Cell><Cell><Data ss:Type='String'>Nascimento</Data></Cell><Cell><Data ss:Type='String'>Setor</Data></Cell><Cell><Data ss:Type='String'>Empresa</Data></Cell><Cell><Data ss:Type='String'>Funcao</Data></Cell><Cell><Data ss:Type='String'>Status</Data></Cell><Cell><Data ss:Type='String'>Convidado por</Data></Cell></Row>";
   var body=rows.map(function(r){return "<Row>"+r.map(function(v){return"<Cell><Data ss:Type='String'>"+String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</Data></Cell>";}).join("")+"</Row>";}).join("");
   dl("<?xml version='1.0'?><Workbook xmlns='urn:schemas-microsoft-com:office:spreadsheet' xmlns:ss='urn:schemas-microsoft-com:office:spreadsheet'><Worksheet ss:Name='Dados'><Table>"+hdr+body+"</Table></Worksheet></Workbook>","application/vnd.ms-excel",name+".xls");
 }
 function tab(t){
-  ["c","e","k","l","lt"].forEach(function(x){q("s"+x).classList.add("gone");q("t"+x).classList.remove("on");});
+  ["c","e","k","l","lt","h"].forEach(function(x){q("s"+x).classList.add("gone");q("t"+x).classList.remove("on");});
   q("s"+t).classList.remove("gone");q("t"+t).classList.add("on");
-  if(t==="l")rLst();if(t==="k")rCods();if(t==="e")rEvs();if(t==="lt")rLotes();
+  if(t==="l")rLst();if(t==="k")rCods();if(t==="e")rEvs();if(t==="lt")rLotes();if(t==="h")rHist();
 }
 load();
 if(MODO==="ver"){
