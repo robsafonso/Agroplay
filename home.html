@@ -11,44 +11,141 @@ body{background:#060a06;color:#eee;font-family:Arial;min-height:100vh;display:fl
 .logo{font-size:36px;font-weight:900;color:#fff;text-align:center;margin-bottom:6px;letter-spacing:2px}
 .logo span{color:#2aab47}
 .sub{font-size:12px;color:#444;letter-spacing:3px;text-transform:uppercase;text-align:center;margin-bottom:40px}
+.card{background:#090e09;border:1px solid #1a2a1a;border-radius:16px;padding:28px 24px;width:100%;max-width:360px}
+input{width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:12px 14px;color:#eee;font-size:14px;outline:none;margin-bottom:8px}
+input:focus{border-color:#2aab47}
+.btn{background:linear-gradient(135deg,#1e7a35,#2aab47);color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;width:100%}
+.ea{background:#1a0000;border:1px solid #e74c3c;color:#e74c3c;padding:10px;border-radius:8px;margin-bottom:10px;font-size:13px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:400px}
-.card{background:#090e09;border:1px solid #1a2a1a;border-radius:16px;padding:24px 16px;text-align:center;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:10px;transition:border-color .2s;cursor:pointer}
-.card:active{background:#0d150d;border-color:#2aab47}
-.card-icon{font-size:36px}
-.card-title{font-size:14px;font-weight:700;color:#fff}
-.card-desc{font-size:11px;color:#555;line-height:1.4}
-.card.green{border-color:rgba(42,171,71,.3)}
-.card.blue{border-color:rgba(8,145,178,.3)}
-.card.yellow{border-color:rgba(201,151,60,.3)}
-.card.gray{border-color:rgba(255,255,255,.1)}
-.footer{margin-top:40px;font-size:11px;color:#333;text-align:center;letter-spacing:2px;text-transform:uppercase}
+.gc{background:#090e09;border:1px solid #1a2a1a;border-radius:16px;padding:24px 16px;text-align:center;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer}
+.gc:active{background:#0d150d;border-color:#2aab47}
+.gc-icon{font-size:36px}
+.gc-title{font-size:14px;font-weight:700;color:#fff}
+.gc-desc{font-size:11px;color:#555;line-height:1.4}
+.gc.green{border-color:rgba(42,171,71,.3)}
+.gc.blue{border-color:rgba(8,145,178,.3)}
+.gc.yellow{border-color:rgba(201,151,60,.3)}
+.gc.gray{border-color:rgba(255,255,255,.1)}
+.gc.red{border-color:rgba(192,57,43,.3)}
+.gone{display:none}
+.bto{background:transparent;color:#2aab47;border:1px solid #2aab47;border-radius:8px;padding:8px 14px;font-size:12px;cursor:pointer}
+.btr{background:#c0392b;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:11px;cursor:pointer}
+table{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
+th{padding:8px;text-align:left;color:#444;font-size:9px;text-transform:uppercase;border-bottom:1px solid #1a2a1a}
+td{padding:8px;border-bottom:1px solid #111;color:#bbb}
+.ovbg{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:100;display:none;align-items:flex-end;justify-content:center}
+.ovbg.on{display:flex}
+.mod{background:#090e09;border-radius:20px 20px 0 0;padding:20px;width:100%;max-height:90vh;overflow-y:auto}
+.fl label{display:block;font-size:10px;color:#2aab47;letter-spacing:1px;margin-bottom:4px;text-transform:uppercase}
+.fl{margin-bottom:10px}
+select{width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;margin-bottom:8px}
 </style>
 </head>
 <body>
 <div class="logo">AGRO<span>PLAY</span></div>
 <div class="sub">Sistema de Gestao</div>
-<div class="grid">
-  <a href="index.html" class="card green">
-    <div class="card-icon">🎛️</div>
-    <div class="card-title">Gerente</div>
-    <div class="card-desc">Cadastros, eventos, lotes e listas</div>
-  </a>
-  <a href="admin.html" class="card blue">
-    <div class="card-icon">✅</div>
-    <div class="card-title">Admin</div>
-    <div class="card-desc">Check-in e validadores do evento</div>
-  </a>
-  <a href="checkin.html" class="card yellow">
-    <div class="card-icon">📱</div>
-    <div class="card-title">Scanner</div>
-    <div class="card-desc">Escaner QR na porta do evento</div>
-  </a>
-  <a href="mediakit.html" class="card gray">
-    <div class="card-icon">📋</div>
-    <div class="card-title">Media Kit</div>
-    <div class="card-desc">Apresentacao do sistema</div>
-  </a>
+
+<div id="tela-login" class="card">
+  <div id="al-login"></div>
+  <div style="margin-bottom:16px">
+    <div style="font-size:10px;color:#2aab47;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Senha de acesso</div>
+    <input id="inp-senha" type="password" placeholder="Digite sua senha">
+  </div>
+  <button class="btn" id="btn-login">Entrar</button>
 </div>
-<div class="footer">Londrina - PR</div>
+
+<div id="tela-menu" class="gone" style="width:100%;max-width:400px">
+  <div style="text-align:center;margin-bottom:20px">
+    <div style="font-size:14px;color:#555">Bem-vindo, <span id="admin-nome" style="color:#2aab47;font-weight:700"></span></div>
+  </div>
+  <div class="grid" id="menu-grid">
+    <a href="index.html" class="gc green"><div class="gc-icon">🎛️</div><div class="gc-title">Gerente</div><div class="gc-desc">Cadastros, eventos e lotes</div></a>
+    <a href="admin.html" class="gc blue"><div class="gc-icon">✅</div><div class="gc-title">Admin</div><div class="gc-desc">Check-in e validadores</div></a>
+    <a href="checkin.html" class="gc yellow"><div class="gc-icon">📱</div><div class="gc-title">Scanner</div><div class="gc-desc">Escanear QR na porta</div></a>
+    <a href="mediakit.html" class="gc gray"><div class="gc-icon">📋</div><div class="gc-title">Media Kit</div><div class="gc-desc">Apresentacao do sistema</div></a>
+  </div>
+  <div id="menu-master" class="gone" style="margin-top:14px">
+    <button class="bto" id="btn-admins" style="width:100%">Gerenciar Administradores</button>
+  </div>
+  <div style="text-align:center;margin-top:16px">
+    <button class="bto" id="btn-sair" style="font-size:11px;padding:6px 14px">Sair</button>
+  </div>
+</div>
+
+<div class="ovbg" id="ov-admins">
+  <div class="mod">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="font-size:16px;font-weight:700;color:#fff">Administradores</div>
+      <button class="bto" id="btn-fad">X</button>
+    </div>
+    <div id="adm-alert"></div>
+    <div id="adm-form">
+      <div class="fl"><label>Nome</label><input id="adm-nome" placeholder="Nome do administrador"></div>
+      <div class="fl"><label>Senha</label><input id="adm-senha" placeholder="Senha de acesso" type="text"></div>
+      <div class="fl"><label>Nivel</label><select id="adm-nivel"><option value="admin">Admin</option><option value="master">Master</option></select></div>
+      <button class="btn" id="btn-addadm">Adicionar</button>
+    </div>
+    <div style="margin-top:16px" id="adm-lista"></div>
+  </div>
+</div>
+
+<script>
+var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
+var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
+var adminAtual=null;
+function q(id){return document.getElementById(id);}
+function ap(p,o){o=o||{};var h={"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json"};if(o.pref)h["Prefer"]=o.pref;return fetch(SB+"/rest/v1/"+p,{method:o.m||"GET",headers:h,body:o.b}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});}
+q("btn-login").onclick=function(){
+  var s=q("inp-senha").value.trim();
+  var al=q("al-login");al.innerHTML="";
+  if(!s){al.innerHTML="<div class='ea'>Digite a senha</div>";return;}
+  var btn=this;btn.textContent="Entrando...";btn.disabled=true;
+  ap("admins?senha=eq."+encodeURIComponent(s)+"&ativo=eq.true&select=*").then(function(d){
+    if(!d||!d.length){al.innerHTML="<div class='ea'>Senha invalida</div>";btn.textContent="Entrar";btn.disabled=false;return;}
+    adminAtual=d[0];
+    q("admin-nome").textContent=adminAtual.nome;
+    q("tela-login").classList.add("gone");
+    q("tela-menu").classList.remove("gone");
+    if(adminAtual.nivel==="master")q("menu-master").classList.remove("gone");
+  }).catch(function(){al.innerHTML="<div class='ea'>Erro</div>";btn.textContent="Entrar";btn.disabled=false;});
+};
+q("btn-sair").onclick=function(){adminAtual=null;q("tela-menu").classList.add("gone");q("tela-login").classList.remove("gone");q("inp-senha").value="";};
+q("btn-admins").onclick=function(){q("ov-admins").classList.add("on");carregarAdmins();};
+q("btn-fad").onclick=function(){q("ov-admins").classList.remove("on");};
+q("btn-addadm").onclick=function(){
+  var nome=q("adm-nome").value.trim();var senha=q("adm-senha").value.trim();var nivel=q("adm-nivel").value;
+  var al=q("adm-alert");al.innerHTML="";
+  if(!nome||!senha){al.innerHTML="<div class='ea'>Preencha nome e senha</div>";return;}
+  var btn=this;btn.textContent="Salvando...";btn.disabled=true;
+  ap("admins",{m:"POST",pref:"return=minimal",b:JSON.stringify({nome:nome,senha:senha,nivel:nivel})}).then(function(){
+    q("adm-nome").value="";q("adm-senha").value="";
+    al.innerHTML="<div style='background:#0a1f0a;border:1px solid #2aab47;color:#2aab47;padding:8px;border-radius:8px;font-size:13px'>Admin adicionado!</div>";
+    carregarAdmins();
+  }).catch(function(){al.innerHTML="<div class='ea'>Erro</div>";
+  }).finally(function(){btn.textContent="Adicionar";btn.disabled=false;});
+};
+function carregarAdmins(){
+  ap("admins?select=*&order=criado_em.asc").then(function(d){
+    if(!d||!d.length){q("adm-lista").innerHTML="";return;}
+    var h="<table><thead><tr><th>Nome</th><th>Nivel</th><th>Status</th><th></th></tr></thead><tbody>";
+    d.forEach(function(a){
+      var ativo=a.ativo?"<span style='color:#2aab47;font-size:10px'>Ativo</span>":"<span style='color:#555;font-size:10px'>Inativo</span>";
+      var btns="";
+      if(a.id!==adminAtual.id){
+        btns+="<button class='btr' onclick='toggleAdmin("+a.id+","+(!a.ativo)+")'>"+(a.ativo?"Desativar":"Ativar")+"</button>";
+      }
+      h+="<tr><td style='color:#fff'>"+a.nome+"</td><td style='color:#555'>"+a.nivel+"</td><td>"+ativo+"</td><td>"+btns+"</td></tr>";
+    });
+    h+="</tbody></table>";
+    var count=d.filter(function(a){return a.ativo;}).length;
+    q("adm-lista").innerHTML="<div style='font-size:11px;color:#555;margin-bottom:8px'>"+count+"/10 administradores ativos</div>"+h;
+    if(count>=10)q("adm-form").style.display="none";else q("adm-form").style.display="block";
+  });
+}
+function toggleAdmin(id,ativo){
+  ap("admins?id=eq."+id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({ativo:ativo})}).then(function(){carregarAdmins();});
+}
+</script>
+
 </body>
 </html>
