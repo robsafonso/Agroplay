@@ -59,19 +59,32 @@ select{width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;
     <div style="font-size:14px;color:#555">Bem-vindo, <span id="admin-nome" style="color:#2aab47;font-weight:700"></span></div>
   </div>
   <div class="grid" id="menu-grid">
-    <a href="index.html" class="gc green"><div class="gc-icon">🎛️</div><div class="gc-title">Gerente</div><div class="gc-desc">Cadastros, eventos e lotes</div></a>
-    <a href="admin.html" class="gc blue"><div class="gc-icon">✅</div><div class="gc-title">Admin</div><div class="gc-desc">Check-in e validadores</div></a>
+    <a id="link-gerente" href="index.html" class="gc green"><div class="gc-icon">🎛️</div><div class="gc-title">Gerente</div><div class="gc-desc">Cadastros, eventos e lotes</div></a>
+    <a id="link-admin" href="admin.html" class="gc blue"><div class="gc-icon">✅</div><div class="gc-title">Admin</div><div class="gc-desc">Check-in e validadores</div></a>
     <a href="checkin.html" class="gc yellow"><div class="gc-icon">📱</div><div class="gc-title">Scanner</div><div class="gc-desc">Escanear QR na porta</div></a>
     <a href="mediakit.html" class="gc gray"><div class="gc-icon">📋</div><div class="gc-title">Media Kit</div><div class="gc-desc">Apresentacao do sistema</div></a>
   </div>
   <div id="menu-master" class="gone" style="margin-top:14px">
     <button class="bto" id="btn-admins" style="width:100%">Gerenciar Administradores</button>
   </div>
-  <div style="text-align:center;margin-top:16px">
+  <div style="text-align:center;margin-top:16px;display:flex;gap:8px;justify-content:center">
+    <button class="bto" id="btn-trocar" style="font-size:11px;padding:6px 14px">Trocar senha</button>
     <button class="bto" id="btn-sair" style="font-size:11px;padding:6px 14px">Sair</button>
   </div>
 </div>
 
+<div class="ovbg" id="ov-trocar">
+  <div class="mod">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="font-size:16px;font-weight:700;color:#fff">Trocar senha</div>
+      <button class="bto" id="btn-ftrocar">X</button>
+    </div>
+    <div id="trocar-alert"></div>
+    <div class="fl"><label>Nova senha</label><input id="nova-senha" placeholder="Digite a nova senha" type="password"></div>
+    <div class="fl"><label>Confirmar senha</label><input id="conf-senha" placeholder="Repita a nova senha" type="password"></div>
+    <button class="btn" id="btn-salvarsenha">Salvar nova senha</button>
+  </div>
+</div>
 <div class="ovbg" id="ov-admins">
   <div class="mod">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
@@ -82,7 +95,7 @@ select{width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;
     <div id="adm-form">
       <div class="fl"><label>Nome</label><input id="adm-nome" placeholder="Nome do administrador"></div>
       <div class="fl"><label>Senha</label><input id="adm-senha" placeholder="Senha de acesso" type="text"></div>
-      <div class="fl"><label>Nivel</label><select id="adm-nivel"><option value="admin">Admin</option><option value="master">Master</option></select></div>
+      <div class="fl"><label>Nivel</label><select id="adm-nivel"><option value="visualizador">Visualizador</option><option value="admin">Admin</option><option value="master">Master</option></select></div>
       <button class="btn" id="btn-addadm">Adicionar</button>
     </div>
     <div style="margin-top:16px" id="adm-lista"></div>
@@ -107,7 +120,30 @@ q("btn-login").onclick=function(){
     q("tela-login").classList.add("gone");
     q("tela-menu").classList.remove("gone");
     if(adminAtual.nivel==="master")q("menu-master").classList.remove("gone");
+    var vis=adminAtual.nivel==="visualizador";
+    if(vis){
+      q("link-gerente").href="index.html?modo=ver";
+      q("link-admin").href="admin.html?modo=ver";
+      q("link-gerente").querySelector(".gc-desc").textContent="Somente visualizacao";
+      q("link-admin").querySelector(".gc-desc").textContent="Somente visualizacao";
+    }
   }).catch(function(){al.innerHTML="<div class='ea'>Erro</div>";btn.textContent="Entrar";btn.disabled=false;});
+};
+q("btn-trocar").onclick=function(){q("ov-trocar").classList.add("on");q("trocar-alert").innerHTML="";q("nova-senha").value="";q("conf-senha").value="";};
+q("btn-ftrocar").onclick=function(){q("ov-trocar").classList.remove("on");};
+q("btn-salvarsenha").onclick=function(){
+  var nova=q("nova-senha").value.trim();
+  var conf=q("conf-senha").value.trim();
+  var al=q("trocar-alert");al.innerHTML="";
+  if(!nova||nova.length<4){al.innerHTML="<div class='ea'>Senha muito curta (minimo 4 caracteres)</div>";return;}
+  if(nova!==conf){al.innerHTML="<div class='ea'>Senhas nao conferem</div>";return;}
+  var btn=q("btn-salvarsenha");btn.textContent="Salvando...";btn.disabled=true;
+  ap("admins?id=eq."+adminAtual.id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({senha:nova})}).then(function(){
+    adminAtual.senha=nova;
+    al.innerHTML="<div style='background:#0a1f0a;border:1px solid #2aab47;color:#2aab47;padding:8px;border-radius:8px;font-size:13px'>Senha alterada com sucesso!</div>";
+    setTimeout(function(){q("ov-trocar").classList.remove("on");},2000);
+  }).catch(function(){al.innerHTML="<div class='ea'>Erro ao salvar</div>";
+  }).finally(function(){btn.textContent="Salvar nova senha";btn.disabled=false;});
 };
 q("btn-sair").onclick=function(){adminAtual=null;q("tela-menu").classList.add("gone");q("tela-login").classList.remove("gone");q("inp-senha").value="";};
 q("btn-admins").onclick=function(){q("ov-admins").classList.add("on");carregarAdmins();};
