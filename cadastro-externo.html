@@ -108,6 +108,7 @@ var p=new URLSearchParams(window.location.search);
 var LOTE_ID=p.get("lote")||null;
 var RESP=p.get("resp")||null;
 var COD_PRE=p.get("cod")||null;
+var EV_ID=p.get("ev")||null;
 var codOk="";
 var fotoData=null;
 var stream=null;
@@ -202,6 +203,7 @@ q("btn-salvar").onclick=function(){
   };
   if(LOTE_ID)body.lote_id=parseInt(LOTE_ID);
   if(RESP)body.lote_nome=RESP;
+  if(EV_ID)body.evento_id=parseInt(EV_ID);
   ap("cadastros",{m:"POST",pref:"return=representation",b:JSON.stringify(body)}).then(function(cad){
     var cadId=cad&&cad[0]?cad[0].id:null;
     return ap("codigos?codigo=eq."+codOk,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString(),cadastro_id:cadId})});
