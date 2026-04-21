@@ -101,7 +101,7 @@ function carregarPainel(){
   q("nome-resp").textContent=loteAtual.responsavel;
   q("tela-login").classList.add("gone");
   q("tela-painel").classList.remove("gone");
-  ap("codigos?lote_id=eq."+loteAtual.id+"&select=*&order=id.asc").then(function(d){
+  ap("codigos?lote_id=eq."+loteAtual.id+"&select=codigo,usado,usado_em,cadastro_id&order=id.asc").then(function(d){
     var todos=d||[];
     codsDisponiveis=todos.filter(function(c){return !c.usado;});
     codsUsados=todos.filter(function(c){return c.usado;});
@@ -112,10 +112,14 @@ function carregarPainel(){
 
 function renderHist(){
   var h="";
-  if(!codsUsados.length){q("hist-lista").innerHTML="<div style='text-align:center;color:#555;font-size:12px;padding:10px'>Nenhum convite gerado ainda</div>";return;}
-  codsUsados.slice(0,10).forEach(function(c,i){
-    var dt=c.usado_em?new Date(c.usado_em).toLocaleDateString("pt-BR"):"";
-    h+="<div class='hist-item'><span style='font-family:monospace;color:#2aab47'>"+c.codigo+"</span><span class='badge-usado'>Enviado "+dt+"</span></div>";
+  var todos=codsDisponiveis.concat(codsUsados);
+  if(!todos.length){q("hist-lista").innerHTML="<div style='text-align:center;color:#555;font-size:12px;padding:10px'>Nenhum convite ainda</div>";return;}
+  todos.forEach(function(c){
+    var usado=c.usado&&c.cadastro_id;
+    var enviado=c.usado&&!c.cadastro_id;
+    var cor=usado?"#e74c3c":enviado?"#c9973c":"#2aab47";
+    var status=usado?"Cadastrado":enviado?"Enviado":"Disponivel";
+    h+="<div class='hist-item'><span style='font-family:monospace;color:"+cor+"'>"+c.codigo+"</span><span style='background:"+cor+";color:#fff;padding:2px 8px;border-radius:10px;font-size:10px'>"+status+"</span></div>";
   });
   q("hist-lista").innerHTML=h;
 }
