@@ -636,7 +636,9 @@ function rEvs(){
 }
 function delEv(id){
   if(!confirm("Excluir evento?"))return;
-  ap("eventos?id=eq."+id,{m:"DELETE",pref:"return=minimal"}).then(function(){evs=evs.filter(function(e){return e.id!==id;});rEvs();rSts();});
+  ap("cadastros?evento_id=eq."+id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({evento_id:null,status:"pendente"})}).then(function(){
+    return ap("eventos?id=eq."+id,{m:"DELETE",pref:"return=minimal"});
+  }).then(function(){evs=evs.filter(function(e){return e.id!==id;});rEvs();rSts();});
 }
 function abrConv(evId){
   eva=null;
@@ -705,7 +707,7 @@ function gconv(){
       var dataFmt=ev.data?df[2]+"/"+df[1]+"/"+df[0]:"";
       var msg="AGROPLAY - Convite VIP\n\nOla "+pessoa.nome+"!\n\nVoce esta convidado(a):\n\n"+ev.nome+(dataFmt?"\nData: "+dataFmt:"")+(ev.local?"\nLocal: "+ev.local:"")+(ev.atracao1?"\nAtracoes: "+ev.atracao1+(ev.atracao2?" + "+ev.atracao2:""):"");
       msg=msg+"\n\nAcesse e confirme presenca:\n"+LCV+"?ev="+ev.id+"&tipo=interno\n\nSeu codigo: "+cod+"\n\nCodigo intransferivel.\nAgroplay - Londrina PR";
-      ap("codigos?codigo=eq."+cod,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString()})});
+      ap("codigos?codigo=eq."+cod,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString(),cadastro_id:pessoa?pessoa.id:null})});
       q("ccod").textContent=cod;
       q("cmsg").textContent=msg;
       q("cres").classList.remove("gone");
