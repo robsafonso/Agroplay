@@ -230,8 +230,12 @@ g("btn1i").onclick=function(){
     if(!d||!d.length){al.innerHTML="<div class='al err'>Codigo invalido.</div>";btn.textContent="Confirmar Presenca";btn.disabled=false;return;}
     var cadId=d[0].cadastro_id;
     var evId=evAt?evAt.id:null;
-    var patches=[api("codigos?codigo=eq."+c,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString()})})];
-    if(cadId&&evId){patches.push(api("cadastros?id=eq."+cadId,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({evento_id:evId,status:"aprovado",tipo_convite:"interno"})}));}
+    var patches=[];
+    if(cadId&&evId){
+      patches.push(api("cadastros?id=eq."+cadId,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({evento_id:evId,status:"aprovado",tipo_convite:"interno"})}));
+    } else if(!cadId&&evId){
+      patches.push(api("codigos?codigo=eq."+c,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({evento_id:evId})}));
+    }
     Promise.all(patches).then(function(){
       btn.style.display="none";
       g("t5i").classList.remove("gone");
