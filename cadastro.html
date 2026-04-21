@@ -70,9 +70,34 @@ input:focus{border-color:#2aab47}
   <div class="sub">Preencha sua atuacao profissional.</div>
   <div class="steps"><div class="step"></div><div class="step"></div><div class="step on"></div><div class="step"></div></div>
   <div id="al-emp"></div>
-  <div class="fl"><label>Empresa</label><input id="f-emp" placeholder="Nome da sua empresa"><span class="em" id="e-emp"></span></div>
-  <div class="fl"><label>Funcao</label><input id="f-car" placeholder="Seu cargo"><span class="em" id="e-car"></span></div>
-  <button class="btn" onclick="irFoto()">Proximo</button>
+  <div class="fl"><label>Empresa</label>
+    <select id="f-emp" onchange="mudarEmp(this.value)" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:11px 14px;color:#eee;font-size:14px;outline:none">
+      <option value="">Selecione a empresa...</option>
+      <optgroup label="Grupo Agroplay">
+        <option value="Ana Castela">Ana Castela</option>
+        <option value="Leo e Raphael">Leo e Raphael</option>
+        <option value="Country Beat">Country Beat</option>
+        <option value="Muierada">Muierada</option>
+        <option value="Francisco">Francisco</option>
+        <option value="Julia e Rafaela">Julia e Rafaela</option>
+        <option value="Julya e Maryana">Julya e Maryana</option>
+        <option value="Duda Bertelli">Duda Bertelli</option>
+        <option value="Kamila e Kavic">Kamila e Kavic</option>
+        <option value="Escritorio Agroplay">Escritorio Agroplay</option>
+      </optgroup>
+      <option value="outra">Outra empresa</option>
+    </select>
+    <span class="em" id="e-emp"></span>
+  </div>
+  <div class="fl" id="emp-outra-wrap" style="display:none"><label>Nome da empresa</label><input id="f-emp-outra" placeholder="Digite o nome da empresa"></div>
+  <div class="fl"><label>Funcao</label>
+    <select id="f-car" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:11px 14px;color:#eee;font-size:14px;outline:none">
+      <option value="">Selecione a empresa primeiro...</option>
+    </select>
+    <span class="em" id="e-car"></span>
+  </div>
+  <div class="fl" id="cargo-outro-wrap" style="display:none"><label>Qual funcao?</label><input id="f-car-outro" placeholder="Digite sua funcao"></div>
+<button class="btn" onclick="irFoto()">Proximo</button>
   <button class="bto" onclick="ir('t-dados')">Voltar</button>
 </div>
 
@@ -127,7 +152,20 @@ if(RESP){
 }
 if(COD_PRE)document.getElementById("f-cod").value=COD_PRE;
 
-function q(id){return document.getElementById(id);}
+var CARGOS_ARTISTA=["Artista / Cantor","Musico / Banda","Bailarino / Dancarino","Diretor de Palco","Producao","Tecnico de Som","Tecnico de Luz","Tecnico de Video","Fotografo","Videomaker","Camarim","Maquiagem","Cabelo","Figurino","Assessoria de Imprensa","Comercial / Agenciamento","Seguranca","Motorista / Transfer","Road Manager","Outro"];
+var CARGOS_ESCRITORIO=["Socio / Fundador","CEO / Presidente","CMO / Diretor de Marketing","CFO / Diretor Financeiro","Diretor Comercial","Diretor de Eventos","Diretor de Operacoes","Gerente de Marketing","Gerente Comercial","Marketing Digital","Publicidade","Licenciamento","Midia e Comunicacao","Assessoria de Imprensa","Producao de Eventos","Setor de Eventos","RH / Recursos Humanos","Financeiro / Contabilidade","Juridico","Administrativo","Secretaria","Suporte / Apoio","Seguranca","Outro"];
+var CARGOS_OUTRA=["Presidente / CEO","Vice-Presidente","Diretor Executivo","Diretor Comercial","Diretor de Marketing","Diretor Financeiro","Diretor de Operacoes","Gerente Geral","Gerente Comercial","Gerente de Marketing","Gerente Financeiro","Coordenador","Supervisor","Analista","Consultor","Assessor","Relacoes Publicas","Marketing","Comunicacao","Comercial / Vendas","Financeiro","Contabilidade","Juridico","RH","Administrativo","Secretaria","Outro"];
+function mudarEmp(v){
+  var empOutra=document.getElementById("emp-outra-wrap");
+  empOutra.style.display=v==="outra"?"block":"none";
+  var sel=document.getElementById("f-car");
+  sel.innerHTML="<option value=''>Selecione sua funcao...</option>";
+  var lista=v==="Escritorio Agroplay"?CARGOS_ESCRITORIO:v==="outra"?CARGOS_OUTRA:v?CARGOS_ARTISTA:[];
+  lista.forEach(function(c){sel.innerHTML+="<option value='"+(c==="Outro"?"outro":c)+"'>"+c+"</option>";});
+  document.getElementById("cargo-outro-wrap").style.display="none";
+  sel.onchange=function(){document.getElementById("cargo-outro-wrap").style.display=this.value==="outro"?"block":"none";};
+}
+function mudarCargo(v){var wrap=document.getElementById("cargo-outro-wrap");if(v==="outro"){wrap.style.display="block";}else{wrap.style.display="none";}}
 function ir(t){document.querySelectorAll(".tl").forEach(function(x){x.classList.remove("on");});q(t).classList.add("on");}
 function mCPF(el){var v=el.value.replace(/\D/g,"").slice(0,11);v=v.replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2");el.value=v;}
 function mTel(el){var v=el.value.replace(/\D/g,"").slice(0,11);v=v.replace(/(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2");el.value=v;}
@@ -220,6 +258,104 @@ q("btn-salvar").onclick=function(){
   }).then(function(){ir("t-ok");})
   .catch(function(){al.innerHTML="<div class='ea'>Erro ao salvar. Tente novamente.</div>";})
   .finally(function(){btn.textContent="Confirmar e finalizar";btn.disabled=false;});
+};
+</script>
+
+</body>
+</html>
+function q(id){return document.getElementById(id);}
+function ir(t){document.querySelectorAll(".tl").forEach(function(x){x.classList.remove("on");});q(t).classList.add("on");}
+function mCPF(el){var v=el.value.replace(/\D/g,"").slice(0,11);v=v.replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d)/,"$1.$2").replace(/(\d{3})(\d{1,2})$/,"$1-$2");el.value=v;}
+function mTel(el){var v=el.value.replace(/\D/g,"").slice(0,11);v=v.replace(/(\d{2})(\d)/,"($1) $2").replace(/(\d{5})(\d)/,"$1-$2");el.value=v;}
+
+function ap(path,o){o=o||{};var h={“apikey”:KY,“Authorization”:“Bearer “+KY,“Content-Type”:“application/json”};if(o.pref)h[“Prefer”]=o.pref;return fetch(SB+”/rest/v1/”+path,{method:o.m||“GET”,headers:h,body:o.b}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});}
+
+q(“btn-cod”).onclick=function(){
+var c=q(“f-cod”).value.trim();var al=q(“al-cod”);al.innerHTML=””;
+if(!c||c.length<6){al.innerHTML=”<div class='ea'>Digite o codigo de 6 digitos.</div>”;return;}
+var btn=this;btn.textContent=“Verificando…”;btn.disabled=true;
+ap(“codigos?codigo=eq.”+c+”&select=*”).then(function(d){
+if(!d||!d.length){al.innerHTML=”<div class='ea'>Codigo invalido.</div>”;return;}
+codOk=c;ir(“t-dados”);
+}).catch(function(){al.innerHTML=”<div class='ea'>Erro ao verificar.</div>”;
+}).finally(function(){btn.textContent=“Continuar”;btn.disabled=false;});
+};
+
+function irEmp(){
+var ok=true;
+function se(id,msg){q(id).textContent=msg;if(msg)ok=false;}
+se(“e-nome”,q(“f-nome”).value.trim()?””:“Nome obrigatorio”);
+se(“e-cpf”,q(“f-cpf”).value.replace(/\D/g,””).length===11?””:“CPF invalido”);
+se(“e-rg”,q(“f-rg”).value.trim()?””:“RG obrigatorio”);
+se(“e-email”,/^[^\s@]+@[^\s@]+.[^\s@]+$/.test(q(“f-email”).value.trim())?””:“Email invalido”);
+se(“e-tel”,q(“f-tel”).value.replace(/\D/g,””).length>=10?””:“Telefone invalido”);
+se(“e-nasc”,q(“f-nasc”).value?””:“Data obrigatoria”);
+if(ok)ir(“t-emp”);
+}
+
+function irFoto(){
+var ok=true;
+function se(id,msg){q(id).textContent=msg;if(msg)ok=false;}
+se(“e-emp”,q(“f-emp”).value.trim()?””:“Empresa obrigatoria”);
+se(“e-car”,q(“f-car”).value.trim()?””:“Cargo obrigatorio”);
+if(!ok)return;
+ir(“t-foto”);
+iniciarCamera();
+}
+
+function iniciarCamera(){
+navigator.mediaDevices.getUserMedia({video:{facingMode:“user”},audio:false})
+.then(function(s){
+stream=s;var v=q(“video”);v.srcObject=s;
+v.onloadedmetadata=function(){v.play();q(“foto-status”).textContent=“Olhe para a camera e pisque”;q(“btn-foto”).style.display=“block”;};
+})
+.catch(function(){q(“foto-status”).textContent=“Camera indisponivel. Toque em Tirar foto.”;q(“btn-foto”).style.display=“block”;});
+}
+
+q(“btn-foto”).onclick=function(){
+var v=q(“video”);var c=q(“canvas”);c.width=200;c.height=200;
+var ctx=c.getContext(“2d”);
+var size=Math.min(v.videoWidth||200,v.videoHeight||200);
+ctx.drawImage(v,(v.videoWidth-size)/2,(v.videoHeight-size)/2,size,size,0,0,200,200);
+fotoData=c.toDataURL(“image/jpeg”,0.5);
+q(“foto-prev”).src=fotoData;q(“foto-prev”).style.display=“block”;
+q(“video-wrap”).style.display=“none”;
+q(“btn-foto”).style.display=“none”;q(“btn-refoto”).style.display=“block”;q(“btn-salvar”).style.display=“block”;
+q(“foto-status”).textContent=“Foto tirada! Confirme ou tire outra.”;
+if(stream)stream.getTracks().forEach(function(t){t.stop();});
+};
+
+q(“btn-refoto”).onclick=function(){
+fotoData=null;q(“foto-prev”).style.display=“none”;q(“video-wrap”).style.display=“block”;
+q(“btn-refoto”).style.display=“none”;q(“btn-salvar”).style.display=“none”;q(“btn-foto”).style.display=“block”;
+q(“foto-status”).textContent=“Iniciando camera…”;iniciarCamera();
+};
+
+q(“btn-salvar”).onclick=function(){
+var btn=this;btn.textContent=“Salvando…”;btn.disabled=true;
+var al=q(“al-foto”);al.innerHTML=””;
+var body={
+nome:q(“f-nome”).value.trim(),
+cpf:q(“f-cpf”).value,
+rg:q(“f-rg”).value.trim(),
+email:q(“f-email”).value.trim(),
+telefone:q(“f-tel”).value,
+nascimento:q(“f-nasc”).value,
+setor:“Convidado”,
+empresa:q(“f-emp”).value.trim(),
+cargo:q(“f-car”).value.trim(),
+status:“pendente”,
+foto_url:fotoData||null
+};
+if(LOTE_ID)body.lote_id=parseInt(LOTE_ID);
+if(RESP)body.lote_nome=RESP;
+if(EV_ID)body.evento_id=parseInt(EV_ID);
+ap(“cadastros”,{m:“POST”,pref:“return=representation”,b:JSON.stringify(body)}).then(function(cad){
+var cadId=cad&&cad[0]?cad[0].id:null;
+return ap(“codigos?codigo=eq.”+codOk,{m:“PATCH”,pref:“return=minimal”,b:JSON.stringify({cadastro_id:cadId})});
+}).then(function(){ir(“t-ok”);})
+.catch(function(){al.innerHTML=”<div class='ea'>Erro ao salvar. Tente novamente.</div>”;})
+.finally(function(){btn.textContent=“Confirmar e finalizar”;btn.disabled=false;});
 };
 </script>
 
