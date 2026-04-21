@@ -67,7 +67,7 @@ textarea{height:70px;resize:none}
   <button class="tab" id="te">Eventos</button>
   <button class="tab" id="tk">Codigos</button>
   <button class="tab" id="tl">Lista</button>
-  <button class="tab" id="tlt">Lotes</button><button class="tab" id="tld">Dash</button>
+  <button class="tab" id="tlt">Lotes</button>
 </div>
 <div id="sc">
   <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
@@ -100,7 +100,7 @@ textarea{height:70px;resize:none}
   <div id="klst"></div>
 </div>
 <div id="sl" class="gone"><div id="llst"></div></div>
-<div id="sd" class="gone"><div id="dsh"></div></div><div id="slt" class="gone">
+<div id="slt" class="gone">
   <button class="btn" id="bnovolote" style="width:100%;margin-bottom:14px">+ Criar novo lote</button>
   <div id="loteslst"><div class="empty">Nenhum lote criado</div></div>
 </div>
@@ -226,7 +226,7 @@ textarea{height:70px;resize:none}
         <button class="bto" id="btntipoi" style="flex:1;font-size:12px">Interno</button>
       </div>
       <div id="csel-ext">
-        <div style="font-size:12px;color:#888;margin-bottom:8px">Pessoa <b style="color:#2aab47">NOVA</b> -- link de cadastro</div>
+        <div style="font-size:12px;color:#888;margin-bottom:8px">Pessoa <b style="color:#2aab47">NOVA</b> — link de cadastro</div>
         <div style="background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:10px;margin-bottom:10px">
           <div style="font-size:10px;color:#555;margin-bottom:4px">Link gerado com codigo unico para pessoa nova se cadastrar.</div>
           <div style="font-family:monospace;font-size:11px;color:#2aab47;word-break:break-all" id="linkext"></div>
@@ -359,7 +359,7 @@ q("tc").onclick=function(){tab("c");};
 q("te").onclick=function(){tab("e");};
 q("tk").onclick=function(){tab("k");};
 q("tl").onclick=function(){tab("l");};
-q("tlt").onclick=function(){tab("lt");};q("tld").onclick=function(){tab("d");};
+q("tlt").onclick=function(){tab("lt");};
 q("bnovolote").onclick=function(){
   q("ovlote").classList.add("on");q("lote-alert").innerHTML="";q("lote-resp").value="";q("lote-qtd").value="10";q("lote-senha").value="";
   var sel=q("lote-ev");sel.innerHTML="<option value=''>Nenhum evento</option>";
@@ -539,7 +539,6 @@ function delLote(id){
     load();
   }).catch(function(e){alert("Erro ao excluir: "+e.message);});
 }
-function rDash(){var el=q("dsh");var t=cads.length;if(!t){el.innerHTML="<div class='empty'>Sem dados</div>";return;}var ap2=cads.filter(function(c){return c.status==="aprovado";}).length;var pend=cads.filter(function(c){return c.status==="pendente";}).length;var tx=Math.round(ap2/t*100);var h="";h+="<div style='display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px'>";h+="<div class='card' style='text-align:center;padding:14px'><div style='font-size:30px;font-weight:900;color:#2aab47'>"+t+"</div><div style='font-size:10px;color:#555;text-transform:uppercase;margin-top:3px'>Cadastros</div></div>";h+="<div class='card' style='text-align:center;padding:14px'><div style='font-size:30px;font-weight:900;color:#2aab47'>"+tx+"%</div><div style='font-size:10px;color:#555;text-transform:uppercase;margin-top:3px'>Aprovados</div></div>";h+="<div class='card' style='text-align:center;padding:14px'><div style='font-size:30px;font-weight:900;color:#c9973c'>"+pend+"</div><div style='font-size:10px;color:#555;text-transform:uppercase;margin-top:3px'>Pendentes</div></div>";h+="<div class='card' style='text-align:center;padding:14px'><div style='font-size:30px;font-weight:900;color:#0891b2'>"+cads.filter(function(c){return c.foto_url;}).length+"</div><div style='font-size:10px;color:#555;text-transform:uppercase;margin-top:3px'>Com foto</div></div></div>";h+="<div class='card' style='margin-bottom:14px'><div style='font-size:11px;color:#2aab47;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px'>Por Setor</div>";["Artista","Influenciador","Diretoria","Colaborador","Convidado"].forEach(function(s){var n=cads.filter(function(c){return c.setor===s;}).length;if(!n)return;var pct=Math.round(n/t*100);h+="<div style='margin-bottom:8px'><div style='display:flex;justify-content:space-between;margin-bottom:3px'><span style='font-size:12px;color:#eee'>"+s+"</span><span style='font-size:11px;color:#555'>"+n+"</span></div><div style='background:#1a2a1a;border-radius:3px;height:5px'><div style='background:"+(COR[s]||"#555")+";height:100%;width:"+pct+"%'></div></div></div>";});h+="</div>";if(evs.length){h+="<div class='card' style='margin-bottom:14px'><div style='font-size:11px;color:#2aab47;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px'>Por Evento</div>";evs.forEach(function(ev){var n=cads.filter(function(c){return c.evento_id===ev.id;}).length;if(!n)return;var a=cads.filter(function(c){return c.evento_id===ev.id&&c.status==="aprovado";}).length;h+="<div style='padding:8px 0;border-bottom:1px solid #111'><div style='font-size:13px;color:#fff;font-weight:600'>"+ev.nome+"</div><div style='font-size:11px;color:#555;margin-top:2px'>"+n+" convidados / "+a+" confirmados</div></div>";});h+="</div>";}var lm={};cads.forEach(function(c){if(c.lote_nome)lm[c.lote_nome]=(lm[c.lote_nome]||0)+1;});var lk=Object.keys(lm);if(lk.length){h+="<div class='card'><div style='font-size:11px;color:#2aab47;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px'>Por Colaborador</div>";lk.sort(function(a,b){return lm[b]-lm[a];}).forEach(function(n){var v=lm[n];var p=Math.round(v/t*100);h+="<div style='margin-bottom:8px'><div style='display:flex;justify-content:space-between;margin-bottom:3px'><span style='font-size:12px;color:#eee'>"+n+"</span><span style='font-size:11px;color:#555'>"+v+"</span></div><div style='background:#1a2a1a;border-radius:3px;height:5px'><div style='background:#0891b2;height:100%;width:"+p+"%'></div></div></div>";});h+="</div>";}el.innerHTML=h;}
 function load(){
   q("tbl").innerHTML="<div class='empty'>Carregando...</div>";
   ap("cadastros?select=*&order=criado_em.desc").then(function(d){cads=d||[];rSts();rChips();rend();}).catch(function(){cads=[];rSts();rChips();rend();});
@@ -840,9 +839,9 @@ function mkXls(rows,name){
   dl("<?xml version='1.0'?><Workbook xmlns='urn:schemas-microsoft-com:office:spreadsheet' xmlns:ss='urn:schemas-microsoft-com:office:spreadsheet'><Worksheet ss:Name='Dados'><Table>"+hdr+body+"</Table></Worksheet></Workbook>","application/vnd.ms-excel",name+".xls");
 }
 function tab(t){
-  ["c","e","k","l","lt","d"].forEach(function(x){q("s"+x).classList.add("gone");q("t"+x).classList.remove("on");});
+  ["c","e","k","l","lt"].forEach(function(x){q("s"+x).classList.add("gone");q("t"+x).classList.remove("on");});
   q("s"+t).classList.remove("gone");q("t"+t).classList.add("on");
-  if(t==="l")rLst();if(t==="k")rCods();if(t==="e")rEvs();if(t==="lt")rLotes();if(t==="d")rDash();
+  if(t==="l")rLst();if(t==="k")rCods();if(t==="e")rEvs();if(t==="lt")rLotes();
 }
 load();
 </script>
