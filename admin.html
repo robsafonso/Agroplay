@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agroplay - Admin Evento</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#060a06;color:#eee;font-family:Arial;font-size:14px;padding:16px}
+.hdr{background:#060a06;border-bottom:2px solid #1e7a35;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;margin:-16px -16px 16px}
+.logo{font-size:18px;font-weight:900;color:#fff}
+.logo span{color:#2aab47}
+.btn{background:#1e7a35;color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer;margin:4px}
+.bto{background:transparent;color:#2aab47;border:1px solid #2aab47;border-radius:8px;padding:8px 12px;font-size:12px;cursor:pointer;margin:4px}
+.btr{background:#c0392b;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:12px;cursor:pointer;margin:4px}
+.card{background:#090e09;border:1px solid #1a2a1a;border-radius:12px;padding:16px;margin-bottom:12px}
+.tabs{display:flex;gap:5px;margin-bottom:14px;overflow-x:auto}
+.tab{background:transparent;border:1px solid #333;border-radius:8px;padding:7px 12px;color:#555;cursor:pointer;font-size:11px;white-space:nowrap}
+.tab.on{border-color:#2aab47;color:#2aab47;background:rgba(42,171,71,.1)}
+.gone{display:none}
+.stats{display:flex;gap:8px;margin-bottom:16px}
+.stat{background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:12px 8px;text-align:center;flex:1}
+.stat strong{font-size:22px;color:#2aab47;display:block}
+.stat small{font-size:9px;color:#555;text-transform:uppercase}
+.badge{padding:2px 8px;border-radius:20px;font-size:10px;color:#fff;font-weight:700}
+.ab{background:#1e7a35}.pb{background:#b8860b}.eb{background:#c0392b}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{padding:8px;text-align:left;background:#060a06;color:#444;font-size:9px;text-transform:uppercase;border-bottom:1px solid #1a2a1a}
+td{padding:8px;border-bottom:1px solid #111;color:#bbb}
+.tbl{overflow-x:auto;border:1px solid #1a2a1a;border-radius:10px;margin-top:8px}
+.empty{text-align:center;padding:28px;color:#555}
+input{background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;width:100%;margin-bottom:8px}
+input:focus{border-color:#2aab47}
+.fl label{display:block;font-size:10px;color:#2aab47;letter-spacing:1px;margin-bottom:4px;text-transform:uppercase}
+.fl{margin-bottom:10px}
+.ea{background:#1a0000;border:1px solid #c0392b;color:#e74c3c;padding:10px;border-radius:8px;margin-bottom:10px;font-size:13px}
+.ok{background:#0a1f0a;border:1px solid #2aab47;color:#2aab47;padding:10px;border-radius:8px;margin-bottom:10px;font-size:13px}
+.link-box{background:#030503;border:1px solid #1a2a1a;border-radius:10px;padding:12px;margin-bottom:10px}
+.link-url{font-family:monospace;font-size:11px;color:#2aab47;word-break:break-all;margin-bottom:8px}
+select{background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;width:100%;margin-bottom:8px}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="logo">AGRO<span>PLAY</span> <span style="font-size:12px;color:#555">Admin</span></div>
+  <button class="bto" id="btn-refresh">Atualizar</button>
+</div>
+<div class="stats" id="sts"></div>
+<div class="tabs">
+  <button class="tab on" id="t1">Check-in</button>
+  <button class="tab" id="t2">Validadores</button>
+</div>
+<div id="s1">
+  <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
+    <select id="ev-sel" style="flex:1;margin:0">
+      <option value="">Todos os eventos</option>
+    </select>
+    <button class="bto" id="btn-exp">CSV</button>
+  </div>
+  <div class="tabs" id="ftabs">
+    <button class="tab on" id="fa">Todos</button>
+    <button class="tab" id="fe">Entraram</button>
+    <button class="tab" id="fn2">Nao entraram</button>
+  </div>
+  <div id="lista-checkin"></div>
+</div>
+<div id="s2" class="gone">
+  <div class="card">
+    <div id="val-alert"></div>
+    <div class="fl"><label>Nome</label><input id="val-nome" placeholder="Nome do validador"></div>
+    <div class="fl"><label>Senha</label><input id="val-senha" placeholder="Senha de acesso" type="text"></div>
+    <button class="btn" id="btn-addval" style="width:100%">Adicionar validador</button>
+  </div>
+  <div class="link-box">
+    <div style="font-size:10px;color:#555;margin-bottom:6px;text-transform:uppercase">Link do check-in</div>
+    <div class="link-url">robsafonso.github.io/Agroplay/checkin.html</div>
+    <button class="bto" id="btn-coplink" style="width:100%;font-size:12px">Copiar link</button>
+  </div>
+  <div id="val-lista"></div>
+</div>
+<script>
+var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
+var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
+var cads=[],evs=[],vals=[],ffilt="a",evFilt="";
+function q(id){return document.getElementById(id);}
+function ap(p,o){o=o||{};var h={"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json"};if(o.pref)h["Prefer"]=o.pref;return fetch(SB+"/rest/v1/"+p,{method:o.m||"GET",headers:h,body:o.b}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});}
+function cp2(txt,btn,lbl){if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){btn.textContent="Copiado!";setTimeout(function(){btn.textContent=lbl;},2000);});}else{var t=document.createElement("textarea");t.value=txt;document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t);btn.textContent="Copiado!";setTimeout(function(){btn.textContent=lbl;},2000);}}
+function tab(t){["s1","s2"].forEach(function(x){q(x).classList.add("gone");});["t1","t2"].forEach(function(x){q(x).classList.remove("on");});q("s"+t).classList.remove("gone");q("t"+t).classList.add("on");}
+q("t1").onclick=function(){tab("1");};
+q("t2").onclick=function(){tab("2");};
+q("btn-refresh").onclick=load;
+q("btn-coplink").onclick=function(){cp2("https://robsafonso.github.io/Agroplay/checkin.html",q("btn-coplink"),"Copiar link");};
+q("fa").onclick=function(){ffilt="a";q("fa").classList.add("on");q("fe").classList.remove("on");q("fn2").classList.remove("on");rLista();};
+q("fe").onclick=function(){ffilt="e";q("fa").classList.remove("on");q("fe").classList.add("on");q("fn2").classList.remove("on");rLista();};
+q("fn2").onclick=function(){ffilt="n";q("fa").classList.remove("on");q("fe").classList.remove("on");q("fn2").classList.add("on");rLista();};
+q("ev-sel").onchange=function(){evFilt=this.value;rLista();};
+q("btn-exp").onclick=function(){
+  var f=filtrados();
+  var rows=f.map(function(c){return[c.nome,c.empresa||"",c.cargo||"",c.status,c.entrada_em?new Date(c.entrada_em).toLocaleString("pt-BR"):"",c.validador_nome||""].map(function(v){return'"'+v+'"';}).join(",");});
+  var csv="Nome,Empresa,Cargo,Status,Entrada,Validador\n"+rows.join("\n");
+  var b=new Blob([csv],{type:"text/csv"});var u=URL.createObjectURL(b);var a=document.createElement("a");a.href=u;a.download="checkin.csv";a.click();
+};
+q("btn-addval").onclick=function(){
+  var nome=q("val-nome").value.trim();var senha=q("val-senha").value.trim();
+  var al=q("val-alert");al.innerHTML="";
+  if(!nome||!senha){al.innerHTML="<div class='ea'>Preencha nome e senha</div>";return;}
+  var btn=this;btn.textContent="Salvando...";btn.disabled=true;
+  ap("validadores",{m:"POST",pref:"return=minimal",b:JSON.stringify({nome:nome,senha:senha})}).then(function(){
+    q("val-nome").value="";q("val-senha").value="";
+    al.innerHTML="<div class='ok'>Validador adicionado!</div>";
+    carregarVals();
+  }).catch(function(){al.innerHTML="<div class='ea'>Erro</div>";
+  }).finally(function(){btn.textContent="Adicionar validador";btn.disabled=false;});
+};
+function delVal(id){
+  if(!confirm("Remover?"))return;
+  ap("validadores?id=eq."+id,{m:"DELETE",pref:"return=minimal"}).then(function(){carregarVals();});
+}
+function carregarVals(){
+  ap("validadores?select=*&order=criado_em.desc").then(function(d){
+    vals=d||[];
+    if(!vals.length){q("val-lista").innerHTML="<div class='empty'>Nenhum validador</div>";return;}
+    var h="<div class='tbl'><table><thead><tr><th>Nome</th><th>Senha</th><th></th></tr></thead><tbody>";
+    vals.forEach(function(v){
+      h+="<tr><td style='color:#fff'>"+v.nome+"</td><td style='font-family:monospace;color:#2aab47'>"+v.senha+"</td><td><button class='btr' onclick='delVal("+v.id+")' style='font-size:10px;padding:3px 8px'>X</button></td></tr>";
+    });
+    h+="</tbody></table></div>";
+    q("val-lista").innerHTML=h;
+  });
+}
+function filtrados(){
+  var f=cads;
+  if(evFilt)f=f.filter(function(c){return c.evento_id==evFilt;});
+  if(ffilt==="e")f=f.filter(function(c){return c.entrada_em;});
+  if(ffilt==="n")f=f.filter(function(c){return !c.entrada_em&&c.evento_id;});
+  return f;
+}
+function rLista(){
+  var f=filtrados();
+  var entrou=f.filter(function(c){return c.entrada_em;}).length;
+  var nao=f.filter(function(c){return !c.entrada_em&&c.evento_id;}).length;
+  var total=f.length;
+  q("sts").innerHTML="<div class='stat'><strong>"+total+"</strong><small>Total</small></div><div class='stat'><strong style='color:#2aab47'>"+entrou+"</strong><small>Entraram</small></div><div class='stat'><strong style='color:#e74c3c'>"+nao+"</strong><small>Faltaram</small></div>";
+  if(!f.length){q("lista-checkin").innerHTML="<div class='empty'>Nenhum resultado</div>";return;}
+  var h="<div class='tbl'><table><thead><tr><th>Nome</th><th>Status</th><th>Entrada</th><th>Validador</th></tr></thead><tbody>";
+  f.forEach(function(c){
+    var ent=c.entrada_em?new Date(c.entrada_em).toLocaleTimeString("pt-BR"):"";
+    var sb=c.entrada_em?"<span class='badge ab'>Entrou "+ent+"</span>":c.evento_id?"<span class='badge pb'>Aguardando</span>":"";
+    h+="<tr><td style='color:#fff'>"+c.nome+"</td><td>"+sb+"</td><td style='color:#555;font-size:11px'>"+ent+"</td><td style='color:#555;font-size:11px'>"+(c.validador_nome||"")+"</td></tr>";
+  });
+  h+="</tbody></table></div>";
+  q("lista-checkin").innerHTML=h;
+}
+function load(){
+  q("lista-checkin").innerHTML="<div class='empty'>Carregando...</div>";
+  ap("cadastros?select=*&order=nome.asc").then(function(d){cads=d||[];rLista();}).catch(function(){cads=[];rLista();});
+  ap("eventos?select=*&order=data.asc").then(function(d){
+    evs=d||[];
+    var sel=q("ev-sel");
+    sel.innerHTML="<option value=''>Todos os eventos</option>";
+    evs.forEach(function(ev){sel.innerHTML+="<option value='"+ev.id+"'>"+ev.nome+"</option>";});
+  });
+  carregarVals();
+}
+load();
+</script>
+</body>
+</html>
