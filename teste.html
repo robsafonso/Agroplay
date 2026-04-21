@@ -2,36 +2,15 @@
 
 <html>
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="background:#060a06;color:#eee;padding:20px;font-family:Arial">
-<div id="resultado" style="margin-bottom:20px;font-size:14px">Testando...</div>
-<button onclick="testar()" style="background:#1e7a35;color:#fff;border:none;border-radius:8px;padding:12px 24px;font-size:16px;font-weight:700">Testar JS</button>
-<div id="log" style="margin-top:20px;font-size:12px;color:#aaa;line-height:2"></div>
+<body style="background:#060a06;color:#eee;padding:30px;font-family:Arial;text-align:center">
+<div id="msg" style="font-size:20px;margin-bottom:30px;color:#555">JS nao rodou</div>
+<button id="btn" style="background:#1e7a35;color:#fff;border:none;border-radius:8px;padding:16px 32px;font-size:18px;font-weight:700">Tocar aqui</button>
 <script>
-var log = [];
-function add(msg, ok) {
-  log.push("<div style='color:"+(ok?"#2aab47":"#e74c3c")+"'>"+(ok?"✓":"✗")+" "+msg+"</div>");
-  document.getElementById("log").innerHTML = log.join("");
-}
-function testar() {
-  document.getElementById("resultado").textContent = "Rodando testes...";
-
-// Teste 1: JS basico
-try { var x = 1+1; add(“JS basico OK”, true); } catch(e) { add(“JS basico ERRO: “+e.message, false); }
-
-// Teste 2: querySelector
-try { var el = document.getElementById(“resultado”); add(“getElementById OK”, true); } catch(e) { add(“getElementById ERRO”, false); }
-
-// Teste 3: fetch/Supabase
-var SB = “https://wexwcnezjadoutyzkbcj.supabase.co”;
-var KY = “eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ”;
-add(“Iniciando fetch Supabase…”, true);
-fetch(SB+”/rest/v1/cadastros?limit=1”, {headers:{“apikey”:KY,“Authorization”:“Bearer “+KY}})
-.then(function(r) { add(“Fetch status: “+r.status, r.ok); return r.json(); })
-.then(function(d) { add(“Supabase retornou: “+JSON.stringify(d).substring(0,50), true); document.getElementById(“resultado”).textContent = “Testes concluidos!”; })
-.catch(function(e) { add(“Fetch ERRO: “+e.message, false); document.getElementById(“resultado”).textContent = “Erro no fetch!”; });
-}
-document.getElementById(“resultado”).textContent = “Pronto. Toque em Testar JS”;
+document.getElementById("msg").textContent = "JS rodou!";
+document.getElementById("msg").style.color = "#2aab47";
+document.getElementById("btn").onclick = function(){
+  document.getElementById("msg").textContent = "Botao funcionou!";
+};
 </script>
-
 </body>
 </html>
