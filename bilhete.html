@@ -98,6 +98,14 @@ function render(cad, ev, cod){
   html+="<div class='cod-label'>Codigo de acesso</div>";
   html+="</div>";
 
+  html+="<div style='padding:0 20px 16px'>";
+  if(cad.bilhete_confirmado){
+    html+="<div style='background:#0a1a0a;border:1px solid rgba(42,171,71,.4);border-radius:10px;padding:12px;text-align:center;font-size:13px;color:#2aab47;font-weight:700'>Bilhete confirmado!</div>";
+  } else {
+    html+="<button id='btn-conf' onclick='confirmar()' style='width:100%;background:#2aab47;border:none;border-radius:10px;padding:14px;font-size:14px;font-weight:700;color:#fff;cursor:pointer'>Confirmar recebimento</button>";
+    html+="<div style='font-size:10px;color:#555;text-align:center;margin-top:6px'>Toque para confirmar que recebeu seu bilhete</div>";
+  }
+  html+="</div>";
   html+="<div class='bilhete-footer'>";
   html+="<div class='footer-text'>Bilhete intransferivel &bull; Agroplay Music &bull; Londrina PR</div>";
   html+="</div>";
@@ -144,6 +152,21 @@ function confirmarBilhete(){
   }).then(function(){
     var wrap=document.getElementById("btn-confirmar").parentNode;
     wrap.innerHTML="<div style='background:#0a1a0a;border:1px solid #2aab47;border-radius:10px;padding:12px;text-align:center;font-size:13px;color:#2aab47'>&#10003; Bilhete confirmado!</div>";
+  }).catch(function(){
+    if(btn){btn.textContent="Tente novamente";btn.disabled=false;}
+  });
+}
+
+function confirmar(){
+  var btn=document.getElementById("btn-conf");
+  if(btn){btn.textContent="Confirmando...";btn.disabled=true;}
+  fetch(SB+"/rest/v1/cadastros?id=eq."+CAD_ID,{
+    method:"PATCH",
+    headers:{"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json","Prefer":"return=minimal"},
+    body:JSON.stringify({bilhete_confirmado:true,bilhete_confirmado_em:new Date().toISOString()})
+  }).then(function(){
+    var wrap=btn?btn.parentNode:null;
+    if(wrap)wrap.innerHTML="<div style='background:#0a1a0a;border:1px solid rgba(42,171,71,.4);border-radius:10px;padding:12px;text-align:center;font-size:13px;color:#2aab47;font-weight:700'>Bilhete confirmado!</div>";
   }).catch(function(){
     if(btn){btn.textContent="Tente novamente";btn.disabled=false;}
   });
