@@ -842,8 +842,7 @@ function abrBilhetes(evId){
   if(confirmados.length){h+="<div style='font-size:10px;color:#2aab47;text-transform:uppercase;letter-spacing:1px;margin:12px 0 8px'>Confirmados ("+confirmados.length+")</div>";confirmados.forEach(function(p){h+=cardP(p,true);});}
   h+="</div>";
   q("pcont").innerHTML=h;
-  ["aprovd","bqr","beditcargo","batualizafoto","bdel","bconfincl","bincluir","editcargo-wrap","bcopiad","bqrwrap"].forEach(function(id){var el=q(id);if(el)el.style.display="none";});
-  document.querySelectorAll("#ovp .bto, #ovp .btn").forEach(function(el){if(el.id!=="bfp")el.style.display="none";});
+  ["aprovd","bqr","beditcargo","batualizafoto","bdel","bconfincl","bincluir","editcargo-wrap"].forEach(function(id){var el=q(id);if(el)el.style.display="none";});
   q("ovp").classList.add("on");
 }
 function reenviarB(pessoaId,evId){
