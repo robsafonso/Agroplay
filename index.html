@@ -232,23 +232,26 @@ textarea{height:70px;resize:none}
       <div id="edit-car-outro-wrap" style="display:none" class="fl"><label>Qual funcao?</label><input id="edit-car-outro" placeholder="Digite sua funcao"></div>
       <button class="btn" id="btn-salvar-cargo" style="width:100%;font-size:12px;padding:10px;background:#c9973c">Salvar</button>
     </div>
-    <button class="bto" id="beditcargo" style="width:100%;margin-top:12px;border-color:#c9973c;color:#c9973c">Editar empresa / funcao</button>
-    <div id="editcargo-wrap" style="display:none;margin-top:10px"><div class="fl"><label>Empresa</label><select id="edit-emp" onchange="mudarEmpEdit(this.value)" style="background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;width:100%"><option value="">Selecione...</option><optgroup label="Grupo Agroplay"><option value="Ana Castela">Ana Castela</option><option value="Leo e Raphael">Leo e Raphael</option><option value="Country Beat">Country Beat</option><option value="Muierada">Muierada</option><option value="Francisco">Francisco</option><option value="Julia e Rafaela">Julia e Rafaela</option><option value="Julya e Maryana">Julya e Maryana</option><option value="Duda Bertelli">Duda Bertelli</option><option value="Kamila e Kavic">Kamila e Kavic</option><option value="Escritorio Agroplay">Escritorio Agroplay</option></optgroup><option value="outra">Outra empresa</option></select></div><div id="edit-emp-outra-wrap" style="display:none" class="fl"><label>Nome da empresa</label><input id="edit-emp-outra" placeholder="Digite o nome"></div><div class="fl"><label>Funcao</label><select id="edit-car" style="background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;width:100%"><option value="">Selecione a empresa primeiro...</option></select></div><div id="edit-car-outro-wrap" style="display:none" class="fl"><label>Qual funcao?</label><input id="edit-car-outro" placeholder="Digite sua funcao"></div><button class="btn" id="btn-salvar-cargo" style="width:100%;font-size:12px;padding:10px;background:#c9973c">Salvar</button></div>
-    <button class="bto" id="batualizafoto" style="width:100%;margin-top:12px;border-color:#0891b2;color:#0891b2">Atualizar foto</button>
-    <div id="foto-atualiza-wrap" style="display:none;margin-top:10px;text-align:center">
-      <div id="fa-video-wrap" style="width:120px;height:120px;border-radius:50%;overflow:hidden;border:2px solid #0891b2;margin:0 auto 8px"><video id="fa-video" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover"></video></div>
-      <canvas id="fa-canvas" style="display:none"></canvas>
-      <button type="button" id="btn-fa-foto" class="bto" style="font-size:11px;padding:6px 12px;border-color:#0891b2;color:#0891b2">Tirar foto</button>
-    </div>
-    <button class="bto" id="bqr" style="width:100%;margin-top:8px;border-color:#c9973c;color:#c9973c">Ver QR Code</button>
-    <div id="qr-wrap" style="display:none;text-align:center;margin-top:12px;padding:16px;background:#fff;border-radius:12px"><div id="qr-box"></div><div id="qr-cod" style="font-family:monospace;font-size:18px;font-weight:900;color:#060a06;margin-top:8px;letter-spacing:4px"></div></div>
-    <button class="bto" id="bcpy" style="width:100%;margin-top:12px">Copiar dados</button>
-    <button class="bto" id="bincl" style="width:100%;margin-top:8px;border-color:#0891b2;color:#0891b2">Incluir em Evento</button>
-    <div id="incl-wrap" style="display:none;margin-top:10px">
-      <select id="incl-ev" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;margin-bottom:8px"><option value="">Selecione o evento...</option></select>
-      <button class="btn" id="bconfincl" style="width:100%;font-size:12px;padding:10px;background:#0891b2">Confirmar inclusao</button>
-    </div>
-    <button class="btr" id="bdel" style="width:100%;margin-top:8px">Excluir</button>
+
+```
+<div id="editcargo-wrap" style="display:none;margin-top:10px"><div class="fl"><label>Empresa</label><select id="edit-emp" onchange="mudarEmpEdit(this.value)" style="background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;width:100%"><option value="">Selecione...</option><optgroup label="Grupo Agroplay"><option value="Ana Castela">Ana Castela</option><option value="Leo e Raphael">Leo e Raphael</option><option value="Country Beat">Country Beat</option><option value="Muierada">Muierada</option><option value="Francisco">Francisco</option><option value="Julia e Rafaela">Julia e Rafaela</option><option value="Julya e Maryana">Julya e Maryana</option><option value="Duda Bertelli">Duda Bertelli</option><option value="Kamila e Kavic">Kamila e Kavic</option><option value="Escritorio Agroplay">Escritorio Agroplay</option></optgroup><option value="outra">Outra empresa</option></select></div><div id="edit-emp-outra-wrap" style="display:none" class="fl"><label>Nome da empresa</label><input id="edit-emp-outra" placeholder="Digite o nome"></div><div class="fl"><label>Funcao</label><select id="edit-car" style="background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;width:100%"><option value="">Selecione a empresa primeiro...</option></select></div><div id="edit-car-outro-wrap" style="display:none" class="fl"><label>Qual funcao?</label><input id="edit-car-outro" placeholder="Digite sua funcao"></div><button class="btn" id="btn-salvar-cargo" style="width:100%;font-size:12px;padding:10px;background:#c9973c">Salvar</button></div>
+<button class="bto" id="batualizafoto" style="width:100%;margin-top:12px;border-color:#0891b2;color:#0891b2">Atualizar foto</button>
+<div id="foto-atualiza-wrap" style="display:none;margin-top:10px;text-align:center">
+  <div id="fa-video-wrap" style="width:120px;height:120px;border-radius:50%;overflow:hidden;border:2px solid #0891b2;margin:0 auto 8px"><video id="fa-video" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover"></video></div>
+  <canvas id="fa-canvas" style="display:none"></canvas>
+  <button type="button" id="btn-fa-foto" class="bto" style="font-size:11px;padding:6px 12px;border-color:#0891b2;color:#0891b2">Tirar foto</button>
+</div>
+<button class="bto" id="bqr" style="width:100%;margin-top:8px;border-color:#c9973c;color:#c9973c">Ver QR Code</button>
+<div id="qr-wrap" style="display:none;text-align:center;margin-top:12px;padding:16px;background:#fff;border-radius:12px"><div id="qr-box"></div><div id="qr-cod" style="font-family:monospace;font-size:18px;font-weight:900;color:#060a06;margin-top:8px;letter-spacing:4px"></div></div>
+<button class="bto" id="bcpy" style="width:100%;margin-top:12px">Copiar dados</button>
+<button class="bto" id="bincl" style="width:100%;margin-top:8px;border-color:#0891b2;color:#0891b2">Incluir em Evento</button>
+<div id="incl-wrap" style="display:none;margin-top:10px">
+  <select id="incl-ev" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;margin-bottom:8px"><option value="">Selecione o evento...</option></select>
+  <button class="btn" id="bconfincl" style="width:100%;font-size:12px;padding:10px;background:#0891b2">Confirmar inclusao</button>
+</div>
+<button class="btr" id="bdel" style="width:100%;margin-top:8px">Excluir</button>
+```
+
   </div>
 </div>
 <div class="ov ovc" id="ovfoto">
@@ -839,7 +842,8 @@ function abrBilhetes(evId){
   if(confirmados.length){h+="<div style='font-size:10px;color:#2aab47;text-transform:uppercase;letter-spacing:1px;margin:12px 0 8px'>Confirmados ("+confirmados.length+")</div>";confirmados.forEach(function(p){h+=cardP(p,true);});}
   h+="</div>";
   q("pcont").innerHTML=h;
-  ["aprovd","bqr","beditcargo","batualizafoto","bdel","bconfincl","bincluir","editcargo-wrap"].forEach(function(id){var el=q(id);if(el)el.style.display="none";});
+  ["aprovd","bqr","beditcargo","batualizafoto","bdel","bconfincl","bincluir","editcargo-wrap","bcopiad","bqrwrap"].forEach(function(id){var el=q(id);if(el)el.style.display="none";});
+  document.querySelectorAll("#ovp .bto, #ovp .btn").forEach(function(el){if(el.id!=="bfp")el.style.display="none";});
   q("ovp").classList.add("on");
 }
 function reenviarB(pessoaId,evId){
