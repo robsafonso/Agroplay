@@ -122,6 +122,23 @@ function iniciarScanner(){
   }).catch(function(){q("al-scan").innerHTML="<div class='ea'>Camera indisponivel. Use o campo manual.</div>";});
 }
 
+var torchOn=false;
+var torchTrack=null;
+function togTorch(){
+  if(!stream)return;
+  var tracks=stream.getVideoTracks();
+  if(!tracks.length)return;
+  var track=tracks[0];
+  torchTrack=track;
+  torchOn=!torchOn;
+  try{
+    track.applyConstraints({advanced:[{torch:torchOn}]}).then(function(){
+      document.getElementById("btn-torch").style.background=torchOn?"rgba(255,200,0,.8)":"rgba(0,0,0,.6)";
+    }).catch(function(){
+      torchOn=!torchOn;
+    });
+  }catch(e){torchOn=!torchOn;}
+}
 var canvas=document.createElement("canvas");
 var ctx=canvas.getContext("2d");
 function scanFrame(){
