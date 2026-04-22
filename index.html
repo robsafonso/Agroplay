@@ -232,26 +232,23 @@ textarea{height:70px;resize:none}
       <div id="edit-car-outro-wrap" style="display:none" class="fl"><label>Qual funcao?</label><input id="edit-car-outro" placeholder="Digite sua funcao"></div>
       <button class="btn" id="btn-salvar-cargo" style="width:100%;font-size:12px;padding:10px;background:#c9973c">Salvar</button>
     </div>
-
-```
-<div id="editcargo-wrap" style="display:none;margin-top:10px"><div class="fl"><label>Empresa</label><select id="edit-emp" onchange="mudarEmpEdit(this.value)" style="background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;width:100%"><option value="">Selecione...</option><optgroup label="Grupo Agroplay"><option value="Ana Castela">Ana Castela</option><option value="Leo e Raphael">Leo e Raphael</option><option value="Country Beat">Country Beat</option><option value="Muierada">Muierada</option><option value="Francisco">Francisco</option><option value="Julia e Rafaela">Julia e Rafaela</option><option value="Julya e Maryana">Julya e Maryana</option><option value="Duda Bertelli">Duda Bertelli</option><option value="Kamila e Kavic">Kamila e Kavic</option><option value="Escritorio Agroplay">Escritorio Agroplay</option></optgroup><option value="outra">Outra empresa</option></select></div><div id="edit-emp-outra-wrap" style="display:none" class="fl"><label>Nome da empresa</label><input id="edit-emp-outra" placeholder="Digite o nome"></div><div class="fl"><label>Funcao</label><select id="edit-car" style="background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;width:100%"><option value="">Selecione a empresa primeiro...</option></select></div><div id="edit-car-outro-wrap" style="display:none" class="fl"><label>Qual funcao?</label><input id="edit-car-outro" placeholder="Digite sua funcao"></div><button class="btn" id="btn-salvar-cargo" style="width:100%;font-size:12px;padding:10px;background:#c9973c">Salvar</button></div>
-<button class="bto" id="batualizafoto" style="width:100%;margin-top:12px;border-color:#0891b2;color:#0891b2">Atualizar foto</button>
-<div id="foto-atualiza-wrap" style="display:none;margin-top:10px;text-align:center">
-  <div id="fa-video-wrap" style="width:120px;height:120px;border-radius:50%;overflow:hidden;border:2px solid #0891b2;margin:0 auto 8px"><video id="fa-video" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover"></video></div>
-  <canvas id="fa-canvas" style="display:none"></canvas>
-  <button type="button" id="btn-fa-foto" class="bto" style="font-size:11px;padding:6px 12px;border-color:#0891b2;color:#0891b2">Tirar foto</button>
-</div>
-<button class="bto" id="bqr" style="width:100%;margin-top:8px;border-color:#c9973c;color:#c9973c">Ver QR Code</button>
-<div id="qr-wrap" style="display:none;text-align:center;margin-top:12px;padding:16px;background:#fff;border-radius:12px"><div id="qr-box"></div><div id="qr-cod" style="font-family:monospace;font-size:18px;font-weight:900;color:#060a06;margin-top:8px;letter-spacing:4px"></div></div>
-<button class="bto" id="bcpy" style="width:100%;margin-top:12px">Copiar dados</button>
-<button class="bto" id="bincl" style="width:100%;margin-top:8px;border-color:#0891b2;color:#0891b2">Incluir em Evento</button>
-<div id="incl-wrap" style="display:none;margin-top:10px">
-  <select id="incl-ev" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;margin-bottom:8px"><option value="">Selecione o evento...</option></select>
-  <button class="btn" id="bconfincl" style="width:100%;font-size:12px;padding:10px;background:#0891b2">Confirmar inclusao</button>
-</div>
-<button class="btr" id="bdel" style="width:100%;margin-top:8px">Excluir</button>
-```
-
+    <button class="bto" id="beditcargo" style="width:100%;margin-top:12px;border-color:#c9973c;color:#c9973c">Editar empresa / funcao</button>
+    <div id="editcargo-wrap" style="display:none;margin-top:10px"><div class="fl"><label>Empresa</label><select id="edit-emp" onchange="mudarEmpEdit(this.value)" style="background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;width:100%"><option value="">Selecione...</option><optgroup label="Grupo Agroplay"><option value="Ana Castela">Ana Castela</option><option value="Leo e Raphael">Leo e Raphael</option><option value="Country Beat">Country Beat</option><option value="Muierada">Muierada</option><option value="Francisco">Francisco</option><option value="Julia e Rafaela">Julia e Rafaela</option><option value="Julya e Maryana">Julya e Maryana</option><option value="Duda Bertelli">Duda Bertelli</option><option value="Kamila e Kavic">Kamila e Kavic</option><option value="Escritorio Agroplay">Escritorio Agroplay</option></optgroup><option value="outra">Outra empresa</option></select></div><div id="edit-emp-outra-wrap" style="display:none" class="fl"><label>Nome da empresa</label><input id="edit-emp-outra" placeholder="Digite o nome"></div><div class="fl"><label>Funcao</label><select id="edit-car" style="background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;width:100%"><option value="">Selecione a empresa primeiro...</option></select></div><div id="edit-car-outro-wrap" style="display:none" class="fl"><label>Qual funcao?</label><input id="edit-car-outro" placeholder="Digite sua funcao"></div><button class="btn" id="btn-salvar-cargo" style="width:100%;font-size:12px;padding:10px;background:#c9973c">Salvar</button></div>
+    <button class="bto" id="batualizafoto" style="width:100%;margin-top:12px;border-color:#0891b2;color:#0891b2">Atualizar foto</button>
+    <div id="foto-atualiza-wrap" style="display:none;margin-top:10px;text-align:center">
+      <div id="fa-video-wrap" style="width:120px;height:120px;border-radius:50%;overflow:hidden;border:2px solid #0891b2;margin:0 auto 8px"><video id="fa-video" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover"></video></div>
+      <canvas id="fa-canvas" style="display:none"></canvas>
+      <button type="button" id="btn-fa-foto" class="bto" style="font-size:11px;padding:6px 12px;border-color:#0891b2;color:#0891b2">Tirar foto</button>
+    </div>
+    <button class="bto" id="bqr" style="width:100%;margin-top:8px;border-color:#c9973c;color:#c9973c">Ver QR Code</button>
+    <div id="qr-wrap" style="display:none;text-align:center;margin-top:12px;padding:16px;background:#fff;border-radius:12px"><div id="qr-box"></div><div id="qr-cod" style="font-family:monospace;font-size:18px;font-weight:900;color:#060a06;margin-top:8px;letter-spacing:4px"></div></div>
+    <button class="bto" id="bcpy" style="width:100%;margin-top:12px">Copiar dados</button>
+    <button class="bto" id="bincl" style="width:100%;margin-top:8px;border-color:#0891b2;color:#0891b2">Incluir em Evento</button>
+    <div id="incl-wrap" style="display:none;margin-top:10px">
+      <select id="incl-ev" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;margin-bottom:8px"><option value="">Selecione o evento...</option></select>
+      <button class="btn" id="bconfincl" style="width:100%;font-size:12px;padding:10px;background:#0891b2">Confirmar inclusao</button>
+    </div>
+    <button class="btr" id="bdel" style="width:100%;margin-top:8px">Excluir</button>
   </div>
 </div>
 <div class="ov ovc" id="ovfoto">
@@ -803,17 +800,17 @@ var CARGOS_ESCRITORIO=["Socio / Fundador","CEO / Presidente","CMO / Diretor de M
 var CARGOS_OUTRA=["Presidente / CEO","Vice-Presidente","Diretor Executivo","Diretor Comercial","Diretor de Marketing","Diretor Financeiro","Gerente Geral","Gerente Comercial","Coordenador","Supervisor","Analista","Consultor","Relacoes Publicas","Marketing","Comercial / Vendas","Financeiro","Juridico","RH","Administrativo","Secretaria","Outro"];
 function mudarEmpCad(v){var w=q("cad-emp-outra-wrap");if(w)w.style.display=v==="outra"?"block":"none";var s=q("cad-car");s.innerHTML="";var l=v==="Escritorio Agroplay"?CARGOS_ESCRITORIO:v==="outra"?CARGOS_OUTRA:v?CARGOS_ARTISTA:[];l.forEach(function(c){s.innerHTML+="<option value='"+(c==="Outro"?"outro":c)+"'>"+c+"</option>";});var ow=q("cad-car-outro-wrap");if(ow)ow.style.display="none";s.onchange=function(){var ow2=q("cad-car-outro-wrap");if(ow2)ow2.style.display=this.value==="outro"?"block":"none";};}
 function mudarEmpEdit(v){var w=q("edit-emp-outra-wrap");if(w)w.style.display=v==="outra"?"block":"none";var s=q("edit-car");s.innerHTML="";var l=v==="Escritorio Agroplay"?CARGOS_ESCRITORIO:v==="outra"?CARGOS_OUTRA:v?CARGOS_ARTISTA:[];l.forEach(function(c){s.innerHTML+="<option value='"+(c==="Outro"?"outro":c)+"'>"+c+"</option>";});var ow=q("edit-car-outro-wrap");if(ow)ow.style.display="none";s.onchange=function(){var ow2=q("edit-car-outro-wrap");if(ow2)ow2.style.display=this.value==="outro"?"block":"none";};}
-q("beditcargo").onclick=function(){var w=q("editcargo-wrap");if(w.style.display==="none"){w.style.display="block";q("beditcargo").textContent="Fechar edicao";if(pa){var es=q("edit-emp");var ev=pa.empresa||"";var ig=["Ana Castela","Leo e Raphael","Country Beat","Muierada","Francisco","Julia e Rafaela","Julya e Maryana","Duda Bertelli","Kamila e Kavic","Escritorio Agroplay"];if(ig.indexOf(ev)>=0){es.value=ev;mudarEmpEdit(ev);q("edit-car").value=pa.cargo||"";}else if(ev){es.value="outra";mudarEmpEdit("outra");q("edit-emp-outra").value=ev;q("edit-car").value=pa.cargo||"";}}}else{w.style.display="none";q("beditcargo").textContent="Editar empresa / funcao";}};
+q("beditcargo").onclick=function(){var w=q("editcargo-wrap");if(w.style.display==="none"){w.style.display="block";q("beditcargo").textContent="Fechar";if(pa){var es=q("edit-emp");var ev=pa.empresa||"";var ig=["Ana Castela","Leo e Raphael","Country Beat","Muierada","Francisco","Julia e Rafaela","Julya e Maryana","Duda Bertelli","Kamila e Kavic","Escritorio Agroplay"];if(ig.indexOf(ev)>=0){es.value=ev;mudarEmpEdit(ev);q("edit-car").value=pa.cargo||"";}else if(ev){es.value="outra";mudarEmpEdit("outra");q("edit-emp-outra").value=ev;q("edit-car").value=pa.cargo||"";}}}else{w.style.display="none";q("beditcargo").textContent="Editar empresa / funcao";}};
 q("btn-salvar-cargo").onclick=function(){if(!pa)return;var es=q("edit-emp");var emp=es.value==="outra"?q("edit-emp-outra").value.trim():es.value;var cs=q("edit-car");var car=cs.value==="outro"?q("edit-car-outro").value.trim():cs.value;var btn=q("btn-salvar-cargo");btn.textContent="Salvando...";btn.disabled=true;ap("cadastros?id=eq."+pa.id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({empresa:emp,cargo:car})}).then(function(){pa.empresa=emp;pa.cargo=car;for(var i=0;i<cads.length;i++){if(cads[i].id===pa.id){cads[i].empresa=emp;cads[i].cargo=car;break;}}q("editcargo-wrap").style.display="none";q("beditcargo").textContent="Editar empresa / funcao";verP(pa.id);}).catch(function(){}).finally(function(){btn.textContent="Salvar";btn.disabled=false;});};
 function cpB(btn){cp2(btn.getAttribute("data-msg"),btn,"Copiar bilhete");}
+function reenviarB(pessoaId,evId){if(!confirm("Reenviar bilhete?"))return;ap("cadastros?id=eq."+pessoaId,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({bilhete_confirmado:false,bilhete_confirmado_em:null})}).then(function(){for(var i=0;i<cads.length;i++){if(cads[i].id===pessoaId){cads[i].bilhete_confirmado=false;break;}}abrBilhetes(evId);});}
 function abrBilhetes(evId){
   var ev=null;for(var i=0;i<evs.length;i++){if(evs[i].id===evId){ev=evs[i];break;}}
   if(!ev)return;
   var pessoas=cads.filter(function(c){return c.evento_id===evId;});
   if(!pessoas.length){alert("Nenhuma pessoa nesta lista ainda.");return;}
-  var hoje=new Date();var evData=ev.data?new Date(ev.data):null;
-  var dias=evData?Math.ceil((evData-hoje)/(1000*60*60*24)):999;
-  var bilheteOk=dias<=7;
+  var hj=new Date();var evData=ev.data?new Date(ev.data):null;
+  var dias=evData?Math.ceil((evData-hj)/(1000*60*60*24)):999;
   var df=ev.data?ev.data.split("-"):["","",""];
   var dataFmt=ev.data?df[2]+"/"+df[1]+"/"+df[0]:"";
   var confirmados=pessoas.filter(function(p){return p.bilhete_confirmado;});
@@ -821,8 +818,7 @@ function abrBilhetes(evId){
   var h="<div style='padding:16px'>";
   h+="<div style='font-size:16px;font-weight:900;color:#fff;margin-bottom:2px'>"+ev.nome+"</div>";
   h+="<div style='font-size:11px;color:#555;margin-bottom:10px'>"+dataFmt+(ev.local?" - "+ev.local:"")+"</div>";
-  if(!bilheteOk){h+="<div style='font-size:12px;color:#c9973c;background:#1a0e00;border:1px solid rgba(201,151,60,.3);border-radius:8px;padding:8px 12px;margin-bottom:12px'>Bilhetes disponiveis somente a 7 dias do evento (faltam "+dias+" dias)</div>";}
-  else{h+="<div style='font-size:12px;color:#2aab47;background:#0a1a0a;border:1px solid rgba(42,171,71,.3);border-radius:8px;padding:8px 12px;margin-bottom:12px'>"+dias+" dia(s) para o evento - "+confirmados.length+" confirmados - "+aguardando.length+" aguardando</div>";}
+  h+="<div style='font-size:12px;color:#2aab47;background:#0a1a0a;border:1px solid rgba(42,171,71,.3);border-radius:8px;padding:8px 12px;margin-bottom:12px'>"+dias+" dia(s) para o evento - "+confirmados.length+" confirmados - "+aguardando.length+" aguardando</div>";
   function cardP(p,conf){
     var link="https://robsafonso.github.io/Agroplay/bilhete.html?cad="+p.id+"&ev="+evId;
     var msg="AGROPLAY - Seu Bilhete\n\nOla "+p.nome+"!\n\nSeu bilhete para:\n"+ev.nome+(dataFmt?"\nData: "+dataFmt:"")+(ev.local?"\nLocal: "+ev.local:"")+"\n\nAcesse seu bilhete e QR Code:\n"+link+"\n\nApresente na entrada.\nAgroplay Music - Londrina PR";
@@ -830,10 +826,10 @@ function abrBilhetes(evId){
     c+="<div style='font-size:15px;font-weight:900;color:#fff;margin-bottom:2px'>"+p.nome+"</div>";
     c+="<div style='font-size:11px;color:#555;margin-bottom:8px'>"+(p.lote_nome?"Convidado por "+p.lote_nome:"Convite direto")+"</div>";
     if(conf){
-      c+="<div style='font-size:11px;color:#2aab47;background:#0a1a0a;border:1px solid rgba(42,171,71,.2);border-radius:6px;padding:6px 10px;text-align:center'>Bilhete confirmado</div>";
-      if(MODO!=="ver"){c+="<button onclick='reenviarB("+p.id+","+evId+")' style='width:100%;margin-top:6px;background:transparent;border:1px solid #555;color:#555;border-radius:8px;padding:6px;font-size:10px;cursor:pointer'>Reenviar bilhete</button>";}
-    } else {
-      c+="<button class='"+(bilheteOk?"btn":"bto")+"' onclick='cpB(this)' data-msg='"+msg.replace(/'/g,"&#39;")+"' style='width:100%;font-size:12px;padding:10px'>Copiar bilhete</button>";
+      c+="<div style='font-size:11px;color:#2aab47;background:#0a1a0a;border:1px solid rgba(42,171,71,.2);border-radius:6px;padding:6px 10px;text-align:center;margin-bottom:6px'>Bilhete confirmado</div>";
+      c+="<button onclick='reenviarB("+p.id+","+evId+")' style='width:100%;background:transparent;border:1px solid #555;color:#555;border-radius:8px;padding:6px;font-size:10px;cursor:pointer'>Reenviar bilhete</button>";
+    }else{
+      c+="<button onclick='cpB(this)' data-msg='"+msg.replace(/'/g,"&#39;")+"' style='width:100%;background:#1e7a35;border:none;border-radius:8px;padding:10px;font-size:12px;color:#fff;cursor:pointer;font-weight:700'>Copiar bilhete</button>";
     }
     c+="</div>";
     return c;
@@ -841,16 +837,12 @@ function abrBilhetes(evId){
   if(aguardando.length){h+="<div style='font-size:10px;color:#c9973c;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px'>Aguardando ("+aguardando.length+")</div>";aguardando.forEach(function(p){h+=cardP(p,false);});}
   if(confirmados.length){h+="<div style='font-size:10px;color:#2aab47;text-transform:uppercase;letter-spacing:1px;margin:12px 0 8px'>Confirmados ("+confirmados.length+")</div>";confirmados.forEach(function(p){h+=cardP(p,true);});}
   h+="</div>";
-  q("pcont").innerHTML=h;
-  ["aprovd","bqr","beditcargo","batualizafoto","bdel","bconfincl","bincluir","editcargo-wrap"].forEach(function(id){var el=q(id);if(el)el.style.display="none";});
-  q("ovp").classList.add("on");
-}
-function reenviarB(pessoaId,evId){
-  if(!confirm("Reenviar bilhete?"))return;
-  ap("cadastros?id=eq."+pessoaId,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({bilhete_confirmado:false,bilhete_confirmado_em:null})}).then(function(){
-    for(var i=0;i<cads.length;i++){if(cads[i].id===pessoaId){cads[i].bilhete_confirmado=false;break;}}
-    abrBilhetes(evId);
-  });
+  q("ovp").classList.remove("on");
+  setTimeout(function(){
+    q("pcont").innerHTML=h;
+    ["aprovd","bqr","beditcargo","batualizafoto","bdel","bconfincl","bincluir","editcargo-wrap"].forEach(function(id){var el=q(id);if(el)el.style.display="none";});
+    q("ovp").classList.add("on");
+  },50);
 }
 function load(){
   q("tbl").innerHTML="<div class='empty'>Carregando...</div>";
@@ -974,8 +966,8 @@ function rEvs(){
     h+="</div>";
     h+="<div style='display:flex;gap:6px;flex-wrap:wrap'>";
     h+="<button class='btn' onclick='abrConv("+ev.id+")' style='flex:1;font-size:11px;padding:8px'>Enviar Convites</button>";
-    var _h=new Date();var _ed=ev.data?new Date(ev.data):null;var _d=_ed?Math.ceil((_ed-_h)/(1000*60*60*24)):999;var _b=_d<=7;
-    h+="<button class='"+(_b?"btn":"bto")+"' onclick='abrBilhetes("+ev.id+")' style='font-size:11px;padding:8px;"+(_b?"background:#2aab47;":"border-color:#2aab47;color:#2aab47;")+"'>"+(_b?"&#127903; Bilhetes":"&#127903; Bilhetes")+"</button>";
+    var _hj=new Date();var _ed=ev.data?new Date(ev.data):null;var _ds=_ed?Math.ceil((_ed-_hj)/(1000*60*60*24)):999;
+    h+="<button onclick='abrBilhetes("+ev.id+")' style='font-size:11px;padding:8px;border-radius:8px;cursor:pointer;border:1px solid #2aab47;background:"+(_ds<=7?"#2aab47":"transparent")+";color:"+(_ds<=7?"#fff":"#2aab47")+"'> Bilhetes</button>";
     h+="<button class='bto' onclick='lstEv("+ev.id+")' style='font-size:11px;padding:8px'>Lista</button>";
     h+="<button class='bty' onclick='abrEv("+ev.id+")' style='font-size:11px;padding:8px'>Editar</button>";
     h+="<button class='btr' onclick='delEv("+ev.id+")' style='font-size:11px;padding:8px'>X</button>";
