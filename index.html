@@ -55,8 +55,9 @@ textarea{height:70px;resize:none}
 </head>
 <body>
 <div class="hdr">
-  <div style="font-size:18px;font-weight:900;color:#fff">AGRO<span style="color:#2aab47">PLAY</span></div>
-  <div style="display:flex;gap:6px">
+  <div style="font-size:18px;font-weight:900;color:#fff;cursor:pointer" onclick="togMenu()">AGRO<span style="color:#2aab47">PLAY</span></div>
+  <div style="display:flex;gap:6px;align-items:center">
+    <button onclick="togMenu()" style="background:transparent;border:none;color:#eee;font-size:20px;cursor:pointer;padding:4px 8px">&#9776;</button>
     <button class="bto" id="blinkc" style="font-size:11px;padding:6px 10px">Link Cadastro</button>
     <button class="bto" id="bnovocad" style="font-size:11px;padding:6px 10px;border-color:#c9973c;color:#c9973c">+ Cadastrar</button>
     <a href="https://robsafonso.github.io/Agroplay/mediakit.html" target="_blank" style="background:transparent;color:#2aab47;border:1px solid #2aab47;border-radius:8px;padding:6px 10px;font-size:11px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center">Kit</a>
@@ -793,6 +794,7 @@ q("btn-salvar-cargo").onclick=function(){
     verP(pa.id);
   }).catch(function(){}).finally(function(){btn.textContent="Salvar";btn.disabled=false;});
 };
+function togMenu(){var m=document.getElementById("mdrop");m.style.display=m.style.display==="none"||m.style.display===""?"block":"none";}
 function load(){
   q("tbl").innerHTML="<div class='empty'>Carregando...</div>";
   ap("cadastros?select=*&order=criado_em.desc").then(function(d){cads=d||[];rSts();rChips();rend();}).catch(function(){cads=[];rSts();rChips();rend();});
