@@ -133,6 +133,21 @@ if(!CAD_ID||!EV_ID){
     document.getElementById("bilhete").innerHTML="<div class='erro'>Erro ao carregar bilhete.</div>";
   });
 }
+
+function confirmarBilhete(){
+  var btn=document.getElementById("btn-confirmar");
+  if(btn){btn.textContent="Confirmando...";btn.disabled=true;}
+  fetch(SB+"/rest/v1/cadastros?id=eq."+CAD_ID,{
+    method:"PATCH",
+    headers:{"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json","Prefer":"return=minimal"},
+    body:JSON.stringify({bilhete_confirmado:true,bilhete_confirmado_em:new Date().toISOString()})
+  }).then(function(){
+    var wrap=document.getElementById("btn-confirmar").parentNode;
+    wrap.innerHTML="<div style='background:#0a1a0a;border:1px solid #2aab47;border-radius:10px;padding:12px;text-align:center;font-size:13px;color:#2aab47'>&#10003; Bilhete confirmado!</div>";
+  }).catch(function(){
+    if(btn){btn.textContent="Tente novamente";btn.disabled=false;}
+  });
+}
 </script>
 
 </body>
