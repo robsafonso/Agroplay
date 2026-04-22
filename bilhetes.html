@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agroplay - Bilhetes</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:16px;max-width:480px;margin:0 auto}
+.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.logo{font-size:16px;font-weight:900;color:#fff;letter-spacing:2px}
+.logo span{color:#2aab47}
+.ev-info{background:#090e09;border:1px solid #1a2a1a;border-radius:12px;padding:14px;margin-bottom:16px}
+.ev-nome{font-size:16px;font-weight:900;color:#fff;margin-bottom:4px}
+.ev-det{font-size:11px;color:#555}
+.stats{display:flex;gap:8px;margin-bottom:16px}
+.stat{flex:1;background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:10px;text-align:center}
+.stat-n{font-size:22px;font-weight:900;color:#2aab47;display:block}
+.stat-l{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:1px}
+.section-label{font-size:10px;color:#c9973c;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;font-weight:700}
+.section-label.verde{color:#2aab47}
+.card{background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:12px;margin-bottom:8px}
+.card.confirmado{border-color:rgba(42,171,71,.3)}
+.card-nome{font-size:14px;font-weight:700;color:#fff;margin-bottom:2px}
+.card-sub{font-size:11px;color:#555;margin-bottom:8px}
+.btn-copiar{width:100%;background:#1e7a35;border:none;border-radius:8px;padding:10px;font-size:12px;color:#fff;cursor:pointer;font-weight:700}
+.btn-copiar.copiado{background:#0891b2}
+.btn-reenviar{width:100%;margin-top:6px;background:transparent;border:1px solid #555;color:#555;border-radius:8px;padding:6px;font-size:10px;cursor:pointer}
+.tag-conf{font-size:11px;color:#2aab47;background:#0a1a0a;border:1px solid rgba(42,171,71,.2);border-radius:6px;padding:6px 10px;text-align:center;margin-bottom:6px}
+.aviso{background:#1a0e00;border:1px solid rgba(201,151,60,.3);border-radius:8px;padding:10px 14px;font-size:12px;color:#c9973c;margin-bottom:16px}
+.loading{text-align:center;padding:40px;font-size:14px;color:#555}
+.back{background:transparent;border:1px solid #1a2a1a;border-radius:8px;padding:6px 12px;color:#eee;font-size:12px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="logo">AGRO<span>PLAY</span></div>
+  <button class="back" onclick="history.back()">&larr; Voltar</button>
+</div>
+
+<div id="conteudo"><div class="loading">Carregando...</div></div>
+
+<script>
+var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
+var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
+var params=new URLSearchParams(window.location.search);
+var EV_ID=params.get("ev");
+
+function ap(path){
+  return fetch(SB+"/rest/v1/"+path,{headers:{"apikey":KY,"Authorization":"Bearer "+KY}}).then(function(r){return r.json();});
+}
+
+function fd(d){if(!d)return"";var x=d.split("-");return x[2]+"/"+x[1]+"/"+x[0];}
+
+function copiarBilhete(btn,pessoaId){
+  var msg=btn.getAttribute("data-msg");
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(msg).then(function(){
+      btn.textContent="Copiado!";btn.className="btn-copiar copiado";
+      setTimeout(function(){btn.textContent="Copiar bilhete";btn.className="btn-copiar";},2000);
+    });
+  } else {
+    var t=document.createElement("textarea");t.value=msg;document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t);
+    btn.textContent="Copiado!";btn.className="btn-copiar copiado";
+    setTimeout(function(){btn.textContent="Copiar bilhete";btn.className="btn-copiar";},2000);
+  }
+}
+
+function reenviar(pessoaId){
+  if(!confirm("Reenviar bilhete para esta pessoa?"))return;
+  fetch(SB+"/rest/v1/cadastros?id=eq."+pessoaId,{
+    method:"PATCH",
+    headers:{"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json","Prefer":"return=minimal"},
+    body:JSON.stringify({bilhete_confirmado:false,bilhete_confirmado_em:null})
+  }).then(function(){location.reload();});
+}
+
+if(!EV_ID){
+  document.getElementById("conteudo").innerHTML="<div class='loading'>Link invalido. Falta o ID do evento.</div>";
+} else {
+  Promise.all([
+    ap("eventos?id=eq."+EV_ID+"&select=*"),
+    ap("cadastros?evento_id=eq."+EV_ID+"&select=*&order=nome.asc")
+  ]).then(function(res){
+    var ev=res[0]&&res[0][0];
+    var pessoas=res[1]||[];
+    if(!ev){document.getElementById("conteudo").innerHTML="<div class='loading'>Evento nao encontrado.</div>";return;}
+
+    var hoje=new Date();
+    var evData=ev.data?new Date(ev.data):null;
+    var dias=evData?Math.ceil((evData-hoje)/(1000*60*60*24)):999;
+    var bilheteOk=dias<=7;
+    var dataFmt=fd(ev.data);
+    var confirmados=pessoas.filter(function(p){return p.bilhete_confirmado;});
+    var aguardando=pessoas.filter(function(p){return !p.bilhete_confirmado;});
+
+    var html="";
+
+    html+="<div class='ev-info'>";
+    html+="<div class='ev-nome'>"+ev.nome+"</div>";
+    html+="<div class='ev-det'>"+dataFmt+(ev.horario?" as "+ev.horario:"")+(ev.local?" - "+ev.local:"")+"</div>";
+    html+="</div>";
+
+    html+="<div class='stats'>";
+    html+="<div class='stat'><span class='stat-n'>"+pessoas.length+"</span><div class='stat-l'>Total</div></div>";
+    html+="<div class='stat'><span class='stat-n' style='color:#c9973c'>"+aguardando.length+"</span><div class='stat-l'>Aguardando</div></div>";
+    html+="<div class='stat'><span class='stat-n'>"+confirmados.length+"</span><div class='stat-l'>Confirmados</div></div>";
+    html+="</div>";
+
+    if(!bilheteOk){
+      html+="<div class='aviso'>Bilhetes ficam disponiveis faltando 7 dias para o evento. Faltam <b>"+dias+"</b> dias.</div>";
+    }
+
+    if(aguardando.length){
+      html+="<div class='section-label'>Aguardando ("+aguardando.length+")</div>";
+      aguardando.forEach(function(p){
+        var link="https://robsafonso.github.io/Agroplay/bilhete.html?cad="+p.id+"&ev="+EV_ID;
+        var msg="AGROPLAY - Seu Bilhete\n\nOla "+p.nome+"!\n\nSeu bilhete para:\n"+ev.nome+(dataFmt?"\nData: "+dataFmt:"")+(ev.horario?"\nHorario: "+ev.horario:"")+(ev.local?"\nLocal: "+ev.local:"")+"\n\nAcesse seu bilhete e QR Code:\n"+link+"\n\nApresente na entrada.\nAgroplay Music - Londrina PR";
+        html+="<div class='card'>";
+        html+="<div class='card-nome'>"+p.nome+"</div>";
+        html+="<div class='card-sub'>"+(p.lote_nome?"Convidado por "+p.lote_nome:"Convite direto")+"</div>";
+        html+="<button class='btn-copiar' onclick='copiarBilhete(this,"+p.id+")' data-msg='"+msg.replace(/'/g,"&#39;")+"'>"+(bilheteOk?"Copiar bilhete":"Bilhete indisponivel")+"</button>";
+        html+="</div>";
+      });
+    }
+
+    if(confirmados.length){
+      html+="<div class='section-label verde' style='margin-top:16px'>Confirmados ("+confirmados.length+")</div>";
+      confirmados.forEach(function(p){
+        html+="<div class='card confirmado'>";
+        html+="<div class='card-nome'>"+p.nome+"</div>";
+        html+="<div class='card-sub'>"+(p.lote_nome?"Convidado por "+p.lote_nome:"Convite direto")+"</div>";
+        html+="<div class='tag-conf'>Bilhete confirmado</div>";
+        html+="<button class='btn-reenviar' onclick='reenviar("+p.id+")'>Reenviar bilhete</button>";
+        html+="</div>";
+      });
+    }
+
+    document.getElementById("conteudo").innerHTML=html;
+  }).catch(function(){
+    document.getElementById("conteudo").innerHTML="<div class='loading'>Erro ao carregar. Tente novamente.</div>";
+  });
+}
+</script>
+
+</body>
+</html>
