@@ -915,6 +915,8 @@ function rEvs(){
     h+="</div>";
     h+="<div style='display:flex;gap:6px;flex-wrap:wrap'>";
     h+="<button class='btn' onclick='abrConv("+ev.id+")' style='flex:1;font-size:11px;padding:8px'>Enviar Convites</button>";
+    var _hj=new Date();var _ed=ev.data?new Date(ev.data):null;var _ds=_ed?Math.ceil((_ed-_hj)/(1000*60*60*24)):999;
+    h+="<a href='bilhetes.html?ev="+ev.id+"' style='font-size:11px;padding:8px;border-radius:8px;border:1px solid #2aab47;background:"+(_ds<=7?"#2aab47":"transparent")+";color:"+(_ds<=7?"#fff":"#2aab47")+";text-decoration:none;display:inline-block;cursor:pointer'> Bilhetes</a>";
     h+="<button class='bto' onclick='lstEv("+ev.id+")' style='font-size:11px;padding:8px'>Lista</button>";
     h+="<button class='bty' onclick='abrEv("+ev.id+")' style='font-size:11px;padding:8px'>Editar</button>";
     h+="<button class='btr' onclick='delEv("+ev.id+")' style='font-size:11px;padding:8px'>X</button>";
