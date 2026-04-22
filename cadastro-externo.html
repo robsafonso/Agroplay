@@ -228,6 +228,10 @@ function iniciarCamera(){
 }
 
 q("btn-foto").onclick=function(){
+  var fl=document.createElement("div");
+  fl.style.cssText="position:fixed;top:0;left:0;right:0;bottom:0;background:#fff;z-index:9999;opacity:0.9;pointer-events:none;transition:opacity 0.2s";
+  document.body.appendChild(fl);
+  setTimeout(function(){fl.style.opacity="0";setTimeout(function(){if(fl.parentNode)fl.parentNode.removeChild(fl);},200);},100);
   var v=q("video");var c=q("canvas");c.width=200;c.height=200;
   var ctx=c.getContext("2d");
   var size=Math.min(v.videoWidth||200,v.videoHeight||200);
