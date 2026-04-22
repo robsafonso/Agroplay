@@ -11,11 +11,14 @@ body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:16px;max
 .hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
 .logo{font-size:16px;font-weight:900;color:#fff;letter-spacing:2px}
 .logo span{color:#2aab47}
-.back{background:transparent;border:1px solid #1a2a1a;border-radius:8px;padding:6px 12px;color:#eee;font-size:12px;cursor:pointer;text-decoration:none}
-.total-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
+.back{background:transparent;border:1px solid #1a2a1a;border-radius:8px;padding:6px 12px;color:#eee;font-size:12px;text-decoration:none}
+.total-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
 .tot{background:#090e09;border:1px solid #1a2a1a;border-radius:12px;padding:12px;text-align:center}
 .tot-n{font-size:26px;font-weight:900;display:block}
 .tot-l{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+.filtros{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.chip{background:transparent;border:1px solid #1a2a1a;border-radius:20px;padding:5px 12px;font-size:11px;color:#888;cursor:pointer}
+.chip.on{background:#1e7a35;border-color:#1e7a35;color:#fff;font-weight:700}
 .ev-card{background:#090e09;border:1px solid #1a2a1a;border-radius:12px;padding:14px;margin-bottom:12px}
 .ev-nome{font-size:15px;font-weight:900;color:#fff;margin-bottom:2px}
 .ev-det{font-size:11px;color:#555;margin-bottom:12px}
@@ -23,7 +26,12 @@ body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:16px;max
 .ev-stat{border-radius:8px;padding:8px;text-align:center}
 .ev-stat-n{font-size:18px;font-weight:900;display:block}
 .ev-stat-l{font-size:9px;text-transform:uppercase;letter-spacing:1px;margin-top:2px}
-.btn-ver{width:100%;background:transparent;border:1px solid #2aab47;color:#2aab47;border-radius:8px;padding:8px;font-size:12px;cursor:pointer;text-decoration:none;display:block;text-align:center}
+.resp-section{margin-top:10px;border-top:1px solid #1a2a1a;padding-top:10px}
+.resp-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #0a0f0a}
+.resp-name{font-size:12px;color:#eee}
+.resp-badges{display:flex;gap:4px}
+.badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px}
+.btn-ver{width:100%;background:transparent;border:1px solid #2aab47;color:#2aab47;border-radius:8px;padding:8px;font-size:12px;cursor:pointer;text-decoration:none;display:block;text-align:center;margin-top:10px}
 .loading{text-align:center;padding:40px;font-size:14px;color:#555}
 .empty{text-align:center;padding:40px;font-size:13px;color:#555}
 </style>
@@ -40,28 +48,27 @@ body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:16px;max
   <div class="tot"><span class="tot-n" id="t-verde" style="color:#2aab47">0</span><div class="tot-l">Confirmado</div></div>
 </div>
 
+<div id="filtros-wrap" class="filtros" style="display:none"></div>
 <div id="conteudo"><div class="loading">Carregando...</div></div>
 
 <script>
 var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
 var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
+var allEvs=[],allCads=[],filtResp="Todos";
 
 function ap(path){
   return fetch(SB+"/rest/v1/"+path,{headers:{"apikey":KY,"Authorization":"Bearer "+KY}}).then(function(r){return r.json();});
 }
 function fd(d){if(!d)return"";var x=d.split("-");return x[2]+"/"+x[1]+"/"+x[0];}
 
-Promise.all([
-  ap("eventos?select=*&order=data.asc"),
-  ap("cadastros?select=id,nome,evento_id,bilhete_enviado,bilhete_confirmado,lote_nome&order=nome.asc")
-]).then(function(res){
-  var evs=res[0]||[];
-  var cads=res[1]||[];
+function setFilt(r){filtResp=r;render();}
 
+function render(){
+  var cads=filtResp==="Todos"?allCads:allCads.filter(function(c){return (c.lote_nome||"Direto")===filtResp;});
   var totalAzul=0,totalAmar=0,totalVerde=0;
   var html="";
 
-  evs.forEach(function(ev){
+  allEvs.forEach(function(ev){
     var pessoas=cads.filter(function(c){return c.evento_id===ev.id;});
     if(!pessoas.length)return;
     var azul=pessoas.filter(function(p){return !p.bilhete_enviado&&!p.bilhete_confirmado;}).length;
@@ -78,20 +85,72 @@ Promise.all([
     html+="<div class='ev-stat' style='background:rgba(201,151,60,.1);border:1px solid rgba(201,151,60,.3)'><span class='ev-stat-n' style='color:#c9973c'>"+amar+"</span><div class='ev-stat-l' style='color:#c9973c'>Aguard.</div></div>";
     html+="<div class='ev-stat' style='background:rgba(42,171,71,.1);border:1px solid rgba(42,171,71,.3)'><span class='ev-stat-n' style='color:#2aab47'>"+verde+"</span><div class='ev-stat-l' style='color:#2aab47'>Confirm.</div></div>";
     html+="</div>";
+
+    // Breakdown by responsavel
+    var resps={};
+    pessoas.forEach(function(p){
+      var r=p.lote_nome||"Direto";
+      if(!resps[r])resps[r]={azul:0,amar:0,verde:0};
+      if(p.bilhete_confirmado)resps[r].verde++;
+      else if(p.bilhete_enviado)resps[r].amar++;
+      else resps[r].azul++;
+    });
+    var respKeys=Object.keys(resps);
+    if(respKeys.length>1){
+      html+="<div class='resp-section'>";
+      respKeys.forEach(function(r){
+        var rs=resps[r];
+        html+="<div class='resp-row'>";
+        html+="<div class='resp-name'>"+r+"</div>";
+        html+="<div class='resp-badges'>";
+        if(rs.azul)html+="<span class='badge' style='background:rgba(8,145,178,.2);color:#0891b2'>"+rs.azul+"</span>";
+        if(rs.amar)html+="<span class='badge' style='background:rgba(201,151,60,.2);color:#c9973c'>"+rs.amar+"</span>";
+        if(rs.verde)html+="<span class='badge' style='background:rgba(42,171,71,.2);color:#2aab47'>"+rs.verde+"</span>";
+        html+="</div></div>";
+      });
+      html+="</div>";
+    }
+
     html+="<a href='bilhetes.html?ev="+ev.id+"' class='btn-ver'>Ver e enviar bilhetes</a>";
     html+="</div>";
   });
 
-  if(!html){
-    document.getElementById("conteudo").innerHTML="<div class='empty'>Nenhum evento com convidados ainda.</div>";
-    return;
-  }
-
   document.getElementById("t-azul").textContent=totalAzul;
   document.getElementById("t-amar").textContent=totalAmar;
   document.getElementById("t-verde").textContent=totalVerde;
+
+  document.getElementById("conteudo").innerHTML=html||"<div class='empty'>Nenhum resultado.</div>";
+}
+
+Promise.all([
+  ap("eventos?select=*&order=data.asc"),
+  ap("cadastros?select=id,nome,evento_id,bilhete_enviado,bilhete_confirmado,lote_nome&order=nome.asc")
+]).then(function(res){
+  allEvs=res[0]||[];
+  allCads=res[1]||[];
+
+  // Build responsavel filter
+  var resps={"Todos":true};
+  allCads.forEach(function(c){resps[c.lote_nome||"Direto"]=true;});
+  var respList=Object.keys(resps);
+
+  var fw=document.getElementById("filtros-wrap");
+  fw.innerHTML=respList.map(function(r){return "<button class='chip"+(r==="Todos"?" on":"")+"' onclick='setFilt(\""+r.replace(/"/g,"&quot;")+"\")'  id='chip-"+r.replace(/\s/g,"_")+"'>"+r+"</button>";}).join("");
+  fw.style.display="flex";
   document.getElementById("total-bar").style.display="grid";
-  document.getElementById("conteudo").innerHTML=html;
+
+  // Update chip active state
+  var origSetFilt=setFilt;
+  setFilt=function(r){
+    filtResp=r;
+    document.querySelectorAll(".chip").forEach(function(c){c.classList.remove("on");});
+    var id="chip-"+r.replace(/\s/g,"_");
+    var el=document.getElementById(id);
+    if(el)el.classList.add("on");
+    render();
+  };
+
+  render();
 }).catch(function(){
   document.getElementById("conteudo").innerHTML="<div class='loading'>Erro ao carregar.</div>";
 });
