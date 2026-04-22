@@ -232,23 +232,25 @@ textarea{height:70px;resize:none}
       <div id="edit-car-outro-wrap" style="display:none" class="fl"><label>Qual funcao?</label><input id="edit-car-outro" placeholder="Digite sua funcao"></div>
       <button class="btn" id="btn-salvar-cargo" style="width:100%;font-size:12px;padding:10px;background:#c9973c">Salvar</button>
     </div>
-    <button class="bto" id="beditcargo" style="width:100%;margin-top:12px;border-color:#c9973c;color:#c9973c">Editar empresa / funcao</button>
-    <div id="editcargo-wrap" style="display:none;margin-top:10px"><div class="fl"><label>Empresa</label><select id="edit-emp" onchange="mudarEmpEdit(this.value)" style="background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;width:100%"><option value="">Selecione...</option><optgroup label="Grupo Agroplay"><option value="Ana Castela">Ana Castela</option><option value="Leo e Raphael">Leo e Raphael</option><option value="Country Beat">Country Beat</option><option value="Muierada">Muierada</option><option value="Francisco">Francisco</option><option value="Julia e Rafaela">Julia e Rafaela</option><option value="Julya e Maryana">Julya e Maryana</option><option value="Duda Bertelli">Duda Bertelli</option><option value="Kamila e Kavic">Kamila e Kavic</option><option value="Escritorio Agroplay">Escritorio Agroplay</option></optgroup><option value="outra">Outra empresa</option></select></div><div id="edit-emp-outra-wrap" style="display:none" class="fl"><label>Nome da empresa</label><input id="edit-emp-outra" placeholder="Digite o nome"></div><div class="fl"><label>Funcao</label><select id="edit-car" style="background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;width:100%"><option value="">Selecione a empresa primeiro...</option></select></div><div id="edit-car-outro-wrap" style="display:none" class="fl"><label>Qual funcao?</label><input id="edit-car-outro" placeholder="Digite sua funcao"></div><button class="btn" id="btn-salvar-cargo" style="width:100%;font-size:12px;padding:10px;background:#c9973c">Salvar</button></div>
-    <button class="bto" id="batualizafoto" style="width:100%;margin-top:12px;border-color:#0891b2;color:#0891b2">Atualizar foto</button>
-    <div id="foto-atualiza-wrap" style="display:none;margin-top:10px;text-align:center">
-      <div id="fa-video-wrap" style="width:120px;height:120px;border-radius:50%;overflow:hidden;border:2px solid #0891b2;margin:0 auto 8px"><video id="fa-video" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover"></video></div>
-      <canvas id="fa-canvas" style="display:none"></canvas>
-      <button type="button" id="btn-fa-foto" class="bto" style="font-size:11px;padding:6px 12px;border-color:#0891b2;color:#0891b2">Tirar foto</button>
-    </div>
-    <button class="bto" id="bqr" style="width:100%;margin-top:8px;border-color:#c9973c;color:#c9973c">Ver QR Code</button>
-    <div id="qr-wrap" style="display:none;text-align:center;margin-top:12px;padding:16px;background:#fff;border-radius:12px"><div id="qr-box"></div><div id="qr-cod" style="font-family:monospace;font-size:18px;font-weight:900;color:#060a06;margin-top:8px;letter-spacing:4px"></div></div>
-    <button class="bto" id="bcpy" style="width:100%;margin-top:12px">Copiar dados</button>
-    <button class="bto" id="bincl" style="width:100%;margin-top:8px;border-color:#0891b2;color:#0891b2">Incluir em Evento</button>
-    <div id="incl-wrap" style="display:none;margin-top:10px">
-      <select id="incl-ev" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;margin-bottom:8px"><option value="">Selecione o evento...</option></select>
-      <button class="btn" id="bconfincl" style="width:100%;font-size:12px;padding:10px;background:#0891b2">Confirmar inclusao</button>
-    </div>
-    <button class="btr" id="bdel" style="width:100%;margin-top:8px">Excluir</button>
+
+```
+<button class="bto" id="batualizafoto" style="width:100%;margin-top:12px;border-color:#0891b2;color:#0891b2">Atualizar foto</button>
+<div id="foto-atualiza-wrap" style="display:none;margin-top:10px;text-align:center">
+  <div id="fa-video-wrap" style="width:120px;height:120px;border-radius:50%;overflow:hidden;border:2px solid #0891b2;margin:0 auto 8px"><video id="fa-video" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover"></video></div>
+  <canvas id="fa-canvas" style="display:none"></canvas>
+  <button type="button" id="btn-fa-foto" class="bto" style="font-size:11px;padding:6px 12px;border-color:#0891b2;color:#0891b2">Tirar foto</button>
+</div>
+<button class="bto" id="bqr" style="width:100%;margin-top:8px;border-color:#c9973c;color:#c9973c">Ver QR Code</button>
+<div id="qr-wrap" style="display:none;text-align:center;margin-top:12px;padding:16px;background:#fff;border-radius:12px"><div id="qr-box"></div><div id="qr-cod" style="font-family:monospace;font-size:18px;font-weight:900;color:#060a06;margin-top:8px;letter-spacing:4px"></div></div>
+<button class="bto" id="bcpy" style="width:100%;margin-top:12px">Copiar dados</button>
+<button class="bto" id="bincl" style="width:100%;margin-top:8px;border-color:#0891b2;color:#0891b2">Incluir em Evento</button>
+<div id="incl-wrap" style="display:none;margin-top:10px">
+  <select id="incl-ev" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;margin-bottom:8px"><option value="">Selecione o evento...</option></select>
+  <button class="btn" id="bconfincl" style="width:100%;font-size:12px;padding:10px;background:#0891b2">Confirmar inclusao</button>
+</div>
+<button class="btr" id="bdel" style="width:100%;margin-top:8px">Excluir</button>
+```
+
   </div>
 </div>
 <div class="ov ovc" id="ovfoto">
@@ -802,7 +804,7 @@ function mudarEmpCad(v){var w=q("cad-emp-outra-wrap");if(w)w.style.display=v==="
 function mudarEmpEdit(v){var w=q("edit-emp-outra-wrap");if(w)w.style.display=v==="outra"?"block":"none";var s=q("edit-car");s.innerHTML="";var l=v==="Escritorio Agroplay"?CARGOS_ESCRITORIO:v==="outra"?CARGOS_OUTRA:v?CARGOS_ARTISTA:[];l.forEach(function(c){s.innerHTML+="<option value='"+(c==="Outro"?"outro":c)+"'>"+c+"</option>";});var ow=q("edit-car-outro-wrap");if(ow)ow.style.display="none";s.onchange=function(){var ow2=q("edit-car-outro-wrap");if(ow2)ow2.style.display=this.value==="outro"?"block":"none";};}
 q("beditcargo").onclick=function(){var w=q("editcargo-wrap");if(w.style.display==="none"){w.style.display="block";q("beditcargo").textContent="Fechar";if(pa){var es=q("edit-emp");var ev=pa.empresa||"";var ig=["Ana Castela","Leo e Raphael","Country Beat","Muierada","Francisco","Julia e Rafaela","Julya e Maryana","Duda Bertelli","Kamila e Kavic","Escritorio Agroplay"];if(ig.indexOf(ev)>=0){es.value=ev;mudarEmpEdit(ev);q("edit-car").value=pa.cargo||"";}else if(ev){es.value="outra";mudarEmpEdit("outra");q("edit-emp-outra").value=ev;q("edit-car").value=pa.cargo||"";}}}else{w.style.display="none";q("beditcargo").textContent="Editar empresa / funcao";}};
 q("btn-salvar-cargo").onclick=function(){if(!pa)return;var es=q("edit-emp");var emp=es.value==="outra"?q("edit-emp-outra").value.trim():es.value;var cs=q("edit-car");var car=cs.value==="outro"?q("edit-car-outro").value.trim():cs.value;var btn=q("btn-salvar-cargo");btn.textContent="Salvando...";btn.disabled=true;ap("cadastros?id=eq."+pa.id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({empresa:emp,cargo:car})}).then(function(){pa.empresa=emp;pa.cargo=car;for(var i=0;i<cads.length;i++){if(cads[i].id===pa.id){cads[i].empresa=emp;cads[i].cargo=car;break;}}q("editcargo-wrap").style.display="none";q("beditcargo").textContent="Editar empresa / funcao";verP(pa.id);}).catch(function(){}).finally(function(){btn.textContent="Salvar";btn.disabled=false;});};
-function cpB(btn){cp2(btn.getAttribute("data-msg"),btn,"Copiar bilhete");}
+function cpB(btn){var msg=btn.getAttribute("data-msg");if(navigator.clipboard){navigator.clipboard.writeText(msg).then(function(){btn.textContent="Copiado!";btn.style.background="#0891b2";setTimeout(function(){btn.textContent="Copiar bilhete";btn.style.background="#1e7a35";},2000);});}else{var t=document.createElement("textarea");t.value=msg;document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t);btn.textContent="Copiado!";btn.style.background="#0891b2";setTimeout(function(){btn.textContent="Copiar bilhete";btn.style.background="#1e7a35";},2000);}}
 function reenviarB(pessoaId,evId){if(!confirm("Reenviar bilhete?"))return;ap("cadastros?id=eq."+pessoaId,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({bilhete_confirmado:false,bilhete_confirmado_em:null})}).then(function(){for(var i=0;i<cads.length;i++){if(cads[i].id===pessoaId){cads[i].bilhete_confirmado=false;break;}}abrBilhetes(evId);});}
 function abrBilhetes(evId){
   var ev=null;for(var i=0;i<evs.length;i++){if(evs[i].id===evId){ev=evs[i];break;}}
@@ -840,7 +842,7 @@ function abrBilhetes(evId){
   q("ovp").classList.remove("on");
   setTimeout(function(){
     q("pcont").innerHTML=h;
-    ["aprovd","bqr","beditcargo","batualizafoto","bdel","bconfincl","bincluir","editcargo-wrap"].forEach(function(id){var el=q(id);if(el)el.style.display="none";});
+    ["aprovd","bqr","beditcargo","batualizafoto","bdel","bconfincl","bincluir","editcargo-wrap","btn-salvar-cargo"].forEach(function(id){var el=q(id);if(el)el.style.display="none";});
     q("ovp").classList.add("on");
   },50);
 }
