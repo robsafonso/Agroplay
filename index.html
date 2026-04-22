@@ -56,8 +56,7 @@ textarea{height:70px;resize:none}
 <body>
 <div class="hdr">
   <div style="font-size:18px;font-weight:900;color:#fff">AGRO<span style="color:#2aab47">PLAY</span></div>
-  <div style="display:flex;gap:6px;align-items:center">
-    <button onclick="togMenu()" id="bmenu" style="background:transparent;border:1px solid #1a2a1a;border-radius:8px;padding:6px 10px;color:#eee;font-size:16px;cursor:pointer">&#9776;</button>
+  <div style="display:flex;gap:6px">
     <button class="bto" id="blinkc" style="font-size:11px;padding:6px 10px">Link Cadastro</button>
     <button class="bto" id="bnovocad" style="font-size:11px;padding:6px 10px;border-color:#c9973c;color:#c9973c">+ Cadastrar</button>
     <a href="https://robsafonso.github.io/Agroplay/mediakit.html" target="_blank" style="background:transparent;color:#2aab47;border:1px solid #2aab47;border-radius:8px;padding:6px 10px;font-size:11px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center">Kit</a>
@@ -233,8 +232,6 @@ textarea{height:70px;resize:none}
       <div id="edit-car-outro-wrap" style="display:none" class="fl"><label>Qual funcao?</label><input id="edit-car-outro" placeholder="Digite sua funcao"></div>
       <button class="btn" id="btn-salvar-cargo" style="width:100%;font-size:12px;padding:10px;background:#c9973c">Salvar</button>
     </div>
-    <button class="bto" id="beditcargo" style="width:100%;margin-top:12px;border-color:#c9973c;color:#c9973c">Editar empresa / funcao</button>
-    <div id="editcargo-wrap" style="display:none;margin-top:10px"><div class="fl"><label>Empresa</label><select id="edit-emp" onchange="mudarEmpEdit(this.value)" style="background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;width:100%"><option value="">Selecione...</option><optgroup label="Grupo Agroplay"><option value="Ana Castela">Ana Castela</option><option value="Leo e Raphael">Leo e Raphael</option><option value="Country Beat">Country Beat</option><option value="Muierada">Muierada</option><option value="Francisco">Francisco</option><option value="Julia e Rafaela">Julia e Rafaela</option><option value="Julya e Maryana">Julya e Maryana</option><option value="Duda Bertelli">Duda Bertelli</option><option value="Kamila e Kavic">Kamila e Kavic</option><option value="Escritorio Agroplay">Escritorio Agroplay</option></optgroup><option value="outra">Outra empresa</option></select></div><div id="edit-emp-outra-wrap" style="display:none" class="fl"><label>Nome da empresa</label><input id="edit-emp-outra" placeholder="Digite o nome"></div><div class="fl"><label>Funcao</label><select id="edit-car" style="background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;width:100%"><option value="">Selecione a empresa primeiro...</option></select></div><div id="edit-car-outro-wrap" style="display:none" class="fl"><label>Qual funcao?</label><input id="edit-car-outro" placeholder="Digite sua funcao"></div><button class="btn" id="btn-salvar-cargo" style="width:100%;font-size:12px;padding:10px;background:#c9973c">Salvar</button></div>
     <button class="bto" id="batualizafoto" style="width:100%;margin-top:12px;border-color:#0891b2;color:#0891b2">Atualizar foto</button>
     <div id="foto-atualiza-wrap" style="display:none;margin-top:10px;text-align:center">
       <div id="fa-video-wrap" style="width:120px;height:120px;border-radius:50%;overflow:hidden;border:2px solid #0891b2;margin:0 auto 8px"><video id="fa-video" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover"></video></div>
@@ -796,391 +793,325 @@ q("btn-salvar-cargo").onclick=function(){
     verP(pa.id);
   }).catch(function(){}).finally(function(){btn.textContent="Salvar";btn.disabled=false;});
 };
-var CARGOS_ARTISTA=["Artista / Cantor","Musico / Banda","Bailarino / Dancarino","Diretor de Palco","Producao","Tecnico de Som","Tecnico de Luz","Fotografo","Videomaker","Camarim","Maquiagem","Assessoria de Imprensa","Comercial / Agenciamento","Seguranca","Motorista / Transfer","Road Manager","Outro"];
-var CARGOS_ESCRITORIO=["Socio / Fundador","CEO / Presidente","CMO / Diretor de Marketing","CFO / Diretor Financeiro","Diretor Comercial","Diretor de Eventos","Gerente de Marketing","Marketing Digital","Publicidade","Licenciamento","Assessoria de Imprensa","Producao de Eventos","RH / Recursos Humanos","Financeiro / Contabilidade","Juridico","Administrativo","Secretaria","Seguranca","Outro"];
-var CARGOS_OUTRA=["Presidente / CEO","Vice-Presidente","Diretor Executivo","Diretor Comercial","Diretor de Marketing","Diretor Financeiro","Gerente Geral","Gerente Comercial","Coordenador","Supervisor","Analista","Consultor","Relacoes Publicas","Marketing","Comercial / Vendas","Financeiro","Juridico","RH","Administrativo","Secretaria","Outro"];
-function mudarEmpCad(v){var w=q("cad-emp-outra-wrap");if(w)w.style.display=v==="outra"?"block":"none";var s=q("cad-car");s.innerHTML="";var l=v==="Escritorio Agroplay"?CARGOS_ESCRITORIO:v==="outra"?CARGOS_OUTRA:v?CARGOS_ARTISTA:[];l.forEach(function(c){s.innerHTML+="<option value='"+(c==="Outro"?"outro":c)+"'>"+c+"</option>";});var ow=q("cad-car-outro-wrap");if(ow)ow.style.display="none";s.onchange=function(){var ow2=q("cad-car-outro-wrap");if(ow2)ow2.style.display=this.value==="outro"?"block":"none";};}
-function mudarEmpEdit(v){var w=q("edit-emp-outra-wrap");if(w)w.style.display=v==="outra"?"block":"none";var s=q("edit-car");s.innerHTML="";var l=v==="Escritorio Agroplay"?CARGOS_ESCRITORIO:v==="outra"?CARGOS_OUTRA:v?CARGOS_ARTISTA:[];l.forEach(function(c){s.innerHTML+="<option value='"+(c==="Outro"?"outro":c)+"'>"+c+"</option>";});var ow=q("edit-car-outro-wrap");if(ow)ow.style.display="none";s.onchange=function(){var ow2=q("edit-car-outro-wrap");if(ow2)ow2.style.display=this.value==="outro"?"block":"none";};}
-q("beditcargo").onclick=function(){var w=q("editcargo-wrap");if(w.style.display==="none"){w.style.display="block";q("beditcargo").textContent="Fechar edicao";if(pa){var es=q("edit-emp");var ev=pa.empresa||"";var ig=["Ana Castela","Leo e Raphael","Country Beat","Muierada","Francisco","Julia e Rafaela","Julya e Maryana","Duda Bertelli","Kamila e Kavic","Escritorio Agroplay"];if(ig.indexOf(ev)>=0){es.value=ev;mudarEmpEdit(ev);q("edit-car").value=pa.cargo||"";}else if(ev){es.value="outra";mudarEmpEdit("outra");q("edit-emp-outra").value=ev;q("edit-car").value=pa.cargo||"";}}}else{w.style.display="none";q("beditcargo").textContent="Editar empresa / funcao";}};
-q("btn-salvar-cargo").onclick=function(){if(!pa)return;var es=q("edit-emp");var emp=es.value==="outra"?q("edit-emp-outra").value.trim():es.value;var cs=q("edit-car");var car=cs.value==="outro"?q("edit-car-outro").value.trim():cs.value;var btn=q("btn-salvar-cargo");btn.textContent="Salvando...";btn.disabled=true;ap("cadastros?id=eq."+pa.id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({empresa:emp,cargo:car})}).then(function(){pa.empresa=emp;pa.cargo=car;for(var i=0;i<cads.length;i++){if(cads[i].id===pa.id){cads[i].empresa=emp;cads[i].cargo=car;break;}}q("editcargo-wrap").style.display="none";q("beditcargo").textContent="Editar empresa / funcao";verP(pa.id);}).catch(function(){}).finally(function(){btn.textContent="Salvar";btn.disabled=false;});};
-function cpB(btn){cp2(btn.getAttribute("data-msg"),btn,"Copiar bilhete");}
-function reenviarB(pessoaId,evId){
-  if(!confirm("Tem certeza que quer reenviar o bilhete?"))return;
-  ap("cadastros?id=eq."+pessoaId,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({bilhete_confirmado:false,bilhete_confirmado_em:null})}).then(function(){
-    abrBilhetes(evId);
-  });
-}
-function abrBilhetes(evId){
-  var ev=null;for(var i=0;i<evs.length;i++){if(evs[i].id===evId){ev=evs[i];break;}}
-  if(!ev)return;
-  var pessoas=cads.filter(function(c){return c.evento_id===evId;});
-  if(!pessoas.length){alert("Nenhuma pessoa nesta lista ainda.");return;}
-  var hoje=new Date();var evData=ev.data?new Date(ev.data):null;
-  var dias=evData?Math.ceil((evData-hoje)/(1000*60*60*24)):999;
-  var bilheteOk=dias<=7;
-  var df=ev.data?ev.data.split("-"):["","",""];
-  var dataFmt=ev.data?df[2]+"/"+df[1]+"/"+df[0]:"";
-  var confirmados=pessoas.filter(function(p){return p.bilhete_confirmado;});
-  var aguardando=pessoas.filter(function(p){return !p.bilhete_confirmado;});
-  var h="<div style='padding:16px'>";
-  h+="<div style='font-size:16px;font-weight:900;color:#fff;margin-bottom:2px'>"+ev.nome+"</div>";
-  h+="<div style='font-size:11px;color:#555;margin-bottom:10px'>"+dataFmt+(ev.local?" &bull; "+ev.local:"")+"</div>";
-  if(!bilheteOk){
-    h+="<div style='font-size:12px;color:#c9973c;background:#1a0e00;border:1px solid rgba(201,151,60,.3);border-radius:8px;padding:8px 12px;margin-bottom:12px'>Faltam "+dias+" dias. Bilhetes disponiveis somente a 7 dias do evento.</div>";
-  } else {
-    h+="<div style='font-size:12px;color:#2aab47;background:#0a1a0a;border:1px solid rgba(42,171,71,.3);border-radius:8px;padding:8px 12px;margin-bottom:12px'>"+dias+" dia(s) para o evento &bull; "+confirmados.length+" confirmados &bull; "+aguardando.length+" aguardando</div>";
-  }
-  function cardPessoa(p,jaConfirmado){
-    var link="https://robsafonso.github.io/Agroplay/bilhete.html?cad="+p.id+"&ev="+evId;
-    var msg="AGROPLAY - Seu Bilhete\n\nOla "+p.nome+"!\n\nSeu bilhete para:\n"+ev.nome+(dataFmt?"\nData: "+dataFmt:"")+(ev.local?"\nLocal: "+ev.local:"")+"\n\nAcesse seu bilhete e QR Code:\n"+link+"\n\nApresente na entrada.\nAgroplay Music - Londrina PR";
-    var c="<div style='background:#060a06;border:1px solid "+(jaConfirmado?"rgba(42,171,71,.3)":"#1a2a1a")+";border-radius:10px;padding:12px;margin-bottom:8px'>";
-    c+="<div style='font-size:15px;font-weight:900;color:#fff;margin-bottom:2px'>"+p.nome+"</div>";
-    c+="<div style='font-size:11px;color:#555;margin-bottom:8px'>"+(p.lote_nome?"Convidado por "+p.lote_nome:"Convite direto")+"</div>";
-    if(jaConfirmado){
-      c+="<div style='font-size:11px;color:#2aab47;background:#0a1a0a;border:1px solid rgba(42,171,71,.2);border-radius:6px;padding:6px 10px;text-align:center'>&#10003; Bilhete confirmado</div>";
-      if(MODO!=="ver"){c+="<button onclick='reenviarB("+p.id+","+evId+")' style='width:100%;margin-top:6px;background:transparent;border:1px solid #555;color:#555;border-radius:8px;padding:6px;font-size:10px;cursor:pointer'>Reenviar bilhete</button>";}
-    } else {
-      c+="<button class='"+(bilheteOk?"btn":"bto")+"' onclick='cpB(this)' data-msg='"+msg.replace(/'/g,"&#39;")+"' style='width:100%;font-size:12px;padding:10px'>Copiar bilhete</button>";
-    }
-    c+="</div>";
-    return c;
-  }
-  if(aguardando.length){
-    h+="<div style='font-size:11px;color:#c9973c;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px'>&#9203; Aguardando ("+aguardando.length+")</div>";
-    aguardando.forEach(function(p){h+=cardPessoa(p,false);});
-  }
-  if(confirmados.length){
-    h+="<div style='font-size:11px;color:#2aab47;text-transform:uppercase;letter-spacing:1px;margin:12px 0 8px'>&#10003; Confirmados ("+confirmados.length+")</div>";
-    confirmados.forEach(function(p){h+=cardPessoa(p,true);});
-  }
-  h+="</div>";
-  q("pcont").innerHTML=h;
-  ["aprovd","bqr","beditcargo","batualizafoto","bdel","bconfincl","bincluir","editcargo-wrap"].forEach(function(id){var el=q(id);if(el)el.style.display="none";});
-  q("ovp").classList.add("on");
-}
-
 function load(){
-q(“tbl”).innerHTML=”<div class='empty'>Carregando…</div>”;
-ap(“cadastros?select=*&order=criado_em.desc”).then(function(d){cads=d||[];rSts();rChips();rend();}).catch(function(){cads=[];rSts();rChips();rend();});
-ap(“codigos?select=*&order=id.asc”).then(function(d){cods=d||[];rSts();rCods();}).catch(function(){cods=[];});
-ap(“eventos?select=*&order=data.asc”).then(function(d){evs=d||[];rSts();rEvs();}).catch(function(){evs=[];});
-ap(“lotes?select=*&order=criado_em.desc”).then(function(d){lotes=d||[];rLotes();}).catch(function(){lotes=[];});
+  q("tbl").innerHTML="<div class='empty'>Carregando...</div>";
+  ap("cadastros?select=*&order=criado_em.desc").then(function(d){cads=d||[];rSts();rChips();rend();}).catch(function(){cads=[];rSts();rChips();rend();});
+  ap("codigos?select=*&order=id.asc").then(function(d){cods=d||[];rSts();rCods();}).catch(function(){cods=[];});
+  ap("eventos?select=*&order=data.asc").then(function(d){evs=d||[];rSts();rEvs();}).catch(function(){evs=[];});
+  ap("lotes?select=*&order=criado_em.desc").then(function(d){lotes=d||[];rLotes();}).catch(function(){lotes=[];});
 }
 function rSts(){
-var d=cods.filter(function(c){return !c.usado;}).length;
-var pend=cads.filter(function(c){return c.status===“pendente”&&c.evento_id;}).length;
-q(“sts”).innerHTML=”<div class='stat'><strong>”+cads.length+”</strong><small>Cadastros</small></div>”+”<div class='stat'><strong>”+evs.length+”</strong><small>Eventos</small></div>”+”<div class='stat'><strong>”+(pend>0?pend:d)+”</strong><small>”+(pend>0?“Pendentes”:“Codigos”)+”</small></div>”;
+  var d=cods.filter(function(c){return !c.usado;}).length;
+  var pend=cads.filter(function(c){return c.status==="pendente"&&c.evento_id;}).length;
+  q("sts").innerHTML="<div class='stat'><strong>"+cads.length+"</strong><small>Cadastros</small></div>"+"<div class='stat'><strong>"+evs.length+"</strong><small>Eventos</small></div>"+"<div class='stat'><strong>"+(pend>0?pend:d)+"</strong><small>"+(pend>0?"Pendentes":"Codigos")+"</small></div>";
 }
 function rChips(){
-q(“chips”).innerHTML=SETS.map(function(s){
-return “<button class='chip"+(fset===s?" on":"")+"' onclick='setF(\""+s+"\")'>” +s+”</button>”;
-}).join(””);
+  q("chips").innerHTML=SETS.map(function(s){
+    return "<button class='chip"+(fset===s?" on":"")+"' onclick='setF(\""+s+"\")'>" +s+"</button>";
+  }).join("");
 }
 function setF(s){fset=s;rChips();rend();}
 function rend(){
-var b=q(“bsc”).value.toLowerCase();
-var f=cads.filter(function(c){var emp=c.empresa||””;var em=fset===“Todos”||(fset===“Outros”?(!emp||SETS.indexOf(emp)<1):emp===fset);return em&&(!b||c.nome.toLowerCase().indexOf(b)>=0||(c.email||””).toLowerCase().indexOf(b)>=0);});
-var gb=q(“gbar”);
-if(sel.length>0){gb.style.display=“flex”;q(“sct”).textContent=sel.length+” sel.”;}else gb.style.display=“none”;
-if(!f.length){q(“tbl”).innerHTML=”<div class='empty'>Nenhum cadastro</div>”;return;}
-var all=f.every(function(c){return sel.indexOf(c.id)>=0;});
-var h=”<div class='tbl'><table><thead><tr><th><input type=‘checkbox’”+(all?” checked”:””)+” id=‘cball’></th><th>Nome</th><th>Setor</th><th>Status</th></tr></thead><tbody>”;
-f.forEach(function(c){
-var cor=COR[c.setor]||”#555”;
-var sb=c.status===“aprovado”?”<span class='ab'>Aprov</span>”:c.status===“reprovado”?”<span class='rb'>Reprov</span>”:c.evento_id?”<span class='pb'>Pend</span>”:””;
-if(c.lote_nome)sb=(sb||””)+”<span style='background:#0891b2;color:#fff;padding:2px 6px;border-radius:10px;font-size:9px;display:block;margin-top:3px'>”+c.lote_nome+”</span>”;
-h+=”<tr><td><input type=‘checkbox’”+(sel.indexOf(c.id)>=0?” checked”:””)+” onchange=‘togS(”+c.id+”,this.checked)’></td><td><span class='nlink' onclick='verP("+c.id+")'>”+c.nome+”</span></td><td><span class='badge' style='background:"+cor+"'>”+c.setor+”</span></td><td>”+sb+”</td></tr>”;
-});
-h+=”</tbody></table></div>”;
-q(“tbl”).innerHTML=h;
-var cb=q(“cball”);
-if(cb)cb.onchange=function(){togAll(f.map(function(c){return c.id;}),this.checked);};
+  var b=q("bsc").value.toLowerCase();
+  var f=cads.filter(function(c){var emp=c.empresa||"";var em=fset==="Todos"||(fset==="Outros"?(!emp||SETS.indexOf(emp)<1):emp===fset);return em&&(!b||c.nome.toLowerCase().indexOf(b)>=0||(c.email||"").toLowerCase().indexOf(b)>=0);});
+  var gb=q("gbar");
+  if(sel.length>0){gb.style.display="flex";q("sct").textContent=sel.length+" sel.";}else gb.style.display="none";
+  if(!f.length){q("tbl").innerHTML="<div class='empty'>Nenhum cadastro</div>";return;}
+  var all=f.every(function(c){return sel.indexOf(c.id)>=0;});
+  var h="<div class='tbl'><table><thead><tr><th><input type='checkbox'"+(all?" checked":"")+" id='cball'></th><th>Nome</th><th>Setor</th><th>Status</th></tr></thead><tbody>";
+  f.forEach(function(c){
+    var cor=COR[c.setor]||"#555";
+    var sb=c.status==="aprovado"?"<span class='ab'>Aprov</span>":c.status==="reprovado"?"<span class='rb'>Reprov</span>":c.evento_id?"<span class='pb'>Pend</span>":"";
+    if(c.lote_nome)sb=(sb||"")+"<span style='background:#0891b2;color:#fff;padding:2px 6px;border-radius:10px;font-size:9px;display:block;margin-top:3px'>"+c.lote_nome+"</span>";
+    h+="<tr><td><input type='checkbox'"+(sel.indexOf(c.id)>=0?" checked":"")+" onchange='togS("+c.id+",this.checked)'></td><td><span class='nlink' onclick='verP("+c.id+")'>"+c.nome+"</span></td><td><span class='badge' style='background:"+cor+"'>"+c.setor+"</span></td><td>"+sb+"</td></tr>";
+  });
+  h+="</tbody></table></div>";
+  q("tbl").innerHTML=h;
+  var cb=q("cball");
+  if(cb)cb.onchange=function(){togAll(f.map(function(c){return c.id;}),this.checked);};
 }
 function togS(id,v){if(v){if(sel.indexOf(id)<0)sel.push(id);}else{sel=sel.filter(function(x){return x!==id;});}rend();}
 function togAll(ids,v){if(v)ids.forEach(function(id){if(sel.indexOf(id)<0)sel.push(id);});else sel=sel.filter(function(x){return ids.indexOf(x)<0;});rend();}
 function verP(id){
-var c=null;
-for(var i=0;i<cads.length;i++){if(cads[i].id===id){c=cads[i];break;}}
-if(!c)return;pa=c;
-var cor=COR[c.setor]||”#555”;
-var fh=c.foto_url?”<img src='"+c.foto_url+"' onclick='verFoto("+c.id+")' style='width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid #2aab47;margin:0 auto 10px;display:block;cursor:pointer'/>”:”<div style='width:80px;height:80px;background:"+cor+";border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:28px;color:#fff;font-weight:700'>”+c.nome.charAt(0).toUpperCase()+”</div>”;
-var loteTag=c.lote_nome?”<div style='font-size:11px;color:#0891b2;margin-top:6px'>Convidado por <b>”+c.lote_nome+”</b></div>”:””; var h=”<div style='text-align:center;margin-bottom:16px'>”+fh+”<div style='font-size:17px;font-weight:700;color:#fff'>”+c.nome+”</div><span class='badge' style='background:"+cor+";margin-top:6px;display:inline-block'>”+c.setor+”</span>”+loteTag+”</div>”;
-var rows=[[“CPF”,c.cpf],[“RG”,c.rg],[“Email”,c.email],[“Telefone”,c.telefone],[“Nascimento”,fd(c.nascimento)]];
-if(c.empresa)rows.push([“Empresa”,c.empresa]);
-if(c.cargo)rows.push([“Cargo”,c.cargo]);
-if(c.lote_nome)rows.push([“Convidado por”,c.lote_nome]);
-if(c.status&&c.evento_id)rows.push([“Status”,c.status]);
-rows.forEach(function(row){h+=”<div class='prow'><span>”+row[0]+”</span><span>”+row[1]+”</span></div>”;});
-q(“pcont”).innerHTML=h;
-if(c.status===“pendente”)q(“aprovd”).style.display=“block”;else q(“aprovd”).style.display=“none”;
-q(“ovp”).classList.add(“on”);
-q(“qr-wrap”).style.display=“none”;q(“bqr”).textContent=“Ver QR Code”;
+  var c=null;
+  for(var i=0;i<cads.length;i++){if(cads[i].id===id){c=cads[i];break;}}
+  if(!c)return;pa=c;
+  var cor=COR[c.setor]||"#555";
+  var fh=c.foto_url?"<img src='"+c.foto_url+"' onclick='verFoto("+c.id+")' style='width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid #2aab47;margin:0 auto 10px;display:block;cursor:pointer'/>":"<div style='width:80px;height:80px;background:"+cor+";border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:28px;color:#fff;font-weight:700'>"+c.nome.charAt(0).toUpperCase()+"</div>";
+  var loteTag=c.lote_nome?"<div style='font-size:11px;color:#0891b2;margin-top:6px'>Convidado por <b>"+c.lote_nome+"</b></div>":""; var h="<div style='text-align:center;margin-bottom:16px'>"+fh+"<div style='font-size:17px;font-weight:700;color:#fff'>"+c.nome+"</div><span class='badge' style='background:"+cor+";margin-top:6px;display:inline-block'>"+c.setor+"</span>"+loteTag+"</div>";
+  var rows=[["CPF",c.cpf],["RG",c.rg],["Email",c.email],["Telefone",c.telefone],["Nascimento",fd(c.nascimento)]];
+  if(c.empresa)rows.push(["Empresa",c.empresa]);
+  if(c.cargo)rows.push(["Cargo",c.cargo]);
+  if(c.lote_nome)rows.push(["Convidado por",c.lote_nome]);
+  if(c.status&&c.evento_id)rows.push(["Status",c.status]);
+  rows.forEach(function(row){h+="<div class='prow'><span>"+row[0]+"</span><span>"+row[1]+"</span></div>";});
+  q("pcont").innerHTML=h;
+  if(c.status==="pendente")q("aprovd").style.display="block";else q("aprovd").style.display="none";
+  q("ovp").classList.add("on");
+  q("qr-wrap").style.display="none";q("bqr").textContent="Ver QR Code";
 }
 function verFoto(id){
-var c=null;
-for(var i=0;i<cads.length;i++){if(cads[i].id===id){c=cads[i];break;}}
-if(!c||!c.foto_url)return;
-q(“fgrd”).src=c.foto_url;q(“ovfoto”).classList.add(“on”);
+  var c=null;
+  for(var i=0;i<cads.length;i++){if(cads[i].id===id){c=cads[i];break;}}
+  if(!c||!c.foto_url)return;
+  q("fgrd").src=c.foto_url;q("ovfoto").classList.add("on");
 }
 function copDados(){
-if(!pa)return;
-var txt=“Nome: “+pa.nome+”\nCPF: “+pa.cpf+”\nRG: “+pa.rg+”\nEmail: “+pa.email+”\nTelefone: “+pa.telefone+”\nNascimento: “+fd(pa.nascimento)+”\nSetor: “+pa.setor;
-if(pa.empresa)txt=txt+”\nEmpresa: “+pa.empresa;
-if(pa.cargo)txt=txt+”\nCargo: “+pa.cargo;
-cp2(txt,q(“bcpy”),“Copiar dados”);
+  if(!pa)return;
+  var txt="Nome: "+pa.nome+"\nCPF: "+pa.cpf+"\nRG: "+pa.rg+"\nEmail: "+pa.email+"\nTelefone: "+pa.telefone+"\nNascimento: "+fd(pa.nascimento)+"\nSetor: "+pa.setor;
+  if(pa.empresa)txt=txt+"\nEmpresa: "+pa.empresa;
+  if(pa.cargo)txt=txt+"\nCargo: "+pa.cargo;
+  cp2(txt,q("bcpy"),"Copiar dados");
 }
 function delP(){
-if(!pa)return;if(!confirm(“Excluir?”))return;
-var pid=pa.id;
-ap(“cadastros?id=eq.”+pid,{m:“DELETE”,pref:“return=minimal”}).then(function(){
-cads=cads.filter(function(c){return c.id!==pid;});
-sel=sel.filter(function(x){return x!==pid;});
-q(“ovp”).classList.remove(“on”);pa=null;rSts();rend();
-});
+  if(!pa)return;if(!confirm("Excluir?"))return;
+  var pid=pa.id;
+  ap("cadastros?id=eq."+pid,{m:"DELETE",pref:"return=minimal"}).then(function(){
+    cads=cads.filter(function(c){return c.id!==pid;});
+    sel=sel.filter(function(x){return x!==pid;});
+    q("ovp").classList.remove("on");pa=null;rSts();rend();
+  });
 }
 function abrEv(id){
-eid=id;
-if(id){
-var ev=null;
-for(var i=0;i<evs.length;i++){if(evs[i].id===id){ev=evs[i];break;}}
-if(!ev)return;
-q(“evtit”).textContent=“Editar Evento”;
-q(“evn”).value=ev.nome||””;q(“evd”).value=ev.data||””;q(“evl”).value=ev.local||””;
-q(“evm”).value=ev.maps_url||””;q(“eva1”).value=ev.atracao1||””;q(“evi1”).value=ev.insta_atr1||””;
-q(“eva2”).value=ev.atracao2||””;q(“evi2”).value=ev.insta_atr2||””;
-q(“evf”).value=ev.foto_url||””;q(“evdesc”).value=ev.descricao||””;
-}else{
-q(“evtit”).textContent=“Novo Evento”;
-[“evn”,“evd”,“evl”,“evm”,“eva1”,“evi1”,“eva2”,“evi2”,“evf”,“evdesc”].forEach(function(x){q(x).value=””;});
+  eid=id;
+  if(id){
+    var ev=null;
+    for(var i=0;i<evs.length;i++){if(evs[i].id===id){ev=evs[i];break;}}
+    if(!ev)return;
+    q("evtit").textContent="Editar Evento";
+    q("evn").value=ev.nome||"";q("evd").value=ev.data||"";q("evl").value=ev.local||"";
+    q("evm").value=ev.maps_url||"";q("eva1").value=ev.atracao1||"";q("evi1").value=ev.insta_atr1||"";
+    q("eva2").value=ev.atracao2||"";q("evi2").value=ev.insta_atr2||"";
+    q("evf").value=ev.foto_url||"";q("evdesc").value=ev.descricao||"";
+  }else{
+    q("evtit").textContent="Novo Evento";
+    ["evn","evd","evl","evm","eva1","evi1","eva2","evi2","evf","evdesc"].forEach(function(x){q(x).value="";});
+  }
+  q("evalert").innerHTML="";
+  q("ovev").classList.add("on");
 }
-q(“evalert”).innerHTML=””;
-q(“ovev”).classList.add(“on”);
-}
-function fecEv(){q(“ovev”).classList.remove(“on”);eid=null;}
+function fecEv(){q("ovev").classList.remove("on");eid=null;}
 function salvEv(){
-var nome=q(“evn”).value.trim();
-if(!nome){q(“evalert”).innerHTML=”<div class='ea'>Nome obrigatorio</div>”;return;}
-var btn=q(“bsev”);btn.textContent=“Salvando…”;btn.disabled=true;
-var body=JSON.stringify({nome:nome,data:q(“evd”).value||null,local:q(“evl”).value.trim(),maps_url:q(“evm”).value.trim(),atracao1:q(“eva1”).value.trim(),insta_atr1:q(“evi1”).value.trim(),atracao2:q(“eva2”).value.trim(),insta_atr2:q(“evi2”).value.trim(),foto_url:q(“evf”).value.trim(),descricao:q(“evdesc”).value.trim()});
-var path=eid?“eventos?id=eq.”+eid:“eventos”;
-var meth=eid?“PATCH”:“POST”;
-ap(path,{m:meth,pref:“return=minimal”,b:body}).then(function(){fecEv();load();tab(“e”);}).catch(function(){q(“evalert”).innerHTML=”<div class='ea'>Erro ao salvar</div>”;}).finally(function(){btn.textContent=“Salvar”;btn.disabled=false;});
+  var nome=q("evn").value.trim();
+  if(!nome){q("evalert").innerHTML="<div class='ea'>Nome obrigatorio</div>";return;}
+  var btn=q("bsev");btn.textContent="Salvando...";btn.disabled=true;
+  var body=JSON.stringify({nome:nome,data:q("evd").value||null,local:q("evl").value.trim(),maps_url:q("evm").value.trim(),atracao1:q("eva1").value.trim(),insta_atr1:q("evi1").value.trim(),atracao2:q("eva2").value.trim(),insta_atr2:q("evi2").value.trim(),foto_url:q("evf").value.trim(),descricao:q("evdesc").value.trim()});
+  var path=eid?"eventos?id=eq."+eid:"eventos";
+  var meth=eid?"PATCH":"POST";
+  ap(path,{m:meth,pref:"return=minimal",b:body}).then(function(){fecEv();load();tab("e");}).catch(function(){q("evalert").innerHTML="<div class='ea'>Erro ao salvar</div>";}).finally(function(){btn.textContent="Salvar";btn.disabled=false;});
 }
 function rEvs(){
-var el=q(“evlst”);
-if(!evs.length){el.innerHTML=”<div class='empty'>Nenhum evento</div>”;return;}
-var h=””;
-evs.forEach(function(ev){
-var d=ev.data?ev.data.split(”-”):[””,””,””];
-h+=”<div class='card'>”;
-h+=”<div style='font-size:15px;font-weight:700;color:#fff;margin-bottom:4px'>”+ev.nome+”</div>”;
-h+=”<div style='font-size:11px;color:#555;line-height:1.7;margin-bottom:10px'>”;
-if(ev.data)h+=“Data: “+d[2]+”/”+d[1]+”/”+d[0]+”<br>”;
-if(ev.local)h+=“Local: “+ev.local+”<br>”;
-if(ev.atracao1)h+=“Atracoes: “+ev.atracao1+(ev.atracao2?” + “+ev.atracao2:””)+”<br>”;
-h+=”</div>”;
-h+=”<div style='display:flex;gap:6px;flex-wrap:wrap'>”;
-h+=”<button class='btn' onclick='abrConv("+ev.id+")' style='flex:1;font-size:11px;padding:8px'>Enviar Convites</button>”;
-var _hoje=new Date();var _evd=ev.data?new Date(ev.data):null;var _dias=_evd?Math.ceil((_evd-_hoje)/(1000*60*60*24)):999;var _bok=_dias<=7;
-h+=”<button class='"+(_bok?"btn":"bto")+"' onclick='abrBilhetes("+ev.id+")' style='font-size:11px;padding:8px;"+(_bok?"background:#2aab47;":"border-color:#2aab47;color:#2aab47;")+"'>”+(*bok?”🎟 Bilhetes Disponiveis”:”🎟 Bilhetes”)+”</button>”;
-h+=”<button class='bto' onclick='lstEv("+ev.id+")' style='font-size:11px;padding:8px'>Lista</button>”;
-h+=”<button class='bty' onclick='abrEv("+ev.id+")' style='font-size:11px;padding:8px'>Editar</button>”;
-h+=”<button class='btr' onclick='delEv("+ev.id+")' style='font-size:11px;padding:8px'>X</button>”;
-h+=”</div></div>”;
-});
-el.innerHTML=h;
+  var el=q("evlst");
+  if(!evs.length){el.innerHTML="<div class='empty'>Nenhum evento</div>";return;}
+  var h="";
+  evs.forEach(function(ev){
+    var d=ev.data?ev.data.split("-"):["","",""];
+    h+="<div class='card'>";
+    h+="<div style='font-size:15px;font-weight:700;color:#fff;margin-bottom:4px'>"+ev.nome+"</div>";
+    h+="<div style='font-size:11px;color:#555;line-height:1.7;margin-bottom:10px'>";
+    if(ev.data)h+="Data: "+d[2]+"/"+d[1]+"/"+d[0]+"<br>";
+    if(ev.local)h+="Local: "+ev.local+"<br>";
+    if(ev.atracao1)h+="Atracoes: "+ev.atracao1+(ev.atracao2?" + "+ev.atracao2:"")+"<br>";
+    h+="</div>";
+    h+="<div style='display:flex;gap:6px;flex-wrap:wrap'>";
+    h+="<button class='btn' onclick='abrConv("+ev.id+")' style='flex:1;font-size:11px;padding:8px'>Enviar Convites</button>";
+    h+="<button class='bto' onclick='lstEv("+ev.id+")' style='font-size:11px;padding:8px'>Lista</button>";
+    h+="<button class='bty' onclick='abrEv("+ev.id+")' style='font-size:11px;padding:8px'>Editar</button>";
+    h+="<button class='btr' onclick='delEv("+ev.id+")' style='font-size:11px;padding:8px'>X</button>";
+    h+="</div></div>";
+  });
+  el.innerHTML=h;
 }
 function delEv(id){
-if(!confirm(“Excluir evento?”))return;
-ap(“cadastros?evento_id=eq.”+id,{m:“PATCH”,pref:“return=minimal”,b:JSON.stringify({evento_id:null,status:“pendente”})}).then(function(){
-return ap(“eventos?id=eq.”+id,{m:“DELETE”,pref:“return=minimal”});
-}).then(function(){evs=evs.filter(function(e){return e.id!==id;});rEvs();rSts();});
+  if(!confirm("Excluir evento?"))return;
+  ap("cadastros?evento_id=eq."+id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({evento_id:null,status:"pendente"})}).then(function(){
+    return ap("eventos?id=eq."+id,{m:"DELETE",pref:"return=minimal"});
+  }).then(function(){evs=evs.filter(function(e){return e.id!==id;});rEvs();rSts();});
 }
 function abrConv(evId){
-eva=null;
-for(var i=0;i<evs.length;i++){if(evs[i].id===evId){eva=evs[i];break;}}
-if(!eva)return;
-cs=[];cf=“Todos”;
-q(“cres”).classList.add(“gone”);q(“csel”).classList.remove(“gone”);
-q(“cevinfo”).textContent=“Evento: “+eva.nome;
-q(“calert”).innerHTML=””;
-document.querySelectorAll(”#cchips .chip”).forEach(function(b){b.classList.remove(“on”);});
-document.querySelector(”#cchips .chip”).classList.add(“on”);
-rcp();
-q(“ovconv”).classList.add(“on”);
+  eva=null;
+  for(var i=0;i<evs.length;i++){if(evs[i].id===evId){eva=evs[i];break;}}
+  if(!eva)return;
+  cs=[];cf="Todos";
+  q("cres").classList.add("gone");q("csel").classList.remove("gone");
+  q("cevinfo").textContent="Evento: "+eva.nome;
+  q("calert").innerHTML="";
+  document.querySelectorAll("#cchips .chip").forEach(function(b){b.classList.remove("on");});
+  document.querySelector("#cchips .chip").classList.add("on");
+  rcp();
+  q("ovconv").classList.add("on");
 }
-function fconv(f,btn){cf=f;document.querySelectorAll(”#cchips .chip”).forEach(function(b){b.classList.remove(“on”);});btn.classList.add(“on”);rcp();}
+function fconv(f,btn){cf=f;document.querySelectorAll("#cchips .chip").forEach(function(b){b.classList.remove("on");});btn.classList.add("on");rcp();}
 function rcp(){
-var f=cads.filter(function(c){return cf===“Todos”||c.setor===cf;});
-if(!f.length){q(“cpess”).innerHTML=”<div class='empty'>Nenhuma pessoa</div>”;return;}
-var h=””;
-f.forEach(function(c){
-var cor=COR[c.setor]||”#555”;
-var chk=cs.indexOf(c.id)>=0;
-h+=”<div style='display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #111'>”;
-h+=”<input type=‘checkbox’ style=‘width:18px;height:18px;cursor:pointer’ “+(chk?“checked”:””)+” onchange=‘togC(”+c.id+”,this.checked)’>”;
-h+=”<div style='flex:1;font-size:13px;color:#eee'>”+c.nome+”</div>”;
-h+=”<span class='badge' style='background:"+cor+"'>”+c.setor+”</span></div>”;
-});
-q(“cpess”).innerHTML=h;
+  var f=cads.filter(function(c){return cf==="Todos"||c.setor===cf;});
+  if(!f.length){q("cpess").innerHTML="<div class='empty'>Nenhuma pessoa</div>";return;}
+  var h="";
+  f.forEach(function(c){
+    var cor=COR[c.setor]||"#555";
+    var chk=cs.indexOf(c.id)>=0;
+    h+="<div style='display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #111'>";
+    h+="<input type='checkbox' style='width:18px;height:18px;cursor:pointer' "+(chk?"checked":"")+" onchange='togC("+c.id+",this.checked)'>";
+    h+="<div style='flex:1;font-size:13px;color:#eee'>"+c.nome+"</div>";
+    h+="<span class='badge' style='background:"+cor+"'>"+c.setor+"</span></div>";
+  });
+  q("cpess").innerHTML=h;
 }
 function togC(id,v){if(v){if(cs.indexOf(id)<0)cs.push(id);}else{cs=cs.filter(function(x){return x!==id;});}}
 function gconvExt(){
-if(!eva)return;
-var btn=q(“bgconv”);btn.textContent=“Gerando…”;btn.disabled=true;
-q(“calert-ext”).innerHTML=””;
-fetch(SB+”/rest/v1/codigos?usado=eq.false&lote_id=is.null&order=id.asc&limit=1”,{headers:{“apikey”:KY,“Authorization”:“Bearer “+KY}})
-.then(function(r){return r.json();})
-.then(function(d){
-if(!d||!d.length){q(“calert-ext”).innerHTML=”<div class='ea'>Nenhum codigo disponivel!</div>”;return;}
-var cod=d[0].codigo;
-ap(“codigos?codigo=eq.”+cod,{m:“PATCH”,pref:“return=minimal”,b:JSON.stringify({usado:true,usado_em:new Date().toISOString()})});
-var link=“https://robsafonso.github.io/Agroplay/cadastro-externo.html?ev=”+eva.id+”&cod=”+cod+”&resp=”+encodeURIComponent(“Robson”);
-var df=eva.data?eva.data.split(”-”):[””,””,””];
-var dataFmt=eva.data?df[2]+”/”+df[1]+”/”+df[0]:””;
-var msg=“AGROPLAY - Convite VIP\n\n”+eva.nome+(dataFmt?”\nData: “+dataFmt:””)+(eva.local?”\nLocal: “+eva.local:””)+(eva.atracao1?”\nAtracoes: “+eva.atracao1+(eva.atracao2?” + “+eva.atracao2:””):””)+”\n\nAcesse e se cadastre:\n”+link+”\n\nSeu codigo: “+cod+”\n\nCodigo intransferivel.\nAgroplay - Londrina PR”;
-q(“linkext”).textContent=link;
-q(“bcopext”).style.display=“block”;
-q(“bcopext”).onclick=function(){cp2(msg,q(“bcopext”),“Copiar mensagem”);};
-rSts();
-})
-.catch(function(){q(“calert-ext”).innerHTML=”<div class='ea'>Erro</div>”;})
-.finally(function(){btn.textContent=“Gerar link externo”;btn.disabled=false;});
+  if(!eva)return;
+  var btn=q("bgconv");btn.textContent="Gerando...";btn.disabled=true;
+  q("calert-ext").innerHTML="";
+  fetch(SB+"/rest/v1/codigos?usado=eq.false&lote_id=is.null&order=id.asc&limit=1",{headers:{"apikey":KY,"Authorization":"Bearer "+KY}})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(!d||!d.length){q("calert-ext").innerHTML="<div class='ea'>Nenhum codigo disponivel!</div>";return;}
+      var cod=d[0].codigo;
+      ap("codigos?codigo=eq."+cod,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString()})});
+      var link="https://robsafonso.github.io/Agroplay/cadastro-externo.html?ev="+eva.id+"&cod="+cod+"&resp="+encodeURIComponent("Robson");
+      var df=eva.data?eva.data.split("-"):["","",""];
+      var dataFmt=eva.data?df[2]+"/"+df[1]+"/"+df[0]:"";
+      var msg="AGROPLAY - Convite VIP\n\n"+eva.nome+(dataFmt?"\nData: "+dataFmt:"")+(eva.local?"\nLocal: "+eva.local:"")+(eva.atracao1?"\nAtracoes: "+eva.atracao1+(eva.atracao2?" + "+eva.atracao2:""):"")+"\n\nAcesse e se cadastre:\n"+link+"\n\nSeu codigo: "+cod+"\n\nCodigo intransferivel.\nAgroplay - Londrina PR";
+      q("linkext").textContent=link;
+      q("bcopext").style.display="block";
+      q("bcopext").onclick=function(){cp2(msg,q("bcopext"),"Copiar mensagem");};
+      rSts();
+    })
+    .catch(function(){q("calert-ext").innerHTML="<div class='ea'>Erro</div>";})
+    .finally(function(){btn.textContent="Gerar link externo";btn.disabled=false;});
 }
 function gconv(){
-if(cs.length===0){q(“calert”).innerHTML=”<div class='ea'>Selecione pelo menos 1 pessoa</div>”;return;}
-var btn=q(“bgconv”);btn.textContent=“Gerando…”;btn.disabled=true;
-q(“calert”).innerHTML=””;
-fetch(SB+”/rest/v1/codigos?usado=eq.false&lote_id=is.null&order=id.asc&limit=1”,{headers:{“apikey”:KY,“Authorization”:“Bearer “+KY}})
-.then(function(r){return r.json();})
-.then(function(d){
-if(!d||!d.length){q(“calert”).innerHTML=”<div class='ea'>Nenhum codigo disponivel!</div>”;return;}
-var cod=d[0].codigo;
-var pessoa=null;
-for(var i=0;i<cads.length;i++){if(cads[i].id===cs[0]){pessoa=cads[i];break;}}
-var ev=eva;
-var df=ev.data?ev.data.split(”-”):[””,””,””];
-var dataFmt=ev.data?df[2]+”/”+df[1]+”/”+df[0]:””;
-var msg=“AGROPLAY - Convite VIP\n\nOla “+pessoa.nome+”!\n\nVoce esta convidado(a):\n\n”+ev.nome+(dataFmt?”\nData: “+dataFmt:””)+(ev.local?”\nLocal: “+ev.local:””)+(ev.atracao1?”\nAtracoes: “+ev.atracao1+(ev.atracao2?” + “+ev.atracao2:””):””);
-msg=msg+”\n\nAcesse e confirme presenca:\n”+LCV+”?ev=”+ev.id+”&tipo=interno\n\nSeu codigo: “+cod+”\n\nCodigo intransferivel.\nAgroplay - Londrina PR”;
-ap(“codigos?codigo=eq.”+cod,{m:“PATCH”,pref:“return=minimal”,b:JSON.stringify({usado:true,usado_em:new Date().toISOString(),cadastro_id:pessoa?pessoa.id:null})});
-if(pessoa&&ev.id){ap(“cadastros?id=eq.”+pessoa.id,{m:“PATCH”,pref:“return=minimal”,b:JSON.stringify({evento_id:ev.id,status:“aprovado”})}).then(function(){for(var i=0;i<cads.length;i++){if(cads[i].id===pessoa.id){cads[i].evento_id=ev.id;cads[i].status=“aprovado”;break;}}});}
-q(“ccod”).textContent=cod;
-q(“cmsg”).textContent=msg;
-q(“cres”).classList.remove(“gone”);
-q(“csel”).classList.add(“gone”);
-cs=cs.slice(1);
-rSts();
-})
-.catch(function(){q(“calert”).innerHTML=”<div class='ea'>Erro ao gerar</div>”;})
-.finally(function(){btn.textContent=“Gerar convite”;btn.disabled=false;});
+  if(cs.length===0){q("calert").innerHTML="<div class='ea'>Selecione pelo menos 1 pessoa</div>";return;}
+  var btn=q("bgconv");btn.textContent="Gerando...";btn.disabled=true;
+  q("calert").innerHTML="";
+  fetch(SB+"/rest/v1/codigos?usado=eq.false&lote_id=is.null&order=id.asc&limit=1",{headers:{"apikey":KY,"Authorization":"Bearer "+KY}})
+    .then(function(r){return r.json();})
+    .then(function(d){
+      if(!d||!d.length){q("calert").innerHTML="<div class='ea'>Nenhum codigo disponivel!</div>";return;}
+      var cod=d[0].codigo;
+      var pessoa=null;
+      for(var i=0;i<cads.length;i++){if(cads[i].id===cs[0]){pessoa=cads[i];break;}}
+      var ev=eva;
+      var df=ev.data?ev.data.split("-"):["","",""];
+      var dataFmt=ev.data?df[2]+"/"+df[1]+"/"+df[0]:"";
+      var msg="AGROPLAY - Convite VIP\n\nOla "+pessoa.nome+"!\n\nVoce esta convidado(a):\n\n"+ev.nome+(dataFmt?"\nData: "+dataFmt:"")+(ev.local?"\nLocal: "+ev.local:"")+(ev.atracao1?"\nAtracoes: "+ev.atracao1+(ev.atracao2?" + "+ev.atracao2:""):"");
+      msg=msg+"\n\nAcesse e confirme presenca:\n"+LCV+"?ev="+ev.id+"&tipo=interno\n\nSeu codigo: "+cod+"\n\nCodigo intransferivel.\nAgroplay - Londrina PR";
+      ap("codigos?codigo=eq."+cod,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString(),cadastro_id:pessoa?pessoa.id:null})});
+      if(pessoa&&ev.id){ap("cadastros?id=eq."+pessoa.id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({evento_id:ev.id,status:"aprovado"})}).then(function(){for(var i=0;i<cads.length;i++){if(cads[i].id===pessoa.id){cads[i].evento_id=ev.id;cads[i].status="aprovado";break;}}});}
+      q("ccod").textContent=cod;
+      q("cmsg").textContent=msg;
+      q("cres").classList.remove("gone");
+      q("csel").classList.add("gone");
+      cs=cs.slice(1);
+      rSts();
+    })
+    .catch(function(){q("calert").innerHTML="<div class='ea'>Erro ao gerar</div>";})
+    .finally(function(){btn.textContent="Gerar convite";btn.disabled=false;});
 }
 function lstEv(evId){
-var ev=null;
-for(var i=0;i<evs.length;i++){if(evs[i].id===evId){ev=evs[i];break;}}
-if(!ev)return;
-var p=cads.filter(function(c){return c.evento_id===evId;});
-lista={n:ev.nome,p:p,dt:new Date().toLocaleString(“pt-BR”),evId:evId};
-lstExcluidos=[];lstSel=[];
-tab(“l”);rLst();
+  var ev=null;
+  for(var i=0;i<evs.length;i++){if(evs[i].id===evId){ev=evs[i];break;}}
+  if(!ev)return;
+  var p=cads.filter(function(c){return c.evento_id===evId;});
+  lista={n:ev.nome,p:p,dt:new Date().toLocaleString("pt-BR"),evId:evId};
+  lstExcluidos=[];lstSel=[];
+  tab("l");rLst();
 }
 function rCods(){
-var f=cods.filter(function(c){return fk===“d”?!c.usado:fk===“u”?c.usado:true;});
-if(!f.length){q(“klst”).innerHTML=”<div class='empty'>Nenhum</div>”;return;}
-var h=”<div style='display:grid;grid-template-columns:repeat(2,1fr);gap:5px'>”;
-f.forEach(function(c){
-h+=”<div style='background:#030503;border:1px solid #1a2a1a;border-radius:7px;padding:8px 10px;display:flex;justify-content:space-between;align-items:center'>”;
-h+=”<span style='font-family:monospace;font-size:12px;font-weight:700;color:"+(c.usado?"#444":"#fff")+"'>”+c.codigo+”</span>”;
-h+=”<span class='badge' style='background:"+(c.usado?"#555":"#1e7a35")+"'>”+(c.usado?“Usado”:“Livre”)+”</span></div>”;
-});
-h+=”</div>”;q(“klst”).innerHTML=h;
+  var f=cods.filter(function(c){return fk==="d"?!c.usado:fk==="u"?c.usado:true;});
+  if(!f.length){q("klst").innerHTML="<div class='empty'>Nenhum</div>";return;}
+  var h="<div style='display:grid;grid-template-columns:repeat(2,1fr);gap:5px'>";
+  f.forEach(function(c){
+    h+="<div style='background:#030503;border:1px solid #1a2a1a;border-radius:7px;padding:8px 10px;display:flex;justify-content:space-between;align-items:center'>";
+    h+="<span style='font-family:monospace;font-size:12px;font-weight:700;color:"+(c.usado?"#444":"#fff")+"'>"+c.codigo+"</span>";
+    h+="<span class='badge' style='background:"+(c.usado?"#555":"#1e7a35")+"'>"+(c.usado?"Usado":"Livre")+"</span></div>";
+  });
+  h+="</div>";q("klst").innerHTML=h;
 }
-function expCods(){dl(“Codigo,Status\n”+cods.map(function(c){return c.codigo+”,”+(c.usado?“Usado”:“Disponivel”);}).join(”\n”),“text/csv”,“Codigos.csv”);}
+function expCods(){dl("Codigo,Status\n"+cods.map(function(c){return c.codigo+","+(c.usado?"Usado":"Disponivel");}).join("\n"),"text/csv","Codigos.csv");}
 function gerarLst(){
-var p=cads.filter(function(c){return sel.indexOf(c.id)>=0;});
-var n=q(“evnm”).value||“Evento”;
-lista={n:n,p:p,dt:new Date().toLocaleString(“pt-BR”)};
-tab(“l”);rLst();
+  var p=cads.filter(function(c){return sel.indexOf(c.id)>=0;});
+  var n=q("evnm").value||"Evento";
+  lista={n:n,p:p,dt:new Date().toLocaleString("pt-BR")};
+  tab("l");rLst();
 }
 var lstExcluidos=[];
 var lstSel=[];
 function rLst(){
-if(!lista){q(“llst”).innerHTML=”<div class='empty'>Selecione cadastros e clique em Gerar Lista.</div>”;return;}
-var ativos=lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)<0;});
-var excl=lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)>=0;});
-var h=”<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px'>”;
-h+=”<div><div style='font-size:15px;color:#fff;font-weight:700'>”+lista.n+”</div>”;
-h+=”<div style='font-size:11px;color:#555;margin-top:2px'>”+lista.dt+” - “+ativos.length+” confirmado(s)</div></div>”;
-h+=”<div style='display:flex;gap:6px;flex-wrap:wrap'>”;
-h+=”<button class='bto' onclick='exXlsL()' style='font-size:11px;padding:7px 10px'>Excel</button>”;
-h+=”<button class='bto' onclick='exCsvL()' style='font-size:11px;padding:7px 10px'>CSV</button>”;
-h+=”<button class='btr' onclick='exclSel()' style='font-size:11px;padding:7px 10px'>Excluir sel.</button>”;
-h+=”</div></div>”;
-h+=”<div style='font-size:10px;color:#2aab47;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px'>Confirmados (”+ativos.length+”)</div>”;
-h+=”<div class='tbl'><table><thead><tr><th><input type='checkbox' id='lball' onchange='togLstAll(this.checked)'></th><th>Nome</th><th>Empresa</th><th>Status</th><th>Convidado por</th><th></th></tr></thead><tbody>”;
-ativos.forEach(function(p,i){
-var chk=lstSel.indexOf(p.id)>=0;
-var sb=p.status===“aprovado”?”<span class='ab'>Aprov</span>”:p.status===“reprovado”?”<span class='rb'>Reprov</span>”:”<span class='pb'>Pend</span>”;
-h+=”<tr><td><input type=‘checkbox’ “+(chk?“checked”:””)+” onchange=‘togLst(”+p.id+”,this.checked)’></td>”;
-h+=”<td style='color:#fff'>”+p.nome+”</td>”;
-h+=”<td style='color:#777'>”+(p.empresa||”-”)+”</td>”;
-h+=”<td>”+sb+”</td>”;
-h+=”<td style='color:#0891b2;font-size:11px'>”+(p.lote_nome||”-”)+”</td>”;
-h+=”<td><button class='btr' onclick='exclP("+p.id+")' style='font-size:10px;padding:3px 8px'>X</button></td></tr>”;
-});
-h+=”</tbody></table></div>”;
-if(excl.length){
-h+=”<div style='font-size:10px;color:#e74c3c;text-transform:uppercase;letter-spacing:1px;margin:14px 0 8px'>Excluidos (”+excl.length+”)</div>”;
-h+=”<div class='tbl'><table><thead><tr><th>Nome</th><th>Empresa</th><th>Convidado por</th><th></th></tr></thead><tbody>”;
-excl.forEach(function(p){
-h+=”<tr><td style='color:#777'>”+p.nome+”</td>”;
-h+=”<td style='color:#555'>”+(p.empresa||”-”)+”</td>”;
-h+=”<td style='color:#555;font-size:11px'>”+(p.lote_nome||”-”)+”</td>”;
-h+=”<td><button class='bto' onclick='restP("+p.id+")' style='font-size:10px;padding:3px 8px'>Restaurar</button></td></tr>”;
-});
-h+=”</tbody></table></div>”;
-}
-q(“llst”).innerHTML=h;
+  if(!lista){q("llst").innerHTML="<div class='empty'>Selecione cadastros e clique em Gerar Lista.</div>";return;}
+  var ativos=lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)<0;});
+  var excl=lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)>=0;});
+  var h="<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px'>";
+  h+="<div><div style='font-size:15px;color:#fff;font-weight:700'>"+lista.n+"</div>";
+  h+="<div style='font-size:11px;color:#555;margin-top:2px'>"+lista.dt+" - "+ativos.length+" confirmado(s)</div></div>";
+  h+="<div style='display:flex;gap:6px;flex-wrap:wrap'>";
+  h+="<button class='bto' onclick='exXlsL()' style='font-size:11px;padding:7px 10px'>Excel</button>";
+  h+="<button class='bto' onclick='exCsvL()' style='font-size:11px;padding:7px 10px'>CSV</button>";
+  h+="<button class='btr' onclick='exclSel()' style='font-size:11px;padding:7px 10px'>Excluir sel.</button>";
+  h+="</div></div>";
+  h+="<div style='font-size:10px;color:#2aab47;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px'>Confirmados ("+ativos.length+")</div>";
+  h+="<div class='tbl'><table><thead><tr><th><input type='checkbox' id='lball' onchange='togLstAll(this.checked)'></th><th>Nome</th><th>Empresa</th><th>Status</th><th>Convidado por</th><th></th></tr></thead><tbody>";
+  ativos.forEach(function(p,i){
+    var chk=lstSel.indexOf(p.id)>=0;
+    var sb=p.status==="aprovado"?"<span class='ab'>Aprov</span>":p.status==="reprovado"?"<span class='rb'>Reprov</span>":"<span class='pb'>Pend</span>";
+    h+="<tr><td><input type='checkbox' "+(chk?"checked":"")+" onchange='togLst("+p.id+",this.checked)'></td>";
+    h+="<td style='color:#fff'>"+p.nome+"</td>";
+    h+="<td style='color:#777'>"+(p.empresa||"-")+"</td>";
+    h+="<td>"+sb+"</td>";
+    h+="<td style='color:#0891b2;font-size:11px'>"+(p.lote_nome||"-")+"</td>";
+    h+="<td><button class='btr' onclick='exclP("+p.id+")' style='font-size:10px;padding:3px 8px'>X</button></td></tr>";
+  });
+  h+="</tbody></table></div>";
+  if(excl.length){
+    h+="<div style='font-size:10px;color:#e74c3c;text-transform:uppercase;letter-spacing:1px;margin:14px 0 8px'>Excluidos ("+excl.length+")</div>";
+    h+="<div class='tbl'><table><thead><tr><th>Nome</th><th>Empresa</th><th>Convidado por</th><th></th></tr></thead><tbody>";
+    excl.forEach(function(p){
+      h+="<tr><td style='color:#777'>"+p.nome+"</td>";
+      h+="<td style='color:#555'>"+(p.empresa||"-")+"</td>";
+      h+="<td style='color:#555;font-size:11px'>"+(p.lote_nome||"-")+"</td>";
+      h+="<td><button class='bto' onclick='restP("+p.id+")' style='font-size:10px;padding:3px 8px'>Restaurar</button></td></tr>";
+    });
+    h+="</tbody></table></div>";
+  }
+  q("llst").innerHTML=h;
 }
 function togLst(id,v){if(v){if(lstSel.indexOf(id)<0)lstSel.push(id);}else{lstSel=lstSel.filter(function(x){return x!==id;});}rLst();}
 function togLstAll(v){
-var ativos=lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)<0;});
-if(v)ativos.forEach(function(p){if(lstSel.indexOf(p.id)<0)lstSel.push(p.id);});
-else lstSel=[];
-rLst();
+  var ativos=lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)<0;});
+  if(v)ativos.forEach(function(p){if(lstSel.indexOf(p.id)<0)lstSel.push(p.id);});
+  else lstSel=[];
+  rLst();
 }
 function exclP(id){lstExcluidos.push(id);lstSel=lstSel.filter(function(x){return x!==id;});rLst();}
 function restP(id){lstExcluidos=lstExcluidos.filter(function(x){return x!==id;});rLst();}
 function exclSel(){lstSel.forEach(function(id){if(lstExcluidos.indexOf(id)<0)lstExcluidos.push(id);});lstSel=[];rLst();}
-function mkR(arr){return arr.map(function(c){return[c.nome,c.cpf,c.rg,c.email,c.telefone,fd(c.nascimento),c.setor,c.empresa||””,c.cargo||””,c.status||””,c.lote_nome||””];});}
-function expExcel(){mkXls(mkR(cads),“Cadastros”);}
-function exXlsL(){if(lista){var ativos=lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)<0;});mkXls(mkR(lstSel.length?lista.p.filter(function(p){return lstSel.indexOf(p.id)>=0;}):ativos),“Lista*”+lista.n);}}
-function expCSV(){dl(“Nome,CPF,RG,Email,Telefone,Nascimento,Setor,Empresa,Cargo,Status,Convidado por\n”+mkR(cads).map(function(r){return r.map(function(v){return’”’+v+’”’;}).join(”,”);}).join(”\n”),“text/csv”,“Cadastros.csv”);}
-function exCsvL(){if(lista){var ativos=lstSel.length?lista.p.filter(function(p){return lstSel.indexOf(p.id)>=0;}):lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)<0;});dl(“Nome,CPF,RG,Email,Telefone,Nascimento,Setor,Empresa,Cargo,Status,Convidado por\n”+mkR(ativos).map(function(r){return r.map(function(v){return’”’+v+’”’;}).join(”,”);}).join(”\n”),“text/csv”,“Lista.csv”);}}
+function mkR(arr){return arr.map(function(c){return[c.nome,c.cpf,c.rg,c.email,c.telefone,fd(c.nascimento),c.setor,c.empresa||"",c.cargo||"",c.status||"",c.lote_nome||""];});}
+function expExcel(){mkXls(mkR(cads),"Cadastros");}
+function exXlsL(){if(lista){var ativos=lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)<0;});mkXls(mkR(lstSel.length?lista.p.filter(function(p){return lstSel.indexOf(p.id)>=0;}):ativos),"Lista_"+lista.n);}}
+function expCSV(){dl("Nome,CPF,RG,Email,Telefone,Nascimento,Setor,Empresa,Cargo,Status,Convidado por\n"+mkR(cads).map(function(r){return r.map(function(v){return'"'+v+'"';}).join(",");}).join("\n"),"text/csv","Cadastros.csv");}
+function exCsvL(){if(lista){var ativos=lstSel.length?lista.p.filter(function(p){return lstSel.indexOf(p.id)>=0;}):lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)<0;});dl("Nome,CPF,RG,Email,Telefone,Nascimento,Setor,Empresa,Cargo,Status,Convidado por\n"+mkR(ativos).map(function(r){return r.map(function(v){return'"'+v+'"';}).join(",");}).join("\n"),"text/csv","Lista.csv");}}
 function mkXls(rows,name){
-var hdr=”<Row><Cell><Data ss:Type='String'>Nome</Data></Cell><Cell><Data ss:Type='String'>CPF</Data></Cell><Cell><Data ss:Type='String'>RG</Data></Cell><Cell><Data ss:Type='String'>Email</Data></Cell><Cell><Data ss:Type='String'>Telefone</Data></Cell><Cell><Data ss:Type='String'>Nascimento</Data></Cell><Cell><Data ss:Type='String'>Setor</Data></Cell><Cell><Data ss:Type='String'>Empresa</Data></Cell><Cell><Data ss:Type='String'>Cargo</Data></Cell><Cell><Data ss:Type='String'>Status</Data></Cell><Cell><Data ss:Type='String'>Convidado por</Data></Cell></Row>”;
-var body=rows.map(function(r){return “<Row>”+r.map(function(v){return”<Cell><Data ss:Type='String'>”+String(v).replace(/&/g,”&”).replace(/</g,”<”)+”</Data></Cell>”;}).join(””)+”</Row>”;}).join(””);
-dl(”<?xml version='1.0'?><Workbook xmlns='urn:schemas-microsoft-com:office:spreadsheet' xmlns:ss='urn:schemas-microsoft-com:office:spreadsheet'><Worksheet ss:Name='Dados'><Table>”+hdr+body+”</Table></Worksheet></Workbook>”,“application/vnd.ms-excel”,name+”.xls”);
+  var hdr="<Row><Cell><Data ss:Type='String'>Nome</Data></Cell><Cell><Data ss:Type='String'>CPF</Data></Cell><Cell><Data ss:Type='String'>RG</Data></Cell><Cell><Data ss:Type='String'>Email</Data></Cell><Cell><Data ss:Type='String'>Telefone</Data></Cell><Cell><Data ss:Type='String'>Nascimento</Data></Cell><Cell><Data ss:Type='String'>Setor</Data></Cell><Cell><Data ss:Type='String'>Empresa</Data></Cell><Cell><Data ss:Type='String'>Cargo</Data></Cell><Cell><Data ss:Type='String'>Status</Data></Cell><Cell><Data ss:Type='String'>Convidado por</Data></Cell></Row>";
+  var body=rows.map(function(r){return "<Row>"+r.map(function(v){return"<Cell><Data ss:Type='String'>"+String(v).replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</Data></Cell>";}).join("")+"</Row>";}).join("");
+  dl("<?xml version='1.0'?><Workbook xmlns='urn:schemas-microsoft-com:office:spreadsheet' xmlns:ss='urn:schemas-microsoft-com:office:spreadsheet'><Worksheet ss:Name='Dados'><Table>"+hdr+body+"</Table></Worksheet></Workbook>","application/vnd.ms-excel",name+".xls");
 }
 function tab(t){
-[“c”,“e”,“k”,“l”,“lt”].forEach(function(x){q(“s”+x).classList.add(“gone”);q(“t”+x).classList.remove(“on”);});
-q(“s”+t).classList.remove(“gone”);q(“t”+t).classList.add(“on”);
-if(t===“l”)rLst();if(t===“k”)rCods();if(t===“e”)rEvs();if(t===“lt”)rLotes();
+  ["c","e","k","l","lt"].forEach(function(x){q("s"+x).classList.add("gone");q("t"+x).classList.remove("on");});
+  q("s"+t).classList.remove("gone");q("t"+t).classList.add("on");
+  if(t==="l")rLst();if(t==="k")rCods();if(t==="e")rEvs();if(t==="lt")rLotes();
 }
 load();
-if(MODO===“ver”){
-var vb=document.createElement(“div”);
-vb.style.cssText=“background:#0a1a2a;border:1px solid #0891b2;color:#0891b2;padding:8px 14px;border-radius:8px;font-size:12px;margin-bottom:12px;text-align:center”;
-vb.textContent=“Modo visualizacao - apenas leitura”;
-document.body.insertBefore(vb,document.body.children[1]);
-[“r”,“bgl”,“bxls”,“bcsv”,“bexk”,“bnev”,“blinkc”].forEach(function(id){var el=document.getElementById(id);if(el){el.disabled=true;el.style.opacity=“0.3”;}});
-var style=document.createElement(“style”);
-style.textContent=”.btn{pointer-events:none;opacity:0.3!important}.btr{pointer-events:none;opacity:0.3!important}.bty{pointer-events:none;opacity:0.3!important}”;
-document.head.appendChild(style);
-document.getElementById(“r”).disabled=false;
-document.getElementById(“r”).style.opacity=“1”;
+if(MODO==="ver"){
+  var vb=document.createElement("div");
+  vb.style.cssText="background:#0a1a2a;border:1px solid #0891b2;color:#0891b2;padding:8px 14px;border-radius:8px;font-size:12px;margin-bottom:12px;text-align:center";
+  vb.textContent="Modo visualizacao - apenas leitura";
+  document.body.insertBefore(vb,document.body.children[1]);
+  ["r","bgl","bxls","bcsv","bexk","bnev","blinkc"].forEach(function(id){var el=document.getElementById(id);if(el){el.disabled=true;el.style.opacity="0.3";}});
+  var style=document.createElement("style");
+  style.textContent=".btn{pointer-events:none;opacity:0.3!important}.btr{pointer-events:none;opacity:0.3!important}.bty{pointer-events:none;opacity:0.3!important}";
+  document.head.appendChild(style);
+  document.getElementById("r").disabled=false;
+  document.getElementById("r").style.opacity="1";
 }
 </script>
-
 </body>
 </html>
