@@ -1056,7 +1056,7 @@ function rLst(){
   h+="<button class='bto' onclick='filtLst()' style='font-size:11px;padding:7px 10px;border-color:#c9973c;color:#c9973c'>Faltam: "+nConf+"</button>";
   h+="</div></div>";
   h+="<div style='font-size:10px;color:#2aab47;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px'>Confirmados ("+ativos.length+")</div>";
-  h+="<div class='tbl'><table><thead><tr><th><input type='checkbox' id='lball' onchange='togLstAll(this.checked)'></th><th>Nome</th><th>Empresa</th><th>Status</th><th>Convidado por</th><th></th></tr></thead><tbody>";
+  h+="<div class='tbl'><table><thead><tr><th><input type='checkbox' id='lball' onchange='togLstAll(this.checked)'></th><th>Nome</th><th>Empresa</th><th>Status</th><th>Bilhete</th><th>Convidado por</th><th></th></tr></thead><tbody>";
   ativos.forEach(function(p,i){
     var chk=lstSel.indexOf(p.id)>=0;
     var sb=p.status==="aprovado"?"<span class='ab'>Aprov</span>":p.status==="reprovado"?"<span class='rb'>Reprov</span>":"<span class='pb'>Pend</span>";
@@ -1065,6 +1065,7 @@ function rLst(){
     h+="<td style='color:#fff'>"+p.nome+"</td>";
     h+="<td style='color:#777'>"+(p.empresa||"-")+"</td>";
     h+="<td>"+sb+"</td>";
+    h+="<td>"+bst+"</td>";
     h+="<td style='color:#0891b2;font-size:11px'>"+(p.lote_nome||"-")+"</td>";
     h+="<td><button class='btr' onclick='exclP("+p.id+")' style='font-size:10px;padding:3px 8px'>X</button></td></tr>";
   });
