@@ -1038,9 +1038,12 @@ function gerarLst(){
 }
 var lstExcluidos=[];
 var lstSel=[];
+var lstFiltBil=false;
+function filtLst(){lstFiltBil=!lstFiltBil;rLst();}
 function rLst(){
   if(!lista){q("llst").innerHTML="<div class='empty'>Selecione cadastros e clique em Gerar Lista.</div>";return;}
   var ativos=lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)<0;});
+  if(lstFiltBil)ativos=ativos.filter(function(p){return !p.bilhete_confirmado;});
   var excl=lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)>=0;});
   var h="<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px'>";
   h+="<div><div style='font-size:15px;color:#fff;font-weight:700'>"+lista.n+"</div>";
@@ -1049,12 +1052,15 @@ function rLst(){
   h+="<button class='bto' onclick='exXlsL()' style='font-size:11px;padding:7px 10px'>Excel</button>";
   h+="<button class='bto' onclick='exCsvL()' style='font-size:11px;padding:7px 10px'>CSV</button>";
   h+="<button class='btr' onclick='exclSel()' style='font-size:11px;padding:7px 10px'>Excluir sel.</button>";
+  var nConf=ativos.filter(function(p){return !p.bilhete_confirmado;}).length;
+  h+="<button class='bto' onclick='filtLst()' style='font-size:11px;padding:7px 10px;border-color:#c9973c;color:#c9973c'>Faltam: "+nConf+"</button>";
   h+="</div></div>";
   h+="<div style='font-size:10px;color:#2aab47;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px'>Confirmados ("+ativos.length+")</div>";
   h+="<div class='tbl'><table><thead><tr><th><input type='checkbox' id='lball' onchange='togLstAll(this.checked)'></th><th>Nome</th><th>Empresa</th><th>Status</th><th>Convidado por</th><th></th></tr></thead><tbody>";
   ativos.forEach(function(p,i){
     var chk=lstSel.indexOf(p.id)>=0;
     var sb=p.status==="aprovado"?"<span class='ab'>Aprov</span>":p.status==="reprovado"?"<span class='rb'>Reprov</span>":"<span class='pb'>Pend</span>";
+    var bst=p.bilhete_confirmado?"<span style='color:#2aab47;font-size:10px'>Confirmado</span>":p.bilhete_enviado?"<span style='color:#c9973c;font-size:10px'>Aguardando</span>":"<span style='color:#0891b2;font-size:10px'>Nao enviado</span>";
     h+="<tr><td><input type='checkbox' "+(chk?"checked":"")+" onchange='togLst("+p.id+",this.checked)'></td>";
     h+="<td style='color:#fff'>"+p.nome+"</td>";
     h+="<td style='color:#777'>"+(p.empresa||"-")+"</td>";
@@ -1079,6 +1085,7 @@ function rLst(){
 function togLst(id,v){if(v){if(lstSel.indexOf(id)<0)lstSel.push(id);}else{lstSel=lstSel.filter(function(x){return x!==id;});}rLst();}
 function togLstAll(v){
   var ativos=lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)<0;});
+  if(lstFiltBil)ativos=ativos.filter(function(p){return !p.bilhete_confirmado;});
   if(v)ativos.forEach(function(p){if(lstSel.indexOf(p.id)<0)lstSel.push(p.id);});
   else lstSel=[];
   rLst();
@@ -1088,7 +1095,8 @@ function restP(id){lstExcluidos=lstExcluidos.filter(function(x){return x!==id;})
 function exclSel(){lstSel.forEach(function(id){if(lstExcluidos.indexOf(id)<0)lstExcluidos.push(id);});lstSel=[];rLst();}
 function mkR(arr){return arr.map(function(c){return[c.nome,c.cpf,c.rg,c.email,c.telefone,fd(c.nascimento),c.setor,c.empresa||"",c.cargo||"",c.status||"",c.lote_nome||""];});}
 function expExcel(){mkXls(mkR(cads),"Cadastros");}
-function exXlsL(){if(lista){var ativos=lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)<0;});mkXls(mkR(lstSel.length?lista.p.filter(function(p){return lstSel.indexOf(p.id)>=0;}):ativos),"Lista_"+lista.n);}}
+function exXlsL(){if(lista){var ativos=lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)<0;});
+  if(lstFiltBil)ativos=ativos.filter(function(p){return !p.bilhete_confirmado;});mkXls(mkR(lstSel.length?lista.p.filter(function(p){return lstSel.indexOf(p.id)>=0;}):ativos),"Lista_"+lista.n);}}
 function expCSV(){dl("Nome,CPF,RG,Email,Telefone,Nascimento,Setor,Empresa,Cargo,Status,Convidado por\n"+mkR(cads).map(function(r){return r.map(function(v){return'"'+v+'"';}).join(",");}).join("\n"),"text/csv","Cadastros.csv");}
 function exCsvL(){if(lista){var ativos=lstSel.length?lista.p.filter(function(p){return lstSel.indexOf(p.id)>=0;}):lista.p.filter(function(p){return lstExcluidos.indexOf(p.id)<0;});dl("Nome,CPF,RG,Email,Telefone,Nascimento,Setor,Empresa,Cargo,Status,Convidado por\n"+mkR(ativos).map(function(r){return r.map(function(v){return'"'+v+'"';}).join(",");}).join("\n"),"text/csv","Lista.csv");}}
 function mkXls(rows,name){
