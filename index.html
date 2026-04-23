@@ -786,9 +786,9 @@ q("btn-salvar-cargo").onclick=function(){
   var cs=q("edit-car");
   var car=cs.value==="outro"?q("edit-car-outro").value.trim():cs.value;
   var btn=q("btn-salvar-cargo");btn.textContent="Salvando...";btn.disabled=true;
-  ap("cadastros?id=eq."+pa.id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({empresa:emp,cargo:car})}).then(function(){
+  ap("cadastros?id=eq."+pa.id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({empresa:emp,cargo:car,setor:q("edit-setor")?q("edit-setor").value:"Convidado"})}).then(function(){
     pa.empresa=emp;pa.cargo=car;
-    for(var i=0;i<cads.length;i++){if(cads[i].id===pa.id){cads[i].empresa=emp;cads[i].cargo=car;break;}}
+    for(var i=0;i<cads.length;i++){if(cads[i].id===pa.id){cads[i].empresa=emp;cads[i].cargo=car;if(q("edit-setor"))cads[i].setor=q("edit-setor").value;break;}}
     q("editcargo-wrap").style.display="none";
     q("beditcargo").textContent="Editar empresa / funcao";
     verP(pa.id);
