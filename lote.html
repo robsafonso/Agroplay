@@ -110,7 +110,54 @@ q("btn-login").onclick=function(){
   }).finally(function(){btn.textContent="Entrar";btn.disabled=false;});
 };
 
-function toggleBilhetes(){var s=q("secao-bilhetes");s.classList.toggle("gone");var btn=q("btn-bilhetes-wrap").querySelector("button");btn.textContent=s.classList.contains("gone")?"Enviar Bilhetes":"Fechar Bilhetes";}
+function toggleBilhetes(){
+  var s=q("secao-bilhetes");
+  var aberto=s.style.display==="block";
+  if(!aberto){
+    s.style.display="block";
+    q("btn-bilhetes-wrap").querySelector("button").textContent="Fechar Bilhetes";
+    carregarBilhetes();
+  } else {
+    s.style.display="none";
+    q("btn-bilhetes-wrap").querySelector("button").textContent="Enviar Bilhetes";
+  }
+}
+function carregarBilhetes(){
+  if(!loteAtual||!loteAtual.evento_id){
+    q("bilhetes-lista").innerHTML="<div style='color:#555;font-size:12px;text-align:center;padding:10px'>Este lote nao tem evento vinculado.</div>";
+    return;
+  }
+  q("bilhetes-lista").innerHTML="<div style='color:#555;font-size:12px;text-align:center;padding:10px'>Carregando...</div>";
+  Promise.all([
+    ap("eventos?id=eq."+loteAtual.evento_id+"&select=*"),
+    ap("cadastros?lote_id=eq."+loteAtual.id+"&select=*&order=nome.asc")
+  ]).then(function(res){
+    var ev=res[0]&&res[0][0];
+    var pessoas=res[1]||[];
+    if(!ev){q("bilhetes-lista").innerHTML="<div style='color:#555;font-size:12px;text-align:center;padding:10px'>Evento nao encontrado.</div>";return;}
+    if(!pessoas.length){q("bilhetes-lista").innerHTML="<div style='color:#555;font-size:12px;text-align:center;padding:10px'>Nenhuma pessoa cadastrada ainda.</div>";return;}
+    var df=ev.data?ev.data.split("-"):["","",""];
+    var dataFmt=ev.data?df[2]+"/"+df[1]+"/"+df[0]:"";
+    var h="<div style='font-size:14px;font-weight:700;color:#fff;margin-bottom:2px'>"+ev.nome+"</div>";
+    h+="<div style='font-size:11px;color:#555;margin-bottom:12px'>"+dataFmt+(ev.local?" - "+ev.local:"")+"</div>";
+    pessoas.forEach(function(p){
+      var link="https://robsafonso.github.io/Agroplay/bilhete.html?cad="+p.id+"&ev="+loteAtual.evento_id;
+      var msg="AGROPLAY - Seu Bilhete\n\nOla "+p.nome+"!\n\nSeu bilhete para:\n"+ev.nome+(dataFmt?"\nData: "+dataFmt:"")+(ev.horario?"\nHorario: "+ev.horario:"")+(ev.local?"\nLocal: "+ev.local:"")+"\n\nAcesse seu bilhete e QR Code:\n"+link+"\n\nApresente na entrada.\nAgroplay Music - Londrina PR";
+      var cor=p.bilhete_confirmado?"rgba(42,171,71,.3)":p.bilhete_enviado?"rgba(201,151,60,.3)":"rgba(8,145,178,.3)";
+      h+="<div style='background:#060a06;border:1px solid "+cor+";border-radius:10px;padding:12px;margin-bottom:8px'>";
+      h+="<div style='font-size:14px;font-weight:700;color:#fff;margin-bottom:2px'>"+p.nome+"</div>";
+      if(p.bilhete_confirmado){
+        h+="<div style='font-size:11px;color:#2aab47;background:#0a1a0a;border:1px solid rgba(42,171,71,.2);border-radius:6px;padding:6px;text-align:center'>Bilhete confirmado</div>";
+      } else {
+        h+="<button onclick='copiarBilheteL(this,"+p.id+")' data-msg='"+msg.replace(/'/g,"&#39;")+"' style='width:100%;background:"+(p.bilhete_enviado?"#c9973c":"#0891b2")+";border:none;border-radius:8px;padding:10px;font-size:12px;color:#fff;cursor:pointer;font-weight:700'>"+(p.bilhete_enviado?"Reenviar bilhete":"Copiar bilhete")+"</button>";
+      }
+      h+="</div>";
+    });
+    q("bilhetes-lista").innerHTML=h;
+  }).catch(function(){
+    q("bilhetes-lista").innerHTML="<div style='color:#c0392b;font-size:12px;text-align:center;padding:10px'>Erro ao carregar.</div>";
+  });
+}
 function copiarBilheteL(btn,pessoaId){
   var msg=btn.getAttribute("data-msg");
   if(navigator.clipboard){
