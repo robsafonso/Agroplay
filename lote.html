@@ -175,6 +175,9 @@ function carregarPainel(){
   q("nome-resp").textContent=loteAtual.responsavel;
   q("tela-login").classList.add("gone");
   q("tela-painel").classList.remove("gone");
+  q("secao-bilhetes").style.display="none";
+  q("btn-bilhetes-wrap").style.display="none";
+  var bb=document.getElementById("btn-bil-main");if(bb){bb.textContent="Enviar Bilhetes";bb.style.background="#0891b2";bb.disabled=false;}
   ap("codigos?lote_id=eq."+loteAtual.id+"&select=codigo,usado,usado_em,cadastro_id&order=id.asc").then(function(d){
     var todos=d||[];
     codsDisponiveis=todos.filter(function(c){return !c.usado;});
