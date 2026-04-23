@@ -74,8 +74,9 @@ function reenviar(pessoaId){
 
 function render(ev,pessoas){
   var hoje=new Date();
-  var evData=ev.data?new Date(ev.data):null;
-  var dias=evData?Math.ceil((evData-hoje)/(1000*60*60*24)):999;
+  var hoje0=new Date(hoje.getFullYear(),hoje.getMonth(),hoje.getDate());
+  var evData=ev.data?new Date(ev.data+"T00:00:00"):null;
+  var dias=evData?Math.ceil((evData-hoje0)/(1000*60*60*24)):999;
   var bilheteOk=dias<=7;
   var dataFmt=fd(ev.data);
 
