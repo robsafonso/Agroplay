@@ -72,7 +72,7 @@ input:focus{border-color:#2aab47}
   </div>
 
   <div id="btn-bilhetes-wrap" style="display:none;margin-top:16px;padding:0 16px 16px">
-    <button onclick="toggleBilhetes()" style="width:100%;background:#2aab47;border:none;border-radius:10px;padding:14px;font-size:14px;font-weight:700;color:#fff;cursor:pointer">&#127903; Enviar Bilhetes</button>
+    <button onclick="toggleBilhetes()" style="width:100%;background:#2aab47;border:none;border-radius:10px;padding:14px;font-size:14px;font-weight:700;color:#fff;cursor:pointer">Enviar Bilhetes</button>
     <div style="font-size:11px;color:#555;text-align:center;margin-top:6px">Toque para ver os bilhetes para enviar</div>
   </div>
 
@@ -110,7 +110,7 @@ q("btn-login").onclick=function(){
   }).finally(function(){btn.textContent="Entrar";btn.disabled=false;});
 };
 
-function toggleBilhetes(){var s=q("secao-bilhetes");s.classList.toggle("gone");var btn=q("btn-bilhetes-wrap").querySelector("button");btn.textContent=s.classList.contains("gone")?"&#127903; Enviar Bilhetes":"&#127903; Fechar Bilhetes";}
+function toggleBilhetes(){var s=q("secao-bilhetes");s.classList.toggle("gone");var btn=q("btn-bilhetes-wrap").querySelector("button");btn.textContent=s.classList.contains("gone")?"Enviar Bilhetes":"Fechar Bilhetes";}
 function copiarBilheteL(btn,pessoaId){
   var msg=btn.getAttribute("data-msg");
   if(navigator.clipboard){
