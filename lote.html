@@ -72,8 +72,8 @@ input:focus{border-color:#2aab47}
   </div>
 
   <div id="btn-bilhetes-wrap" style="display:none;margin-top:16px;padding:0 16px 16px">
-    <button onclick="toggleBilhetes()" style="width:100%;background:#2aab47;border:none;border-radius:10px;padding:14px;font-size:14px;font-weight:700;color:#fff;cursor:pointer">Enviar Bilhetes</button>
-    <div style="font-size:11px;color:#555;text-align:center;margin-top:6px">Toque para ver os bilhetes para enviar</div>
+    <button id="btn-bil-main" onclick="toggleBilhetes()" style="width:100%;background:#0891b2;border:none;border-radius:10px;padding:14px;font-size:14px;font-weight:700;color:#fff;cursor:pointer">Enviar Bilhetes</button>
+    <div id="btn-bil-msg" style="font-size:11px;color:#555;text-align:center;margin-top:6px"></div>
   </div>
 
   <div id="secao-bilhetes" style="display:none;padding:0 16px 16px">
@@ -192,6 +192,19 @@ function carregarPainel(){
         var dias=evData?Math.ceil((evData-hoje0)/(1000*60*60*24)):999;
         if(dias<=30){
           q("btn-bilhetes-wrap").style.display="block";
+          var btnMain=document.getElementById("btn-bil-main");
+          var btnMsg=document.getElementById("btn-bil-msg");
+          if(dias<=7){
+            btnMain.style.background="#2aab47";
+            btnMain.disabled=false;
+            btnMain.style.opacity="1";
+            btnMsg.textContent="Toque para ver os bilhetes e enviar";
+          } else {
+            btnMain.style.background="#333";
+            btnMain.disabled=true;
+            btnMain.style.opacity="0.6";
+            btnMsg.textContent="Bilhetes disponiveis 7 dias antes do evento (faltam "+dias+" dias)";
+          }
           ap("cadastros?lote_id=eq."+loteAtual.id+"&select=*&order=nome.asc").then(function(pessoas){
             if(!pessoas||!pessoas.length){
               q("bilhetes-lista").innerHTML="<div style='color:#555;font-size:12px;text-align:center;padding:10px'>Nenhuma pessoa cadastrada ainda.</div>";
