@@ -4,282 +4,150 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Painel de Convites - Agroplay</title>
+<title>Agroplay - Bilhetes</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:20px;max-width:480px;margin:0 auto}
-.logo{font-size:22px;font-weight:900;color:#fff;text-align:center;padding:20px 0}
-.logo b{color:#2aab47}
-.card{background:#090e09;border:1px solid #1a2a1a;border-radius:14px;padding:20px;margin-bottom:14px}
-.ttl{font-size:20px;font-weight:900;color:#fff;margin-bottom:6px}
-.sub{font-size:12px;color:#666;margin-bottom:16px;line-height:1.5}
-.fl{margin-bottom:12px}
-label{display:block;font-size:10px;color:#2aab47;letter-spacing:1px;margin-bottom:4px;text-transform:uppercase;font-weight:700}
-input{width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:11px 14px;color:#eee;font-size:14px;outline:none}
-input:focus{border-color:#2aab47}
-.btn{background:linear-gradient(135deg,#1e7a35,#2aab47);color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;width:100%;margin-top:8px}
-.bto{background:transparent;color:#2aab47;border:1px solid #2aab47;border-radius:10px;padding:11px;font-size:13px;cursor:pointer;width:100%;margin-top:8px}
-.ea{background:#1a0000;border:1px solid #e74c3c;color:#e74c3c;padding:10px;border-radius:8px;margin-bottom:10px;font-size:13px}
-.gone{display:none}
-.stat{background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:16px;text-align:center;margin-bottom:14px}
-.stat strong{font-size:36px;color:#2aab47;display:block}
-.stat small{font-size:11px;color:#555;text-transform:uppercase}
-.msgt{font-size:12px;color:#aaa;line-height:1.7;background:#030503;border-radius:8px;padding:12px;margin-bottom:12px;white-space:pre-wrap;word-break:break-word;border:1px solid #1a2a1a}
-.codt{font-family:monospace;font-size:28px;font-weight:900;color:#fff;letter-spacing:6px;margin:8px 0 14px;text-align:center}
-.badge-disp{background:#1e7a35;color:#fff;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
-.badge-usado{background:#555;color:#fff;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
-.hist-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #111;font-size:12px}
+body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:16px;max-width:480px;margin:0 auto}
+.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.logo{font-size:16px;font-weight:900;color:#fff;letter-spacing:2px}
+.logo span{color:#2aab47}
+.ev-info{background:#090e09;border:1px solid #1a2a1a;border-radius:12px;padding:14px;margin-bottom:16px}
+.ev-nome{font-size:16px;font-weight:900;color:#fff;margin-bottom:4px}
+.ev-det{font-size:11px;color:#555}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.stat{background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:10px;text-align:center}
+.stat-n{font-size:20px;font-weight:900;display:block}
+.stat-l{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+.section-label{font-size:10px;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;font-weight:700;margin-top:16px}
+.card{background:#090e09;border-radius:10px;padding:12px;margin-bottom:8px}
+.card-nome{font-size:14px;font-weight:700;color:#fff;margin-bottom:2px}
+.card-sub{font-size:11px;color:#555;margin-bottom:8px}
+.btn-bil{width:100%;border:none;border-radius:8px;padding:10px;font-size:12px;cursor:pointer;font-weight:700}
+.btn-reenviar{width:100%;margin-top:6px;background:transparent;border:1px solid #555;color:#555;border-radius:8px;padding:6px;font-size:10px;cursor:pointer}
+.aviso{background:#1a0e00;border:1px solid rgba(201,151,60,.3);border-radius:8px;padding:10px 14px;font-size:12px;color:#c9973c;margin-bottom:16px}
+.loading{text-align:center;padding:40px;font-size:14px;color:#555}
+.back{background:transparent;border:1px solid #1a2a1a;border-radius:8px;padding:6px 12px;color:#eee;font-size:12px;cursor:pointer}
 </style>
 </head>
 <body>
-<div class="logo">AGRO<b>PLAY</b></div>
-
-<div id="tela-login" class="card">
-  <div class="ttl">Painel de Convites</div>
-  <div class="sub">Digite sua senha para acessar seus convites disponiveis.</div>
-  <div id="al-login"></div>
-  <div class="fl"><label>Senha de acesso</label><input id="inp-senha" type="password" placeholder="Digite sua senha"></div>
-  <button class="btn" id="btn-login">Entrar</button>
+<div class="hdr">
+  <div onclick="location.href='home.html'" style="cursor:pointer" class="logo">AGRO<span>PLAY</span></div>
+  <button class="back" onclick="history.back()">&larr; Voltar</button>
 </div>
-
-<div id="tela-painel" class="gone">
-  <div style="text-align:center;margin-bottom:16px">
-    <div style="font-size:18px;font-weight:900;color:#fff">Ola, <span id="nome-resp" style="color:#2aab47"></span>!</div>
-    <div style="font-size:12px;color:#555;margin-top:4px">Seus convites disponiveis</div>
-  </div>
-
-  <div class="stat">
-    <strong id="qtd-disp">0</strong>
-    <small>Convites disponiveis</small>
-  </div>
-
-  <div id="res-conv" class="card gone">
-    <div style="font-size:10px;color:#2aab47;text-transform:uppercase;margin-bottom:4px">Codigo do convite</div>
-    <div class="codt" id="conv-cod"></div>
-    <div style="font-size:10px;color:#2aab47;text-transform:uppercase;margin-bottom:6px">Mensagem para enviar</div>
-    <div class="msgt" id="conv-msg"></div>
-    <button class="btn" id="btn-copiar">Copiar mensagem</button>
-    <button class="bto" id="btn-outro">Gerar outro convite</button>
-  </div>
-
-  <div id="al-conv"></div>
-
-<button class="btn" id="btn-gerar">Gerar convite</button>
-
-  <div class="card" style="margin-top:14px">
-    <div style="font-size:11px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Historico</div>
-    <div id="hist-lista"><div style="text-align:center;color:#555;font-size:12px;padding:10px">Nenhum convite gerado ainda</div></div>
-  </div>
-
-  <div id="btn-bilhetes-wrap" style="display:none;margin-top:16px;padding:0 16px 16px">
-    <button id="btn-bil-main" onclick="toggleBilhetes()" style="width:100%;background:#0891b2;border:none;border-radius:10px;padding:14px;font-size:14px;font-weight:700;color:#fff;cursor:pointer">Enviar Bilhetes</button>
-    <div id="btn-bil-msg" style="font-size:11px;color:#555;text-align:center;margin-top:6px"></div>
-  </div>
-
-  <div id="secao-bilhetes" style="display:none;padding:0 16px 16px">
-    <div style="font-size:13px;font-weight:700;color:#2aab47;margin-bottom:4px;border-top:1px solid #1a2a1a;padding-top:16px">Bilhetes disponiveis!</div>
-    <div style="font-size:11px;color:#555;margin-bottom:12px">Envie o bilhete para cada pessoa que voce convidou.</div>
-    <div id="bilhetes-lista"></div>
-  </div>
-</div>
+<div id="conteudo"><div class="loading">Carregando...</div></div>
 
 <script>
 var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
 var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
-var LC="https://robsafonso.github.io/Agroplay/cadastro-externo.html";
-var loteAtual=null;
-try{var _ls=sessionStorage.getItem("ag_lote");if(_ls){loteAtual=JSON.parse(_ls);carregarPainel();}}catch(e){}
-var codsDisponiveis=[];
-var codsUsados=[];
+var params=new URLSearchParams(window.location.search);
+var EV_ID=params.get("ev");
 
-function q(id){return document.getElementById(id);}
-function ap(p,o){o=o||{};var h={"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json"};if(o.pref)h["Prefer"]=o.pref;return fetch(SB+"/rest/v1/"+p,{method:o.m||"GET",headers:h,body:o.b}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});}
-function cp2(txt,btn,lbl){if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){btn.textContent="Copiado!";setTimeout(function(){btn.textContent=lbl;},2000);});}else{var t=document.createElement("textarea");t.value=txt;document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t);btn.textContent="Copiado!";setTimeout(function(){btn.textContent=lbl;},2000);}}
+function ap(path,o){
+  o=o||{};
+  var h={"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json"};
+  if(o.pref)h["Prefer"]=o.pref;
+  return fetch(SB+"/rest/v1/"+path,{method:o.m||"GET",headers:h,body:o.b}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});
+}
 
-q("btn-login").onclick=function(){
-  var senha=q("inp-senha").value.trim();
-  var al=q("al-login");al.innerHTML="";
-  if(!senha){al.innerHTML="<div class='ea'>Digite a senha</div>";return;}
-  var btn=this;btn.textContent="Entrando...";btn.disabled=true;
-  ap("lotes?senha=eq."+encodeURIComponent(senha)+"&select=*").then(function(d){
-    if(!d||!d.length){al.innerHTML="<div class='ea'>Senha invalida</div>";return;}
-    loteAtual=d[0];
-    sessionStorage.setItem("ag_lote",JSON.stringify(loteAtual));
-    carregarPainel();
-  }).catch(function(){al.innerHTML="<div class='ea'>Erro ao conectar</div>";
-  }).finally(function(){btn.textContent="Entrar";btn.disabled=false;});
-};
+function fd(d){if(!d)return"";var x=d.split("-");return x[2]+"/"+x[1]+"/"+x[0];}
 
-function toggleBilhetes(){
-  var s=q("secao-bilhetes");
-  var aberto=s.style.display==="block";
-  if(!aberto){
-    s.style.display="block";
-    q("btn-bilhetes-wrap").querySelector("button").textContent="Fechar Bilhetes";
-    carregarBilhetes();
+function copiarBilhete(btn,pessoaId){
+  var msg=btn.getAttribute("data-msg");
+  function doCopy(){
+    btn.textContent="Enviado!";
+    btn.style.background="#c9973c";
+    btn.style.color="#fff";
+    ap("cadastros?id=eq."+pessoaId,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({bilhete_enviado:true,bilhete_enviado_em:new Date().toISOString()})});
+  }
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(msg).then(function(){doCopy();});
   } else {
-    s.style.display="none";
-    q("btn-bilhetes-wrap").querySelector("button").textContent="Enviar Bilhetes";
+    var t=document.createElement("textarea");t.value=msg;document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t);
+    doCopy();
   }
 }
-function carregarBilhetes(){
-  if(!loteAtual||!loteAtual.evento_id){
-    q("bilhetes-lista").innerHTML="<div style='color:#555;font-size:12px;text-align:center;padding:10px'>Este lote nao tem evento vinculado.</div>";
-    return;
+
+function reenviar(pessoaId){
+  if(!confirm("Reenviar bilhete para esta pessoa?"))return;
+  ap("cadastros?id=eq."+pessoaId,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({bilhete_enviado:false,bilhete_enviado_em:null,bilhete_confirmado:false,bilhete_confirmado_em:null})}).then(function(){location.reload();});
+}
+
+function render(ev,pessoas){
+  var hoje=new Date();
+  var hoje0=new Date(hoje.getFullYear(),hoje.getMonth(),hoje.getDate());
+  var evData=ev.data?new Date(ev.data+"T00:00:00"):null;
+  var dias=evData?Math.ceil((evData-hoje0)/(1000*60*60*24)):999;
+  var bilheteOk=dias<=7;
+  var dataFmt=fd(ev.data);
+
+  var naoEnviados=pessoas.filter(function(p){return !p.bilhete_enviado&&!p.bilhete_confirmado;});
+  var enviados=pessoas.filter(function(p){return p.bilhete_enviado&&!p.bilhete_confirmado;});
+  var confirmados=pessoas.filter(function(p){return p.bilhete_confirmado;});
+
+  var html="";
+  html+="<div class='ev-info'><div class='ev-nome'>"+ev.nome+"</div><div class='ev-det'>"+dataFmt+(ev.horario?" as "+ev.horario:"")+(ev.local?" - "+ev.local:"")+"</div></div>";
+
+  html+="<div class='stats'>";
+  html+="<div class='stat'><span class='stat-n' style='color:#0891b2'>"+naoEnviados.length+"</span><div class='stat-l'>Nao enviado</div></div>";
+  html+="<div class='stat'><span class='stat-n' style='color:#c9973c'>"+enviados.length+"</span><div class='stat-l'>Aguardando</div></div>";
+  html+="<div class='stat'><span class='stat-n' style='color:#2aab47'>"+confirmados.length+"</span><div class='stat-l'>Confirmado</div></div>";
+  html+="</div>";
+
+  if(!bilheteOk){
+    html+="<div class='aviso'>Bilhetes disponiveis somente faltando 7 dias. Faltam <b>"+dias+"</b> dias.</div>";
   }
-  q("bilhetes-lista").innerHTML="<div style='color:#555;font-size:12px;text-align:center;padding:10px'>Carregando...</div>";
+
+  function cardP(p,status){
+    var link="https://robsafonso.github.io/Agroplay/bilhete.html?cad="+p.id+"&ev="+EV_ID;
+    var msg="AGROPLAY Music \uD83C\uDFB5\n\nOla, "+p.nome+"! Seu bilhete esta disponivel.\n\n\uD83C\uDFA4 "+ev.nome+(dataFmt?"\n\uD83D\uDCC5 "+dataFmt+(ev.horario?" as "+ev.horario:""):"")+(ev.local?"\n\uD83D\uDCCD "+ev.local:"")+"\n\nAcesse seu bilhete com QR Code:\n"+link+"\n\n\uD83C\uDF9F Apresente na entrada.";
+    var borderColor=status==="confirmado"?"rgba(42,171,71,.4)":status==="enviado"?"rgba(201,151,60,.4)":"rgba(8,145,178,.3)";
+    var c="<div class='card' style='border:1px solid "+borderColor+"'>";
+    c+="<div class='card-nome'>"+p.nome+"</div>";
+    c+="<div class='card-sub'>"+(p.lote_nome?"Convidado por "+p.lote_nome:"Convite direto")+"</div>";
+    if(status==="confirmado"){
+      c+="<div style='font-size:11px;color:#2aab47;background:#0a1a0a;border:1px solid rgba(42,171,71,.2);border-radius:6px;padding:6px;text-align:center;margin-bottom:6px'>Bilhete confirmado</div>";
+      c+="<button class='btn-reenviar' onclick='reenviar("+p.id+")'>Reenviar bilhete</button>";
+    } else if(status==="enviado"){
+      c+="<div style='font-size:11px;color:#c9973c;background:#1a0e00;border:1px solid rgba(201,151,60,.2);border-radius:6px;padding:6px;text-align:center;margin-bottom:6px'>Aguardando confirmacao</div>";
+      c+="<button class='btn-bil' onclick='copiarBilhete(this,"+p.id+")' data-msg='"+msg.replace(/'/g,"&#39;")+"' style='background:#c9973c;color:#fff'>Reenviar bilhete</button>";
+    } else {
+      c+="<button class='btn-bil' onclick='copiarBilhete(this,"+p.id+")' data-msg='"+msg.replace(/'/g,"&#39;")+"' style='background:#0891b2;color:#fff'>"+(bilheteOk?"Copiar bilhete":"Bilhete indisponivel")+"</button>";
+    }
+    c+="</div>";
+    return c;
+  }
+
+  if(naoEnviados.length){
+    html+="<div class='section-label' style='color:#0891b2'>Nao enviados ("+naoEnviados.length+")</div>";
+    naoEnviados.forEach(function(p){html+=cardP(p,"nao");});
+  }
+  if(enviados.length){
+    html+="<div class='section-label' style='color:#c9973c'>Aguardando confirmacao ("+enviados.length+")</div>";
+    enviados.forEach(function(p){html+=cardP(p,"enviado");});
+  }
+  if(confirmados.length){
+    html+="<div class='section-label' style='color:#2aab47'>Confirmados ("+confirmados.length+")</div>";
+    confirmados.forEach(function(p){html+=cardP(p,"confirmado");});
+  }
+
+  document.getElementById("conteudo").innerHTML=html;
+}
+
+if(!EV_ID){
+  document.getElementById("conteudo").innerHTML="<div class='loading'>Link invalido.</div>";
+} else {
   Promise.all([
-    ap("eventos?id=eq."+loteAtual.evento_id+"&select=*"),
-    ap("cadastros?lote_id=eq."+loteAtual.id+"&select=*&order=nome.asc")
+    ap("eventos?id=eq."+EV_ID+"&select=*"),
+    ap("cadastros?evento_id=eq."+EV_ID+"&select=*&order=nome.asc")
   ]).then(function(res){
     var ev=res[0]&&res[0][0];
     var pessoas=res[1]||[];
-    if(!ev){q("bilhetes-lista").innerHTML="<div style='color:#555;font-size:12px;text-align:center;padding:10px'>Evento nao encontrado.</div>";return;}
-    if(!pessoas.length){q("bilhetes-lista").innerHTML="<div style='color:#555;font-size:12px;text-align:center;padding:10px'>Nenhuma pessoa cadastrada ainda.</div>";return;}
-    var df=ev.data?ev.data.split("-"):["","",""];
-    var dataFmt=ev.data?df[2]+"/"+df[1]+"/"+df[0]:"";
-    var h="<div style='font-size:14px;font-weight:700;color:#fff;margin-bottom:2px'>"+ev.nome+"</div>";
-    h+="<div style='font-size:11px;color:#555;margin-bottom:12px'>"+dataFmt+(ev.local?" - "+ev.local:"")+"</div>";
-    pessoas.forEach(function(p){
-      var link="https://robsafonso.github.io/Agroplay/bilhete.html?cad="+p.id+"&ev="+loteAtual.evento_id;
-      var msg="AGROPLAY Music \uD83C\uDFB5\n\nOla, "+p.nome+"! Seu bilhete esta disponivel.\n\n\uD83C\uDFA4 "+ev.nome+(dataFmt?"\n\uD83D\uDCC5 "+dataFmt+(ev.horario?" as "+ev.horario:""):"")+(ev.local?"\n\uD83D\uDCCD "+ev.local:"")+"\n\nAcesse seu bilhete com QR Code:\n"+link+"\n\n\uD83C\uDF9F Apresente na entrada.";
-      var cor=p.bilhete_confirmado?"rgba(42,171,71,.3)":p.bilhete_enviado?"rgba(201,151,60,.3)":"rgba(8,145,178,.3)";
-      h+="<div style='background:#060a06;border:1px solid "+cor+";border-radius:10px;padding:12px;margin-bottom:8px'>";
-      h+="<div style='font-size:14px;font-weight:700;color:#fff;margin-bottom:2px'>"+p.nome+"</div>";
-      if(p.bilhete_confirmado){
-        h+="<div style='font-size:11px;color:#2aab47;background:#0a1a0a;border:1px solid rgba(42,171,71,.2);border-radius:6px;padding:6px;text-align:center'>Bilhete confirmado</div>";
-      } else {
-        h+="<button onclick='copiarBilheteL(this,"+p.id+")' data-msg='"+msg.replace(/'/g,"&#39;")+"' style='width:100%;background:"+(p.bilhete_enviado?"#c9973c":"#0891b2")+";border:none;border-radius:8px;padding:10px;font-size:12px;color:#fff;cursor:pointer;font-weight:700'>"+(p.bilhete_enviado?"Reenviar bilhete":"Copiar bilhete")+"</button>";
-      }
-      h+="</div>";
-    });
-    q("bilhetes-lista").innerHTML=h;
+    if(!ev){document.getElementById("conteudo").innerHTML="<div class='loading'>Evento nao encontrado.</div>";return;}
+    render(ev,pessoas);
   }).catch(function(){
-    q("bilhetes-lista").innerHTML="<div style='color:#c0392b;font-size:12px;text-align:center;padding:10px'>Erro ao carregar.</div>";
+    document.getElementById("conteudo").innerHTML="<div class='loading'>Erro ao carregar.</div>";
   });
 }
-function copiarBilheteL(btn,pessoaId){
-  var msg=btn.getAttribute("data-msg");
-  if(navigator.clipboard){
-    navigator.clipboard.writeText(msg).then(function(){
-      btn.textContent="Enviado!";btn.style.background="#c9973c";
-      ap("cadastros?id=eq."+pessoaId,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({bilhete_enviado:true,bilhete_enviado_em:new Date().toISOString()})});
-    });
-  } else {
-    var t=document.createElement("textarea");t.value=msg;document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t);
-    btn.textContent="Enviado!";btn.style.background="#c9973c";
-    ap("cadastros?id=eq."+pessoaId,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({bilhete_enviado:true,bilhete_enviado_em:new Date().toISOString()})});
-  }
-}
-function carregarPainel(){
-  q("nome-resp").textContent=loteAtual.responsavel;
-  q("tela-login").classList.add("gone");
-  q("tela-painel").classList.remove("gone");
-  q("secao-bilhetes").style.display="none";
-  q("btn-bilhetes-wrap").style.display="none";
-  var bb=document.getElementById("btn-bil-main");if(bb){bb.textContent="Enviar Bilhetes";bb.style.background="#0891b2";bb.disabled=false;}
-  ap("codigos?lote_id=eq."+loteAtual.id+"&select=codigo,usado,usado_em,cadastro_id&order=id.asc").then(function(d){
-    var todos=d||[];
-    codsDisponiveis=todos.filter(function(c){return !c.usado;});
-    codsUsados=todos.filter(function(c){return c.usado;});
-    q("qtd-disp").textContent=codsDisponiveis.length;
-    renderHist();
-    // Load bilhetes if event is within 7 days
-    if(loteAtual.evento_id){
-      ap("eventos?id=eq."+loteAtual.evento_id+"&select=*").then(function(evd){
-        var ev=evd&&evd[0];
-        if(!ev)return;
-        var hoje=new Date();
-        var hoje0=new Date(hoje.getFullYear(),hoje.getMonth(),hoje.getDate());
-        var evData=ev.data?new Date(ev.data+"T00:00:00"):null;
-        var dias=evData?Math.ceil((evData-hoje0)/(1000*60*60*24)):999;
-        if(dias<=30){
-          q("btn-bilhetes-wrap").style.display="block";
-          var btnMain=document.getElementById("btn-bil-main");
-          var btnMsg=document.getElementById("btn-bil-msg");
-          if(dias<=7){
-            btnMain.style.background="#2aab47";
-            btnMain.disabled=false;
-            btnMain.style.opacity="1";
-            btnMsg.textContent="Toque para ver os bilhetes e enviar";
-          } else {
-            btnMain.style.background="#333";
-            btnMain.disabled=true;
-            btnMain.style.opacity="0.6";
-            btnMsg.textContent="Bilhetes disponiveis 7 dias antes do evento (faltam "+dias+" dias)";
-          }
-          ap("cadastros?lote_id=eq."+loteAtual.id+"&select=*&order=nome.asc").then(function(pessoas){
-            if(!pessoas||!pessoas.length){
-              q("bilhetes-lista").innerHTML="<div style='color:#555;font-size:12px;text-align:center;padding:10px'>Nenhuma pessoa cadastrada ainda.</div>";
-              return;
-            }
-            var df=ev.data?ev.data.split("-"):["","",""];
-            var dataFmt=ev.data?df[2]+"/"+df[1]+"/"+df[0]:"";
-            var h="";
-            pessoas.forEach(function(p){
-              var link="https://robsafonso.github.io/Agroplay/bilhete.html?cad="+p.id+"&ev="+loteAtual.evento_id;
-              var msg="AGROPLAY Music \uD83C\uDFB5\n\nOla, "+p.nome+"! Seu bilhete esta disponivel.\n\n\uD83C\uDFA4 "+ev.nome+(dataFmt?"\n\uD83D\uDCC5 "+dataFmt+(ev.horario?" as "+ev.horario:""):"")+(ev.local?"\n\uD83D\uDCCD "+ev.local:"")+"\n\nAcesse seu bilhete com QR Code:\n"+link+"\n\n\uD83C\uDF9F Apresente na entrada.";
-              var cor=p.bilhete_confirmado?"rgba(42,171,71,.3)":p.bilhete_enviado?"rgba(201,151,60,.3)":"rgba(8,145,178,.3)";
-              var status=p.bilhete_confirmado?"<span style='color:#2aab47;font-size:10px'>Confirmado</span>":p.bilhete_enviado?"<span style='color:#c9973c;font-size:10px'>Aguardando</span>":"";
-              var btnBg=p.bilhete_confirmado?"#2aab47":p.bilhete_enviado?"#c9973c":"#0891b2";
-              var btnTxt=p.bilhete_confirmado?"Confirmado":"Copiar bilhete";
-              h+="<div style='background:#060a06;border:1px solid "+cor+";border-radius:10px;padding:12px;margin-bottom:8px'>";
-              h+="<div style='font-size:14px;font-weight:700;color:#fff;margin-bottom:2px'>"+p.nome+"</div>";
-              if(status)h+="<div style='margin-bottom:6px'>"+status+"</div>";
-              if(!p.bilhete_confirmado){
-                h+="<button onclick='copiarBilheteL(this,"+p.id+")' data-msg='"+msg.replace(/'/g,"&#39;")+"' style='width:100%;background:"+btnBg+";border:none;border-radius:8px;padding:10px;font-size:12px;color:#fff;cursor:pointer;font-weight:700'>"+btnTxt+"</button>";
-              }
-              h+="</div>";
-            });
-            q("bilhetes-lista").innerHTML=h;
-          });
-        }
-      });
-    }
-  });
-}
-
-function renderHist(){
-  var h="";
-  var todos=codsDisponiveis.concat(codsUsados);
-  if(!todos.length){q("hist-lista").innerHTML="<div style='text-align:center;color:#555;font-size:12px;padding:10px'>Nenhum convite ainda</div>";return;}
-  todos.forEach(function(c){
-    var usado=c.usado&&c.cadastro_id;
-    var enviado=c.usado&&!c.cadastro_id;
-    var cor=usado?"#e74c3c":enviado?"#c9973c":"#2aab47";
-    var status=usado?"Cadastrado":enviado?"Enviado":"Disponivel";
-    h+="<div class='hist-item'><span style='font-family:monospace;color:"+cor+"'>"+c.codigo+"</span><span style='background:"+cor+";color:#fff;padding:2px 8px;border-radius:10px;font-size:10px'>"+status+"</span></div>";
-  });
-  q("hist-lista").innerHTML=h;
-}
-
-q("btn-gerar").onclick=function(){
-  var al=q("al-conv");al.innerHTML="";
-  if(!codsDisponiveis.length){al.innerHTML="<div class='ea'>Sem convites disponiveis! Contate a Agroplay.</div>";return;}
-  var cod=codsDisponiveis[0];
-  var evParam=loteAtual.evento_id?"&ev="+loteAtual.evento_id:"";
-  var link=LC+"?lote="+loteAtual.id+"&cod="+cod.codigo+evParam;
-  var msg="AGROPLAY - Convite de Cadastro\n\nVoce foi convidado por "+loteAtual.responsavel+" para se cadastrar no sistema Agroplay!\n\nAcesse o link e faca seu cadastro:\n"+link+"\n\nSeu codigo: "+cod.codigo+"\n\nCodigo intransferivel e de uso unico.\nAgroplay Music - Londrina PR";
-  ap("codigos?codigo=eq."+cod.codigo,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString()})});
-  cod.usado=true;
-  codsDisponiveis=codsDisponiveis.slice(1);
-  codsUsados.unshift(cod);
-  q("qtd-disp").textContent=codsDisponiveis.length;
-  q("conv-cod").textContent=cod.codigo;
-  q("conv-msg").textContent=msg;
-  q("res-conv").classList.remove("gone");
-  q("btn-gerar").classList.add("gone");
-  renderHist();
-};
-
-q("btn-copiar").onclick=function(){cp2(q("conv-msg").textContent,q("btn-copiar"),"Copiar mensagem");};
-
-q("btn-outro").onclick=function(){
-  q("res-conv").classList.add("gone");
-  q("btn-gerar").classList.remove("gone");
-};
-
-// Login manual apenas
 </script>
 
 </body>
