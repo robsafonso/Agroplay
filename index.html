@@ -452,7 +452,7 @@ q("bgerarlinkc").onclick=function(){
       var cod=d[0].codigo;
       return ap("codigos?codigo=eq."+cod,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString()})}).then(function(){
         var link=LC+"?cod="+cod+"&resp="+encodeURIComponent("Robson");
-        var msg="AGROPLAY - Convite de Cadastro\n\nVoce foi convidado por Robson para se cadastrar no sistema Agroplay!\n\nAcesse o link e faca seu cadastro:\n"+link+"\n\nSeu codigo: "+cod+"\n\nCodigo intransferivel e de uso unico.\nAgroplay Music - Londrina PR";
+        var msg="AGROPLAY Music \uD83C\uDFB5\n\nOla! Voce foi convidado por Robson para fazer parte do nosso sistema.\n\nAcesse o link abaixo e faca seu cadastro:\n"+link+"\n\nCodigo: "+cod+"\nCodigo intransferivel e de uso unico.";
         q("lc-cod").textContent=cod;
         q("lc-msg").textContent=msg;
         q("lc-form").classList.add("gone");
@@ -742,7 +742,7 @@ function verLinks(loteId){
 }
 function copiarLote(btn){
   var link=btn.dataset.link;var resp=btn.dataset.resp;var qtd=btn.dataset.qtd;
-  var msg="AGROPLAY - Convite de Cadastro\n\nVoce foi convidado por "+resp+" para se cadastrar no sistema Agroplay!\n\nAcesse o link e faca seu cadastro:\n"+link+"\n\nAgroplay Music - Londrina PR";
+  var msg="AGROPLAY Music \uD83C\uDFB5\n\nOla! Voce foi convidado por "+resp+" para fazer parte do nosso sistema.\n\nAcesse o link abaixo e faca seu cadastro:\n"+link+"\n\nAgroplay Music - Londrina PR";
   cp2(msg,btn,"Copiar link");
 }
 function delLote(id){
@@ -990,8 +990,7 @@ function gconvExt(){
       var link="https://robsafonso.github.io/Agroplay/cadastro-externo.html?ev="+eva.id+"&cod="+cod+"&resp="+encodeURIComponent("Robson");
       var df=eva.data?eva.data.split("-"):["","",""];
       var dataFmt=eva.data?df[2]+"/"+df[1]+"/"+df[0]:"";
-      var msg="AGROPLAY Music \uD83C\uDFB5\n\nOla! Voce esta convidado para:\n\n\uD83C\uDFA4 "+eva.nome+(dataFmt?"\n\uD83D\uDCC5 "+dataFmt+(eva.horario?" as "+eva.horario:""):"")+(eva.local?"\n\uD83D\uDCCD "+eva.local:"")+(eva.atracao1?"\n\uD83C\uDFB5 "+eva.atracao1+(eva.atracao2?" + "+eva.atracao2:""):"")+
-"\n\nAcesse o link e faca seu cadastro:\n"+link+"\n\nCodigo: "+cod+"\nCodigo intransferivel e de uso unico.";
+      var msg="AGROPLAY - Convite VIP\n\n"+eva.nome+(dataFmt?"\nData: "+dataFmt:"")+(eva.local?"\nLocal: "+eva.local:"")+(eva.atracao1?"\nAtracoes: "+eva.atracao1+(eva.atracao2?" + "+eva.atracao2:""):"")+"\n\nAcesse e se cadastre:\n"+link+"\n\nSeu codigo: "+cod+"\n\nCodigo intransferivel.\nAgroplay - Londrina PR";
       q("linkext").textContent=link;
       q("bcopext").style.display="block";
       q("bcopext").onclick=function(){cp2(msg,q("bcopext"),"Copiar mensagem");};
@@ -1014,8 +1013,8 @@ function gconv(){
       var ev=eva;
       var df=ev.data?ev.data.split("-"):["","",""];
       var dataFmt=ev.data?df[2]+"/"+df[1]+"/"+df[0]:"";
-      var msg="AGROPLAY Music \uD83C\uDFB5\n\nOla, "+pessoa.nome+"! Sua presenca esta confirmada em:\n\n\uD83C\uDFA4 "+ev.nome+(dataFmt?"\n\uD83D\uDCC5 "+dataFmt+(ev.horario?" as "+ev.horario:""):"")+(ev.local?"\n\uD83D\uDCCD "+ev.local:"")+(ev.atracao1?"\n\uD83C\uDFB5 "+ev.atracao1+(ev.atracao2?" + "+ev.atracao2:""):"")+
-"\n\nConfirme sua presenca pelo link:\n"+LCV+"?ev="+ev.id+"&tipo=interno\n\nCodigo: "+cod+"\nCodigo intransferivel e de uso unico.";
+      var msg="AGROPLAY - Convite VIP\n\nOla "+pessoa.nome+"!\n\nVoce esta convidado(a):\n\n"+ev.nome+(dataFmt?"\nData: "+dataFmt:"")+(ev.local?"\nLocal: "+ev.local:"")+(ev.atracao1?"\nAtracoes: "+ev.atracao1+(ev.atracao2?" + "+ev.atracao2:""):"");
+      msg=msg+"\n\nAcesse e confirme presenca:\n"+LCV+"?ev="+ev.id+"&tipo=interno\n\nSeu codigo: "+cod+"\n\nCodigo intransferivel.\nAgroplay - Londrina PR";
       ap("codigos?codigo=eq."+cod,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString(),cadastro_id:pessoa?pessoa.id:null})});
       if(pessoa&&ev.id){ap("cadastros?id=eq."+pessoa.id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({evento_id:ev.id,status:"aprovado"})}).then(function(){for(var i=0;i<cads.length;i++){if(cads[i].id===pessoa.id){cads[i].evento_id=ev.id;cads[i].status="aprovado";break;}}});}
       q("ccod").textContent=cod;
