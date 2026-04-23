@@ -70,6 +70,17 @@ input:focus{border-color:#2aab47}
     <div style="font-size:11px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Historico</div>
     <div id="hist-lista"><div style="text-align:center;color:#555;font-size:12px;padding:10px">Nenhum convite gerado ainda</div></div>
   </div>
+
+  <div id="btn-bilhetes-wrap" style="display:none;margin-top:16px;padding:0 16px 16px">
+    <button onclick="toggleBilhetes()" style="width:100%;background:#2aab47;border:none;border-radius:10px;padding:14px;font-size:14px;font-weight:700;color:#fff;cursor:pointer">&#127903; Enviar Bilhetes</button>
+    <div style="font-size:11px;color:#555;text-align:center;margin-top:6px">Toque para ver os bilhetes para enviar</div>
+  </div>
+
+  <div id="secao-bilhetes" style="display:none;padding:0 16px 16px">
+    <div style="font-size:13px;font-weight:700;color:#2aab47;margin-bottom:4px;border-top:1px solid #1a2a1a;padding-top:16px">Bilhetes disponiveis!</div>
+    <div style="font-size:11px;color:#555;margin-bottom:12px">Envie o bilhete para cada pessoa que voce convidou.</div>
+    <div id="bilhetes-lista"></div>
+  </div>
 </div>
 
 <script>
