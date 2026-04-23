@@ -142,7 +142,7 @@ function carregarBilhetes(){
     h+="<div style='font-size:11px;color:#555;margin-bottom:12px'>"+dataFmt+(ev.local?" - "+ev.local:"")+"</div>";
     pessoas.forEach(function(p){
       var link="https://robsafonso.github.io/Agroplay/bilhete.html?cad="+p.id+"&ev="+loteAtual.evento_id;
-      var msg="AGROPLAY - Seu Bilhete\n\nOla "+p.nome+"!\n\nSeu bilhete para:\n"+ev.nome+(dataFmt?"\nData: "+dataFmt:"")+(ev.horario?"\nHorario: "+ev.horario:"")+(ev.local?"\nLocal: "+ev.local:"")+"\n\nAcesse seu bilhete e QR Code:\n"+link+"\n\nApresente na entrada.\nAgroplay Music - Londrina PR";
+      var msg="AGROPLAY Music \uD83C\uDFB5\n\nOla, "+p.nome+"! Seu bilhete esta disponivel.\n\n\uD83C\uDFA4 "+ev.nome+(dataFmt?"\n\uD83D\uDCC5 "+dataFmt+(ev.horario?" as "+ev.horario:""):"")+(ev.local?"\n\uD83D\uDCCD "+ev.local:"")+"\n\nAcesse seu bilhete com QR Code:\n"+link+"\n\n\uD83C\uDF9F Apresente na entrada.";
       var cor=p.bilhete_confirmado?"rgba(42,171,71,.3)":p.bilhete_enviado?"rgba(201,151,60,.3)":"rgba(8,145,178,.3)";
       h+="<div style='background:#060a06;border:1px solid "+cor+";border-radius:10px;padding:12px;margin-bottom:8px'>";
       h+="<div style='font-size:14px;font-weight:700;color:#fff;margin-bottom:2px'>"+p.nome+"</div>";
@@ -218,7 +218,7 @@ function carregarPainel(){
             var h="";
             pessoas.forEach(function(p){
               var link="https://robsafonso.github.io/Agroplay/bilhete.html?cad="+p.id+"&ev="+loteAtual.evento_id;
-              var msg="AGROPLAY - Seu Bilhete\n\nOla "+p.nome+"!\n\nSeu bilhete para:\n"+ev.nome+(dataFmt?"\nData: "+dataFmt:"")+(ev.horario?"\nHorario: "+ev.horario:"")+(ev.local?"\nLocal: "+ev.local:"")+"\n\nAcesse seu bilhete e QR Code:\n"+link+"\n\nApresente na entrada.\nAgroplay Music - Londrina PR";
+              var msg="AGROPLAY Music \uD83C\uDFB5\n\nOla, "+p.nome+"! Seu bilhete esta disponivel.\n\n\uD83C\uDFA4 "+ev.nome+(dataFmt?"\n\uD83D\uDCC5 "+dataFmt+(ev.horario?" as "+ev.horario:""):"")+(ev.local?"\n\uD83D\uDCCD "+ev.local:"")+"\n\nAcesse seu bilhete com QR Code:\n"+link+"\n\n\uD83C\uDF9F Apresente na entrada.";
               var cor=p.bilhete_confirmado?"rgba(42,171,71,.3)":p.bilhete_enviado?"rgba(201,151,60,.3)":"rgba(8,145,178,.3)";
               var status=p.bilhete_confirmado?"<span style='color:#2aab47;font-size:10px'>Confirmado</span>":p.bilhete_enviado?"<span style='color:#c9973c;font-size:10px'>Aguardando</span>":"";
               var btnBg=p.bilhete_confirmado?"#2aab47":p.bilhete_enviado?"#c9973c":"#0891b2";
