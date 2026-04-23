@@ -36,7 +36,7 @@ input:focus{border-color:#2aab47}
 
 <div id="tela-login" class="card">
   <div class="ttl">Painel de Convites</div>
-  <div class="sub">Digite sua senha para acessar seus convites disponíveis.</div>
+  <div class="sub">Digite sua senha para acessar seus convites disponiveis.</div>
   <div id="al-login"></div>
   <div class="fl"><label>Senha de acesso</label><input id="inp-senha" type="password" placeholder="Digite sua senha"></div>
   <button class="btn" id="btn-login">Entrar</button>
@@ -77,6 +77,7 @@ var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
 var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
 var LC="https://robsafonso.github.io/Agroplay/cadastro-externo.html";
 var loteAtual=null;
+try{var _ls=sessionStorage.getItem("ag_lote");if(_ls){loteAtual=JSON.parse(_ls);carregarPainel();}}catch(e){}
 var codsDisponiveis=[];
 var codsUsados=[];
 
@@ -92,11 +93,26 @@ q("btn-login").onclick=function(){
   ap("lotes?senha=eq."+encodeURIComponent(senha)+"&select=*").then(function(d){
     if(!d||!d.length){al.innerHTML="<div class='ea'>Senha invalida</div>";return;}
     loteAtual=d[0];
+    sessionStorage.setItem("ag_lote",JSON.stringify(loteAtual));
     carregarPainel();
   }).catch(function(){al.innerHTML="<div class='ea'>Erro ao conectar</div>";
   }).finally(function(){btn.textContent="Entrar";btn.disabled=false;});
 };
 
+function toggleBilhetes(){var s=q("secao-bilhetes");s.classList.toggle("gone");var btn=q("btn-bilhetes-wrap").querySelector("button");btn.textContent=s.classList.contains("gone")?"&#127903; Enviar Bilhetes":"&#127903; Fechar Bilhetes";}
+function copiarBilheteL(btn,pessoaId){
+  var msg=btn.getAttribute("data-msg");
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(msg).then(function(){
+      btn.textContent="Enviado!";btn.style.background="#c9973c";
+      ap("cadastros?id=eq."+pessoaId,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({bilhete_enviado:true,bilhete_enviado_em:new Date().toISOString()})});
+    });
+  } else {
+    var t=document.createElement("textarea");t.value=msg;document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t);
+    btn.textContent="Enviado!";btn.style.background="#c9973c";
+    ap("cadastros?id=eq."+pessoaId,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({bilhete_enviado:true,bilhete_enviado_em:new Date().toISOString()})});
+  }
+}
 function carregarPainel(){
   q("nome-resp").textContent=loteAtual.responsavel;
   q("tela-login").classList.add("gone");
@@ -107,6 +123,45 @@ function carregarPainel(){
     codsUsados=todos.filter(function(c){return c.usado;});
     q("qtd-disp").textContent=codsDisponiveis.length;
     renderHist();
+    // Load bilhetes if event is within 7 days
+    if(loteAtual.evento_id){
+      ap("eventos?id=eq."+loteAtual.evento_id+"&select=*").then(function(evd){
+        var ev=evd&&evd[0];
+        if(!ev)return;
+        var hoje=new Date();
+        var hoje0=new Date(hoje.getFullYear(),hoje.getMonth(),hoje.getDate());
+        var evData=ev.data?new Date(ev.data+"T00:00:00"):null;
+        var dias=evData?Math.ceil((evData-hoje0)/(1000*60*60*24)):999;
+        if(dias<=30){
+          q("btn-bilhetes-wrap").style.display="block";
+          ap("cadastros?lote_id=eq."+loteAtual.id+"&select=*&order=nome.asc").then(function(pessoas){
+            if(!pessoas||!pessoas.length){
+              q("bilhetes-lista").innerHTML="<div style='color:#555;font-size:12px;text-align:center;padding:10px'>Nenhuma pessoa cadastrada ainda.</div>";
+              return;
+            }
+            var df=ev.data?ev.data.split("-"):["","",""];
+            var dataFmt=ev.data?df[2]+"/"+df[1]+"/"+df[0]:"";
+            var h="";
+            pessoas.forEach(function(p){
+              var link="https://robsafonso.github.io/Agroplay/bilhete.html?cad="+p.id+"&ev="+loteAtual.evento_id;
+              var msg="AGROPLAY - Seu Bilhete\n\nOla "+p.nome+"!\n\nSeu bilhete para:\n"+ev.nome+(dataFmt?"\nData: "+dataFmt:"")+(ev.horario?"\nHorario: "+ev.horario:"")+(ev.local?"\nLocal: "+ev.local:"")+"\n\nAcesse seu bilhete e QR Code:\n"+link+"\n\nApresente na entrada.\nAgroplay Music - Londrina PR";
+              var cor=p.bilhete_confirmado?"rgba(42,171,71,.3)":p.bilhete_enviado?"rgba(201,151,60,.3)":"rgba(8,145,178,.3)";
+              var status=p.bilhete_confirmado?"<span style='color:#2aab47;font-size:10px'>Confirmado</span>":p.bilhete_enviado?"<span style='color:#c9973c;font-size:10px'>Aguardando</span>":"";
+              var btnBg=p.bilhete_confirmado?"#2aab47":p.bilhete_enviado?"#c9973c":"#0891b2";
+              var btnTxt=p.bilhete_confirmado?"Confirmado":"Copiar bilhete";
+              h+="<div style='background:#060a06;border:1px solid "+cor+";border-radius:10px;padding:12px;margin-bottom:8px'>";
+              h+="<div style='font-size:14px;font-weight:700;color:#fff;margin-bottom:2px'>"+p.nome+"</div>";
+              if(status)h+="<div style='margin-bottom:6px'>"+status+"</div>";
+              if(!p.bilhete_confirmado){
+                h+="<button onclick='copiarBilheteL(this,"+p.id+")' data-msg='"+msg.replace(/'/g,"&#39;")+"' style='width:100%;background:"+btnBg+";border:none;border-radius:8px;padding:10px;font-size:12px;color:#fff;cursor:pointer;font-weight:700'>"+btnTxt+"</button>";
+              }
+              h+="</div>";
+            });
+            q("bilhetes-lista").innerHTML=h;
+          });
+        }
+      });
+    }
   });
 }
 
