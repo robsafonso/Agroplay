@@ -254,10 +254,10 @@ function carregarAdmins(){
 }
 
 function mudarNivel(id,nivel){
-  ap("admins?id=eq."+id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({nivel:nivel})}).then(function(){carregarAdmins();});
+  ap("admins?id=eq."+id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({nivel:nivel})}).then(function(){setTimeout(function(){carregarAdmins();},300);});
 }
 function toggleAdmin(id,ativo){
-  ap("admins?id=eq."+id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({ativo:ativo})}).then(function(){carregarAdmins();});
+  ap("admins?id=eq."+id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({ativo:ativo})}).then(function(){setTimeout(function(){carregarAdmins();},300);});
 }
 function delAdmin(id){
   if(!confirm("Excluir este administrador?"))return;
