@@ -244,19 +244,21 @@ function salvarItem(){
   var btn=document.getElementById("m-save");
   btn.textContent="Salvando...";btn.disabled=true;
 
-  if(id){
-    ap("orcamentos?id=eq."+id,{m:"PATCH",pref:"return=minimal",b:body}).then(function(){
-      document.getElementById("modal").style.display="none";
-      loadItens(evAtual.id);
-      btn.textContent="Salvar";btn.disabled=false;
+  var evId=evAtual.id;
+  var path=id?"orcamentos?id=eq."+id:"orcamentos";
+  var meth=id?"PATCH":"POST";
+  ap(path,{m:meth,pref:"return=minimal",b:body}).then(function(){
+    document.getElementById("modal").style.display="none";
+    btn.textContent="Salvar";btn.disabled=false;
+    // Reload items keeping event selected
+    ap("orcamentos?evento_id=eq."+evId+"&order=categoria.asc,item.asc").then(function(d){
+      itens=d||[];
+      renderOrcamento();
     });
-  } else {
-    ap("orcamentos",{m:"POST",pref:"return=minimal",b:body}).then(function(){
-      document.getElementById("modal").style.display="none";
-      loadItens(evAtual.id);
-      btn.textContent="Salvar";btn.disabled=false;
-    });
-  }
+  }).catch(function(e){
+    alert("Erro ao salvar: "+(e?e.message:"desconhecido"));
+    btn.textContent="Salvar";btn.disabled=false;
+  });
 }
 
 loadEventos();
