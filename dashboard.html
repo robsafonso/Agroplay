@@ -185,14 +185,16 @@ document.getElementById(“conteudo”).innerHTML=html||”<div style='text-alig
 }
 
 function load(){
-Promise.all([
-ap(“eventos?select=*&order=data.asc”),
-ap(“cadastros?select=id,nome,evento_id,lote_nome,bilhete_enviado,bilhete_confirmado,entrada_em&order=nome.asc”)
-]).then(function(r){
-try{render(r[0]||[],r[1]||[]);}
-catch(e){document.getElementById(“conteudo”).innerHTML=”<div style='color:red;padding:20px'>Erro: “+e.message+”</div>”;}
+var evs=[],cads=[];
+ap(“eventos?select=*&order=data.asc”).then(function(d){
+evs=d||[];
+return ap(“cadastros?select=id,nome,evento_id,lote_nome,bilhete_enviado,bilhete_confirmado,entrada_em&order=nome.asc”);
+}).then(function(d){
+cads=d||[];
+try{render(evs,cads);}
+catch(e){document.getElementById(“conteudo”).innerHTML=”<div style='padding:20px;color:#e74c3c'>Erro render: “+e.message+”</div>”;}
 }).catch(function(e){
-document.getElementById(“conteudo”).innerHTML=”<div style='color:red;padding:20px'>Erro: “+e.message+”</div>”;
+document.getElementById(“conteudo”).innerHTML=”<div style='padding:20px;color:#e74c3c'>Erro conexao: “+e.message+”</div>”;
 });
 }
 load();
