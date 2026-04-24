@@ -55,9 +55,11 @@ textarea{height:70px;resize:none}
 </head>
 <body>
 <div class="hdr">
-  <div style="font-size:18px;font-weight:900;color:#fff;cursor:pointer" onclick="location.href='home.html'">AGRO<span style="color:#2aab47">PLAY</span></div>
-  <div style="display:flex;gap:6px;align-items:center">
-    <span style="font-size:10px;color:#333;margin-right:4px">v24</span><button onclick="togMenu()" style="background:transparent;border:none;color:#eee;font-size:20px;cursor:pointer;padding:4px 8px">&#9776;</button>
+  <div onclick="location.href='home.html'" style="cursor:pointer;display:flex;align-items:center;gap:0;border:1px solid #1a2a1a;border-radius:10px;overflow:hidden">
+    <div style="background:#0d150d;padding:7px 12px;font-size:16px;font-weight:900;color:#fff;letter-spacing:1px">AGRO<span style="color:#2aab47">PLAY</span></div>
+    <div style="background:#2aab47;padding:7px 10px;font-size:11px;font-weight:700;color:#fff;letter-spacing:1px">v24</div>
+  </div>
+  <div style="display:flex;gap:6px;align-items:center"><button onclick="togMenu()" style="background:transparent;border:none;color:#eee;font-size:20px;cursor:pointer;padding:4px 8px">&#9776;</button>
     <button class="bto" id="blinkc" style="font-size:11px;padding:6px 10px">Link Cadastro</button>
     <button class="bto" id="bnovocad" style="font-size:11px;padding:6px 10px;border-color:#c9973c;color:#c9973c">+ Cadastrar</button>
     <a href="https://robsafonso.github.io/Agroplay/mediakit.html" target="_blank" style="background:transparent;color:#2aab47;border:1px solid #2aab47;border-radius:8px;padding:6px 10px;font-size:11px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center">Kit</a>
@@ -901,7 +903,7 @@ function abrEv(id){
     for(var i=0;i<evs.length;i++){if(evs[i].id===id){ev=evs[i];break;}}
     if(!ev)return;
     q("evtit").textContent="Editar Evento";
-    q("evn").value=ev.nome||"";q("evd").value=ev.data||"";q("evl").value=ev.local||"";
+    q("evn").value=ev.nome||"";q("evd").value=ev.data||"";if(q("evh"))q("evh").value=ev.horario||"";if(q("evhf"))q("evhf").value=ev.horario_fim||"";q("evl").value=ev.local||"";
     q("evm").value=ev.maps_url||"";q("eva1").value=ev.atracao1||"";q("evi1").value=ev.insta_atr1||"";
     q("eva2").value=ev.atracao2||"";q("evi2").value=ev.insta_atr2||"";
     q("evf").value=ev.foto_url||"";q("evdesc").value=ev.descricao||"";
@@ -917,7 +919,7 @@ function salvEv(){
   var nome=q("evn").value.trim();
   if(!nome){q("evalert").innerHTML="<div class='ea'>Nome obrigatorio</div>";return;}
   var btn=q("bsev");btn.textContent="Salvando...";btn.disabled=true;
-  var body=JSON.stringify({nome:nome,data:q("evd").value||null,local:q("evl").value.trim(),maps_url:q("evm").value.trim(),atracao1:q("eva1").value.trim(),insta_atr1:q("evi1").value.trim(),atracao2:q("eva2").value.trim(),insta_atr2:q("evi2").value.trim(),foto_url:q("evf").value.trim(),descricao:q("evdesc").value.trim()});
+  var body=JSON.stringify({nome:nome,data:q("evd").value||null,local:q("evl").value.trim(),horario:q("evh")?q("evh").value:"",horario_fim:q("evhf")?q("evhf").value:"",maps_url:q("evm").value.trim(),atracao1:q("eva1").value.trim(),insta_atr1:q("evi1").value.trim(),atracao2:q("eva2").value.trim(),insta_atr2:q("evi2").value.trim(),foto_url:q("evf").value.trim(),descricao:q("evdesc").value.trim()});
   var path=eid?"eventos?id=eq."+eid:"eventos";
   var meth=eid?"PATCH":"POST";
   ap(path,{m:meth,pref:"return=minimal",b:body}).then(function(){fecEv();load();tab("e");}).catch(function(){q("evalert").innerHTML="<div class='ea'>Erro ao salvar</div>";}).finally(function(){btn.textContent="Salvar";btn.disabled=false;});
