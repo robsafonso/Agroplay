@@ -8,44 +8,65 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:16px;max-width:480px;margin:0 auto}
-.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.logo{cursor:pointer;display:flex;align-items:center;border:1px solid #1a2a1a;border-radius:10px;overflow:hidden}
-.lt{background:#0d150d;padding:7px 12px;font-size:16px;font-weight:900;color:#fff}
-.lt span{color:#2aab47}
-.lv{background:#c9973c;padding:7px 10px;font-size:11px;font-weight:700;color:#fff}
+.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.logo{font-size:16px;font-weight:900;color:#fff;letter-spacing:2px;cursor:pointer}
+.logo span{color:#2aab47}
 .back{background:transparent;border:1px solid #1a2a1a;border-radius:8px;padding:6px 12px;color:#eee;font-size:12px;text-decoration:none}
+.total-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.tot{background:#090e09;border:1px solid #1a2a1a;border-radius:12px;padding:12px;text-align:center}
+.tot-n{font-size:26px;font-weight:900;display:block}
+.tot-l{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+.filtros{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.chip{background:transparent;border:1px solid #1a2a1a;border-radius:20px;padding:5px 12px;font-size:11px;color:#888;cursor:pointer}
+.chip.on{background:#1e7a35;border-color:#1e7a35;color:#fff;font-weight:700}
+.ev-card{background:#090e09;border:1px solid #1a2a1a;border-radius:12px;padding:14px;margin-bottom:12px}
+.ev-nome{font-size:15px;font-weight:900;color:#fff;margin-bottom:2px}
+.ev-det{font-size:11px;color:#555;margin-bottom:12px}
+.lote-block{background:#060a06;border:1px solid #1a2a1a;border-radius:10px;padding:12px;margin-bottom:8px}
+.lote-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;cursor:pointer}
+.lote-nome{font-size:13px;font-weight:700;color:#fff}
+.lote-badges{display:flex;gap:4px}
+.badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px}
+.lote-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:8px}
+.ls{border-radius:8px;padding:6px;text-align:center}
+.ls-n{font-size:16px;font-weight:900;display:block}
+.ls-l{font-size:9px;text-transform:uppercase;letter-spacing:1px;margin-top:1px}
+.btn-ver{width:100%;background:transparent;border:1px solid #2aab47;color:#2aab47;border-radius:8px;padding:8px;font-size:12px;cursor:pointer;text-decoration:none;display:block;text-align:center}
+.loading{text-align:center;padding:40px;font-size:14px;color:#555}
+.progress-bar{height:4px;background:#1a2a1a;border-radius:2px;margin-top:8px;overflow:hidden}
+.progress-fill{height:100%;background:#2aab47;border-radius:2px;transition:width .3s}
 </style>
 </head>
 <body>
 <div class="hdr">
-  <div class="logo" onclick="location.href='home.html'">
-    <div class="lt">AGRO<span>PLAY</span></div>
-    <div class="lv">Orcamento</div>
-  </div>
+  <div class="logo" onclick="location.href='home.html'">AGRO<span>PLAY</span> <span style="font-size:11px;background:#c9973c;color:#fff;padding:2px 6px;border-radius:6px;margin-left:4px">Orcamento</span></div>
   <a href="home.html" class="back">&larr; Menu</a>
 </div>
-<select id="ev-sel" onchange="selecionarEvento()" style="width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:12px;color:#eee;font-size:13px;margin-bottom:10px;outline:none"><option value="">Carregando eventos...</option></select>
-<div id="ev-info" style="margin-bottom:12px;font-size:12px;color:#555"></div>
-<div id="conteudo"></div>
+
+<select id="ev-sel" onchange="selecionarEvento()" style="width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:12px;color:#eee;font-size:13px;margin-bottom:10px;outline:none"><option value="">Carregando…</option></select>
+
+<div id="ev-info" style="margin-bottom:10px"></div>
+<div id="conteudo"><div class="loading">Carregando...</div></div>
+
 <div id="modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:9999;align-items:flex-end;justify-content:center">
-  <div style="background:#0d150d;border:1px solid #1a2a1a;border-radius:16px 16px 0 0;padding:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-      <span id="m-title" style="font-size:16px;font-weight:900;color:#fff">Adicionar item</span>
-      <button onclick="document.getElementById('modal').style.display='none'" style="background:transparent;border:none;color:#555;font-size:22px;cursor:pointer">x</button>
-    </div>
-    <input type="hidden" id="m-id">
-    <div style="margin-bottom:8px"><div style="font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Categoria</div>
-    <select id="m-cat" onchange="atualizarSelect(this.value)" style="width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></select></div>
-    <div style="margin-bottom:8px"><div style="font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Item</div>
-    <select id="m-item" style="width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></select></div>
-    <div style="margin-bottom:8px"><div style="font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Quantidade</div>
-    <input type="number" id="m-qtd" value="1" min="0.5" step="0.5" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></div>
-    <div style="margin-bottom:8px"><div style="font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Valor unitario R$</div>
-    <input type="number" id="m-val" placeholder="0.00" step="0.01" min="0" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></div>
-    <div style="margin-bottom:8px"><div style="font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Observacao (opcional)</div>
-    <input type="text" id="m-obs" placeholder="Ex: inclui retorno" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></div>
-    <button id="m-save" onclick="salvarItem()" style="width:100%;background:#2aab47;border:none;border-radius:10px;padding:14px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;margin-top:4px">Salvar</button>
-  </div>
+<div style="background:#0d150d;border:1px solid #1a2a1a;border-radius:16px 16px 0 0;padding:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+<span id="m-title" style="font-size:16px;font-weight:900;color:#fff">Adicionar item</span>
+<button onclick="document.getElementById('modal').style.display='none'" style="background:transparent;border:none;color:#555;font-size:22px;cursor:pointer">x</button>
+</div>
+<input type="hidden" id="m-id">
+<div style="margin-bottom:8px"><div style="font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase">Categoria</div>
+<select id="m-cat" onchange="atualizarSelect(this.value)" style="width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></select></div>
+<div style="margin-bottom:8px"><div style="font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase">Item</div>
+<select id="m-item" style="width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></select></div>
+<div style="margin-bottom:8px"><div style="font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase">Quantidade</div>
+<input type="number" id="m-qtd" value="1" min="0.5" step="0.5" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></div>
+<div style="margin-bottom:8px"><div style="font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase">Valor unitario R$</div>
+<input type="number" id="m-val" placeholder="0.00" step="0.01" min="0" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></div>
+<div style="margin-bottom:8px"><div style="font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase">Observacao</div>
+<input type="text" id="m-obs" placeholder="Ex: inclui retorno" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></div>
+<button id="m-save" onclick="salvarItem()" style="width:100%;background:#2aab47;border:none;border-radius:10px;padding:14px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;margin-top:10px">Salvar</button>
+</div>
 </div>
 <script>
 var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
@@ -69,16 +90,16 @@ sel.innerHTML=”<option value=''>Selecione um evento…</option>”;
 }
 
 function selecionarEvento(){
-var evId=q(“ev-sel”).value;
-q(“conteudo”).innerHTML=””;
-q(“ev-info”).innerHTML=””;
+var evId=document.getElementById(“ev-sel”).value;
+document.getElementById(“conteudo”).innerHTML=””;
+document.getElementById(“ev-info”).innerHTML=””;
 if(!evId)return;
-ap(“eventos?id=eq.”+evId+”&select=*”).then(function(d){
-evAtual=d&&d[0];
+var evs=window._evs||[];
+evAtual=null;
+for(var i=0;i<evs.length;i++){if(String(evs[i].id)===String(evId)){evAtual=evs[i];break;}}
 if(!evAtual)return;
-q(“ev-info”).innerHTML=”<div style='font-size:14px;font-weight:700;color:#fff'>”+evAtual.nome+”</div><div style='font-size:11px;color:#555'>”+fd(evAtual.data)+(evAtual.horario?” as “+evAtual.horario:””)+(evAtual.local?” - “+evAtual.local:””)+”</div>”;
+document.getElementById(“ev-info”).innerHTML=”<div style='font-size:14px;font-weight:700;color:#fff'>”+evAtual.nome+”</div><div style='font-size:11px;color:#555'>”+fd(evAtual.data)+(evAtual.horario?” as “+evAtual.horario:””)+(evAtual.local?” - “+evAtual.local:””)+”</div>”;
 carregarItens();
-});
 }
 
 function carregarItens(){
@@ -194,31 +215,42 @@ carregarItens();
 
 function gerarPDF(){
 if(!evAtual||!itens.length)return;
-var fmt2=function(v){return”R$ “+parseFloat(v||0).toLocaleString(“pt-BR”,{minimumFractionDigits:2});};
-var fd2=function(d){if(!d)return””;var x=d.split(”-”);return x[2]+”/”+x[1]+”/”+x[0];};
-var total=itens.reduce(function(s,it){return s+parseFloat(it.valor_total||0);},0);
+var tot=itens.reduce(function(s,it){return s+parseFloat(it.valor_total||0);},0);
 var cats={};
 itens.forEach(function(it){if(!cats[it.categoria])cats[it.categoria]=[];cats[it.categoria].push(it);});
 var win=window.open(””,”_blank”);
-var h=”<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Orcamento - “+evAtual.nome+”</title>”;
-h+=”<style>body{font-family:Arial;max-width:600px;margin:0 auto;padding:20px;color:#333}table{width:100%;border-collapse:collapse}th,td{padding:8px;text-align:left;border-bottom:1px solid #eee}th{background:#f5f5f5;font-size:11px;text-transform:uppercase}@media print{button{display:none}}</style></head><body>”;
-h+=”<h1 style='font-size:22px'>AGROPLAY</h1><h2 style='font-size:16px;font-weight:400;color:#666'>Orcamento de Evento</h2>”;
-h+=”<h3>”+evAtual.nome+”</h3><p style='color:#666;font-size:13px'>”+fd2(evAtual.data)+(evAtual.horario?” as “+evAtual.horario:””)+(evAtual.local?” - “+evAtual.local:””)+”</p>”;
-h+=”<div style='background:#f0fff0;padding:12px;border-radius:8px;margin:16px 0;display:flex;justify-content:space-between'><span>TOTAL ESTIMADO</span><b style='font-size:20px;color:#1e7a35'>”+fmt2(total)+”</b></div>”;
+var h=”<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Orcamento</title><style>body{font-family:Arial;max-width:600px;margin:0 auto;padding:20px}table{width:100%;border-collapse:collapse}th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}th{background:#f5f5f5;font-size:11px}@media print{button{display:none}}</style></head><body>”;
+h+=”<h1>AGROPLAY</h1><h2 style='font-weight:400;color:#666'>Orcamento de Evento</h2><h3>”+evAtual.nome+”</h3>”;
+h+=”<p style='color:#666;font-size:13px'>”+fd(evAtual.data)+(evAtual.horario?” as “+evAtual.horario:””)+(evAtual.local?” - “+evAtual.local:””)+”</p>”;
+h+=”<div style='background:#f0fff0;padding:12px;border-radius:8px;margin:16px 0;display:flex;justify-content:space-between'><span>TOTAL ESTIMADO</span><b style='font-size:20px;color:#1e7a35'>R$ “+tot.toLocaleString(“pt-BR”,{minimumFractionDigits:2})+”</b></div>”;
 Object.keys(cats).forEach(function(cat){
 var ct=cats[cat].reduce(function(s,it){return s+parseFloat(it.valor_total||0);},0);
-h+=”<h4 style='background:#eee;padding:8px;margin:12px 0 0'>”+cat+” - “+fmt2(ct)+”</h4>”;
+h+=”<h4 style='background:#eee;padding:8px;margin:12px 0 0'>”+cat+” - R$ “+ct.toLocaleString(“pt-BR”,{minimumFractionDigits:2})+”</h4>”;
 h+=”<table><tr><th>Item</th><th>Qtd</th><th>Unit.</th><th>Total</th></tr>”;
-cats[cat].forEach(function(it){h+=”<tr><td>”+it.item+(it.observacao?”<br><small style='color:#888'>”+it.observacao+”</small>”:””)+”</td><td>”+it.quantidade+”</td><td>”+fmt2(it.valor_unitario)+”</td><td><b>”+fmt2(it.valor_total)+”</b></td></tr>”;});
+cats[cat].forEach(function(it){h+=”<tr><td>”+it.item+(it.observacao?”<br><small>”+it.observacao+”</small>”:””)+”</td><td>”+it.quantidade+”</td><td>R$ “+parseFloat(it.valor_unitario).toLocaleString(“pt-BR”,{minimumFractionDigits:2})+”</td><td><b>R$ “+parseFloat(it.valor_total).toLocaleString(“pt-BR”,{minimumFractionDigits:2})+”</b></td></tr>”;});
 h+=”</table>”;
 });
 h+=”<p style='color:#888;font-size:11px;margin-top:20px;text-align:center'>Agroplay Music - Londrina PR - “+new Date().toLocaleDateString(“pt-BR”)+”</p>”;
-h+=”<br><button onclick='window.print()' style='width:100%;background:#1e7a35;color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;cursor:pointer'>Imprimir / Salvar PDF</button>”;
-h+=”</body></html>”;
+h+=”<br><button onclick='window.print()' style='width:100%;background:#1e7a35;color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;cursor:pointer'>Imprimir / Salvar PDF</button></body></html>”;
 win.document.write(h);win.document.close();
 }
 
-loadEventos();
+Promise.all([
+ap(“eventos?select=*&order=data.asc”),
+ap(“orcamentos?select=id&limit=1”)
+]).then(function(res){
+window._evs=res[0]||[];
+var sel=document.getElementById(“ev-sel”);
+if(!window._evs.length){sel.innerHTML=”<option value=''>Nenhum evento</option>”;return;}
+sel.innerHTML=”<option value=''>Selecione um evento…</option>”;
+window._evs.forEach(function(ev){
+var d=ev.data?ev.data.split(”-”):[””,””,””];
+var df=d[2]+”/”+d[1]+”/”+d[0];
+sel.innerHTML+=”<option value='"+ev.id+"'>”+ev.nome+” (”+df+”)</option>”;
+});
+}).catch(function(){
+document.getElementById(“ev-sel”).innerHTML=”<option value=''>Erro ao carregar</option>”;
+});
 
 </script>
 </body>
