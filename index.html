@@ -57,7 +57,7 @@ textarea{height:70px;resize:none}
 <div class="hdr">
   <div onclick="location.href='home.html'" style="cursor:pointer;display:flex;align-items:center;gap:0;border:1px solid #1a2a1a;border-radius:10px;overflow:hidden">
     <div style="background:#0d150d;padding:7px 12px;font-size:16px;font-weight:900;color:#fff;letter-spacing:1px">AGRO<span style="color:#2aab47">PLAY</span></div>
-    <div style="background:#2aab47;padding:7px 10px;font-size:11px;font-weight:700;color:#fff;letter-spacing:1px">v24</div>
+    <div style="background:#2aab47;padding:7px 10px;font-size:11px;font-weight:700;color:#fff;letter-spacing:1px">v25</div>
   </div>
   <div style="display:flex;gap:6px;align-items:center"><button onclick="togMenu()" style="background:transparent;border:none;color:#eee;font-size:20px;cursor:pointer;padding:4px 8px">&#9776;</button>
     <button class="bto" id="blinkc" style="font-size:11px;padding:6px 10px">Link Cadastro</button>
@@ -79,7 +79,7 @@ textarea{height:70px;resize:none}
   <div style="border-top:1px solid #1a2a1a;margin:4px 0"></div>
   <a href="home.html" onclick="sessionStorage.removeItem('ag_admin')" style="display:flex;align-items:center;gap:10px;padding:10px 14px;color:#c0392b;text-decoration:none;font-size:13px;border-radius:8px">&#128682; Sair</a>
   <div style="border-top:1px solid #1a2a1a;margin:4px 0"></div>
-  <div style="padding:6px 14px;font-size:10px;color:#333;text-align:center">v24</div>
+  <div style="padding:6px 14px;font-size:10px;color:#333;text-align:center">v25</div>
 </div>
 <div class="stats" id="sts"></div>
 <div class="tabs">
@@ -975,10 +975,18 @@ function rcp(){
   f.forEach(function(c){
     var cor=COR[c.setor]||"#555";
     var chk=cs.indexOf(c.id)>=0;
-    h+="<div style='display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #111'>";
-    h+="<input type='checkbox' style='width:18px;height:18px;cursor:pointer' "+(chk?"checked":"")+" onchange='togC("+c.id+",this.checked)'>";
-    h+="<div style='flex:1;font-size:13px;color:#eee'>"+c.nome+"</div>";
-    h+="<span class='badge' style='background:"+cor+"'>"+c.setor+"</span></div>";
+    var jaConvidado=eva&&c.evento_id===eva.id;
+    if(jaConvidado){
+      h+="<div style='display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #111;opacity:0.4'>";
+      h+="<input type='checkbox' style='width:18px;height:18px;cursor:not-allowed' disabled>";
+      h+="<div style='flex:1;font-size:13px;color:#eee'>"+c.nome+"</div>";
+      h+="<span style='font-size:10px;color:#2aab47;font-weight:700'>Ja convidado</span></div>";
+    } else {
+      h+="<div style='display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #111'>";
+      h+="<input type='checkbox' style='width:18px;height:18px;cursor:pointer' "+(chk?"checked":"")+" onchange='togC("+c.id+",this.checked)'>";
+      h+="<div style='flex:1;font-size:13px;color:#eee'>"+c.nome+"</div>";
+      h+="<span class='badge' style='background:"+cor+"'>"+c.setor+"</span></div>";
+    }
   });
   q("cpess").innerHTML=h;
 }
