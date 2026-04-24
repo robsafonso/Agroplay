@@ -259,7 +259,24 @@ q("btn-gerar").onclick=function(){
   var cod=codsDisponiveis[0];
   var evParam=loteAtual.evento_id?"&ev="+loteAtual.evento_id:"";
   var link=LC+"?lote="+loteAtual.id+"&cod="+cod.codigo+evParam;
-  var msg="AGROPLAY Music \uD83C\uDFB5\n\nOla! Voce foi convidado por "+loteAtual.responsavel+" para fazer parte do nosso sistema.\n\nAcesse o link abaixo e faca seu cadastro:\n"+link+"\n\nCodigo: "+cod.codigo+"\nAgroplay Music - Londrina PR";
+  function buildMsg(ev){
+    var df=ev&&ev.data?ev.data.split("-"):null;
+    var dataFmt=df?df[2]+"/"+df[1]+"/"+df[0]:"";
+    var evBlock=ev?"\n\n\uD83C\uDFA4 "+ev.nome+(dataFmt?"\n\uD83D\uDCC5 "+dataFmt+(ev.horario?" as "+ev.horario+(ev.horario_fim?" - "+ev.horario_fim:""):""):"")+(ev.local?"\n\uD83D\uDCCD "+ev.local:"")+(ev.atracao1?"\n\uD83C\uDFB5 "+ev.atracao1+(ev.atracao2?" + "+ev.atracao2:""):""):"";
+    return "AGROPLAY Music \uD83C\uDFB5\n\nOla! Voce foi convidado por "+loteAtual.responsavel+" para:"+evBlock+"\n\nAcesse o link e faca seu cadastro:\n"+link+"\n\nCodigo: "+cod.codigo+"\nAgroplay Music - Londrina PR";
+  }
+  if(loteAtual.evento_id){
+    ap("eventos?id=eq."+loteAtual.evento_id+"&select=*").then(function(evd){
+      var ev=evd&&evd[0];
+      q("conv-msg").textContent=buildMsg(ev);
+      q("conv-cod").textContent=cod.codigo;
+      q("res-conv").classList.remove("gone");
+    });
+  } else {
+    q("conv-msg").textContent=buildMsg(null);
+    q("conv-cod").textContent=cod.codigo;
+    q("res-conv").classList.remove("gone");
+  }
   ap("codigos?codigo=eq."+cod.codigo,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({usado:true,usado_em:new Date().toISOString()})});
   cod.usado=true;
   codsDisponiveis=codsDisponiveis.slice(1);
