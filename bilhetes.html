@@ -39,11 +39,12 @@ body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:16px;max
 <script>
 var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
 var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
-var EV_ID=null;try{var _s=window.location.search.replace("?","");var _ps=_s.split("&");for(var _i=0;_i<_ps.length;_i++){var _kv=_ps[_i].split("=");if(_kv[0]==="ev"){EV_ID=_kv[1];break;}}}catch(e){}
+var params=new URLSearchParams(window.location.search);
+var EV_ID=params.get("ev");
 var evAtual=null;
 
 function ap(path,o){
-  if(!o){return fetch(SB+"/rest/v1/"+path,{headers:{"apikey":KY,"Authorization":"Bearer "+KY}}).then(function(r){return r.json();});}
+  o=o||{};
   var h={"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json"};
   if(o.pref)h["Prefer"]=o.pref;
   return fetch(SB+"/rest/v1/"+path,{method:o.m||"GET",headers:h,body:o.b}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});
@@ -143,15 +144,20 @@ function render(ev,pessoas){
 if(!EV_ID){
   document.getElementById("conteudo").innerHTML="<div class='loading'>Link invalido.</div>";
 } else {
-  var _ev=null;
-  ap("eventos?id=eq."+EV_ID+"&select=*").then(function(d){
-    _ev=d&&d[0];
-    if(!_ev){document.getElementById("conteudo").innerHTML="<div class='loading'>Evento nao encontrado.</div>";return ap("");}
-    return ap("cadastros?evento_id=eq."+EV_ID+"&select=*&order=nome.asc");
-  }).then(function(d){
-    if(!_ev||!d)return;
-    try{render(_ev,d||[]);}catch(e){document.getElementById("conteudo").innerHTML="<div class='loading'>Erro: "+e.message+"</div>";}
-  }).catch(function(e){
-    document.getElementById("conteudo").innerHTML="<div class='loading'>Erro: "+(e?e.message:"desconhecido")+"</div>";
+  Promise.all([
+    ap("eventos?id=eq."+EV_ID+"&select=*"),
+    ap("cadastros?evento_id=eq."+EV_ID+"&select=*&order=nome.asc")
+  ]).then(function(res){
+    var ev=res[0]&&res[0][0];
+    var pessoas=res[1]||[];
+    if(!ev){document.getElementById("conteudo").innerHTML="<div class='loading'>Evento nao encontrado.</div>";return;}
+    render(ev,pessoas);
+  }).catch(function(){
+    document.getElementById("conteudo").innerHTML="<div class='loading'>Erro ao carregar.</div>";
   });
 }
+
+</script>
+
+</body>
+</html>
