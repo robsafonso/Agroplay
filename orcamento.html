@@ -39,76 +39,72 @@ body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:16px;max
 </head>
 <body>
 <div class="hdr">
-  <div class="logo" onclick="location.href='home.html'">AGRO<span>PLAY</span> <span style="font-size:11px;background:#c9973c;color:#fff;padding:2px 6px;border-radius:6px;margin-left:4px">Orcamento</span></div>
+  <div class="logo" onclick="location.href='home.html'">AGRO<span>PLAY</span></div>
   <a href="home.html" class="back">&larr; Menu</a>
 </div>
 
-<select id="ev-sel" onchange="selecionarEvento()" style="width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:12px;color:#eee;font-size:13px;margin-bottom:10px;outline:none"><option value="">Carregando…</option></select>
+  <div class="tot"><span class="tot-n" id="t-amar" style="color:#c9973c">0</span><div class="tot-l">Aguardando</div></div>
+  <div class="tot"><span class="tot-n" id="t-verde" style="color:#2aab47">0</span><div class="tot-l">Confirmado</div></div>
+</div>
 
-<div id="ev-info" style="margin-bottom:10px"></div>
-<div id="conteudo"><div class="loading">Carregando...</div></div>
+<select id="ev-sel" style="width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:12px;color:#eee;font-size:13px;margin-bottom:10px;outline:none"><option value="">Carregando eventos…</option></select>
+
+<div id="ev-info" style="margin-bottom:12px"></div>
+<div id="conteudo"></div>
 
 <div id="modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:9999;align-items:flex-end;justify-content:center">
-<div style="background:#0d150d;border:1px solid #1a2a1a;border-radius:16px 16px 0 0;padding:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-<span id="m-title" style="font-size:16px;font-weight:900;color:#fff">Adicionar item</span>
-<button onclick="document.getElementById('modal').style.display='none'" style="background:transparent;border:none;color:#555;font-size:22px;cursor:pointer">x</button>
-</div>
-<input type="hidden" id="m-id">
-<div style="margin-bottom:8px"><div style="font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase">Categoria</div>
-<select id="m-cat" onchange="atualizarSelect(this.value)" style="width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></select></div>
-<div style="margin-bottom:8px"><div style="font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase">Item</div>
-<select id="m-item" style="width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></select></div>
-<div style="margin-bottom:8px"><div style="font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase">Quantidade</div>
-<input type="number" id="m-qtd" value="1" min="0.5" step="0.5" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></div>
-<div style="margin-bottom:8px"><div style="font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase">Valor unitario R$</div>
-<input type="number" id="m-val" placeholder="0.00" step="0.01" min="0" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></div>
-<div style="margin-bottom:8px"><div style="font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase">Observacao</div>
-<input type="text" id="m-obs" placeholder="Ex: inclui retorno" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></div>
-<button id="m-save" onclick="salvarItem()" style="width:100%;background:#2aab47;border:none;border-radius:10px;padding:14px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;margin-top:10px">Salvar</button>
-</div>
+  <div style="background:#0d150d;border:1px solid #1a2a1a;border-radius:16px 16px 0 0;padding:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <span id="m-title" style="font-size:16px;font-weight:900;color:#fff">Adicionar item</span>
+      <button onclick="document.getElementById('modal').style.display='none'" style="background:transparent;border:none;color:#555;font-size:22px;cursor:pointer">x</button>
+    </div>
+    <input type="hidden" id="m-id">
+    <div style="margin-bottom:10px"><label style="font-size:10px;color:#2aab47;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Categoria</label>
+    <select id="m-cat" onchange="atualizarSelect(this.value)" style="width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></select></div>
+    <div style="margin-bottom:10px"><label style="font-size:10px;color:#2aab47;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Item</label>
+    <select id="m-item" style="width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></select></div>
+    <div style="margin-bottom:10px"><label style="font-size:10px;color:#2aab47;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Quantidade</label>
+    <input type="number" id="m-qtd" value="1" min="0.5" step="0.5" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></div>
+    <div style="margin-bottom:10px"><label style="font-size:10px;color:#2aab47;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Valor unitario R$</label>
+    <input type="number" id="m-val" placeholder="0.00" step="0.01" min="0" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></div>
+    <div style="margin-bottom:10px"><label style="font-size:10px;color:#2aab47;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Observacao</label>
+    <input type="text" id="m-obs" placeholder="Ex: inclui retorno" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></div>
+    <button id="m-save" onclick="salvarItem()" style="width:100%;background:#2aab47;border:none;border-radius:10px;padding:14px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;margin-top:4px">Salvar</button>
+  </div>
 </div>
 <script>
-var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
-var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
+
+var SB=“https://wexwcnezjadoutyzkbcj.supabase.co”;
+var KY=“eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ”;
+var allEvs=[],allCads=[],allLotes=[],filtResp=“Todos”;
+
+function ap(path){
+return fetch(SB+”/rest/v1/”+path,{headers:{“apikey”:KY,“Authorization”:“Bearer “+KY}}).then(function(r){return r.json();});
+}
+function fd(d){if(!d)return””;var x=d.split(”-”);return x[2]+”/”+x[1]+”/”+x[0];}
+
 var evAtual=null;
 var itens=[];
-var CATS={"Artista":["Cache do artista","Passagem aerea artista","Passagem aerea banda","Hospedagem artista","Hospedagem banda","Translado aeroporto/hotel","Translado hotel/show","Alimentacao camarim"],"Estrutura Tecnica":["Sistema de som PA","Iluminacao","Gerador","Palco montagem/desmontagem","Backline instrumentos","Telao LED","Intercomunicadores"],"Local":["Aluguel do espaco","Banheiro quimico","Seguranca","Limpeza","Estacionamento","Energia eletrica"],"Equipe":["Garcom","Bartender","Producao local","Portaria credenciamento","Fotografo","Videomaker","MC Apresentador"],"Bebidas":["Agua mineral cx 24un","Cerveja cx 24un","Refrigerante cx","Drinks coqueteis litro","Gelo saco 5kg","Copo descartavel pct"],"Comunicacao":["Flyers impressao","Midia social trafego pago","Assessoria de imprensa","Ingressos impressos"]};
-function ap(path){return fetch(SB+"/rest/v1/"+path,{headers:{"apikey":KY,"Authorization":"Bearer "+KY}}).then(function(r){return r.json();});}
-function apm(path,m,body){return fetch(SB+"/rest/v1/"+path,{method:m,headers:{"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json","Prefer":"return=minimal"},body:JSON.stringify(body)}).then(function(r){return r.text();});}
-function fd(d){if(!d)return"";var x=d.split("-");return x[2]+"/"+x[1]+"/"+x[0];}
-function fmt(v){return"R$ "+parseFloat(v||0).toLocaleString("pt-BR",{minimumFractionDigits:2});}
-function tog(id){var el=document.getElementById(id);if(el)el.style.display=el.style.display==="none"?"block":"none";}
+var CATS={
+“Artista”:[“Cache do artista”,“Passagem aerea artista”,“Passagem aerea banda”,“Hospedagem artista”,“Hospedagem banda”,“Translado aeroporto hotel”,“Translado hotel show”,“Alimentacao camarim”],
+“Estrutura Tecnica”:[“Sistema de som PA”,“Iluminacao”,“Gerador”,“Palco montagem desmontagem”,“Backline instrumentos”,“Telao LED”,“Intercomunicadores”],
+“Local”:[“Aluguel do espaco”,“Banheiro quimico”,“Seguranca”,“Limpeza”,“Estacionamento”,“Energia eletrica”],
+“Equipe”:[“Garcom”,“Bartender”,“Producao local”,“Portaria credenciamento”,“Fotografo”,“Videomaker”,“MC Apresentador”],
+“Bebidas”:[“Agua mineral cx 24un”,“Cerveja cx 24un”,“Chope barril”,“Whisky garrafa”,“Vodca garrafa”,“Gin garrafa”,“Agua de coco cx”,“Refrigerante cx”,“Suco caixa”,“Vinho garrafa”,“Espumante garrafa”,“Licor garrafa”,“Energetico cx”,“Drinks coqueteis litro”,“Gelo saco 5kg”,“Copo descartavel pct”,“Canudo pct”],
+“Comunicacao”:[“Flyers impressao”,“Midia social trafego pago”,“Assessoria de imprensa”,“Ingressos impressos”]
+};
+function fmt(v){return “R$ “+parseFloat(v||0).toLocaleString(“pt-BR”,{minimumFractionDigits:2});}
+function tog(id){var el=document.getElementById(id);if(el)el.style.display=el.style.display===“none”?“block”:“none”;}
 function q(id){return document.getElementById(id);}
-
-function loadEventos(){
-ap(“eventos?select=id,nome,data&order=data.asc”).then(function(evs){
-var sel=q(“ev-sel”);
-sel.innerHTML=”<option value=''>Selecione um evento…</option>”;
-(evs||[]).forEach(function(ev){sel.innerHTML+=”<option value='"+ev.id+"'>”+ev.nome+” (”+fd(ev.data)+”)</option>”;});
-});
+function apm(path,m,body){
+return fetch(SB+”/rest/v1/”+path,{method:m,headers:{“apikey”:KY,“Authorization”:“Bearer “+KY,“Content-Type”:“application/json”,“Prefer”:“return=minimal”},body:JSON.stringify(body)}).then(function(r){return r.text();});
 }
-
-function selecionarEvento(){
-var evId=document.getElementById(“ev-sel”).value;
-document.getElementById(“conteudo”).innerHTML=””;
-document.getElementById(“ev-info”).innerHTML=””;
-if(!evId)return;
-var evs=window._evs||[];
-evAtual=null;
-for(var i=0;i<evs.length;i++){if(String(evs[i].id)===String(evId)){evAtual=evs[i];break;}}
-if(!evAtual)return;
-document.getElementById(“ev-info”).innerHTML=”<div style='font-size:14px;font-weight:700;color:#fff'>”+evAtual.nome+”</div><div style='font-size:11px;color:#555'>”+fd(evAtual.data)+(evAtual.horario?” as “+evAtual.horario:””)+(evAtual.local?” - “+evAtual.local:””)+”</div>”;
-carregarItens();
-}
-
 function carregarItens(){
 ap(“orcamentos?evento_id=eq.”+evAtual.id+”&order=categoria.asc,item.asc”).then(function(d){
-itens=d||[];
+itens=Array.isArray(d)?d:[];
 renderizar();
 });
 }
-
 function renderizar(){
 var totalGeral=0;
 var porCat={};
@@ -118,29 +114,33 @@ totalGeral+=v;
 if(!porCat[it.categoria])porCat[it.categoria]=0;
 porCat[it.categoria]+=v;
 });
-
-var html=”<div style='background:#090e09;border:1px solid #1a2a1a;border-radius:12px;padding:14px;margin-bottom:12px'>”;
+var html=””;
+html+=”<div style='background:#090e09;border:1px solid #1a2a1a;border-radius:12px;padding:14px;margin-bottom:12px'>”;
 html+=”<div style='font-size:11px;color:#555;margin-bottom:4px'>TOTAL ESTIMADO</div>”;
 html+=”<div style='font-size:24px;font-weight:900;color:#2aab47'>”+fmt(totalGeral)+”</div>”;
 if(Object.keys(porCat).length){
 html+=”<div style='border-top:1px solid #1a2a1a;margin-top:10px;padding-top:10px;display:flex;flex-wrap:wrap;gap:6px'>”;
-Object.keys(porCat).forEach(function(c){html+=”<div style='font-size:10px;background:#060a06;border:1px solid #1a2a1a;border-radius:6px;padding:3px 8px;color:#888'>”+c+”: <b style='color:#eee'>”+fmt(porCat[c])+”</b></div>”;});
+Object.keys(porCat).forEach(function(c){
+html+=”<div style='font-size:10px;background:#060a06;border:1px solid #1a2a1a;border-radius:6px;padding:3px 8px;color:#888'>”+c+”: <b style='color:#eee'>”+fmt(porCat[c])+”</b></div>”;
+});
 html+=”</div>”;
 }
 html+=”</div>”;
-html+=”<button onclick='abrirModal()' style='width:100%;background:#1e7a35;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;margin-bottom:16px'>+ Adicionar item</button>”;
-
+html+=”<div style='display:flex;gap:8px;margin-bottom:16px'>”;
+html+=”<button onclick='abrirModal(null)' style='flex:1;background:#1e7a35;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;color:#fff;cursor:pointer'>+ Adicionar item</button>”;
+html+=”<button onclick='carregarItens()' style='background:transparent;border:1px solid #1a2a1a;border-radius:10px;padding:12px;font-size:20px;cursor:pointer'>↻</button>”;
+html+=”</div>”;
 var catsUsadas=Object.keys(CATS);
 itens.forEach(function(it){if(catsUsadas.indexOf(it.categoria)<0)catsUsadas.push(it.categoria);});
 catsUsadas.forEach(function(cat){
 var ci=itens.filter(function(it){return it.categoria===cat;});
 if(!ci.length)return;
 var ct=ci.reduce(function(s,it){return s+parseFloat(it.valor_total||0);},0);
-var cid=“cat_”+cat.replace(/[^a-zA-Z0-9]/g,”_”);
+var cid=“cat_”+cat.replace(/[^a-z0-9]/gi,”_”);
 html+=”<div style='margin-bottom:8px'>”;
 html+=”<div onclick='tog(\""+cid+"\")' style='background:#090e09;border:1px solid #1a2a1a;border-radius:12px 12px 0 0;padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between'>”;
 html+=”<span style='font-size:13px;font-weight:700;color:#eee'>”+cat+”</span>”;
-html+=”<span style='font-size:13px;font-weight:700;color:#2aab47'>”+fmt(ct)+” v</span></div>”;
+html+=”<span style='font-size:13px;font-weight:700;color:#2aab47'>”+fmt(ct)+”</span></div>”;
 html+=”<div id='"+cid+"' style='background:#060a06;border:1px solid #1a2a1a;border-top:none;border-radius:0 0 12px 12px'>”;
 ci.forEach(function(it){
 html+=”<div style='padding:10px 14px;border-bottom:1px solid #0a0f0a;display:flex;justify-content:space-between;align-items:center'>”;
@@ -148,18 +148,25 @@ html+=”<div style='flex:1'><div style='font-size:13px;color:#eee'>”+it.item+
 html+=”<div style='font-size:10px;color:#555'>”+it.quantidade+“x “+fmt(it.valor_unitario)+(it.observacao?” - “+it.observacao:””)+”</div></div>”;
 html+=”<div style='display:flex;align-items:center;gap:6px'>”;
 html+=”<span style='font-size:13px;font-weight:700;color:#fff'>”+fmt(it.valor_total)+”</span>”;
-html+=”<button onclick='editarItem("+it.id+")' style='background:transparent;border:1px solid #555;color:#888;border-radius:6px;padding:3px 7px;font-size:10px;cursor:pointer'>Edit</button>”;
+html+=”<button onclick='abrirModal("+it.id+")' style='background:transparent;border:1px solid #555;color:#888;border-radius:6px;padding:3px 7px;font-size:10px;cursor:pointer'>Ed</button>”;
 html+=”<button onclick='deletarItem("+it.id+")' style='background:transparent;border:1px solid #c0392b;color:#c0392b;border-radius:6px;padding:3px 7px;font-size:10px;cursor:pointer'>X</button>”;
 html+=”</div></div>”;
 });
 html+=”</div></div>”;
 });
+if(itens.length){
+html+=”<button onclick='gerarPDF()' style='width:100%;background:#0891b2;border:none;border-radius:10px;padding:14px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;margin-top:8px'>Gerar PDF</button>”;
+}
 q(“conteudo”).innerHTML=html;
 }
-
-function abrirModal(item){
+function abrirModal(id){
+var item=null;
+if(id){
+for(var i=0;i<itens.length;i++){if(itens[i].id===id){item=itens[i];break;}}
+}
 var catSel=q(“m-cat”);
-catSel.innerHTML=Object.keys(CATS).map(function(c){return”<option>”+c+”</option>”;}).join(””);
+catSel.innerHTML=””;
+Object.keys(CATS).forEach(function(c){catSel.innerHTML+=”<option>”+c+”</option>”;});
 if(item){
 q(“m-id”).value=item.id;
 catSel.value=item.categoria;
@@ -180,19 +187,16 @@ q(“m-title”).textContent=“Adicionar item”;
 }
 q(“modal”).style.display=“flex”;
 }
-
 function atualizarSelect(cat){
 var items=CATS[cat]||[];
-q(“m-item”).innerHTML=items.map(function(i){return”<option>”+i+”</option>”;}).join(””)+”<option>Outro</option>”;
+q(“m-item”).innerHTML=””;
+items.forEach(function(i){q(“m-item”).innerHTML+=”<option>”+i+”</option>”;});
+q(“m-item”).innerHTML+=”<option>Outro</option>”;
 }
-
-function editarItem(id){var it=itens.filter(function(i){return i.id===id;})[0];if(it)abrirModal(it);}
-
 function deletarItem(id){
 if(!confirm(“Excluir?”))return;
-apm(“orcamentos?id=eq.”+id,“DELETE”).then(function(){carregarItens();});
+apm(“orcamentos?id=eq.”+id,“DELETE”,{}).then(function(){carregarItens();});
 }
-
 function salvarItem(){
 var id=q(“m-id”).value;
 var cat=q(“m-cat”).value;
@@ -202,55 +206,77 @@ var val=parseFloat(q(“m-val”).value)||0;
 var obs=q(“m-obs”).value;
 if(!item){alert(“Preencha o item!”);return;}
 var btn=q(“m-save”);
-btn.textContent=“Salvando…”;btn.disabled=true;
+btn.textContent=“Salvando…”;
+btn.disabled=true;
 var body={evento_id:evAtual.id,categoria:cat,item:item,quantidade:qtd,valor_unitario:val,valor_total:qtd*val,observacao:obs};
 var path=id?“orcamentos?id=eq.”+id:“orcamentos”;
 var meth=id?“PATCH”:“POST”;
 apm(path,meth,body).then(function(){
 q(“modal”).style.display=“none”;
-btn.textContent=“Salvar”;btn.disabled=false;
+btn.textContent=“Salvar”;
+btn.disabled=false;
 carregarItens();
-}).catch(function(){alert(“Erro!”);btn.textContent=“Salvar”;btn.disabled=false;});
+}).catch(function(){
+alert(“Erro ao salvar!”);
+btn.textContent=“Salvar”;
+btn.disabled=false;
+});
 }
-
 function gerarPDF(){
 if(!evAtual||!itens.length)return;
-var tot=itens.reduce(function(s,it){return s+parseFloat(it.valor_total||0);},0);
+var total=itens.reduce(function(s,it){return s+parseFloat(it.valor_total||0);},0);
 var cats={};
 itens.forEach(function(it){if(!cats[it.categoria])cats[it.categoria]=[];cats[it.categoria].push(it);});
 var win=window.open(””,”_blank”);
-var h=”<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Orcamento</title><style>body{font-family:Arial;max-width:600px;margin:0 auto;padding:20px}table{width:100%;border-collapse:collapse}th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}th{background:#f5f5f5;font-size:11px}@media print{button{display:none}}</style></head><body>”;
-h+=”<h1>AGROPLAY</h1><h2 style='font-weight:400;color:#666'>Orcamento de Evento</h2><h3>”+evAtual.nome+”</h3>”;
+var h=”<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Orcamento</title>”;
+h+=”<style>body{font-family:Arial;max-width:600px;margin:0 auto;padding:20px}table{width:100%;border-collapse:collapse}th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}th{background:#f5f5f5;font-size:11px}@media print{button{display:none}}</style></head><body>”;
+h+=”<h1>AGROPLAY</h1><h3>”+evAtual.nome+”</h3>”;
 h+=”<p style='color:#666;font-size:13px'>”+fd(evAtual.data)+(evAtual.horario?” as “+evAtual.horario:””)+(evAtual.local?” - “+evAtual.local:””)+”</p>”;
-h+=”<div style='background:#f0fff0;padding:12px;border-radius:8px;margin:16px 0;display:flex;justify-content:space-between'><span>TOTAL ESTIMADO</span><b style='font-size:20px;color:#1e7a35'>R$ “+tot.toLocaleString(“pt-BR”,{minimumFractionDigits:2})+”</b></div>”;
+h+=”<div style='background:#f0fff0;padding:12px;margin:16px 0;display:flex;justify-content:space-between'><b>TOTAL ESTIMADO</b><b style='font-size:20px;color:#1e7a35'>”+fmt(total)+”</b></div>”;
 Object.keys(cats).forEach(function(cat){
 var ct=cats[cat].reduce(function(s,it){return s+parseFloat(it.valor_total||0);},0);
-h+=”<h4 style='background:#eee;padding:8px;margin:12px 0 0'>”+cat+” - R$ “+ct.toLocaleString(“pt-BR”,{minimumFractionDigits:2})+”</h4>”;
+h+=”<h4 style='background:#eee;padding:8px;margin:12px 0 0'>”+cat+” - “+fmt(ct)+”</h4>”;
 h+=”<table><tr><th>Item</th><th>Qtd</th><th>Unit.</th><th>Total</th></tr>”;
-cats[cat].forEach(function(it){h+=”<tr><td>”+it.item+(it.observacao?”<br><small>”+it.observacao+”</small>”:””)+”</td><td>”+it.quantidade+”</td><td>R$ “+parseFloat(it.valor_unitario).toLocaleString(“pt-BR”,{minimumFractionDigits:2})+”</td><td><b>R$ “+parseFloat(it.valor_total).toLocaleString(“pt-BR”,{minimumFractionDigits:2})+”</b></td></tr>”;});
+cats[cat].forEach(function(it){
+h+=”<tr><td>”+it.item+(it.observacao?”<br><small>”+it.observacao+”</small>”:””)+”</td><td>”+it.quantidade+”</td><td>”+fmt(it.valor_unitario)+”</td><td><b>”+fmt(it.valor_total)+”</b></td></tr>”;
+});
 h+=”</table>”;
 });
-h+=”<p style='color:#888;font-size:11px;margin-top:20px;text-align:center'>Agroplay Music - Londrina PR - “+new Date().toLocaleDateString(“pt-BR”)+”</p>”;
-h+=”<br><button onclick='window.print()' style='width:100%;background:#1e7a35;color:#fff;border:none;border-radius:8px;padding:12px;font-size:14px;cursor:pointer'>Imprimir / Salvar PDF</button></body></html>”;
-win.document.write(h);win.document.close();
+h+=”<p style='color:#888;font-size:11px;margin-top:20px;text-align:center'>Agroplay Music - “+new Date().toLocaleDateString(“pt-BR”)+”</p>”;
+h+=”<br><button onclick='window.print()' style='width:100%;background:#1e7a35;color:#fff;border:none;padding:12px;font-size:14px;cursor:pointer'>Imprimir / Salvar PDF</button>”;
+h+=”</body></html>”;
+win.document.write(h);
+win.document.close();
 }
 
 Promise.all([
 ap(“eventos?select=*&order=data.asc”),
-ap(“orcamentos?select=id&limit=1”)
+ap(“orcamentos?select=id,evento_id&limit=1”)
 ]).then(function(res){
-window._evs=res[0]||[];
+var evs=res[0]||[];
 var sel=document.getElementById(“ev-sel”);
-if(!window._evs.length){sel.innerHTML=”<option value=''>Nenhum evento</option>”;return;}
 sel.innerHTML=”<option value=''>Selecione um evento…</option>”;
-window._evs.forEach(function(ev){
-var d=ev.data?ev.data.split(”-”):[””,””,””];
-var df=d[2]+”/”+d[1]+”/”+d[0];
-sel.innerHTML+=”<option value='"+ev.id+"'>”+ev.nome+” (”+df+”)</option>”;
+evs.forEach(function(ev){
+sel.innerHTML+=”<option value='"+ev.id+"'>”+ev.nome+” (”+fd(ev.data)+”)</option>”;
 });
+window._evs=evs;
 }).catch(function(){
-document.getElementById(“ev-sel”).innerHTML=”<option value=''>Erro ao carregar</option>”;
+document.getElementById(“ev-sel”).innerHTML=”<option value=''>Erro ao carregar eventos</option>”;
 });
+
+document.getElementById(“ev-sel”).onchange=function(){
+var evId=this.value;
+document.getElementById(“conteudo”).innerHTML=””;
+document.getElementById(“ev-info”).innerHTML=””;
+if(!evId)return;
+var evs=window._evs||[];
+for(var i=0;i<evs.length;i++){
+if(evs[i].id==evId){evAtual=evs[i];break;}
+}
+if(!evAtual)return;
+document.getElementById(“ev-info”).innerHTML=”<div style='font-size:14px;font-weight:700;color:#fff'>”+evAtual.nome+”</div><div style='font-size:11px;color:#555'>”+fd(evAtual.data)+(evAtual.horario?” as “+evAtual.horario:””)+(evAtual.local?” - “+evAtual.local:””)+”</div>”;
+carregarItens();
+};
 
 </script>
 </body>
