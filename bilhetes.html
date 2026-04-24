@@ -151,8 +151,8 @@ if(!EV_ID){
     var ev=res[0]&&res[0][0];
     var pessoas=res[1]||[];
     if(!ev){document.getElementById("conteudo").innerHTML="<div class='loading'>Evento nao encontrado.</div>";return;}
-    render(ev,pessoas);
-  }).catch(function(){
-    document.getElementById("conteudo").innerHTML="<div class='loading'>Erro ao carregar.</div>";
+    try{render(ev,pessoas);}catch(e){document.getElementById("conteudo").innerHTML="<div class='loading'>Erro render: "+e.message+"</div>";}
+  }).catch(function(e){
+    document.getElementById("conteudo").innerHTML="<div class='loading'>Erro: "+(e?e.message:"desconhecido")+"</div>";
   });
 }
