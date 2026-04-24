@@ -218,7 +218,16 @@ h+=”</body></html>”;
 win.document.write(h);win.document.close();
 }
 
-loadEventos();
+// Test connection first
+fetch(SB+”/rest/v1/eventos?select=id,nome&limit=1”,{headers:{“apikey”:KY,“Authorization”:“Bearer “+KY}})
+.then(function(r){return r.json();})
+.then(function(d){
+if(d&&d.length){loadEventos();}
+else{document.getElementById(“ev-sel”).innerHTML=”<option>Erro: sem dados</option>”;}
+})
+.catch(function(e){
+document.getElementById(“ev-sel”).innerHTML=”<option>Erro conexao: “+e.message+”</option>”;
+});
 
 </script>
 </body>
