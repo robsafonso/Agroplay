@@ -70,10 +70,13 @@ function tog(id){var el=document.getElementById(id);if(el)el.style.display=el.st
 function q(id){return document.getElementById(id);}
 
 function loadEventos(){
-  ap("eventos?select=id,nome,data&order=data.asc").then(function(evs){
+  fetch(SB+"/rest/v1/eventos?select=id,nome,data&order=data.asc",{headers:{"apikey":KY,"Authorization":"Bearer "+KY}}).then(function(r){return r.json();}).then(function(evs){
     var sel=q("ev-sel");
+    if(!evs||!evs.length){sel.innerHTML="<option value=''>Nenhum evento encontrado</option>";return;}
     sel.innerHTML="<option value=''>Selecione um evento...</option>";
-    (evs||[]).forEach(function(ev){sel.innerHTML+="<option value='"+ev.id+"'>"+ev.nome+" ("+fd(ev.data)+")</option>";});
+    evs.forEach(function(ev){sel.innerHTML+="<option value='"+ev.id+"'>"+ev.nome+" ("+fd(ev.data)+")</option>";});
+  }).catch(function(e){
+    q("ev-sel").innerHTML="<option value=''>Erro ao carregar</option>";
   });
 }
 
