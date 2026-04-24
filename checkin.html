@@ -122,19 +122,20 @@ q("btn-login").onclick=function(){
     if(!Array.isArray(d)){al.innerHTML="<div class='ea'>Erro de conexao</div>";btn.textContent="Entrar";btn.disabled=false;return;}
     valAtual=d[0];
     if(!valAtual.primeiro_acesso||valAtual.primeiro_acesso===false){
-      // Normal login
-      sessionStorage.setItem("ag_val",JSON.stringify(valAtual));
-      q("tela-login").classList.add("gone");
-      q("val-nome").textContent=valAtual.nome;
-      iniciarCamera();
-      q("tela-checkin").classList.remove("gone");
+      try{
+        sessionStorage.setItem("ag_val",JSON.stringify(valAtual));
+        q("tela-login").classList.add("gone");
+        q("val-nome").textContent=valAtual.nome;
+        q("tela-checkin").classList.remove("gone");
+        iniciarCamera();
+      }catch(e){al.innerHTML="<div class='ea'>Erro: "+e.message+"</div>";btn.textContent="Entrar";btn.disabled=false;return;}
     } else {
       // First access - force password change
       q("tela-login").classList.add("gone");
       q("tela-trocar-senha").classList.remove("gone");
     }
     btn.textContent="Entrar";btn.disabled=false;
-  }).catch(function(){al.innerHTML="<div class='ea'>Erro ao conectar</div>";btn.textContent="Entrar";btn.disabled=false;});
+  }).catch(function(e){al.innerHTML="<div class='ea'>Erro: "+(e?e.message:"conexao")+". Tente novamente.</div>";btn.textContent="Entrar";btn.disabled=false;});
 };
 q("btn-trocar").onclick=function(){
   var nova=q("inp-nova").value.trim();
