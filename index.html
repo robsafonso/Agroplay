@@ -57,7 +57,7 @@ textarea{height:70px;resize:none}
 <div class="hdr">
   <div style="font-size:18px;font-weight:900;color:#fff;cursor:pointer" onclick="location.href='home.html'">AGRO<span style="color:#2aab47">PLAY</span></div>
   <div style="display:flex;gap:6px;align-items:center">
-    <span style="font-size:10px;color:#333;margin-right:4px">v23</span><button onclick="togMenu()" style="background:transparent;border:none;color:#eee;font-size:20px;cursor:pointer;padding:4px 8px">&#9776;</button>
+    <span style="font-size:10px;color:#333;margin-right:4px">v24</span><button onclick="togMenu()" style="background:transparent;border:none;color:#eee;font-size:20px;cursor:pointer;padding:4px 8px">&#9776;</button>
     <button class="bto" id="blinkc" style="font-size:11px;padding:6px 10px">Link Cadastro</button>
     <button class="bto" id="bnovocad" style="font-size:11px;padding:6px 10px;border-color:#c9973c;color:#c9973c">+ Cadastrar</button>
     <a href="https://robsafonso.github.io/Agroplay/mediakit.html" target="_blank" style="background:transparent;color:#2aab47;border:1px solid #2aab47;border-radius:8px;padding:6px 10px;font-size:11px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center">Kit</a>
@@ -77,7 +77,7 @@ textarea{height:70px;resize:none}
   <div style="border-top:1px solid #1a2a1a;margin:4px 0"></div>
   <a href="home.html" onclick="sessionStorage.removeItem('ag_admin')" style="display:flex;align-items:center;gap:10px;padding:10px 14px;color:#c0392b;text-decoration:none;font-size:13px;border-radius:8px">&#128682; Sair</a>
   <div style="border-top:1px solid #1a2a1a;margin:4px 0"></div>
-  <div style="padding:6px 14px;font-size:10px;color:#333;text-align:center">v23</div>
+  <div style="padding:6px 14px;font-size:10px;color:#333;text-align:center">v24</div>
 </div>
 <div class="stats" id="sts"></div>
 <div class="tabs">
@@ -283,6 +283,10 @@ textarea{height:70px;resize:none}
     <div class="g2">
       <div class="fl"><label>Data</label><input id="evd" type="date"></div>
       <div class="fl"><label>Local</label><input id="evl" placeholder="Ex: Parque Ney Braga"></div>
+    </div>
+    <div class="g2">
+      <div class="fl"><label>Horario inicio *</label><input id="evh" type="time" required></div>
+      <div class="fl"><label>Horario fim (opcional)</label><input id="evhf" type="time"></div>
     </div>
     <div class="fl"><label>Link Maps</label><input id="evm" placeholder="https://maps.google.com/..."></div>
     <div class="fl"><label>Atracao 1</label><input id="eva1" placeholder="Ex: Ana Castela"></div>
@@ -990,8 +994,8 @@ function gconvExt(){
       var link="https://robsafonso.github.io/Agroplay/cadastro-externo.html?ev="+eva.id+"&cod="+cod+"&resp="+encodeURIComponent("Robson");
       var df=eva.data?eva.data.split("-"):["","",""];
       var dataFmt=eva.data?df[2]+"/"+df[1]+"/"+df[0]:"";
-      var msg="AGROPLAY Music \uD83C\uDFB5\n\nOla! Voce esta convidado para:\n\n\uD83C\uDFA4 "+eva.nome+(dataFmt?"\n\uD83D\uDCC5 "+dataFmt+(eva.horario?" as "+eva.horario:""):"")+(eva.local?"\n\uD83D\uDCCD "+eva.local:"")+(eva.atracao1?"\n\uD83C\uDFB5 "+eva.atracao1+(eva.atracao2?" + "+eva.atracao2:""):"")+
-"\n\nAcesse o link e faca seu cadastro:\n"+link+"\n\nCodigo: "+cod+"\nCodigo intransferivel e de uso unico.";
+      var msg="AGROPLAY Music \uD83C\uDFB5\n\nOla! Voce esta convidado para:\n\n\uD83C\uDFA4 "+eva.nome+"\n\uD83D\uDCC5 "+dataFmt+(eva.horario?" as "+eva.horario+(eva.horario_fim?" - "+eva.horario_fim:""):"")+(eva.local?"\n\uD83D\uDCCD "+eva.local:"")+(eva.atracao1?"\n\uD83C\uDFB5 "+eva.atracao1+(eva.atracao2?" + "+eva.atracao2:""):"")+
+"\n\nAcesse o link e faca seu cadastro:\n"+link+"\n\nCodigo: "+cod+"\nAgroplay Music - Londrina PR";
       q("linkext").textContent=link;
       q("bcopext").style.display="block";
       q("bcopext").onclick=function(){cp2(msg,q("bcopext"),"Copiar mensagem");};
