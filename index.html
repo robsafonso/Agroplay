@@ -691,7 +691,7 @@ function rLotes(){
       h+="<div style='background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:8px;margin-bottom:10px'><div style='font-size:9px;color:#555;margin-bottom:3px;text-transform:uppercase'>Link do painel do colaborador</div><div style='font-family:monospace;font-size:10px;color:#2aab47;word-break:break-all'>"+link+"</div></div>";
       h+="<div style='display:flex;gap:6px'>";
       h+="<button class='btn' onclick='verLinks("+lt.id+")' style='flex:1;font-size:11px;padding:8px'>Ver convites</button>";
-      h+="<button class='bto' onclick='copiarLinkLote(this)' data-link='"+link+"' data-resp='"+lt.responsavel+"' data-senha='"+(lt.senha||"-")+"'  style='font-size:11px;padding:8px'>Copiar link</button>";
+      h+="<button class='bto' onclick='copiarLinkLote(this)' data-link='"+link+"' data-resp='"+lt.responsavel+"' data-senha='"+(lt.senha||"-")+"' data-evnome='"+(ltEv?ltEv.nome:"")+"' data-evdata='"+(ltEv&&ltEv.data?(ltEv.data.split("-")[2]+"/"+ltEv.data.split("-")[1]+"/"+ltEv.data.split("-")[0]):"")+"' data-evhora='"+(ltEv?ltEv.horario||"":"")+"' data-evhoraf='"+(ltEv?ltEv.horario_fim||"":"")+"' data-evlocal='"+(ltEv?ltEv.local||"":"")+"' data-evatr='"+(ltEv?ltEv.atracao1+(ltEv.atracao2?" + "+ltEv.atracao2:""):"")+"' style='font-size:11px;padding:8px'>Copiar link</button>";
       h+="<button class='bto' onclick='addConvites("+lt.id+")' style='font-size:11px;padding:8px'>+ Convites</button>";
       h+="<button class='btr' onclick='delLote("+lt.id+")' style='font-size:11px;padding:8px'>X</button>";
       h+="</div></div>";
