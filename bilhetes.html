@@ -141,16 +141,16 @@ function render(ev,pessoas){
   document.getElementById("conteudo").innerHTML=html;
 }
 if(!EV_ID){
-  document.getElementById("conteudo").innerHTML="<div class='loading'>Link invalido. URL: "+window.location.href+"</div>";
+  document.getElementById("conteudo").innerHTML="<div class='loading'>Link invalido.</div>";
 } else {
-  Promise.all([
-    ap("eventos?id=eq."+EV_ID+"&select=*"),
-    ap("cadastros?evento_id=eq."+EV_ID+"&select=*&order=nome.asc")
-  ]).then(function(res){
-    var ev=res[0]&&res[0][0];
-    var pessoas=res[1]||[];
-    if(!ev){document.getElementById("conteudo").innerHTML="<div class='loading'>Evento nao encontrado.</div>";return;}
-    try{render(ev,pessoas);}catch(e){document.getElementById("conteudo").innerHTML="<div class='loading'>Erro render: "+e.message+"</div>";}
+  var _ev=null;
+  ap("eventos?id=eq."+EV_ID+"&select=*").then(function(d){
+    _ev=d&&d[0];
+    if(!_ev){document.getElementById("conteudo").innerHTML="<div class='loading'>Evento nao encontrado.</div>";return ap("");}
+    return ap("cadastros?evento_id=eq."+EV_ID+"&select=*&order=nome.asc");
+  }).then(function(d){
+    if(!_ev||!d)return;
+    try{render(_ev,d||[]);}catch(e){document.getElementById("conteudo").innerHTML="<div class='loading'>Erro: "+e.message+"</div>";}
   }).catch(function(e){
     document.getElementById("conteudo").innerHTML="<div class='loading'>Erro: "+(e?e.message:"desconhecido")+"</div>";
   });
