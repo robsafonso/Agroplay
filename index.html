@@ -719,11 +719,7 @@ function addConvites(loteId){
     .then(function(){rLotes();rSts();alert(qtd+" convites adicionados!");})
     .catch(function(){alert("Erro ao adicionar convites");});
 }
-function copiarLinkLote(btn){var link=btn.dataset.link;var resp=btn.dataset.resp;var senha=btn.dataset.senha;var msg="AGROPLAY - Painel de Convites\n\nOla "+resp+"!\n\nVoce tem convites disponiveis para distribuir.\n\nAcesse seu painel:\n"+link+"\n\nSua senha: "+senha+"\n\nAgroplay Music - Londrina PR";cp2(msg,btn,"Copiar link");}
-function copMsg(btn){
-  var msg=btn.dataset.msg.replace(/&#39;/g,"'");
-  cp2(msg,btn,"Copiar mensagem "+(btn.textContent.match(/\d+/)||[""])[0]);
-}
+function copiarLinkLote(btn){var link=btn.dataset.link;var resp=btn.dataset.resp;var senha=btn.dataset.senha;var evNome=btn.dataset.evnome;var evData=btn.dataset.evdata;var evHora=btn.dataset.evhora;var evHoraf=btn.dataset.evhoraf;var evLocal=btn.dataset.evlocal;var evAtr=btn.dataset.evatr;var evBlock=evNome?"\n\n\uD83C\uDFA4 "+evNome+(evData?"\n\uD83D\uDCC5 "+evData+(evHora?" as "+evHora+(evHoraf?" - "+evHoraf:""):""):"")+(evLocal?"\n\uD83D\uDCCD "+evLocal:"")+(evAtr?"\n\uD83C\uDFB5 "+evAtr:""):"";var msg="AGROPLAY Music \uD83C\uDFB5\n\nOla "+resp+"!\n\nVoce foi selecionado para distribuir convites para:"+evBlock+"\n\nAcesse seu painel:\n"+link+"\n\nSua senha: "+senha+"\n\nAgroplay Music - Londrina PR";cp2(msg,btn,"Copiar link");}
 function verLinks(loteId){
   var lt=null;
   for(var i=0;i<lotes.length;i++){if(lotes[i].id===loteId){lt=lotes[i];break;}}
