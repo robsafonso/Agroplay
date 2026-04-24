@@ -37,11 +37,11 @@ body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:16px;max
 <div id="conteudo"><div class="loading">Carregando...</div></div>
 
 <script>
-function tog(id){var el=document.getElementById(id);if(el)el.style.display=el.style.display==="none"?"block":"none";}
 var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
 var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
 var params=new URLSearchParams(window.location.search);
 var EV_ID=params.get("ev");
+var evAtual=null;
 
 function ap(path,o){
   o=o||{};
@@ -49,110 +49,110 @@ function ap(path,o){
   if(o.pref)h["Prefer"]=o.pref;
   return fetch(SB+"/rest/v1/"+path,{method:o.m||"GET",headers:h,body:o.b}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});
 }
-
 function fd(d){if(!d)return"";var x=d.split("-");return x[2]+"/"+x[1]+"/"+x[0];}
-
+function tog(id){var el=document.getElementById(id);if(el)el.style.display=el.style.display==="none"?"block":"none";}
+function togSec(id){
+  ["nao","env","conf"].forEach(function(x){
+    var el=document.getElementById("sec-"+x);
+    if(el)el.style.display=(x===id&&el.style.display==="none")?"block":"none";
+  });
+}
 function copiarBilhete(btn,pessoaId){
   var msg=btn.getAttribute("data-msg");
-  function doCopy(){
-    btn.textContent="Enviado!";
-    btn.style.background="#c9973c";
-    btn.style.color="#fff";
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(msg).then(function(){
+      btn.textContent="Enviado!";
+      btn.style.background="#c9973c";
+      ap("cadastros?id=eq."+pessoaId,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({bilhete_enviado:true,bilhete_enviado_em:new Date().toISOString()})});
+    });
+  } else {
+    var t=document.createElement("textarea");
+    t.value=msg;document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t);
+    btn.textContent="Enviado!";btn.style.background="#c9973c";
     ap("cadastros?id=eq."+pessoaId,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({bilhete_enviado:true,bilhete_enviado_em:new Date().toISOString()})});
   }
-  if(navigator.clipboard){
-    navigator.clipboard.writeText(msg).then(function(){doCopy();});
-  } else {
-    var t=document.createElement("textarea");t.value=msg;document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t);
-    doCopy();
-  }
 }
-
 function reenviar(pessoaId){
-  if(!confirm("Reenviar bilhete para esta pessoa?"))return;
+  if(!confirm("Reenviar bilhete?"))return;
   ap("cadastros?id=eq."+pessoaId,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({bilhete_enviado:false,bilhete_enviado_em:null,bilhete_confirmado:false,bilhete_confirmado_em:null})}).then(function(){location.reload();});
 }
-
+function buildSec(lista,status,bilheteOk){
+  if(!lista.length)return "<div style='padding:16px;color:#555;text-align:center;font-size:12px'>Nenhuma pessoa.</div>";
+  var ev=evAtual;
+  var dataFmt=fd(ev.data);
+  var resps={};
+  lista.forEach(function(p){
+    var k=p.lote_nome||"Convite Direto";
+    if(!resps[k])resps[k]=[];
+    resps[k].push(p);
+  });
+  var h="";
+  var respKeys=Object.keys(resps).sort();
+  for(var ri=0;ri<respKeys.length;ri++){
+    var resp=respKeys[ri];
+    var rp=resps[resp];
+    var rid="gr_"+status+"_"+ri;
+    h+="<div style='background:#090e09;border:1px solid #1a2a1a;border-radius:10px;margin-bottom:8px'>";
+    h+="<div onclick='tog(\""+rid+"\")' style='padding:12px;cursor:pointer;display:flex;justify-content:space-between;align-items:center'>";
+    h+="<div style='font-size:13px;font-weight:700;color:#eee'>"+resp+"</div>";
+    h+="<div style='display:flex;align-items:center;gap:8px'><span style='font-size:12px;color:#888'>"+rp.length+" pessoas</span><span style='color:#555'>&#9660;</span></div></div>";
+    h+="<div id='"+rid+"' style='display:none;border-top:1px solid #1a2a1a;padding:8px 12px'>";
+    rp.sort(function(a,b){return a.nome.localeCompare(b.nome);});
+    for(var pi=0;pi<rp.length;pi++){
+      var p=rp[pi];
+      var link="https://robsafonso.github.io/Agroplay/bilhete.html?cad="+p.id+"&ev="+EV_ID;
+      var msg="AGROPLAY Music \uD83C\uDFB5\n\nOla, "+p.nome+"! Seu bilhete esta disponivel.\n\n\uD83C\uDFA4 "+ev.nome+"\n\uD83D\uDCC5 "+dataFmt+(ev.horario?" as "+ev.horario+(ev.horario_fim?" - "+ev.horario_fim:""):"")+(ev.local?"\n\uD83D\uDCCD "+ev.local:"")+"\n\nAcesse seu bilhete com QR Code:\n"+link+"\n\n\uD83C\uDF9F Apresente na entrada.\nAgroplay Music - Londrina PR";
+      h+="<div style='padding:8px 0;border-bottom:1px solid #111;display:flex;justify-content:space-between;align-items:center'>";
+      h+="<div style='font-size:12px;color:#bbb'>"+p.nome+"</div>";
+      if(status==="nao"&&bilheteOk){
+        h+="<button onclick='copiarBilhete(this,"+p.id+")' data-msg='"+msg.replace(/'/g,"&#39;")+"' style='background:#0891b2;border:none;border-radius:6px;padding:5px 10px;font-size:10px;color:#fff;cursor:pointer;font-weight:700'>Copiar</button>";
+      } else if(status==="env"){
+        h+="<button onclick='copiarBilhete(this,"+p.id+")' data-msg='"+msg.replace(/'/g,"&#39;")+"' style='background:#c9973c;border:none;border-radius:6px;padding:5px 10px;font-size:10px;color:#fff;cursor:pointer;font-weight:700'>Reenviar</button>";
+      } else {
+        h+="<span style='font-size:9px;background:rgba(42,171,71,.2);color:#2aab47;padding:2px 6px;border-radius:6px'>Confirmado</span>";
+      }
+      h+="</div>";
+    }
+    h+="</div></div>";
+  }
+  return h;
+}
 function render(ev,pessoas){
+  evAtual=ev;
   var hoje=new Date();
   var hoje0=new Date(hoje.getFullYear(),hoje.getMonth(),hoje.getDate());
   var evData=ev.data?new Date(ev.data+"T00:00:00"):null;
   var dias=evData?Math.ceil((evData-hoje0)/(1000*60*60*24)):999;
   var bilheteOk=dias<=7;
   var dataFmt=fd(ev.data);
-
   var naoEnv=pessoas.filter(function(p){return !p.bilhete_enviado&&!p.bilhete_confirmado;});
   var aguard=pessoas.filter(function(p){return p.bilhete_enviado&&!p.bilhete_confirmado;});
   var conf=pessoas.filter(function(p){return p.bilhete_confirmado;});
-
   var html="";
   html+="<div class='ev-info'><div class='ev-nome'>"+ev.nome+"</div><div class='ev-det'>"+dataFmt+(ev.horario?" as "+ev.horario:"")+(ev.horario_fim?" - "+ev.horario_fim:"")+(ev.local?" - "+ev.local:"")+"</div></div>";
-
-  // 3 clickable stat boxes
-  html+="<div class='stats' style='cursor:pointer'>";
-  html+="<div class='stat' onclick='togSec("nao")' style='cursor:pointer;border:1px solid rgba(8,145,178,.3)'>";
-  html+="<span class='stat-n' style='color:#0891b2'>"+naoEnv.length+"</span><div class='stat-l'>Nao enviado</div></div>";
-  html+="<div class='stat' onclick='togSec("env")' style='cursor:pointer;border:1px solid rgba(201,151,60,.3)'>";
-  html+="<span class='stat-n' style='color:#c9973c'>"+aguard.length+"</span><div class='stat-l'>Aguardando</div></div>";
-  html+="<div class='stat' onclick='togSec("conf")' style='cursor:pointer;border:1px solid rgba(42,171,71,.3)'>";
-  html+="<span class='stat-n' style='color:#2aab47'>"+conf.length+"</span><div class='stat-l'>Confirmado</div></div>";
+  html+="<div class='stats'>";
+  html+="<div class='stat' onclick='togSec(\"nao\")' style='cursor:pointer;border:1px solid rgba(8,145,178,.3)'><span class='stat-n' style='color:#0891b2'>"+naoEnv.length+"</span><div class='stat-l'>Nao enviado</div></div>";
+  html+="<div class='stat' onclick='togSec(\"env\")' style='cursor:pointer;border:1px solid rgba(201,151,60,.3)'><span class='stat-n' style='color:#c9973c'>"+aguard.length+"</span><div class='stat-l'>Aguardando</div></div>";
+  html+="<div class='stat' onclick='togSec(\"conf\")' style='cursor:pointer;border:1px solid rgba(42,171,71,.3)'><span class='stat-n' style='color:#2aab47'>"+conf.length+"</span><div class='stat-l'>Confirmado</div></div>";
   html+="</div>";
-
-  if(!bilheteOk){
-    html+="<div class='aviso'>Bilhetes disponiveis somente faltando 7 dias. Faltam <b>"+dias+"</b> dias.</div>";
-  }
-
-  // Build grouped sections
-  function buildSec(lista,cor,status){
-    if(!lista.length)return "<div class='empty'>Nenhuma pessoa nesta categoria.</div>";
-    // Group by responsavel
-    var resps={};
-    lista.forEach(function(p){
-      var k=p.lote_nome||"Convite Direto";
-      if(!resps[k])resps[k]=[];
-      resps[k].push(p);
-    });
-    var h="";
-    Object.keys(resps).sort().forEach(function(resp,ri){
-      var rp=resps[resp];
-      var rid="gr_"+status+"_"+ri;
-      h+="<div style='background:#090e09;border:1px solid #1a2a1a;border-radius:10px;margin-bottom:8px'>";
-      h+="<div onclick='tog(""+rid+"")' style='padding:12px;cursor:pointer;display:flex;justify-content:space-between;align-items:center'>";
-      h+="<div style='font-size:13px;font-weight:700;color:#eee'>"+resp+"</div>";
-      h+="<div style='display:flex;align-items:center;gap:8px'>";
-      h+="<span style='font-size:12px;font-weight:700;color:"+cor+"'>"+rp.length+" pessoas</span>";
-      h+="<span style='color:#555'>&#9660;</span></div></div>";
-      h+="<div id='"+rid+"' style='display:none;border-top:1px solid #1a2a1a;padding:8px 12px'>";
-      rp.sort(function(a,b){return a.nome.localeCompare(b.nome);}).forEach(function(p){
-        var link="https://robsafonso.github.io/Agroplay/bilhete.html?cad="+p.id+"&ev="+EV_ID;
-        var msg="AGROPLAY Music \uD83C\uDFB5\n\nOla, "+p.nome+"! Seu bilhete esta disponivel.\n\n\uD83C\uDFA4 "+ev.nome+"\n\uD83D\uDCC5 "+dataFmt+(ev.horario?" as "+ev.horario+(ev.horario_fim?" - "+ev.horario_fim:""):"")+(ev.local?"\n\uD83D\uDCCD "+ev.local:"")+"\n\nAcesse seu bilhete com QR Code:\n"+link+"\n\n\uD83C\uDF9F Apresente na entrada.\nAgroplay Music - Londrina PR";
-        h+="<div style='padding:8px 0;border-bottom:1px solid #111;display:flex;justify-content:space-between;align-items:center'>";
-        h+="<div style='font-size:12px;color:#bbb'>"+p.nome+"</div>";
-        if(status==="nao"&&bilheteOk){
-          h+="<button onclick='copiarBilhete(this,"+p.id+")' data-msg='"+msg.replace(/'/g,"&#39;")+"' style='background:#0891b2;border:none;border-radius:6px;padding:5px 10px;font-size:10px;color:#fff;cursor:pointer;font-weight:700'>Copiar</button>";
-        } else if(status==="env"){
-          h+="<button onclick='copiarBilhete(this,"+p.id+")' data-msg='"+msg.replace(/'/g,"&#39;")+"' style='background:#c9973c;border:none;border-radius:6px;padding:5px 10px;font-size:10px;color:#fff;cursor:pointer;font-weight:700'>Reenviar</button>";
-        } else {
-          h+="<span style='font-size:9px;background:rgba(42,171,71,.2);color:#2aab47;padding:2px 6px;border-radius:6px'>Confirmado</span>";
-        }
-        h+="</div>";
-      });
-      h+="</div></div>";
-    });
-    return h;
-  }
-
-  html+="<div id='sec-nao' style='display:none;margin-top:4px'>"+buildSec(naoEnv,"#0891b2","nao")+"</div>";
-  html+="<div id='sec-env' style='display:none;margin-top:4px'>"+buildSec(aguard,"#c9973c","env")+"</div>";
-  html+="<div id='sec-conf' style='display:none;margin-top:4px'>"+buildSec(conf,"#2aab47","conf")+"</div>";
-
+  if(!bilheteOk)html+="<div class='aviso'>Bilhetes disponiveis somente faltando 7 dias. Faltam <b>"+dias+"</b> dias.</div>";
+  html+="<div id='sec-nao' style='display:none;margin-top:8px'>"+buildSec(naoEnv,"nao",bilheteOk)+"</div>";
+  html+="<div id='sec-env' style='display:none;margin-top:8px'>"+buildSec(aguard,"env",bilheteOk)+"</div>";
+  html+="<div id='sec-conf' style='display:none;margin-top:8px'>"+buildSec(conf,"conf",bilheteOk)+"</div>";
   document.getElementById("conteudo").innerHTML=html;
 }
-
-function togSec(id){
-  var ids=["nao","env","conf"];
-  ids.forEach(function(x){
-    var el=document.getElementById("sec-"+x);
-    if(el)el.style.display=(x===id&&el.style.display==="none")?"block":"none";
+if(!EV_ID){
+  document.getElementById("conteudo").innerHTML="<div class='loading'>Link invalido.</div>";
+} else {
+  Promise.all([
+    ap("eventos?id=eq."+EV_ID+"&select=*"),
+    ap("cadastros?evento_id=eq."+EV_ID+"&select=*&order=nome.asc")
+  ]).then(function(res){
+    var ev=res[0]&&res[0][0];
+    var pessoas=res[1]||[];
+    if(!ev){document.getElementById("conteudo").innerHTML="<div class='loading'>Evento nao encontrado.</div>";return;}
+    render(ev,pessoas);
+  }).catch(function(){
+    document.getElementById("conteudo").innerHTML="<div class='loading'>Erro ao carregar.</div>";
   });
 }
