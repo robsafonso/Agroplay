@@ -99,7 +99,7 @@ function render(ev,pessoas){
 
   function cardP(p,status){
     var link="https://robsafonso.github.io/Agroplay/bilhete.html?cad="+p.id+"&ev="+EV_ID;
-    var msg="AGROPLAY - Seu Bilhete\n\nOla "+p.nome+"!\n\nSeu bilhete para:\n"+ev.nome+(dataFmt?"\nData: "+dataFmt:"")+(ev.horario?"\nHorario: "+ev.horario:"")+(ev.local?"\nLocal: "+ev.local:"")+"\n\nAcesse seu bilhete e QR Code:\n"+link+"\n\nApresente na entrada.\nAgroplay Music - Londrina PR";
+    var msg="AGROPLAY Music \uD83C\uDFB5\n\nOla, "+p.nome+"! Seu bilhete esta disponivel.\n\n\uD83C\uDFA4 "+ev.nome+"\n\uD83D\uDCC5 "+dataFmt+(ev.horario?" as "+ev.horario+(ev.horario_fim?" - "+ev.horario_fim:""):"")+(ev.local?"\n\uD83D\uDCCD "+ev.local:"")+(ev.atracao1?"\n\uD83C\uDFB5 "+ev.atracao1+(ev.atracao2?" + "+ev.atracao2:""):"")+"\n\nAcesse seu bilhete com QR Code:\n"+link+"\n\n\uD83C\uDF9F Apresente na entrada.";
     var borderColor=status==="confirmado"?"rgba(42,171,71,.4)":status==="enviado"?"rgba(201,151,60,.4)":"rgba(8,145,178,.3)";
     var c="<div class='card' style='border:1px solid "+borderColor+"'>";
     c+="<div class='card-nome'>"+p.nome+"</div>";
