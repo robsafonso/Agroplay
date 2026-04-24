@@ -106,7 +106,8 @@ var stream=null;
 var scanning=false;
 
 function q(id){return document.getElementById(id);}
-function ap(p,o){o=o||{};var h={"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json"};if(o.pref)h["Prefer"]=o.pref;return fetch(SB+"/rest/v1/"+p,{method:o.m||"GET",headers:h,body:o.b}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});}
+function ap(p,o){if(!o){return fetch(SB+"/rest/v1/"+p,{headers:{"apikey":KY,"Authorization":"Bearer "+KY}}).then(function(r){return r.json();});}
+var h={"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json"};if(o.pref)h["Prefer"]=o.pref;return fetch(SB+"/rest/v1/"+p,{method:o.m||"GET",headers:h,body:o.b}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});}
 
 q("btn-login").onclick=function(){
   var nome=q("inp-nome").value.trim();
