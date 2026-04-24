@@ -39,8 +39,7 @@ body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:16px;max
 <script>
 var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
 var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
-var params=new URLSearchParams(window.location.search);
-var EV_ID=params.get("ev");
+var EV_ID=null;try{var _s=window.location.search.replace("?","");var _ps=_s.split("&");for(var _i=0;_i<_ps.length;_i++){var _kv=_ps[_i].split("=");if(_kv[0]==="ev"){EV_ID=_kv[1];break;}}}catch(e){}
 var evAtual=null;
 
 function ap(path,o){
@@ -142,7 +141,7 @@ function render(ev,pessoas){
   document.getElementById("conteudo").innerHTML=html;
 }
 if(!EV_ID){
-  document.getElementById("conteudo").innerHTML="<div class='loading'>Link invalido.</div>";
+  document.getElementById("conteudo").innerHTML="<div class='loading'>Link invalido. URL: "+window.location.href+"</div>";
 } else {
   Promise.all([
     ap("eventos?id=eq."+EV_ID+"&select=*"),
