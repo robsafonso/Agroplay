@@ -218,21 +218,7 @@ h+=”</body></html>”;
 win.document.write(h);win.document.close();
 }
 
-fetch(SB+”/rest/v1/eventos?select=id,nome,data&order=data.asc”,{headers:{“apikey”:KY,“Authorization”:“Bearer “+KY}})
-.then(function(r){return r.json();})
-.then(function(evs){
-var sel=document.getElementById(“ev-sel”);
-if(!evs||!evs.length){sel.innerHTML=”<option value=''>Nenhum evento</option>”;return;}
-sel.innerHTML=”<option value=''>Selecione um evento…</option>”;
-evs.forEach(function(ev){
-var d=ev.data?ev.data.split(”-”):[””,””,””];
-var df=ev.data?d[2]+”/”+d[1]+”/”+d[0]:””;
-sel.innerHTML+=”<option value='"+ev.id+"'>”+ev.nome+” (”+df+”)</option>”;
-});
-})
-.catch(function(e){
-document.getElementById(“ev-sel”).innerHTML=”<option>Erro: “+e.message+”</option>”;
-});
+loadEventos();
 
 </script>
 </body>
