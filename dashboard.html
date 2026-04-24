@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agroplay - Dashboard</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:16px;max-width:480px;margin:0 auto}
+.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.logo{cursor:pointer;display:flex;align-items:center;gap:0;border:1px solid #1a2a1a;border-radius:10px;overflow:hidden}
+.logo-text{background:#0d150d;padding:7px 12px;font-size:16px;font-weight:900;color:#fff;letter-spacing:1px}
+.logo-text span{color:#2aab47}
+.logo-ver{background:#2aab47;padding:7px 10px;font-size:11px;font-weight:700;color:#fff}
+.back{background:transparent;border:1px solid #1a2a1a;border-radius:8px;padding:6px 12px;color:#eee;font-size:12px;text-decoration:none}
+.totais{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
+.tot{background:#090e09;border:1px solid #1a2a1a;border-radius:12px;padding:12px;text-align:center}
+.tot-n{font-size:24px;font-weight:900;display:block}
+.tot-l{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-top:3px}
+.secao{font-size:10px;color:#c9973c;text-transform:uppercase;letter-spacing:2px;font-weight:700;margin:16px 0 8px}
+.secao.verde{color:#2aab47}
+.secao.cinza{color:#555}
+.ev-card{background:#090e09;border-radius:12px;padding:14px;margin-bottom:10px;cursor:pointer;transition:border .2s}
+.ev-card.futuro{border:1px solid #1a2a1a}
+.ev-card.ativo{border:1px solid rgba(42,171,71,.5);background:#060e06}
+.ev-card.alerta{border:1px solid rgba(201,60,60,.5);background:#0e0606;animation:pulse 2s infinite}
+.ev-card.encerrado{border:1px solid #111;opacity:0.6}
+@keyframes pulse{0%,100%{border-color:rgba(201,60,60,.5)}50%{border-color:rgba(201,60,60,1)}}
+.ev-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.ev-nome{font-size:14px;font-weight:900;color:#fff;flex:1;margin-right:8px}
+.ev-status{font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px}
+.status-futuro{background:rgba(8,145,178,.2);color:#0891b2}
+.status-ativo{background:rgba(42,171,71,.2);color:#2aab47}
+.status-alerta{background:rgba(201,60,60,.2);color:#c0392b}
+.status-encerrado{background:#111;color:#555}
+.ev-det{font-size:11px;color:#555;margin-bottom:10px}
+.ev-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:8px}
+.es{background:#060a06;border-radius:6px;padding:6px 4px;text-align:center}
+.es-n{font-size:14px;font-weight:900;display:block}
+.es-l{font-size:8px;text-transform:uppercase;letter-spacing:.5px;margin-top:1px;color:#555}
+.prog{height:4px;background:#1a2a1a;border-radius:2px;overflow:hidden;margin-bottom:8px}
+.prog-fill{height:100%;border-radius:2px;transition:width .5s}
+.ev-lotes{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.lote-tag{font-size:10px;background:#0a150a;border:1px solid #1a2a1a;border-radius:6px;padding:3px 8px;color:#888}
+.lote-tag b{color:#eee}
+.btn-detalhe{width:100%;background:transparent;border:1px solid #1a2a1a;border-radius:8px;padding:8px;font-size:11px;color:#555;cursor:pointer;margin-top:6px}
+.btn-detalhe:active{background:#1a2a1a}
+.alerta-box{background:#1a0606;border:1px solid rgba(201,60,60,.4);border-radius:10px;padding:12px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.alerta-icon{font-size:24px}
+.alerta-text{font-size:12px;color:#e74c3c;line-height:1.5}
+.loading{text-align:center;padding:40px;font-size:14px;color:#555}
+.empty{text-align:center;padding:20px;font-size:12px;color:#555}
+.relogio{font-size:11px;color:#555;text-align:right;margin-bottom:12px}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="logo" onclick="location.href='home.html'">
+    <div class="logo-text">AGRO<span>PLAY</span></div>
+    <div class="logo-ver">Dashboard</div>
+  </div>
+  <a href="home.html" class="back">&larr; Menu</a>
+</div>
+
+<div class="relogio" id="relogio"></div>
+<div id="alertas"></div>
+
+<div class="totais" id="totais" style="display:none">
+  <div class="tot"><span class="tot-n" id="t-ev" style="color:#0891b2">0</span><div class="tot-l">Eventos</div></div>
+  <div class="tot"><span class="tot-n" id="t-conv" style="color:#c9973c">0</span><div class="tot-l">Convidados</div></div>
+  <div class="tot"><span class="tot-n" id="t-check" style="color:#2aab47">0</span><div class="tot-l">Entraram</div></div>
+</div>
+
+<div id="conteudo"><div class="loading">Carregando...</div></div>
+
+<script>
+var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
+var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
+var allEvs=[],allCads=[];
+
+function ap(path){
+  return fetch(SB+"/rest/v1/"+path,{headers:{"apikey":KY,"Authorization":"Bearer "+KY}}).then(function(r){return r.json();});
+}
+function fd(d){if(!d)return"";var x=d.split("-");return x[2]+"/"+x[1]+"/"+x[0];}
+
+// Clock
+function updateClock(){
+  var now=new Date();
+  var h=now.getHours().toString().padStart(2,"0");
+  var m=now.getMinutes().toString().padStart(2,"0");
+  var s=now.getSeconds().toString().padStart(2,"0");
+  var days=["Domingo","Segunda","Terca","Quarta","Quinta","Sexta","Sabado"];
+  document.getElementById("relogio").textContent=days[now.getDay()]+" "+fd(now.toISOString().split("T")[0])+" - "+h+":"+m+":"+s;
+}
+setInterval(updateClock,1000);
+updateClock();
+
+function getEvStatus(ev){
+  var now=new Date();
+  var hoje=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  var evData=ev.data?new Date(ev.data+"T00:00:00"):null;
+  if(!evData)return "futuro";
+  var dias=Math.ceil((evData-hoje)/(1000*60*60*24));
+  if(dias>0)return "futuro";
+  if(dias<0)return "encerrado";
+  // Same day - check time
+  if(ev.horario){
+    var parts=ev.horario.split(":");
+    var inicio=new Date(now.getFullYear(),now.getMonth(),now.getDate(),parseInt(parts[0]),parseInt(parts[1]));
+    if(now<inicio)return "futuro";
+    if(ev.horario_fim){
+      var parts2=ev.horario_fim.split(":");
+      var fim=new Date(now.getFullYear(),now.getMonth(),now.getDate(),parseInt(parts2[0]),parseInt(parts2[1]));
+      if(fim<inicio)fim.setDate(fim.getDate()+1); // passou da meia noite
+      if(now>fim)return "alerta"; // passou do fim
+      return "ativo";
+    }
+    return "ativo";
+  }
+  return dias===0?"ativo":"encerrado";
+}
+
+function getTempoExtra(ev){
+  if(!ev.horario_fim)return "";
+  var now=new Date();
+  var parts=ev.horario_fim.split(":");
+  var fim=new Date(now.getFullYear(),now.getMonth(),now.getDate(),parseInt(parts[0]),parseInt(parts[1]));
+  if(fim<new Date(now.getFullYear(),now.getMonth(),now.getDate(),12,0))fim.setDate(fim.getDate()+1);
+  var diff=Math.floor((now-fim)/60000);
+  if(diff<=0)return "";
+  var h=Math.floor(diff/60);
+  var m=diff%60;
+  return h>0?h+"h "+m+"min extra":m+"min extra";
+}
+
+function render(){
+  var futuros=[],ativos=[],alertas=[],encerrados=[];
+  allEvs.forEach(function(ev){
+    var st=getEvStatus(ev);
+    if(st==="futuro")futuros.push(ev);
+    else if(st==="ativo")ativos.push(ev);
+    else if(st==="alerta")alertas.push(ev);
+    else encerrados.push(ev);
+  });
+
+  // Alertas box
+  var alertaHtml="";
+  alertas.forEach(function(ev){
+    var extra=getTempoExtra(ev);
+    alertaHtml+="<div class='alerta-box'><div class='alerta-icon'>&#9888;</div><div class='alerta-text'><b>"+ev.nome+"</b><br>Evento passou do horario de fim"+(extra?" - "+extra:"")+"</div></div>";
+  });
+  document.getElementById("alertas").innerHTML=alertaHtml;
+
+  // Totais
+  var totalConv=allCads.length;
+  var totalCheck=allCads.filter(function(c){return c.entrada_em;}).length;
+  document.getElementById("t-ev").textContent=allEvs.length;
+  document.getElementById("t-conv").textContent=totalConv;
+  document.getElementById("t-check").textContent=totalCheck;
+  document.getElementById("totais").style.display="grid";
+
+  var html="";
+
+  function renderEvento(ev){
+    var st=getEvStatus(ev);
+    var cads=allCads.filter(function(c){return c.evento_id===ev.id;});
+    var total=cads.length;
+    var entraram=cads.filter(function(c){return c.entrada_em;}).length;
+    var faltaram=total-entraram;
+    var bilEnv=cads.filter(function(c){return c.bilhete_enviado&&!c.bilhete_confirmado;}).length;
+    var bilConf=cads.filter(function(c){return c.bilhete_confirmado;}).length;
+    var bilNao=cads.filter(function(c){return !c.bilhete_enviado&&!c.bilhete_confirmado;}).length;
+    var pctCheck=total>0?Math.round((entraram/total)*100):0;
+    var dataFmt=fd(ev.data);
+    var extra=getTempoExtra(ev);
+
+    var statusLabel={futuro:"Futuro",ativo:"Em andamento",alerta:"Passou do fim",encerrado:"Encerrado"};
+    var statusClass={futuro:"status-futuro",ativo:"status-ativo",alerta:"status-alerta",encerrado:"status-encerrado"};
+
+    // Group by lote
+    var lotes={};
+    cads.forEach(function(c){
+      var k=c.lote_nome||"Direto";
+      if(!lotes[k])lotes[k]={total:0,entraram:0};
+      lotes[k].total++;
+      if(c.entrada_em)lotes[k].entraram++;
+    });
+
+    var h="<div class='ev-card "+st+"' onclick='abrirEvento("+ev.id+")'>";
+    h+="<div class='ev-header'><div class='ev-nome'>"+ev.nome+"</div>";
+    h+="<span class='ev-status "+statusClass[st]+"'>"+statusLabel[st]+(extra?" +"+extra:"")+"</span></div>";
+    h+="<div class='ev-det'>"+dataFmt+(ev.horario?" as "+ev.horario:"")+(ev.horario_fim?" - "+ev.horario_fim:"")+(ev.local?" | "+ev.local:"")+"</div>";
+
+    if(total>0){
+      h+="<div class='ev-stats'>";
+      h+="<div class='es'><span class='es-n' style='color:#eee'>"+total+"</span><div class='es-l'>Total</div></div>";
+      h+="<div class='es'><span class='es-n' style='color:#2aab47'>"+entraram+"</span><div class='es-l'>Entraram</div></div>";
+      h+="<div class='es'><span class='es-n' style='color:#c0392b'>"+faltaram+"</span><div class='es-l'>Faltaram</div></div>";
+      h+="<div class='es'><span class='es-n' style='color:#c9973c'>"+bilConf+"</span><div class='es-l'>Bil. conf.</div></div>";
+      h+="</div>";
+      h+="<div class='prog'><div class='prog-fill' style='width:"+pctCheck+"%;background:"+(pctCheck>70?"#2aab47":pctCheck>30?"#c9973c":"#c0392b")+"'></div></div>";
+      h+="<div style='font-size:10px;color:#555;text-align:right;margin-bottom:6px'>"+entraram+"/"+total+" entraram ("+pctCheck+"%)</div>";
+
+      // Lote tags
+      if(Object.keys(lotes).length>0){
+        h+="<div class='ev-lotes'>";
+        Object.keys(lotes).forEach(function(k){
+          var l=lotes[k];
+          h+="<div class='lote-tag'>"+k+": <b>"+l.entraram+"/"+l.total+"</b></div>";
+        });
+        h+="</div>";
+      }
+    } else {
+      h+="<div class='empty'>Nenhum convidado ainda</div>";
+    }
+    h+="<button class='btn-detalhe' onclick='event.stopPropagation();abrirEvento("+ev.id+")'>Ver detalhes completos</button>";
+    h+="</div>";
+    return h;
+  }
+
+  if(alertas.length){
+    html+="<div class='secao' style='color:#c0392b'>Em alerta ("+alertas.length+")</div>";
+    alertas.forEach(function(ev){html+=renderEvento(ev);});
+  }
+  if(ativos.length){
+    html+="<div class='secao ativo'>Em andamento ("+ativos.length+")</div>";
+    ativos.forEach(function(ev){html+=renderEvento(ev);});
+  }
+  if(futuros.length){
+    html+="<div class='secao'>Proximos eventos ("+futuros.length+")</div>";
+    futuros.forEach(function(ev){html+=renderEvento(ev);});
+  }
+  if(encerrados.length){
+    html+="<div class='secao cinza'>Encerrados ("+encerrados.length+")</div>";
+    encerrados.forEach(function(ev){html+=renderEvento(ev);});
+  }
+
+  document.getElementById("conteudo").innerHTML=html||"<div class='loading' style='color:#555'>Nenhum evento cadastrado.</div>";
+}
+
+function abrirEvento(evId){
+  location.href="bilhetes.html?ev="+evId;
+}
+
+// Auto refresh every 30 seconds
+setInterval(function(){load();},30000);
+
+function load(){
+  Promise.all([
+    ap("eventos?select=*&order=data.asc"),
+    ap("cadastros?select=id,nome,evento_id,lote_nome,bilhete_enviado,bilhete_confirmado,entrada_em&order=nome.asc")
+  ]).then(function(res){
+    allEvs=res[0]||[];
+    allCads=res[1]||[];
+    render();
+  }).catch(function(){
+    document.getElementById("conteudo").innerHTML="<div class='loading'>Erro ao carregar.</div>";
+  });
+}
+load();
+</script>
+
+</body>
+</html>
