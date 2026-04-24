@@ -92,8 +92,11 @@ function selecionarEvento(){
 
 function carregarItens(){
   ap("orcamentos?evento_id=eq."+evAtual.id+"&order=categoria.asc,item.asc").then(function(d){
-    itens=d||[];
-    renderizar();
+    itens=Array.isArray(d)?d:[];
+    q("conteudo").innerHTML="<div style='padding:10px;color:#555'>Carregando "+itens.length+" itens...</div>";
+    setTimeout(function(){renderizar();},100);
+  }).catch(function(e){
+    q("conteudo").innerHTML="<div style='padding:10px;color:red'>Erro: "+(e?e.message:"?")+"</div>";
   });
 }
 
