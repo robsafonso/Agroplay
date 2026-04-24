@@ -57,7 +57,7 @@ textarea{height:70px;resize:none}
 <div class="hdr">
   <div onclick="location.href='home.html'" style="cursor:pointer;display:flex;align-items:center;gap:0;border:1px solid #1a2a1a;border-radius:10px;overflow:hidden">
     <div style="background:#0d150d;padding:7px 12px;font-size:16px;font-weight:900;color:#fff;letter-spacing:1px">AGRO<span style="color:#2aab47">PLAY</span></div>
-    <div style="background:#2aab47;padding:7px 10px;font-size:11px;font-weight:700;color:#fff;letter-spacing:1px">v26</div>
+    <div style="background:#2aab47;padding:7px 10px;font-size:11px;font-weight:700;color:#fff;letter-spacing:1px">v27</div>
   </div>
   <div style="display:flex;gap:6px;align-items:center"><button onclick="togMenu()" style="background:transparent;border:none;color:#eee;font-size:20px;cursor:pointer;padding:4px 8px">&#9776;</button>
     <button class="bto" id="blinkc" style="font-size:11px;padding:6px 10px">Link Cadastro</button>
@@ -80,7 +80,7 @@ textarea{height:70px;resize:none}
   <div style="border-top:1px solid #1a2a1a;margin:4px 0"></div>
   <a href="home.html" onclick="sessionStorage.removeItem('ag_admin')" style="display:flex;align-items:center;gap:10px;padding:10px 14px;color:#c0392b;text-decoration:none;font-size:13px;border-radius:8px">&#128682; Sair</a>
   <div style="border-top:1px solid #1a2a1a;margin:4px 0"></div>
-  <div style="padding:6px 14px;font-size:10px;color:#333;text-align:center">v26</div>
+  <div style="padding:6px 14px;font-size:10px;color:#333;text-align:center">v27</div>
 </div>
 <div class="stats" id="sts"></div>
 <div class="tabs">
@@ -683,6 +683,7 @@ function rLotes(){
     lotes.forEach(function(lt){
       var link="https://robsafonso.github.io/Agroplay/lote.html";
       var convidados=cads.filter(function(c){return c.lote_id===lt.id;}).length;
+      var ltEv=lt.evento_id?evs.filter(function(e){return e.id===lt.evento_id;})[0]:null;
       h+="<div class='card'>";
       h+="<div style='font-size:15px;font-weight:700;color:#fff;margin-bottom:4px'>"+lt.responsavel+"</div>";
       h+="<div style='font-size:11px;color:#555;line-height:1.7;margin-bottom:6px'>"+convidados+" usados de "+lt.quantidade+" convites</div>";
