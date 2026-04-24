@@ -250,15 +250,13 @@ function salvarItem(){
   var meth=id?"PATCH":"POST";
   ap(path,{m:meth,pref:"return=minimal",b:body}).then(function(){
     document.getElementById("modal").style.display="none";
-    btn.textContent="Salvar";btn.disabled=false;
-    // Reload items keeping event selected
-    ap("orcamentos?evento_id=eq."+evId+"&order=categoria.asc,item.asc").then(function(d){
-      itens=d||[];
-      renderOrcamento();
-    });
-  }).catch(function(e){
-    alert("Erro ao salvar: "+(e?e.message:"desconhecido"));
-    btn.textContent="Salvar";btn.disabled=false;
+    btn.textContent="Salvar";
+    btn.disabled=false;
+    loadItens(evId);
+  }).catch(function(){
+    alert("Erro ao salvar!");
+    btn.textContent="Salvar";
+    btn.disabled=false;
   });
 }
 
