@@ -683,7 +683,7 @@ function rLotes(){
     lotes.forEach(function(lt){
       var link="https://robsafonso.github.io/Agroplay/lote.html";
       var convidados=cads.filter(function(c){return c.lote_id===lt.id;}).length;
-      var ltEv=lt.evento_id?evs.filter(function(e){return e.id===lt.evento_id;})[0]:null;
+      var ltEv=lt.evento_id?evs.filter(function(e){return e.id==lt.evento_id;})[0]:null;
       h+="<div class='card'>";
       h+="<div style='font-size:15px;font-weight:700;color:#fff;margin-bottom:4px'>"+lt.responsavel+"</div>";
       h+="<div style='font-size:11px;color:#555;line-height:1.7;margin-bottom:6px'>"+convidados+" usados de "+lt.quantidade+" convites</div>";
