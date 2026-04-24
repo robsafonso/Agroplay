@@ -4,291 +4,211 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Check-in - Agroplay</title>
+<title>Agroplay - Admin Evento</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#060a06;color:#eee;font-family:Arial;padding:20px;max-width:480px;margin:0 auto}
-.logo{font-size:22px;font-weight:900;color:#fff;text-align:center;padding:16px 0 8px}
-.logo b{color:#2aab47}
-.card{background:#090e09;border:1px solid #1a2a1a;border-radius:14px;padding:20px;margin-bottom:14px}
-.btn{background:linear-gradient(135deg,#1e7a35,#2aab47);color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;width:100%;margin-top:8px}
-.bto{background:transparent;color:#2aab47;border:1px solid #2aab47;border-radius:10px;padding:11px;font-size:13px;cursor:pointer;width:100%;margin-top:8px}
-.btr{background:#c0392b;color:#fff;border:none;border-radius:10px;padding:11px;font-size:13px;cursor:pointer;width:100%;margin-top:8px}
-.ea{background:#1a0000;border:1px solid #e74c3c;color:#e74c3c;padding:10px;border-radius:8px;margin-bottom:10px;font-size:13px}
-.ok{background:#0a1f0a;border:1px solid #2aab47;color:#2aab47;padding:10px;border-radius:8px;margin-bottom:10px;font-size:13px}
-input{width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:11px;color:#eee;font-size:14px;outline:none}
-input:focus{border-color:#2aab47}
-label{display:block;font-size:10px;color:#2aab47;letter-spacing:1px;margin-bottom:4px;text-transform:uppercase;font-weight:700}
-.fl{margin-bottom:12px}
+body{background:#060a06;color:#eee;font-family:Arial;font-size:14px;padding:16px}
+.hdr{background:#060a06;border-bottom:2px solid #1e7a35;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;margin:-16px -16px 16px}
+.logo{font-size:18px;font-weight:900;color:#fff}
+.logo span{color:#2aab47}
+.btn{background:#1e7a35;color:#fff;border:none;border-radius:8px;padding:10px 16px;font-size:13px;font-weight:700;cursor:pointer;margin:4px}
+.bto{background:transparent;color:#2aab47;border:1px solid #2aab47;border-radius:8px;padding:8px 12px;font-size:12px;cursor:pointer;margin:4px}
+.btr{background:#c0392b;color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:12px;cursor:pointer;margin:4px}
+.card{background:#090e09;border:1px solid #1a2a1a;border-radius:12px;padding:16px;margin-bottom:12px}
+.tabs{display:flex;gap:5px;margin-bottom:14px;overflow-x:auto}
+.tab{background:transparent;border:1px solid #333;border-radius:8px;padding:7px 12px;color:#555;cursor:pointer;font-size:11px;white-space:nowrap}
+.tab.on{border-color:#2aab47;color:#2aab47;background:rgba(42,171,71,.1)}
 .gone{display:none}
-.perfil{text-align:center;padding:16px 0}
-.foto{width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid #2aab47;margin:0 auto 12px;display:block}
-.avatar{width:100px;height:100px;border-radius:50%;background:#1e7a35;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:36px;color:#fff;font-weight:700}
-.pnome{font-size:20px;font-weight:900;color:#fff;margin-bottom:6px}
-.pbadge{display:inline-block;padding:4px 14px;border-radius:20px;font-size:11px;font-weight:700;color:#fff;margin-bottom:12px}
-.prow{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #111;font-size:13px}
-.prow span:first-child{color:#555;font-size:11px;text-transform:uppercase}
-.prow span:last-child{color:#fff;font-weight:600}
-.scan-wrap{position:relative;width:100%;max-width:320px;margin:0 auto;border-radius:12px;overflow:hidden;border:2px solid #2aab47}
-video{width:100%;display:block}
-.scan-line{position:absolute;top:0;left:0;right:0;height:2px;background:#2aab47;animation:scan 2s linear infinite}
-@keyframes scan{0%{top:0}100%{top:100%}}
-.manual-wrap{margin-top:14px}
+.stats{display:flex;gap:8px;margin-bottom:16px}
+.stat{background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:12px 8px;text-align:center;flex:1}
+.stat strong{font-size:22px;color:#2aab47;display:block}
+.stat small{font-size:9px;color:#555;text-transform:uppercase}
+.badge{padding:2px 8px;border-radius:20px;font-size:10px;color:#fff;font-weight:700}
+.ab{background:#1e7a35}.pb{background:#b8860b}.eb{background:#c0392b}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{padding:8px;text-align:left;background:#060a06;color:#444;font-size:9px;text-transform:uppercase;border-bottom:1px solid #1a2a1a}
+td{padding:8px;border-bottom:1px solid #111;color:#bbb}
+.tbl{overflow-x:auto;border:1px solid #1a2a1a;border-radius:10px;margin-top:8px}
+.empty{text-align:center;padding:28px;color:#555}
+input{background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;width:100%;margin-bottom:8px}
+input:focus{border-color:#2aab47}
+.fl label{display:block;font-size:10px;color:#2aab47;letter-spacing:1px;margin-bottom:4px;text-transform:uppercase}
+.fl{margin-bottom:10px}
+.ea{background:#1a0000;border:1px solid #c0392b;color:#e74c3c;padding:10px;border-radius:8px;margin-bottom:10px;font-size:13px}
+.ok{background:#0a1f0a;border:1px solid #2aab47;color:#2aab47;padding:10px;border-radius:8px;margin-bottom:10px;font-size:13px}
+.link-box{background:#030503;border:1px solid #1a2a1a;border-radius:10px;padding:12px;margin-bottom:10px}
+.link-url{font-family:monospace;font-size:11px;color:#2aab47;word-break:break-all;margin-bottom:8px}
+select{background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px 12px;color:#eee;font-size:13px;outline:none;width:100%;margin-bottom:8px}
 </style>
 </head>
 <body>
-<div onclick="location.href='home.html'" style="cursor:pointer" class="logo">AGRO<b>PLAY</b> Check-in</div>
-
-<div id="tela-login" class="card">
-  <div style="font-size:16px;font-weight:900;color:#fff;margin-bottom:4px">Validador</div>
-  <div style="font-size:12px;color:#666;margin-bottom:16px">Entre com seu nome e senha.</div>
-  <div id="al-login"></div>
-  <div class="fl"><label>Nome</label><input id="inp-nome" placeholder="Seu nome"></div>
-  <div class="fl"><label>Senha</label><input id="inp-senha" type="password" placeholder="Sua senha"></div>
-  <button class="btn" id="btn-login">Entrar</button>
+<div class="hdr">
+  <div class="logo" onclick="location.href='home.html'" style="cursor:pointer">AGRO<span>PLAY</span> <span style="font-size:12px;color:#555">Admin</span></div>
+  <button class="bto" id="btn-refresh">Atualizar</button>
 </div>
-
-<div id="tela-trocar-senha" class="card gone">
-  <div style="font-size:16px;font-weight:900;color:#fff;margin-bottom:4px">Trocar senha</div>
-  <div style="font-size:12px;color:#2aab47;margin-bottom:16px">Primeiro acesso! Crie sua senha pessoal.</div>
-  <div id="al-trocar"></div>
-  <div class="fl"><label>Nova senha</label><input id="inp-nova" type="password" placeholder="Nova senha"></div>
-  <div class="fl"><label>Confirmar senha</label><input id="inp-conf" type="password" placeholder="Confirme a senha"></div>
-  <button class="btn" id="btn-trocar">Salvar senha</button>
+<div class="stats" id="sts"></div>
+<div class="tabs">
+  <button class="tab on" id="t1">Check-in</button>
+  <button class="tab" id="t2">Validadores</button>
+  <button class="tab" id="t3">Historico</button>
 </div>
-
-<div id="tela-checkin" class="gone">
-  <div style="text-align:center;margin-bottom:14px">
-    <div style="font-size:16px;font-weight:700;color:#fff">Ola, <span id="val-nome" style="color:#2aab47"></span>!</div>
-    <div style="font-size:11px;color:#555;margin-top:2px">Escaneie o QR Code do convidado</div>
+<div id="s1">
+  <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
+    <select id="ev-sel" style="flex:1;margin:0">
+      <option value="">Todos os eventos</option>
+    </select>
+    <button class="bto" id="btn-exp">CSV</button>
   </div>
-
+  <div class="tabs" id="ftabs">
+    <button class="tab on" id="fa">Todos</button>
+    <button class="tab" id="fe">Entraram</button>
+    <button class="tab" id="fn2">Nao entraram</button>
+  </div>
+  <div id="lista-checkin"></div>
+</div>
+<div id="s2" class="gone">
   <div class="card">
-    <div id="scanner-wrap">
-      <div class="scan-wrap">
-        <video id="video" autoplay playsinline muted></video>
-        <div class="scan-line"></div>
-      </div>
-      <div style="text-align:center;margin:8px 0"><button id="btn-torch" onclick="togTorch()" style="background:#090e09;border:1px solid #555;border-radius:8px;padding:8px 20px;color:#eee;font-size:16px;cursor:pointer">&#128294; Flash</button></div>
-<div id="al-scan" style="margin-top:10px"></div>
-    </div>
-    <div class="manual-wrap">
-      <div style="font-size:11px;color:#555;text-align:center;margin-bottom:10px">ou busque manualmente</div>
-      <div class="fl"><input id="inp-cod" placeholder="Codigo de 6 digitos" maxlength="6" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'')"></div>
-      <button class="btn" id="btn-buscar">Buscar por codigo</button>
-      <div style="margin-top:10px;border-top:1px solid #1a2a1a;padding-top:10px">
-        <div style="font-size:11px;color:#555;text-align:center;margin-bottom:8px">ou busque pelo nome</div>
-        <div style="display:flex;gap:8px">
-          <input id="inp-nome-search" placeholder="Nome da pessoa" style="flex:1">
-          <button class="btn" id="btn-buscar-nome" style="width:auto;padding:11px 14px;margin:0">Buscar</button>
-        </div>
-        <div id="lista-nomes" style="margin-top:8px"></div>
-      </div>
-    </div>
+    <div id="val-alert"></div>
+    <div class="fl"><label>Nome</label><input id="val-nome" placeholder="Nome do validador"></div>
+    <div class="fl"><label>Senha</label><input id="val-senha" placeholder="Senha de acesso" type="text"></div>
+    <button class="btn" id="btn-addval" style="width:100%">Adicionar validador</button>
   </div>
-
-  <div id="resultado" class="card gone">
-    <div id="al-res"></div>
-    <div id="perfil-wrap"></div>
-    <button class="btn" id="btn-confirmar" style="display:none">Confirmar entrada</button>
-    <button class="bto" id="btn-novo" style="margin-top:8px">Proximo</button>
+  <div class="link-box">
+    <div style="font-size:10px;color:#555;margin-bottom:6px;text-transform:uppercase">Link do check-in</div>
+    <div class="link-url">robsafonso.github.io/Agroplay/checkin.html</div>
+    <button class="bto" id="btn-coplink" style="width:100%;font-size:12px">Copiar link</button>
   </div>
+  <div id="val-lista"></div>
 </div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.js"></script>
-
+<div id="s3" class="gone">
+  <div id="hist-ev-lista"></div>
+</div>
 <script>
 var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
 var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
-var valAtual=null;
-var cadAtual=null;
-var stream=null;
-var scanning=false;
-
+var cads=[],evs=[],vals=[],ffilt="a",evFilt="";
 function q(id){return document.getElementById(id);}
 function ap(p,o){o=o||{};var h={"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json"};if(o.pref)h["Prefer"]=o.pref;return fetch(SB+"/rest/v1/"+p,{method:o.m||"GET",headers:h,body:o.b}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});}
-
-q("btn-login").onclick=function(){
-  var nome=q("inp-nome").value.trim();
-  var senha=q("inp-senha").value.trim();
-  var al=q("al-login");al.innerHTML="";
-  if(!nome){al.innerHTML="<div class='ea'>Digite seu nome</div>";return;}
-  if(!senha){al.innerHTML="<div class='ea'>Digite a senha</div>";return;}
-  var btn=this;btn.textContent="Entrando...";btn.disabled=true;
-  ap("validadores?nome=eq."+encodeURIComponent(nome)+"&senha=eq."+encodeURIComponent(senha)+"&select=*").then(function(d){
-    if(!d||!d.length){al.innerHTML="<div class='ea'>Nome ou senha invalidos</div>";btn.textContent="Entrar";btn.disabled=false;return;}
-    valAtual=d[0];
-    if(!valAtual.primeiro_acesso||valAtual.primeiro_acesso===false){
-      // Normal login
-      q("tela-login").classList.add("gone");
-      q("val-nome").textContent=valAtual.nome;
-      iniciarCamera();
-      q("tela-checkin").classList.remove("gone");
-    } else {
-      // First access - force password change
-      q("tela-login").classList.add("gone");
-      q("tela-trocar-senha").classList.remove("gone");
-    }
-    btn.textContent="Entrar";btn.disabled=false;
-  }).catch(function(){al.innerHTML="<div class='ea'>Erro ao conectar</div>";btn.textContent="Entrar";btn.disabled=false;});
+function cp2(txt,btn,lbl){if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){btn.textContent="Copiado!";setTimeout(function(){btn.textContent=lbl;},2000);});}else{var t=document.createElement("textarea");t.value=txt;document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t);btn.textContent="Copiado!";setTimeout(function(){btn.textContent=lbl;},2000);}}
+function tab(t){["s1","s2","s3"].forEach(function(x){q(x).classList.add("gone");});["t1","t2","t3"].forEach(function(x){q(x).classList.remove("on");});q("s"+t).classList.remove("gone");q("t"+t).classList.add("on");}
+q("t1").onclick=function(){tab("1");};
+q("t2").onclick=function(){tab("2");};
+q("t3").onclick=function(){tab("3");rHistEv();};
+q("btn-refresh").onclick=load;
+q("btn-coplink").onclick=function(){cp2("https://robsafonso.github.io/Agroplay/checkin.html",q("btn-coplink"),"Copiar link");};
+q("fa").onclick=function(){ffilt="a";q("fa").classList.add("on");q("fe").classList.remove("on");q("fn2").classList.remove("on");rLista();};
+q("fe").onclick=function(){ffilt="e";q("fa").classList.remove("on");q("fe").classList.add("on");q("fn2").classList.remove("on");rLista();};
+q("fn2").onclick=function(){ffilt="n";q("fa").classList.remove("on");q("fe").classList.remove("on");q("fn2").classList.add("on");rLista();};
+q("ev-sel").onchange=function(){evFilt=this.value;rLista();};
+q("btn-exp").onclick=function(){
+  var f=filtrados();
+  var rows=f.map(function(c){return[c.nome,c.empresa||"",c.cargo||"",c.status,c.entrada_em?new Date(c.entrada_em).toLocaleString("pt-BR"):"",c.validador_nome||""].map(function(v){return'"'+v+'"';}).join(",");});
+  var csv="Nome,Empresa,Cargo,Status,Entrada,Validador\n"+rows.join("\n");
+  var b=new Blob([csv],{type:"text/csv"});var u=URL.createObjectURL(b);var a=document.createElement("a");a.href=u;a.download="checkin.csv";a.click();
 };
-q("btn-trocar").onclick=function(){
-  var nova=q("inp-nova").value.trim();
-  var conf=q("inp-conf").value.trim();
-  var al=q("al-trocar");al.innerHTML="";
-  if(!nova||nova.length<4){al.innerHTML="<div class='ea'>Senha deve ter pelo menos 4 caracteres</div>";return;}
-  if(nova!==conf){al.innerHTML="<div class='ea'>Senhas nao conferem</div>";return;}
+q("btn-addval").onclick=function(){
+  var nome=q("val-nome-inp")?q("val-nome-inp").value.trim():q("val-nome").value.trim();var senha=q("val-senha").value.trim();
+  var al=q("val-alert");al.innerHTML="";
+  if(!nome||!senha){al.innerHTML="<div class='ea'>Preencha nome e senha</div>";return;}
   var btn=this;btn.textContent="Salvando...";btn.disabled=true;
-  ap("validadores?id=eq."+valAtual.id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({senha:nova,primeiro_acesso:false})}).then(function(){
-    valAtual.senha=nova;valAtual.primeiro_acesso=false;
-    q("tela-trocar-senha").classList.add("gone");
-    q("val-nome").textContent=valAtual.nome;
-    iniciarCamera();
-    q("tela-checkin").classList.remove("gone");
-    btn.textContent="Salvar senha";btn.disabled=false;
-  }).catch(function(){al.innerHTML="<div class='ea'>Erro ao salvar</div>";btn.textContent="Salvar senha";btn.disabled=false;});
+  ap("validadores",{m:"POST",pref:"return=minimal",b:JSON.stringify({nome:nome,senha:senha,primeiro_acesso:true})}).then(function(){
+    q("val-nome").value="";q("val-senha").value="";
+    al.innerHTML="<div class='ok'>Validador adicionado!</div>";
+    carregarVals();
+  }).catch(function(){al.innerHTML="<div class='ea'>Erro</div>";
+  }).finally(function(){btn.textContent="Adicionar validador";btn.disabled=false;});
 };
-
-function iniciarScanner(){
-  if(!navigator.mediaDevices){return;}
-  navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}}).then(function(s){
-    stream=s;
-    var v=q("video");v.srcObject=s;v.play();
-    scanning=true;
-    requestAnimationFrame(scanFrame);
-  }).catch(function(){q("al-scan").innerHTML="<div class='ea'>Camera indisponivel. Use o campo manual.</div>";});
+function delVal(id){
+  if(!confirm("Remover?"))return;
+  ap("validadores?id=eq."+id,{m:"DELETE",pref:"return=minimal"}).then(function(){carregarVals();});
 }
-
-var torchOn=false;
-var torchTrack=null;
-function togTorch(){
-  if(!stream)return;
-  var tracks=stream.getVideoTracks();
-  if(!tracks.length)return;
-  var track=tracks[0];
-  torchTrack=track;
-  torchOn=!torchOn;
-  try{
-    track.applyConstraints({advanced:[{torch:torchOn}]}).then(function(){
-      document.getElementById("btn-torch").style.background=torchOn?"rgba(255,200,0,.8)":"rgba(0,0,0,.6)";
-    }).catch(function(){
-      torchOn=!torchOn;
+function carregarVals(){
+  ap("validadores?select=*&order=criado_em.desc").then(function(d){
+    vals=d||[];
+    if(!vals.length){q("val-lista").innerHTML="<div class='empty'>Nenhum validador</div>";return;}
+    var h="<div class='tbl'><table><thead><tr><th>Nome</th><th>Senha</th><th></th></tr></thead><tbody>";
+    vals.forEach(function(v){
+      var vlink="https://robsafonso.github.io/Agroplay/checkin.html";
+      var vmsg="AGROPLAY - Check-in\n\nOla "+v.nome+"!\n\nAcesse o scanner:\n"+vlink+"\n\nNome: "+v.nome+"\nSenha: "+v.senha+"\n\nAgroplay Music - Londrina PR";
+      h+="<tr><td style='color:#fff'>"+v.nome+"</td><td style='font-family:monospace;color:#2aab47'>"+v.senha+"</td><td style='display:flex;gap:4px'><button class='bto' onclick='cpLink(this)' data-msg='"+vmsg.replace(/'/g,"&#39;")+"'  style='font-size:10px;padding:3px 8px'>Link</button><button class='btr' onclick='delVal("+v.id+")' style='font-size:10px;padding:3px 8px'>X</button></td></tr>";
     });
-  }catch(e){torchOn=!torchOn;}
-}
-var canvas=document.createElement("canvas");
-var ctx=canvas.getContext("2d");
-function scanFrame(){
-  if(!scanning)return;
-  var v=q("video");
-  if(v.readyState===v.HAVE_ENOUGH_DATA){
-    canvas.width=v.videoWidth;canvas.height=v.videoHeight;
-    ctx.drawImage(v,0,0);
-    var img=ctx.getImageData(0,0,canvas.width,canvas.height);
-    var code=jsQR(img.data,img.width,img.height);
-    if(code&&code.data){
-      scanning=false;
-      buscarCodigo(code.data.trim());
-      return;
-    }
-  }
-  requestAnimationFrame(scanFrame);
-}
-
-q("btn-buscar-nome").onclick=function(){
-  var nome=q("inp-nome-search").value.trim();
-  if(!nome||nome.length<2){return;}
-  var btn=this;btn.textContent="...";btn.disabled=true;
-  ap("cadastros?nome=ilike.*"+encodeURIComponent(nome)+"*&select=id,nome,empresa,setor,evento_id,entrada_em&limit=10").then(function(d){
-    if(!d||!d.length){q("lista-nomes").innerHTML="<div style='color:#555;font-size:12px;text-align:center;padding:8px'>Nenhum resultado</div>";return;}
-    var h="";
-    d.forEach(function(c){
-      var cor=c.entrada_em?"#2aab47":c.evento_id?"#c9973c":"#555";
-      var status=c.entrada_em?"Entrou":c.evento_id?"Aguardando":"Sem evento";
-      h+="<div onclick='selecionarCad("+c.id+")' style='padding:10px;border:1px solid #1a2a1a;border-radius:8px;margin-bottom:6px;cursor:pointer;background:#030503'>";
-      h+="<div style='font-size:13px;color:#fff;font-weight:600'>"+c.nome+"</div>";
-      h+="<div style='font-size:11px;color:#555;margin-top:2px'>"+(c.empresa||"")+" <span style='color:"+cor+"'>"+status+"</span></div>";
-      h+="</div>";
-    });
-    q("lista-nomes").innerHTML=h;
-  }).catch(function(){}).finally(function(){btn.textContent="Buscar";btn.disabled=false;});
-};
-function selecionarCad(id){
-  q("lista-nomes").innerHTML="";
-  q("inp-nome-search").value="";
-  ap("cadastros?id=eq."+id+"&select=*").then(function(d){
-    if(!d||!d.length)return;
-    cadAtual=d[0];
-    mostrarPerfil(d[0]);
+    h+="</tbody></table></div>";
+    q("val-lista").innerHTML=h;
   });
 }
-q("btn-buscar").onclick=function(){
-  var c=q("inp-cod").value.trim();
-  if(!c||c.length<6){q("al-scan").innerHTML="<div class='ea'>Digite 6 digitos</div>";return;}
-  buscarCodigo(c);
-};
-
-function buscarCodigo(cod){
-  var btn=q("btn-buscar");btn.textContent="Buscando...";btn.disabled=true;
-  q("al-scan").innerHTML="";
-  ap("codigos?codigo=eq."+cod+"&select=cadastro_id").then(function(d){
-    if(!d||!d.length){mostrarErro("Codigo invalido.");btn.textContent="Buscar";btn.disabled=false;return;}
-    var cadId=d[0].cadastro_id;
-    if(!cadId){mostrarErro("Codigo sem cadastro vinculado.");btn.textContent="Buscar";btn.disabled=false;return;}
-    return ap("cadastros?id=eq."+cadId+"&select=*").then(function(c){
-      if(!c||!c.length){mostrarErro("Cadastro nao encontrado.");return;}
-      cadAtual=c[0];
-      mostrarPerfil(c[0]);
+function cpLink(btn){var msg=btn.getAttribute("data-msg");if(navigator.clipboard){navigator.clipboard.writeText(msg).then(function(){btn.textContent="Copiado!";setTimeout(function(){btn.textContent="Link";},2000);});}else{var t=document.createElement("textarea");t.value=msg;document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t);btn.textContent="Copiado!";setTimeout(function(){btn.textContent="Link";},2000);}}
+function filtrados(){
+  var f=cads;
+  if(evFilt)f=f.filter(function(c){return c.evento_id==evFilt;});
+  if(ffilt==="e")f=f.filter(function(c){return c.entrada_em;});
+  if(ffilt==="n")f=f.filter(function(c){return !c.entrada_em&&c.evento_id;});
+  return f;
+}
+function rLista(){
+  var f=filtrados();
+  var entrou=f.filter(function(c){return c.entrada_em;}).length;
+  var nao=f.filter(function(c){return !c.entrada_em&&c.evento_id;}).length;
+  var total=f.length;
+  q("sts").innerHTML="<div class='stat'><strong>"+total+"</strong><small>Total</small></div><div class='stat'><strong style='color:#2aab47'>"+entrou+"</strong><small>Entraram</small></div><div class='stat'><strong style='color:#e74c3c'>"+nao+"</strong><small>Faltaram</small></div>";
+  if(!f.length){q("lista-checkin").innerHTML="<div class='empty'>Nenhum resultado</div>";return;}
+  var h="<div class='tbl'><table><thead><tr><th>Nome</th><th>Status</th><th>Entrada</th><th>Validador</th></tr></thead><tbody>";
+  f.forEach(function(c){
+    var ent=c.entrada_em?new Date(c.entrada_em).toLocaleTimeString("pt-BR"):"";
+    var codshow=(!c.entrada_em&&c.evento_id&&c.codigo)?"<div style='font-family:monospace;font-size:11px;color:#c9973c;margin-top:3px'>Cod: "+c.codigo+"</div>":""; var sb=c.entrada_em?"<span class='badge ab'>Entrou "+ent+"</span>":c.evento_id?"<span class='badge pb'>Aguardando</span>"+codshow:"";
+    h+="<tr><td style='color:#fff'>"+c.nome+"</td><td>"+sb+"</td><td style='color:#555;font-size:11px'>"+ent+"</td><td style='color:#555;font-size:11px'>"+(c.validador_nome||"")+"</td></tr>";
+  });
+  h+="</tbody></table></div>";
+  q("lista-checkin").innerHTML=h;
+}
+function rHistEv(){
+  var el=q("hist-ev-lista");
+  el.innerHTML="<div class='empty'>Carregando...</div>";
+  ap("eventos?select=*&order=data.desc").then(function(evs2){
+    if(!evs2||!evs2.length){el.innerHTML="<div class='empty'>Nenhum evento</div>";return;}
+    var h="";
+    evs2.forEach(function(ev){
+      var tot=cads.filter(function(c){return c.evento_id===ev.id;}).length;
+      var ent=cads.filter(function(c){return c.evento_id===ev.id&&c.entrada_em;}).length;
+      var conf=cads.filter(function(c){return c.evento_id===ev.id&&c.status==="aprovado";}).length;
+      var fat=Math.max(0,conf-ent);
+      var taxa=tot>0?Math.round(ent/tot*100):0;
+      var df=ev.data?ev.data.split("-"):["","",""];
+      var dt=ev.data?df[2]+"/"+df[1]+"/"+df[0]:"";
+      h+="<div class='card'>";
+      h+="<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:6px'>";
+      h+="<div style='font-size:14px;font-weight:700;color:#fff'>"+ev.nome+"</div>";
+      if(ev.lotado)h+="<span style='background:#c0392b;color:#fff;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700'>LOTADO</span>";
+      h+="</div>";
+      h+="<div style='font-size:11px;color:#555;margin-bottom:12px'>"+dt+(ev.horario?" as "+ev.horario:"")+(ev.local?" / "+ev.local:"")+"</div>";
+      h+="<div style='display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:10px'>";
+      h+="<div style='background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;text-align:center'><strong style='font-size:22px;color:#2aab47'>"+tot+"</strong><div style='font-size:9px;color:#555;text-transform:uppercase;margin-top:2px'>Convidados</div></div>";
+      h+="<div style='background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;text-align:center'><strong style='font-size:22px;color:#0891b2'>"+ent+"</strong><div style='font-size:9px;color:#555;text-transform:uppercase;margin-top:2px'>Entraram</div></div>";
+      h+="<div style='background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;text-align:center'><strong style='font-size:22px;color:#c0392b'>"+fat+"</strong><div style='font-size:9px;color:#555;text-transform:uppercase;margin-top:2px'>Faltaram</div></div>";
+      h+="<div style='background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;text-align:center'><strong style='font-size:22px;color:#c9973c'>"+taxa+"%</strong><div style='font-size:9px;color:#555;text-transform:uppercase;margin-top:2px'>Presenca</div></div>";
+      h+="</div></div>";
     });
-  }).catch(function(){mostrarErro("Erro ao buscar.");}).finally(function(){btn.textContent="Buscar";btn.disabled=false;});
+    el.innerHTML=h;
+  }).catch(function(){el.innerHTML="<div class='empty'>Erro ao carregar</div>";});
 }
-
-function mostrarErro(msg){
-  q("al-res").innerHTML="<div class='ea'>"+msg+"</div>";
-  q("perfil-wrap").innerHTML="";
-  q("btn-confirmar").style.display="none";
-  q("resultado").classList.remove("gone");
-  scanning=true;requestAnimationFrame(scanFrame);
+function load(){
+  q("lista-checkin").innerHTML="<div class='empty'>Carregando...</div>";
+  ap("cadastros?select=*&order=nome.asc").then(function(d){
+    cads=d||[];
+    ap("codigos?cadastro_id=not.is.null&select=codigo,cadastro_id").then(function(cods){
+      var map={};(cods||[]).forEach(function(c){map[c.cadastro_id]=c.codigo;});
+      cads.forEach(function(c){c.codigo=map[c.id]||'';});
+      rLista();
+    }).catch(function(){rLista();});
+  }).catch(function(){cads=[];rLista();});
+  ap("eventos?select=*&order=data.asc").then(function(d){
+    evs=d||[];
+    var sel=q("ev-sel");
+    sel.innerHTML="<option value=''>Todos os eventos</option>";
+    evs.forEach(function(ev){sel.innerHTML+="<option value='"+ev.id+"'>"+ev.nome+"</option>";});
+  });
+  carregarVals();
 }
-
-var COR={Artista:"#7c3aed",Influenciador:"#0891b2",Diretoria:"#b45309",Colaborador:"#1e7a35",Convidado:"#555"};
-function mostrarPerfil(c){
-  var cor=COR[c.setor]||"#555";
-  var fh=c.foto_url?"<img class='foto' src='"+c.foto_url+"'/>":"<div class='avatar'>"+c.nome.charAt(0).toUpperCase()+"</div>";
-  var jaEntrou=c.entrada_em;
-  var h="<div class='perfil'>"+fh;
-  h+="<div class='pnome'>"+c.nome+"</div>";
-  h+="<span class='pbadge' style='background:"+cor+"'>"+c.setor+"</span>";
-  if(jaEntrou){h+="<div style='background:#1a0a00;border:1px solid #c9973c;color:#c9973c;padding:8px;border-radius:8px;margin:8px 0;font-size:13px'>Ja entrou as "+new Date(jaEntrou).toLocaleTimeString("pt-BR")+"</div>";}
-  if(c.lote_nome)h+="<div style='font-size:12px;color:#0891b2;margin-bottom:8px'>Convidado por "+c.lote_nome+"</div>";
-  h+="</div>";
-  h+="<div class='prow'><span>Empresa</span><span>"+(c.empresa||"-")+"</span></div>";
-  h+="<div class='prow'><span>Cargo</span><span>"+(c.cargo||"-")+"</span></div>";
-  h+="<div class='prow'><span>Status</span><span style='color:"+(c.status==="aprovado"?"#2aab47":c.status==="reprovado"?"#e74c3c":"#c9973c")+"'>"+c.status+"</span></div>";
-  q("perfil-wrap").innerHTML=h;
-  q("al-res").innerHTML="";
-  q("btn-confirmar").style.display=jaEntrou?"none":"block";
-  q("resultado").classList.remove("gone");
-}
-
-q("btn-confirmar").onclick=function(){
-  if(!cadAtual||!valAtual)return;
-  var btn=this;btn.textContent="Confirmando...";btn.disabled=true;
-  ap("cadastros?id=eq."+cadAtual.id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({entrada_em:new Date().toISOString(),validador_nome:valAtual.nome,status:"aprovado"})}).then(function(){
-    btn.style.display="none";
-    q("al-res").innerHTML="<div class='ok'>Entrada confirmada! Bem-vindo(a) "+cadAtual.nome+"!</div>";
-    cadAtual=null;
-  }).catch(function(){btn.textContent="Confirmar entrada";btn.disabled=false;});
-};
-
-q("btn-novo").onclick=function(){
-  cadAtual=null;
-  q("resultado").classList.add("gone");
-  q("inp-cod").value="";
-  scanning=true;
-  requestAnimationFrame(scanFrame);
-};
+load();
 </script>
-
 </body>
 </html>
