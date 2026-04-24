@@ -80,10 +80,11 @@ var CATEGORIAS={
 };
 
 function ap(path,o){
-  if(!o){return fetch(SB+"/rest/v1/"+path,{headers:{"apikey":KY,"Authorization":"Bearer "+KY}}).then(function(r){return r.json();});}
-  var h={"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json"};
+  var h={"apikey":KY,"Authorization":"Bearer "+KY};
+  if(!o){return fetch(SB+"/rest/v1/"+path,{headers:h}).then(function(r){return r.json();});}
+  h["Content-Type"]="application/json";
   if(o.pref)h["Prefer"]=o.pref;
-  return fetch(SB+"/rest/v1/"+path,{method:o.m||"GET",headers:h,body:o.b}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});
+  return fetch(SB+"/rest/v1/"+path,{method:o.m||"GET",headers:h,body:o.b}).then(function(r){return r.json();});
 }
 function fd(d){if(!d)return"";var x=d.split("-");return x[2]+"/"+x[1]+"/"+x[0];}
 function fmt(v){return "R$ "+parseFloat(v||0).toFixed(2).replace(".",",").replace(/\B(?=(\d{3})+(?!\d))/g,".");}
