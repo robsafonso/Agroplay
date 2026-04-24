@@ -218,15 +218,20 @@ h+=”</body></html>”;
 win.document.write(h);win.document.close();
 }
 
-// Test connection first
-fetch(SB+”/rest/v1/eventos?select=id,nome&limit=1”,{headers:{“apikey”:KY,“Authorization”:“Bearer “+KY}})
+fetch(SB+”/rest/v1/eventos?select=id,nome,data&order=data.asc”,{headers:{“apikey”:KY,“Authorization”:“Bearer “+KY}})
 .then(function(r){return r.json();})
-.then(function(d){
-if(d&&d.length){loadEventos();}
-else{document.getElementById(“ev-sel”).innerHTML=”<option>Erro: sem dados</option>”;}
+.then(function(evs){
+var sel=document.getElementById(“ev-sel”);
+if(!evs||!evs.length){sel.innerHTML=”<option value=''>Nenhum evento</option>”;return;}
+sel.innerHTML=”<option value=''>Selecione um evento…</option>”;
+evs.forEach(function(ev){
+var d=ev.data?ev.data.split(”-”):[””,””,””];
+var df=ev.data?d[2]+”/”+d[1]+”/”+d[0]:””;
+sel.innerHTML+=”<option value='"+ev.id+"'>”+ev.nome+” (”+df+”)</option>”;
+});
 })
 .catch(function(e){
-document.getElementById(“ev-sel”).innerHTML=”<option>Erro conexao: “+e.message+”</option>”;
+document.getElementById(“ev-sel”).innerHTML=”<option>Erro: “+e.message+”</option>”;
 });
 
 </script>
