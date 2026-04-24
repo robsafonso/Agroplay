@@ -32,7 +32,7 @@ body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:16px;max
 var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
 var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
 
-function ap(path){return fetch(SB+”/rest/v1/”+path,{headers:{“apikey”:KY,“Authorization”:“Bearer “+KY,“Content-Type”:“application/json”}}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});}
+function ap(path){return fetch(SB+”/rest/v1/”+path,{headers:{“apikey”:KY,“Authorization”:“Bearer “+KY}}).then(function(r){return r.json();});}
 function fd(d){if(!d)return””;var x=d.split(”-”);return x[2]+”/”+x[1]+”/”+x[0];}
 
 function tick(){
@@ -185,16 +185,14 @@ document.getElementById(“conteudo”).innerHTML=html||”<div style='text-alig
 }
 
 function load(){
-var evs=[],cads=[];
-ap(“eventos?select=*&order=data.asc”).then(function(d){
-evs=d||[];
-return ap(“cadastros?select=id,nome,evento_id,lote_nome,bilhete_enviado,bilhete_confirmado,entrada_em&order=nome.asc”);
-}).then(function(d){
-cads=d||[];
-try{render(evs,cads);}
-catch(e){document.getElementById(“conteudo”).innerHTML=”<div style='padding:20px;color:#e74c3c'>Erro render: “+e.message+”</div>”;}
+Promise.all([
+ap(“eventos?select=*&order=data.asc”),
+ap(“cadastros?select=id,nome,evento_id,lote_nome,bilhete_enviado,bilhete_confirmado,entrada_em&order=nome.asc”)
+]).then(function(res){
+try{render(res[0]||[],res[1]||[]);}
+catch(e){document.getElementById(“conteudo”).innerHTML=”<div style='padding:20px;color:#e74c3c'>Erro: “+e.message+”</div>”;}
 }).catch(function(e){
-document.getElementById(“conteudo”).innerHTML=”<div style='padding:20px;color:#e74c3c'>Erro conexao: “+e.message+”</div>”;
+document.getElementById(“conteudo”).innerHTML=”<div style='padding:20px;color:#e74c3c'>Erro: “+e.message+”</div>”;
 });
 }
 load();
