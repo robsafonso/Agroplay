@@ -37,6 +37,7 @@ body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:16px;max
 <div id="conteudo"><div class="loading">Carregando...</div></div>
 
 <script>
+function tog(id){var el=document.getElementById(id);if(el)el.style.display=el.style.display==="none"?"block":"none";}
 var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
 var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
 var params=new URLSearchParams(window.location.search);
@@ -118,12 +119,16 @@ function render(ev,pessoas){
   }
 
   if(naoEnviados.length){
-    html+="<div class='section-label' style='color:#0891b2'>Nao enviados ("+naoEnviados.length+")</div>";
+    html+="<div class='section-label' style='color:#0891b2;cursor:pointer;display:flex;justify-content:space-between' onclick=\"tog('sec-nao')\">Nao enviados ("+naoEnviados.length+") <span>&#9660;</span></div>";
+    html+="<div id='sec-nao' style='display:none'>";
     naoEnviados.forEach(function(p){html+=cardP(p,"nao");});
+    html+="</div>";
   }
   if(enviados.length){
-    html+="<div class='section-label' style='color:#c9973c'>Aguardando confirmacao ("+enviados.length+")</div>";
+    html+="<div class='section-label' style='color:#c9973c;cursor:pointer;display:flex;justify-content:space-between' onclick=\"tog('sec-env')\">Aguardando ("+enviados.length+") <span>&#9660;</span></div>";
+    html+="<div id='sec-env' style='display:none'>";
     enviados.forEach(function(p){html+=cardP(p,"enviado");});
+    html+="</div>";
   }
   if(confirmados.length){
     html+="<div class='section-label' style='color:#2aab47'>Confirmados ("+confirmados.length+")</div>";
