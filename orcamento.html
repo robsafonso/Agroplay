@@ -116,7 +116,10 @@ function renderizar(){
     html+="</div>";
   }
   html+="</div>";
-  html+="<button onclick='abrirModal()' style='width:100%;background:#1e7a35;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;margin-bottom:16px'>+ Adicionar item</button>";
+  html+="<div style='display:flex;gap:8px;margin-bottom:16px'>";
+  html+="<button onclick='abrirModal()' style='flex:1;background:#1e7a35;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;color:#fff;cursor:pointer'>+ Adicionar item</button>";
+  html+="<button onclick='carregarItens()' style='background:transparent;border:1px solid #1a2a1a;border-radius:10px;padding:12px;font-size:20px;cursor:pointer'>&#8635;</button>";
+  html+="</div>";
 
   var catsUsadas=Object.keys(CATS);
   itens.forEach(function(it){if(catsUsadas.indexOf(it.categoria)<0)catsUsadas.push(it.categoria);});
