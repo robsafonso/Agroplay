@@ -107,11 +107,11 @@ q("btn-exp").onclick=function(){
   var b=new Blob([csv],{type:"text/csv"});var u=URL.createObjectURL(b);var a=document.createElement("a");a.href=u;a.download="checkin.csv";a.click();
 };
 q("btn-addval").onclick=function(){
-  var nome=q("val-nome").value.trim();var senha=q("val-senha").value.trim();
+  var nome=q("val-nome-inp")?q("val-nome-inp").value.trim():q("val-nome").value.trim();var senha=q("val-senha").value.trim();
   var al=q("val-alert");al.innerHTML="";
   if(!nome||!senha){al.innerHTML="<div class='ea'>Preencha nome e senha</div>";return;}
   var btn=this;btn.textContent="Salvando...";btn.disabled=true;
-  ap("validadores",{m:"POST",pref:"return=minimal",b:JSON.stringify({nome:nome,senha:senha})}).then(function(){
+  ap("validadores",{m:"POST",pref:"return=minimal",b:JSON.stringify({nome:nome,senha:senha,primeiro_acesso:true})}).then(function(){
     q("val-nome").value="";q("val-senha").value="";
     al.innerHTML="<div class='ok'>Validador adicionado!</div>";
     carregarVals();
@@ -128,12 +128,15 @@ function carregarVals(){
     if(!vals.length){q("val-lista").innerHTML="<div class='empty'>Nenhum validador</div>";return;}
     var h="<div class='tbl'><table><thead><tr><th>Nome</th><th>Senha</th><th></th></tr></thead><tbody>";
     vals.forEach(function(v){
-      h+="<tr><td style='color:#fff'>"+v.nome+"</td><td style='font-family:monospace;color:#2aab47'>"+v.senha+"</td><td><button class='btr' onclick='delVal("+v.id+")' style='font-size:10px;padding:3px 8px'>X</button></td></tr>";
+      var vlink="https://robsafonso.github.io/Agroplay/checkin.html";
+      var vmsg="AGROPLAY - Check-in\n\nOla "+v.nome+"!\n\nAcesse o scanner:\n"+vlink+"\n\nNome: "+v.nome+"\nSenha: "+v.senha+"\n\nAgroplay Music - Londrina PR";
+      h+="<tr><td style='color:#fff'>"+v.nome+"</td><td style='font-family:monospace;color:#2aab47'>"+v.senha+"</td><td style='display:flex;gap:4px'><button class='bto' onclick='cpLink(this)' data-msg='"+vmsg.replace(/'/g,"&#39;")+"'  style='font-size:10px;padding:3px 8px'>Link</button><button class='btr' onclick='delVal("+v.id+")' style='font-size:10px;padding:3px 8px'>X</button></td></tr>";
     });
     h+="</tbody></table></div>";
     q("val-lista").innerHTML=h;
   });
 }
+function cpLink(btn){var msg=btn.getAttribute("data-msg");if(navigator.clipboard){navigator.clipboard.writeText(msg).then(function(){btn.textContent="Copiado!";setTimeout(function(){btn.textContent="Link";},2000);});}else{var t=document.createElement("textarea");t.value=msg;document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t);btn.textContent="Copiado!";setTimeout(function(){btn.textContent="Link";},2000);}}
 function filtrados(){
   var f=cads;
   if(evFilt)f=f.filter(function(c){return c.evento_id==evFilt;});
