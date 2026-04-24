@@ -41,10 +41,20 @@ video{width:100%;display:block}
 
 <div id="tela-login" class="card">
   <div style="font-size:16px;font-weight:900;color:#fff;margin-bottom:4px">Validador</div>
-  <div style="font-size:12px;color:#666;margin-bottom:16px">Entre com sua senha de validador.</div>
+  <div style="font-size:12px;color:#666;margin-bottom:16px">Entre com seu nome e senha.</div>
   <div id="al-login"></div>
+  <div class="fl"><label>Nome</label><input id="inp-nome" placeholder="Seu nome"></div>
   <div class="fl"><label>Senha</label><input id="inp-senha" type="password" placeholder="Sua senha"></div>
   <button class="btn" id="btn-login">Entrar</button>
+</div>
+
+<div id="tela-trocar-senha" class="card gone">
+  <div style="font-size:16px;font-weight:900;color:#fff;margin-bottom:4px">Trocar senha</div>
+  <div style="font-size:12px;color:#2aab47;margin-bottom:16px">Primeiro acesso! Crie sua senha pessoal.</div>
+  <div id="al-trocar"></div>
+  <div class="fl"><label>Nova senha</label><input id="inp-nova" type="password" placeholder="Nova senha"></div>
+  <div class="fl"><label>Confirmar senha</label><input id="inp-conf" type="password" placeholder="Confirme a senha"></div>
+  <button class="btn" id="btn-trocar">Salvar senha</button>
 </div>
 
 <div id="tela-checkin" class="gone">
@@ -99,18 +109,44 @@ function q(id){return document.getElementById(id);}
 function ap(p,o){o=o||{};var h={"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json"};if(o.pref)h["Prefer"]=o.pref;return fetch(SB+"/rest/v1/"+p,{method:o.m||"GET",headers:h,body:o.b}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});}
 
 q("btn-login").onclick=function(){
+  var nome=q("inp-nome").value.trim();
   var senha=q("inp-senha").value.trim();
   var al=q("al-login");al.innerHTML="";
+  if(!nome){al.innerHTML="<div class='ea'>Digite seu nome</div>";return;}
   if(!senha){al.innerHTML="<div class='ea'>Digite a senha</div>";return;}
   var btn=this;btn.textContent="Entrando...";btn.disabled=true;
-  ap("validadores?senha=eq."+encodeURIComponent(senha)+"&select=*").then(function(d){
-    if(!d||!d.length){al.innerHTML="<div class='ea'>Senha invalida</div>";btn.textContent="Entrar";btn.disabled=false;return;}
+  ap("validadores?nome=eq."+encodeURIComponent(nome)+"&senha=eq."+encodeURIComponent(senha)+"&select=*").then(function(d){
+    if(!d||!d.length){al.innerHTML="<div class='ea'>Nome ou senha invalidos</div>";btn.textContent="Entrar";btn.disabled=false;return;}
     valAtual=d[0];
+    if(!valAtual.primeiro_acesso||valAtual.primeiro_acesso===false){
+      // Normal login
+      q("tela-login").classList.add("gone");
+      q("val-nome").textContent=valAtual.nome;
+      iniciarCamera();
+      q("tela-checkin").classList.remove("gone");
+    } else {
+      // First access - force password change
+      q("tela-login").classList.add("gone");
+      q("tela-trocar-senha").classList.remove("gone");
+    }
+    btn.textContent="Entrar";btn.disabled=false;
+  }).catch(function(){al.innerHTML="<div class='ea'>Erro ao conectar</div>";btn.textContent="Entrar";btn.disabled=false;});
+};
+q("btn-trocar").onclick=function(){
+  var nova=q("inp-nova").value.trim();
+  var conf=q("inp-conf").value.trim();
+  var al=q("al-trocar");al.innerHTML="";
+  if(!nova||nova.length<4){al.innerHTML="<div class='ea'>Senha deve ter pelo menos 4 caracteres</div>";return;}
+  if(nova!==conf){al.innerHTML="<div class='ea'>Senhas nao conferem</div>";return;}
+  var btn=this;btn.textContent="Salvando...";btn.disabled=true;
+  ap("validadores?id=eq."+valAtual.id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({senha:nova,primeiro_acesso:false})}).then(function(){
+    valAtual.senha=nova;valAtual.primeiro_acesso=false;
+    q("tela-trocar-senha").classList.add("gone");
     q("val-nome").textContent=valAtual.nome;
-    q("tela-login").classList.add("gone");
+    iniciarCamera();
     q("tela-checkin").classList.remove("gone");
-    iniciarScanner();
-  }).catch(function(){al.innerHTML="<div class='ea'>Erro</div>";btn.textContent="Entrar";btn.disabled=false;});
+    btn.textContent="Salvar senha";btn.disabled=false;
+  }).catch(function(){al.innerHTML="<div class='ea'>Erro ao salvar</div>";btn.textContent="Salvar senha";btn.disabled=false;});
 };
 
 function iniciarScanner(){
