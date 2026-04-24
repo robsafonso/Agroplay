@@ -44,7 +44,7 @@ var EV_ID=params.get("ev");
 var evAtual=null;
 
 function ap(path,o){
-  o=o||{};
+  if(!o){return fetch(SB+"/rest/v1/"+path,{headers:{"apikey":KY,"Authorization":"Bearer "+KY}}).then(function(r){return r.json();});}
   var h={"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json"};
   if(o.pref)h["Prefer"]=o.pref;
   return fetch(SB+"/rest/v1/"+path,{method:o.m||"GET",headers:h,body:o.b}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});
