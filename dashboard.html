@@ -8,282 +8,198 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:16px;max-width:480px;margin:0 auto}
-.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
 .logo{cursor:pointer;display:flex;align-items:center;border:1px solid #1a2a1a;border-radius:10px;overflow:hidden}
-.logo-t{background:#0d150d;padding:7px 12px;font-size:16px;font-weight:900;color:#fff}
-.logo-t span{color:#2aab47}
-.logo-v{background:#c9973c;padding:7px 10px;font-size:11px;font-weight:700;color:#fff}
+.lt{background:#0d150d;padding:7px 12px;font-size:16px;font-weight:900;color:#fff}
+.lt span{color:#2aab47}
+.lv{background:#c9973c;padding:7px 10px;font-size:11px;font-weight:700;color:#fff}
 .back{background:transparent;border:1px solid #1a2a1a;border-radius:8px;padding:6px 12px;color:#eee;font-size:12px;text-decoration:none}
-.clock{font-size:11px;color:#555;text-align:center;margin-bottom:12px}
-.alerta{background:#1a0606;border:1px solid rgba(201,60,60,.5);border-radius:10px;padding:12px;margin-bottom:10px;font-size:12px;color:#e74c3c}
-/* Evento card */
-.ev-wrap{margin-bottom:10px}
-.ev-head{background:#090e09;border-radius:12px;padding:14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
-.ev-head.ativo{border:1px solid rgba(42,171,71,.4)}
-.ev-head.alerta{border:1px solid rgba(201,60,60,.5);animation:pulse 2s infinite}
-.ev-head.futuro{border:1px solid #1a2a1a}
-.ev-head.encerrado{border:1px solid #111;opacity:0.6}
-@keyframes pulse{0%,100%{border-color:rgba(201,60,60,.4)}50%{border-color:rgba(201,60,60,.9)}}
-.ev-left{flex:1}
-.ev-nome{font-size:14px;font-weight:900;color:#fff;margin-bottom:2px}
-.ev-sub{font-size:11px;color:#555}
-.ev-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px;white-space:nowrap;margin-left:8px}
-.ev-nums{display:flex;gap:8px;margin-top:8px}
-.ev-num{font-size:10px;color:#555}
-.ev-num b{font-size:13px;font-weight:900;display:block}
-.ev-arrow{font-size:14px;color:#555;margin-left:8px;transition:transform .2s}
-.ev-arrow.open{transform:rotate(180deg)}
-/* Evento body */
-.ev-body{background:#060a06;border:1px solid #1a2a1a;border-top:none;border-radius:0 0 12px 12px;overflow:hidden;max-height:0;transition:max-height .3s ease}
-.ev-body.open{max-height:2000px}
-/* Responsavel row */
-.resp-row{border-bottom:1px solid #0a0f0a;cursor:pointer}
-.resp-head{display:flex;justify-content:space-between;align-items:center;padding:12px 14px}
-.resp-nome{font-size:13px;font-weight:700;color:#eee}
-.resp-badges{display:flex;gap:4px;align-items:center}
-.badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px}
-.resp-arrow{font-size:12px;color:#555;margin-left:6px;transition:transform .2s}
-.resp-arrow.open{transform:rotate(180deg)}
-/* Status sections */
-.resp-body{background:#030503;overflow:hidden;max-height:0;transition:max-height .3s ease}
-.resp-body.open{max-height:1000px}
-.status-sec{cursor:pointer;border-bottom:1px solid #060a06}
-.status-head{display:flex;justify-content:space-between;align-items:center;padding:10px 20px}
-.status-label{font-size:11px;font-weight:700}
-.status-arrow{font-size:11px;color:#555;transition:transform .2s}
-.status-arrow.open{transform:rotate(180deg)}
-.pessoas-list{background:#020402;padding:0 20px;overflow:hidden;max-height:0;transition:max-height .3s ease}
-.pessoas-list.open{max-height:500px}
-.pessoa-item{font-size:12px;color:#bbb;padding:8px 0;border-bottom:1px solid #060a06;display:flex;justify-content:space-between;align-items:center}
-.pessoa-item:last-child{border-bottom:none}
-.tag-checkin{font-size:9px;background:rgba(42,171,71,.2);color:#2aab47;padding:2px 6px;border-radius:6px}
+#clock{font-size:11px;color:#555;text-align:center;margin-bottom:12px}
 .loading{text-align:center;padding:40px;font-size:14px;color:#555}
-.prog{height:3px;background:#1a2a1a;border-radius:2px;margin-top:8px;overflow:hidden}
-.prog-f{height:100%;border-radius:2px}
 </style>
 </head>
 <body>
-
 <div class="hdr">
   <div class="logo" onclick="location.href='home.html'">
-    <div class="logo-t">AGRO<span>PLAY</span></div>
-    <div class="logo-v">Dashboard</div>
+    <div class="lt">AGRO<span>PLAY</span></div>
+    <div class="lv">Dashboard</div>
   </div>
   <a href="home.html" class="back">&larr; Menu</a>
 </div>
-
-<div class="clock" id="clock"></div>
-<div id="alertas"></div>
+<div id="clock"></div>
 <div id="conteudo"><div class="loading">Carregando...</div></div>
-
 <script>
 var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
 var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
 
 function ap(path){
-  return fetch(SB+"/rest/v1/"+path,{headers:{"apikey":KY,"Authorization":"Bearer "+KY}}).then(function(r){return r.json();});
+return fetch(SB+”/rest/v1/”+path,{method:“GET”,headers:{“apikey”:KY,“Authorization”:“Bearer “+KY,“Content-Type”:“application/json”}}).then(function(r){if(!r.ok)throw new Error(“HTTP “+r.status);return r.json();});
 }
-function fd(d){if(!d)return"";var x=d.split("-");return x[2]+"/"+x[1]+"/"+x[0];}
+function fd(d){if(!d)return””;var x=d.split(”-”);return x[2]+”/”+x[1]+”/”+x[0];}
 
-// Clock
 function tick(){
-  var n=new Date();
-  var days=["Dom","Seg","Ter","Qua","Qui","Sex","Sab"];
-  document.getElementById("clock").textContent=days[n.getDay()]+" "+fd(n.toISOString().split("T")[0])+" "+n.getHours().toString().padStart(2,"0")+":"+n.getMinutes().toString().padStart(2,"0")+":"+n.getSeconds().toString().padStart(2,"0");
+var n=new Date();
+var days=[“Dom”,“Seg”,“Ter”,“Qua”,“Qui”,“Sex”,“Sab”];
+var el=document.getElementById(“clock”);
+if(el)el.textContent=days[n.getDay()]+” “+fd(n.toISOString().split(“T”)[0])+” “+n.getHours().toString().padStart(2,“0”)+”:”+n.getMinutes().toString().padStart(2,“0”)+”:”+n.getSeconds().toString().padStart(2,“0”);
 }
-setInterval(tick,1000);tick();
+setInterval(tick,1000);
+tick();
 
-// Toggle accordion
-function tog(el){
-  var body=el.nextElementSibling;
-  var arrow=el.querySelector(".ev-arrow");
-  var isOpen=body&&body.classList.contains("open");
-  body.classList.toggle("open");
-  if(arrow)arrow.classList.toggle("open");
-}
-function togResp(el){
-  var body=el.nextElementSibling;
-  var arrow=el.querySelector(".resp-arrow");
-  body.classList.toggle("open");
-  if(arrow)arrow.classList.toggle("open");
-}
-function togStatus(el){
-  var body=el.nextElementSibling;
-  var arrow=el.querySelector(".status-arrow");
-  body.classList.toggle("open");
-  if(arrow)arrow.classList.toggle("open");
+function tog(id){
+var el=document.getElementById(id);
+if(!el)return;
+el.style.display=el.style.display===“none”?“block”:“none”;
 }
 
 function getStatus(ev){
-  var now=new Date();
-  var hoje=new Date(now.getFullYear(),now.getMonth(),now.getDate());
-  var evData=ev.data?new Date(ev.data+"T00:00:00"):null;
-  if(!evData)return"futuro";
-  var dias=Math.ceil((evData-hoje)/(1000*60*60*24));
-  if(dias>0)return"futuro";
-  if(dias<0)return"encerrado";
-  if(ev.horario){
-    var p=ev.horario.split(":");
-    var ini=new Date(now.getFullYear(),now.getMonth(),now.getDate(),+p[0],+p[1]);
-    if(now<ini)return"futuro";
-    if(ev.horario_fim){
-      var p2=ev.horario_fim.split(":");
-      var fim=new Date(now.getFullYear(),now.getMonth(),now.getDate(),+p2[0],+p2[1]);
-      if(fim<=ini)fim.setDate(fim.getDate()+1);
-      if(now>fim)return"alerta";
-    }
-    return"ativo";
-  }
-  return dias===0?"ativo":"encerrado";
+var now=new Date();
+var hoje=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+var evData=ev.data?new Date(ev.data+“T00:00:00”):null;
+if(!evData)return “futuro”;
+var dias=Math.ceil((evData-hoje)/(1000*60*60*24));
+if(dias>0)return “futuro”;
+if(dias<0)return “encerrado”;
+if(ev.horario){
+var p=ev.horario.split(”:”);
+var ini=new Date(now.getFullYear(),now.getMonth(),now.getDate(),+p[0],+p[1]);
+if(now<ini)return “futuro”;
+if(ev.horario_fim){
+var p2=ev.horario_fim.split(”:”);
+var fim=new Date(now.getFullYear(),now.getMonth(),now.getDate(),+p2[0],+p2[1]);
+if(fim<=ini)fim.setDate(fim.getDate()+1);
+if(now>fim)return “alerta”;
+}
+return “ativo”;
+}
+return “ativo”;
 }
 
 function getExtra(ev){
-  if(!ev.horario_fim)return"";
-  var now=new Date();
-  var p=ev.horario_fim.split(":");
-  var fim=new Date(now.getFullYear(),now.getMonth(),now.getDate(),+p[0],+p[1]);
-  if(fim<=new Date(now.getFullYear(),now.getMonth(),now.getDate(),12,0))fim.setDate(fim.getDate()+1);
-  var diff=Math.floor((now-fim)/60000);
-  if(diff<=0)return"";
-  return Math.floor(diff/60)>0?Math.floor(diff/60)+"h "+diff%60+"min extra":diff+"min extra";
+if(!ev.horario_fim)return “”;
+var now=new Date();
+var p=ev.horario_fim.split(”:”);
+var fim=new Date(now.getFullYear(),now.getMonth(),now.getDate(),+p[0],+p[1]);
+if(fim<=new Date(now.getFullYear(),now.getMonth(),now.getDate(),12,0))fim.setDate(fim.getDate()+1);
+var diff=Math.floor((now-fim)/60000);
+if(diff<=0)return “”;
+if(Math.floor(diff/60)>0)return Math.floor(diff/60)+“h “+diff%60+“min extra”;
+return diff+“min extra”;
+}
+
+function listaHTML(pessoas,cor,label,uid){
+if(!pessoas.length)return “”;
+var h=”<div style='border-top:1px solid #0a0f0a'>”;
+h+=”<div onclick='tog(\""+uid+"\")' style='display:flex;justify-content:space-between;padding:10px 20px;cursor:pointer'>”;
+h+=”<span style='font-size:11px;font-weight:700;color:"+cor+"'>”+label+” (”+pessoas.length+”)</span>”;
+h+=”<span style='color:#555;font-size:11px'>▼</span></div>”;
+h+=”<div id='"+uid+"' style='display:none;background:#020402;padding:0 20px 8px'>”;
+pessoas.forEach(function(p){
+h+=”<div style='font-size:12px;color:#bbb;padding:7px 0;border-bottom:1px solid #060a06;display:flex;justify-content:space-between'>”;
+h+=p.nome;
+if(p.entrada_em)h+=”<span style='font-size:9px;background:rgba(42,171,71,.2);color:#2aab47;padding:2px 6px;border-radius:6px'>”+p.entrada_em.substring(11,16)+”</span>”;
+h+=”</div>”;
+});
+h+=”</div></div>”;
+return h;
 }
 
 function render(evs,cads){
-  var statusMap={futuro:"Futuro",ativo:"Em andamento",alerta:"Passou do fim",encerrado:"Encerrado"};
-  var alertasHtml="";
-  var html="";
-  var ordem=["alerta","ativo","futuro","encerrado"];
+var html=””;
+var stOrder=[“alerta”,“ativo”,“futuro”,“encerrado”];
+var stMap={};
+evs.forEach(function(ev){
+var st=getStatus(ev);
+if(!stMap[st])stMap[st]=[];
+stMap[st].push(ev);
+});
 
-  // Sort events
-  var sorted={alerta:[],ativo:[],futuro:[],encerrado:[]};
-  evs.forEach(function(ev){sorted[getStatus(ev)].push(ev);});
+stOrder.forEach(function(st){
+if(!stMap[st]||!stMap[st].length)return;
+stMap[st].forEach(function(ev,ei){
+var evCads=cads.filter(function(c){return c.evento_id===ev.id;});
+var total=evCads.length;
+var entraram=evCads.filter(function(c){return c.entrada_em;}).length;
+var extra=getExtra(ev);
+var stColors={futuro:”#0891b2”,ativo:”#2aab47”,alerta:”#e74c3c”,encerrado:”#555”};
+var stLabels={futuro:“Futuro”,ativo:“Em andamento”,alerta:“Passou do fim”,encerrado:“Encerrado”};
+var evId=“ev”+ev.id;
 
-  // Alertas
-  sorted.alerta.forEach(function(ev){
-    var extra=getExtra(ev);
-    alertasHtml+="<div class='alerta'>&#9888; <b>"+ev.nome+"</b> -- passou do horario"+(extra?" (+"+extra+")")+"</div>";
-  });
-  document.getElementById("alertas").innerHTML=alertasHtml;
+```
+  html+="<div style='margin-bottom:10px'>";
+  // Event header
+  html+="<div onclick='tog(\""+evId+"\")' style='background:#090e09;border:1px solid "+(st==="ativo"?"rgba(42,171,71,.4)":st==="alerta"?"rgba(201,60,60,.5)":"#1a2a1a")+";border-radius:12px;padding:14px;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start'>";
+  html+="<div style='flex:1'>";
+  html+="<div style='font-size:14px;font-weight:900;color:#fff;margin-bottom:2px'>"+ev.nome+"</div>";
+  html+="<div style='font-size:11px;color:#555'>"+fd(ev.data)+(ev.horario?" as "+ev.horario+(ev.horario_fim?" - "+ev.horario_fim:""):"")+(ev.local?" | "+ev.local:"")+"</div>";
+  html+="<div style='display:flex;gap:10px;margin-top:6px'>";
+  html+="<span style='font-size:11px;color:#eee'><b>"+total+"</b> total</span>";
+  html+="<span style='font-size:11px;color:#2aab47'><b>"+entraram+"</b> entraram</span>";
+  html+="<span style='font-size:11px;color:"+(total-entraram>0?"#c0392b":"#555")+"'><b>"+(total-entraram)+"</b> faltaram</span>";
+  html+="</div></div>";
+  html+="<span style='font-size:10px;font-weight:700;color:"+stColors[st]+";white-space:nowrap;margin-left:8px'>"+stLabels[st]+(extra?" +"+extra:"")+"</span>";
+  html+="</div>";
 
-  ordem.forEach(function(st){
-    sorted[st].forEach(function(ev){
-      var evCads=cads.filter(function(c){return c.evento_id===ev.id;});
-      var total=evCads.length;
-      var entraram=evCads.filter(function(c){return c.entrada_em;}).length;
-      var bilConf=evCads.filter(function(c){return c.bilhete_confirmado;}).length;
-      var bilEnv=evCads.filter(function(c){return c.bilhete_enviado&&!c.bilhete_confirmado;}).length;
-      var bilNao=evCads.filter(function(c){return !c.bilhete_enviado&&!c.bilhete_confirmado;}).length;
-      var pct=total>0?Math.round((entraram/total)*100):0;
-      var extra=getExtra(ev);
-      var dataFmt=fd(ev.data);
+  // Event body
+  html+="<div id='"+evId+"' style='display:none;background:#060a06;border:1px solid #1a2a1a;border-top:none;border-radius:0 0 12px 12px'>";
 
-      // Group by responsavel
-      var resps={};
-      evCads.forEach(function(c){
-        var k=c.lote_nome||"Direto ("+("Robson")+")";
-        if(!resps[k])resps[k]=[];
-        resps[k].push(c);
-      });
-
-      html+="<div class='ev-wrap'>";
-      html+="<div class='ev-head "+st+"' onclick='tog(this)'>";
-      html+="<div class='ev-left'>";
-      html+="<div class='ev-nome'>"+ev.nome+"</div>";
-      html+="<div class='ev-sub'>"+dataFmt+(ev.horario?" as "+ev.horario+(ev.horario_fim?" - "+ev.horario_fim:""):"")+(ev.local?" | "+ev.local:"")+"</div>";
-      html+="<div class='ev-nums'>";
-      html+="<div class='ev-num'><b style='color:#eee'>"+total+"</b>Total</div>";
-      html+="<div class='ev-num'><b style='color:#2aab47'>"+entraram+"</b>Entraram</div>";
-      html+="<div class='ev-num'><b style='color:#c9973c'>"+bilEnv+"</b>Aguard.</div>";
-      html+="<div class='ev-num'><b style='color:#0891b2'>"+bilNao+"</b>N/Env.</div>";
-      html+="</div>";
-      if(total>0){html+="<div class='prog'><div class='prog-f' style='width:"+pct+"%;background:"+(pct>70?"#2aab47":pct>30?"#c9973c":"#555")+"'></div></div>";}
-      html+="</div>";
-      var stColors={futuro:"#0891b2",ativo:"#2aab47",alerta:"#e74c3c",encerrado:"#555"};
-      html+="<div><span class='ev-badge' style='background:rgba(0,0,0,.3);color:"+stColors[st]+"'>"+statusMap[st]+(extra?" +"+extra:"")+"</span>";
-      html+="<div class='ev-arrow'>&#9660;</div></div>";
-      html+="</div>";
-
-      // Event body - responsaveis
-      html+="<div class='ev-body'>";
-      Object.keys(resps).forEach(function(resp){
-        var rpess=resps[resp];
-        var rEnv=rpess.filter(function(p){return p.bilhete_enviado&&!p.bilhete_confirmado;});
-        var rConf=rpess.filter(function(p){return p.bilhete_confirmado;});
-        var rNao=rpess.filter(function(p){return !p.bilhete_enviado&&!p.bilhete_confirmado;});
-        var rCheck=rpess.filter(function(p){return p.entrada_em;});
-
-        html+="<div class='resp-row'>";
-        html+="<div class='resp-head' onclick='togResp(this)'>";
-        html+="<div class='resp-nome'>"+resp+"</div>";
-        html+="<div class='resp-badges'>";
-        if(rNao.length)html+="<span class='badge' style='background:rgba(8,145,178,.2);color:#0891b2'>"+rNao.length+" N/Env</span>";
-        if(rEnv.length)html+="<span class='badge' style='background:rgba(201,151,60,.2);color:#c9973c'>"+rEnv.length+" Aguard</span>";
-        if(rConf.length)html+="<span class='badge' style='background:rgba(42,171,71,.2);color:#2aab47'>"+rConf.length+" Conf</span>";
-        if(rCheck.length)html+="<span class='badge' style='background:rgba(42,171,71,.3);color:#2aab47'>"+rCheck.length+" Check</span>";
-        html+="<span class='resp-arrow'>&#9660;</span></div></div>";
-
-        html+="<div class='resp-body'>";
-
-        // Nao enviado
-        if(rNao.length){
-          html+="<div class='status-sec'>";
-          html+="<div class='status-head' onclick='togStatus(this)'>";
-          html+="<span class='status-label' style='color:#0891b2'>Nao enviado ("+rNao.length+")</span>";
-          html+="<span class='status-arrow'>&#9660;</span></div>";
-          html+="<div class='pessoas-list'>";
-          rNao.forEach(function(p){html+="<div class='pessoa-item'>"+p.nome+"</div>";});
-          html+="</div></div>";
-        }
-        // Aguardando
-        if(rEnv.length){
-          html+="<div class='status-sec'>";
-          html+="<div class='status-head' onclick='togStatus(this)'>";
-          html+="<span class='status-label' style='color:#c9973c'>Aguardando confirmacao ("+rEnv.length+")</span>";
-          html+="<span class='status-arrow'>&#9660;</span></div>";
-          html+="<div class='pessoas-list'>";
-          rEnv.forEach(function(p){html+="<div class='pessoa-item'>"+p.nome+"</div>";});
-          html+="</div></div>";
-        }
-        // Confirmado
-        if(rConf.length){
-          html+="<div class='status-sec'>";
-          html+="<div class='status-head' onclick='togStatus(this)'>";
-          html+="<span class='status-label' style='color:#2aab47'>Bilhete confirmado ("+rConf.length+")</span>";
-          html+="<span class='status-arrow'>&#9660;</span></div>";
-          html+="<div class='pessoas-list'>";
-          rConf.forEach(function(p){html+="<div class='pessoa-item'>"+p.nome+(p.entrada_em?"<span class='tag-checkin'>Entrou</span>":"")+"</div>";});
-          html+="</div></div>";
-        }
-        // Check-in
-        if(rCheck.length){
-          html+="<div class='status-sec'>";
-          html+="<div class='status-head' onclick='togStatus(this)'>";
-          html+="<span class='status-label' style='color:#2aab47'>Fizeram check-in ("+rCheck.length+")</span>";
-          html+="<span class='status-arrow'>&#9660;</span></div>";
-          html+="<div class='pessoas-list'>";
-          rCheck.forEach(function(p){html+="<div class='pessoa-item'>"+p.nome+"<span class='tag-checkin'>"+p.entrada_em.substring(11,16)+"</span></div>";});
-          html+="</div></div>";
-        }
-
-        html+="</div></div>";
-      });
-      html+="</div></div>";
-    });
+  // Group by responsavel
+  var resps={};
+  evCads.forEach(function(c){
+    var k=c.lote_nome||"Convite Direto";
+    if(!resps[k])resps[k]=[];
+    resps[k].push(c);
   });
 
-  document.getElementById("conteudo").innerHTML=html||"<div class='loading' style='color:#555'>Nenhum evento.</div>";
+  Object.keys(resps).forEach(function(resp,ri){
+    var rpess=resps[resp];
+    var rNao=rpess.filter(function(p){return !p.bilhete_enviado&&!p.bilhete_confirmado;});
+    var rEnv=rpess.filter(function(p){return p.bilhete_enviado&&!p.bilhete_confirmado;});
+    var rConf=rpess.filter(function(p){return p.bilhete_confirmado;});
+    var rCheck=rpess.filter(function(p){return p.entrada_em;});
+    var respId="resp"+ev.id+"_"+ri;
+
+    html+="<div style='border-bottom:1px solid #0a0f0a'>";
+    html+="<div onclick='tog(\""+respId+"\")' style='display:flex;justify-content:space-between;align-items:center;padding:12px 14px;cursor:pointer'>";
+    html+="<span style='font-size:13px;font-weight:700;color:#eee'>"+resp+"</span>";
+    html+="<div style='display:flex;gap:4px;align-items:center'>";
+    if(rNao.length)html+="<span style='font-size:10px;font-weight:700;background:rgba(8,145,178,.2);color:#0891b2;padding:2px 6px;border-radius:6px'>"+rNao.length+" N/Env</span>";
+    if(rEnv.length)html+="<span style='font-size:10px;font-weight:700;background:rgba(201,151,60,.2);color:#c9973c;padding:2px 6px;border-radius:6px'>"+rEnv.length+" Aguard</span>";
+    if(rConf.length)html+="<span style='font-size:10px;font-weight:700;background:rgba(42,171,71,.2);color:#2aab47;padding:2px 6px;border-radius:6px'>"+rConf.length+" Conf</span>";
+    if(rCheck.length)html+="<span style='font-size:10px;font-weight:700;background:rgba(42,171,71,.3);color:#2aab47;padding:2px 6px;border-radius:6px'>"+rCheck.length+" Check</span>";
+    html+="<span style='color:#555;font-size:12px;margin-left:4px'>&#9660;</span></div></div>";
+
+    html+="<div id='"+respId+"' style='display:none'>";
+    html+=listaHTML(rNao,"#0891b2","Nao enviado","uid"+ev.id+"_"+ri+"_0");
+    html+=listaHTML(rEnv,"#c9973c","Aguardando confirmacao","uid"+ev.id+"_"+ri+"_1");
+    html+=listaHTML(rConf,"#2aab47","Bilhete confirmado","uid"+ev.id+"_"+ri+"_2");
+    html+=listaHTML(rCheck,"#2aab47","Fizeram check-in","uid"+ev.id+"_"+ri+"_3");
+    html+="</div></div>";
+  });
+
+  html+="</div></div>";
+});
+```
+
+});
+
+document.getElementById(“conteudo”).innerHTML=html||”<div style='text-align:center;padding:40px;color:#555'>Nenhum evento.</div>”;
 }
 
 function load(){
-  Promise.all([
-    ap("eventos?select=*&order=data.asc"),
-    ap("cadastros?select=id,nome,evento_id,lote_nome,bilhete_enviado,bilhete_confirmado,entrada_em,validador_nome&order=nome.asc")
-  ]).then(function(r){render(r[0]||[],r[1]||[]);})
-  .catch(function(){document.getElementById("conteudo").innerHTML="<div class='loading'>Erro ao carregar.</div>";});
+Promise.all([
+ap(“eventos?select=*&order=data.asc”),
+ap(“cadastros?select=id,nome,evento_id,lote_nome,bilhete_enviado,bilhete_confirmado,entrada_em&order=nome.asc”)
+]).then(function(r){
+try{render(r[0]||[],r[1]||[]);}
+catch(e){document.getElementById(“conteudo”).innerHTML=”<div style='color:red;padding:20px'>Erro: “+e.message+”</div>”;}
+}).catch(function(e){
+document.getElementById(“conteudo”).innerHTML=”<div style='color:red;padding:20px'>Erro: “+e.message+”</div>”;
+});
 }
 load();
 setInterval(load,30000);
-</script>
 
+</script>
 </body>
 </html>
