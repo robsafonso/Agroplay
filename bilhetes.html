@@ -81,79 +81,78 @@ function render(ev,pessoas){
   var bilheteOk=dias<=7;
   var dataFmt=fd(ev.data);
 
-  var naoEnviados=pessoas.filter(function(p){return !p.bilhete_enviado&&!p.bilhete_confirmado;});
-  var enviados=pessoas.filter(function(p){return p.bilhete_enviado&&!p.bilhete_confirmado;});
-  var confirmados=pessoas.filter(function(p){return p.bilhete_confirmado;});
+  var naoEnv=pessoas.filter(function(p){return !p.bilhete_enviado&&!p.bilhete_confirmado;});
+  var aguard=pessoas.filter(function(p){return p.bilhete_enviado&&!p.bilhete_confirmado;});
+  var conf=pessoas.filter(function(p){return p.bilhete_confirmado;});
 
   var html="";
-  html+="<div class='ev-info'><div class='ev-nome'>"+ev.nome+"</div><div class='ev-det'>"+dataFmt+(ev.horario?" as "+ev.horario:"")+(ev.local?" - "+ev.local:"")+"</div></div>";
+  html+="<div class='ev-info'><div class='ev-nome'>"+ev.nome+"</div><div class='ev-det'>"+dataFmt+(ev.horario?" as "+ev.horario:"")+(ev.horario_fim?" - "+ev.horario_fim:"")+(ev.local?" - "+ev.local:"")+"</div></div>";
 
-  html+="<div class='stats'>";
-  html+="<div class='stat'><span class='stat-n' style='color:#0891b2'>"+naoEnviados.length+"</span><div class='stat-l'>Nao enviado</div></div>";
-  html+="<div class='stat'><span class='stat-n' style='color:#c9973c'>"+enviados.length+"</span><div class='stat-l'>Aguardando</div></div>";
-  html+="<div class='stat'><span class='stat-n' style='color:#2aab47'>"+confirmados.length+"</span><div class='stat-l'>Confirmado</div></div>";
+  // 3 clickable stat boxes
+  html+="<div class='stats' style='cursor:pointer'>";
+  html+="<div class='stat' onclick='togSec("nao")' style='cursor:pointer;border:1px solid rgba(8,145,178,.3)'>";
+  html+="<span class='stat-n' style='color:#0891b2'>"+naoEnv.length+"</span><div class='stat-l'>Nao enviado</div></div>";
+  html+="<div class='stat' onclick='togSec("env")' style='cursor:pointer;border:1px solid rgba(201,151,60,.3)'>";
+  html+="<span class='stat-n' style='color:#c9973c'>"+aguard.length+"</span><div class='stat-l'>Aguardando</div></div>";
+  html+="<div class='stat' onclick='togSec("conf")' style='cursor:pointer;border:1px solid rgba(42,171,71,.3)'>";
+  html+="<span class='stat-n' style='color:#2aab47'>"+conf.length+"</span><div class='stat-l'>Confirmado</div></div>";
   html+="</div>";
 
   if(!bilheteOk){
     html+="<div class='aviso'>Bilhetes disponiveis somente faltando 7 dias. Faltam <b>"+dias+"</b> dias.</div>";
   }
 
-  function cardP(p,status){
-    var link="https://robsafonso.github.io/Agroplay/bilhete.html?cad="+p.id+"&ev="+EV_ID;
-    var msg="AGROPLAY Music \uD83C\uDFB5\n\nOla, "+p.nome+"! Seu bilhete esta disponivel.\n\n\uD83C\uDFA4 "+ev.nome+"\n\uD83D\uDCC5 "+dataFmt+(ev.horario?" as "+ev.horario+(ev.horario_fim?" - "+ev.horario_fim:""):"")+(ev.local?"\n\uD83D\uDCCD "+ev.local:"")+(ev.atracao1?"\n\uD83C\uDFB5 "+ev.atracao1+(ev.atracao2?" + "+ev.atracao2:""):"")+"\n\nAcesse seu bilhete com QR Code:\n"+link+"\n\n\uD83C\uDF9F Apresente na entrada.";
-    var borderColor=status==="confirmado"?"rgba(42,171,71,.4)":status==="enviado"?"rgba(201,151,60,.4)":"rgba(8,145,178,.3)";
-    var c="<div class='card' style='border:1px solid "+borderColor+"'>";
-    c+="<div class='card-nome'>"+p.nome+"</div>";
-    c+="<div class='card-sub'>"+(p.lote_nome?"Convidado por "+p.lote_nome:"Convite direto")+"</div>";
-    if(status==="confirmado"){
-      c+="<div style='font-size:11px;color:#2aab47;background:#0a1a0a;border:1px solid rgba(42,171,71,.2);border-radius:6px;padding:6px;text-align:center;margin-bottom:6px'>Bilhete confirmado</div>";
-      c+="<button class='btn-reenviar' onclick='reenviar("+p.id+")'>Reenviar bilhete</button>";
-    } else if(status==="enviado"){
-      c+="<div style='font-size:11px;color:#c9973c;background:#1a0e00;border:1px solid rgba(201,151,60,.2);border-radius:6px;padding:6px;text-align:center;margin-bottom:6px'>Aguardando confirmacao</div>";
-      c+="<button class='btn-bil' onclick='copiarBilhete(this,"+p.id+")' data-msg='"+msg.replace(/'/g,"&#39;")+"' style='background:#c9973c;color:#fff'>Reenviar bilhete</button>";
-    } else {
-      c+="<button class='btn-bil' onclick='copiarBilhete(this,"+p.id+")' data-msg='"+msg.replace(/'/g,"&#39;")+"' style='background:#0891b2;color:#fff'>"+(bilheteOk?"Copiar bilhete":"Bilhete indisponivel")+"</button>";
-    }
-    c+="</div>";
-    return c;
+  // Build grouped sections
+  function buildSec(lista,cor,status){
+    if(!lista.length)return "<div class='empty'>Nenhuma pessoa nesta categoria.</div>";
+    // Group by responsavel
+    var resps={};
+    lista.forEach(function(p){
+      var k=p.lote_nome||"Convite Direto";
+      if(!resps[k])resps[k]=[];
+      resps[k].push(p);
+    });
+    var h="";
+    Object.keys(resps).sort().forEach(function(resp,ri){
+      var rp=resps[resp];
+      var rid="gr_"+status+"_"+ri;
+      h+="<div style='background:#090e09;border:1px solid #1a2a1a;border-radius:10px;margin-bottom:8px'>";
+      h+="<div onclick='tog(""+rid+"")' style='padding:12px;cursor:pointer;display:flex;justify-content:space-between;align-items:center'>";
+      h+="<div style='font-size:13px;font-weight:700;color:#eee'>"+resp+"</div>";
+      h+="<div style='display:flex;align-items:center;gap:8px'>";
+      h+="<span style='font-size:12px;font-weight:700;color:"+cor+"'>"+rp.length+" pessoas</span>";
+      h+="<span style='color:#555'>&#9660;</span></div></div>";
+      h+="<div id='"+rid+"' style='display:none;border-top:1px solid #1a2a1a;padding:8px 12px'>";
+      rp.sort(function(a,b){return a.nome.localeCompare(b.nome);}).forEach(function(p){
+        var link="https://robsafonso.github.io/Agroplay/bilhete.html?cad="+p.id+"&ev="+EV_ID;
+        var msg="AGROPLAY Music \uD83C\uDFB5\n\nOla, "+p.nome+"! Seu bilhete esta disponivel.\n\n\uD83C\uDFA4 "+ev.nome+"\n\uD83D\uDCC5 "+dataFmt+(ev.horario?" as "+ev.horario+(ev.horario_fim?" - "+ev.horario_fim:""):"")+(ev.local?"\n\uD83D\uDCCD "+ev.local:"")+"\n\nAcesse seu bilhete com QR Code:\n"+link+"\n\n\uD83C\uDF9F Apresente na entrada.\nAgroplay Music - Londrina PR";
+        h+="<div style='padding:8px 0;border-bottom:1px solid #111;display:flex;justify-content:space-between;align-items:center'>";
+        h+="<div style='font-size:12px;color:#bbb'>"+p.nome+"</div>";
+        if(status==="nao"&&bilheteOk){
+          h+="<button onclick='copiarBilhete(this,"+p.id+")' data-msg='"+msg.replace(/'/g,"&#39;")+"' style='background:#0891b2;border:none;border-radius:6px;padding:5px 10px;font-size:10px;color:#fff;cursor:pointer;font-weight:700'>Copiar</button>";
+        } else if(status==="env"){
+          h+="<button onclick='copiarBilhete(this,"+p.id+")' data-msg='"+msg.replace(/'/g,"&#39;")+"' style='background:#c9973c;border:none;border-radius:6px;padding:5px 10px;font-size:10px;color:#fff;cursor:pointer;font-weight:700'>Reenviar</button>";
+        } else {
+          h+="<span style='font-size:9px;background:rgba(42,171,71,.2);color:#2aab47;padding:2px 6px;border-radius:6px'>Confirmado</span>";
+        }
+        h+="</div>";
+      });
+      h+="</div></div>";
+    });
+    return h;
   }
 
-  if(naoEnviados.length){
-    html+="<div class='section-label' style='color:#0891b2;cursor:pointer;display:flex;justify-content:space-between' onclick=\"tog('sec-nao')\">Nao enviados ("+naoEnviados.length+") <span>&#9660;</span></div>";
-    html+="<div id='sec-nao' style='display:none'>";
-    naoEnviados.forEach(function(p){html+=cardP(p,"nao");});
-    html+="</div>";
-  }
-  if(enviados.length){
-    html+="<div class='section-label' style='color:#c9973c;cursor:pointer;display:flex;justify-content:space-between' onclick=\"tog('sec-env')\">Aguardando ("+enviados.length+") <span>&#9660;</span></div>";
-    html+="<div id='sec-env' style='display:none'>";
-    enviados.forEach(function(p){html+=cardP(p,"enviado");});
-    html+="</div>";
-  }
-  if(confirmados.length){
-    html+="<div class='section-label' style='color:#2aab47'>Confirmados ("+confirmados.length+")</div>";
-    confirmados.forEach(function(p){html+=cardP(p,"confirmado");});
-  }
+  html+="<div id='sec-nao' style='display:none;margin-top:4px'>"+buildSec(naoEnv,"#0891b2","nao")+"</div>";
+  html+="<div id='sec-env' style='display:none;margin-top:4px'>"+buildSec(aguard,"#c9973c","env")+"</div>";
+  html+="<div id='sec-conf' style='display:none;margin-top:4px'>"+buildSec(conf,"#2aab47","conf")+"</div>";
 
   document.getElementById("conteudo").innerHTML=html;
 }
 
-if(!EV_ID){
-  document.getElementById("conteudo").innerHTML="<div class='loading'>Link invalido.</div>";
-} else {
-  Promise.all([
-    ap("eventos?id=eq."+EV_ID+"&select=*"),
-    ap("cadastros?evento_id=eq."+EV_ID+"&select=*&order=nome.asc")
-  ]).then(function(res){
-    var ev=res[0]&&res[0][0];
-    var pessoas=res[1]||[];
-    if(!ev){document.getElementById("conteudo").innerHTML="<div class='loading'>Evento nao encontrado.</div>";return;}
-    render(ev,pessoas);
-  }).catch(function(){
-    document.getElementById("conteudo").innerHTML="<div class='loading'>Erro ao carregar.</div>";
+function togSec(id){
+  var ids=["nao","env","conf"];
+  ids.forEach(function(x){
+    var el=document.getElementById("sec-"+x);
+    if(el)el.style.display=(x===id&&el.style.display==="none")?"block":"none";
   });
 }
-</script>
-
-</body>
-</html>
