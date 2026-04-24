@@ -103,7 +103,7 @@ function loadEventos(){
 function selecionarEvento(){
   var evId=document.getElementById("ev-sel").value;
   if(!evId){document.getElementById("conteudo").innerHTML="";return;}
-  ap("eventos?id=eq."+evId+"&select=*").then(function(d){
+  ap("eventos?id=eq."+parseInt(evId)+"&select=*").then(function(d){
     evAtual=d&&d[0];
     if(!evAtual)return;
     document.getElementById("ev-info").innerHTML="<div style='font-size:14px;font-weight:700;color:#fff'>"+evAtual.nome+"</div><div style='font-size:11px;color:#555'>"+fd(evAtual.data)+(evAtual.horario?" as "+evAtual.horario:"")+(evAtual.local?" - "+evAtual.local:"")+"</div>";
@@ -112,10 +112,10 @@ function selecionarEvento(){
 }
 
 function loadItens(evId){
-  ap("orcamentos?evento_id=eq."+evId+"&order=categoria.asc,item.asc").then(function(d){
-    itens=d||[];
+  ap("orcamentos?evento_id=eq."+parseInt(evId)+"&order=categoria.asc,item.asc").then(function(d){
+    itens=Array.isArray(d)?d:[];
     renderOrcamento();
-  });
+  }).catch(function(e){console.log("loadItens err",e);});
 }
 
 function renderOrcamento(){
