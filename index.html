@@ -823,8 +823,7 @@ function load(){
   q("tbl").innerHTML="<div class='empty'>Carregando...</div>";
   ap("cadastros?select=*&order=criado_em.desc").then(function(d){cads=d||[];rSts();rChips();rend();}).catch(function(){cads=[];rSts();rChips();rend();});
   ap("codigos?select=*&order=id.asc").then(function(d){cods=d||[];rSts();rCods();}).catch(function(){cods=[];});
-  ap("eventos?select=*&order=data.asc").then(function(d){evs=d||[];rSts();rEvs();}).catch(function(){evs=[];});
-  ap("lotes?select=*&order=criado_em.desc").then(function(d){lotes=d||[];rLotes();}).catch(function(){lotes=[];});
+  ap("eventos?select=*&order=data.asc").then(function(d){evs=d||[];rSts();rEvs();ap("lotes?select=*&order=criado_em.desc").then(function(dl){lotes=dl||[];rLotes();}).catch(function(){lotes=[];});}).catch(function(){evs=[];ap("lotes?select=*&order=criado_em.desc").then(function(dl){lotes=dl||[];rLotes();}).catch(function(){lotes=[];});});
 }
 function rSts(){
   var d=cods.filter(function(c){return !c.usado;}).length;
