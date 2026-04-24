@@ -32,9 +32,7 @@ body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:16px;max
 var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
 var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
 
-function ap(path){
-return fetch(SB+”/rest/v1/”+path,{method:“GET”,headers:{“apikey”:KY,“Authorization”:“Bearer “+KY,“Content-Type”:“application/json”}}).then(function(r){if(!r.ok)throw new Error(“HTTP “+r.status);return r.json();});
-}
+function ap(path){return fetch(SB+”/rest/v1/”+path,{headers:{“apikey”:KY,“Authorization”:“Bearer “+KY,“Content-Type”:“application/json”}}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});}
 function fd(d){if(!d)return””;var x=d.split(”-”);return x[2]+”/”+x[1]+”/”+x[0];}
 
 function tick(){
