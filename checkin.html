@@ -101,7 +101,7 @@ video{width:100%;display:block}
 var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
 var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
 var valAtual=null;
-try{var _vs=sessionStorage.getItem("ag_val");if(_vs){valAtual=JSON.parse(_vs);setTimeout(function(){q("tela-login").classList.add("gone");q("val-nome").textContent=valAtual.nome;iniciarCamera();q("tela-checkin").classList.remove("gone");},100);}}catch(e){}
+try{var _vs=sessionStorage.getItem("ag_val");if(_vs){valAtual=JSON.parse(_vs);setTimeout(function(){q("tela-login").classList.add("gone");q("val-nome").textContent=valAtual.nome;iniciarScanner();q("tela-checkin").classList.remove("gone");},100);}}catch(e){}
 var cadAtual=null;
 var stream=null;
 var scanning=false;
@@ -127,7 +127,7 @@ q("btn-login").onclick=function(){
         q("tela-login").classList.add("gone");
         q("val-nome").textContent=valAtual.nome;
         q("tela-checkin").classList.remove("gone");
-        iniciarCamera();
+        iniciarScanner();
       }catch(e){al.innerHTML="<div class='ea'>Erro: "+e.message+"</div>";btn.textContent="Entrar";btn.disabled=false;return;}
     } else {
       // First access - force password change
@@ -148,7 +148,7 @@ q("btn-trocar").onclick=function(){
     valAtual.senha=nova;valAtual.primeiro_acesso=false;
     q("tela-trocar-senha").classList.add("gone");
     q("val-nome").textContent=valAtual.nome;
-    iniciarCamera();
+    iniciarScanner();
     q("tela-checkin").classList.remove("gone");
     btn.textContent="Salvar senha";btn.disabled=false;
   }).catch(function(){al.innerHTML="<div class='ea'>Erro ao salvar</div>";btn.textContent="Salvar senha";btn.disabled=false;});
