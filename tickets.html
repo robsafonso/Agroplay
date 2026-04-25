@@ -156,14 +156,16 @@ function render(){
   document.getElementById("conteudo").innerHTML=html||"<div class='loading' style='color:#555'>Nenhum resultado.</div>";
 }
 
-Promise.all([
-  ap("eventos?select=*&order=data.asc"),
-  ap("cadastros?select=id,nome,evento_id,bilhete_enviado,bilhete_confirmado,lote_nome&order=nome.asc"),
-  ap("lotes?select=*&order=criado_em.desc")
-]).then(function(res){
-  allEvs=res[0]||[];
-  allCads=res[1]||[];
-  allLotes=res[2]||[];
+var _tkEvs=[],_tkCads=[],_tkLotes=[],_tkOff=0;
+function _loadTkCads(){
+  ap("cadastros?select=id,nome,evento_id,bilhete_enviado,bilhete_confirmado,lote_nome&order=nome.asc&limit=1000&offset="+_tkOff).then(function(d){
+    if(d&&d.length){_tkCads=_tkCads.concat(d);if(d.length===1000){_tkOff+=1000;_loadTkCads();}else{_renderTk();}}
+    else{_renderTk();}
+  }).catch(function(){document.getElementById("conteudo").innerHTML="<div class='loading'>Erro ao carregar.</div>";});
+}
+function _renderTk(){
+  allEvs=_tkEvs;allCads=_tkCads;allLotes=_tkLotes;
+
 
   // Build responsavel filter from lote names
   var resps={"Todos":true};
@@ -179,9 +181,11 @@ Promise.all([
   fw.style.display="flex";
   document.getElementById("total-bar").style.display="grid";
   render();
-}).catch(function(){
-  document.getElementById("conteudo").innerHTML="<div class='loading'>Erro ao carregar.</div>";
-});
+}
+Promise.all([ap("eventos?select=*&order=data.asc"),ap("lotes?select=*&order=criado_em.desc")]).then(function(res){
+  _tkEvs=res[0]||[];_tkLotes=res[1]||[];
+  _loadTkCads();
+}).catch(function(){document.getElementById("conteudo").innerHTML="<div class='loading'>Erro ao carregar.</div>";});
 </script>
 
 </body>
