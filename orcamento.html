@@ -66,10 +66,17 @@ function tog(id){var el=document.getElementById(id);if(el)el.style.display=el.st
 function q(id){return document.getElementById(id);}
 
 function loadEventos(){
-ap(“eventos?select=id,nome,data&order=data.asc”).then(function(evs){
+Promise.all([
+ap(“eventos?select=id,nome,data,horario,local&order=data.asc”),
+ap(“orcamentos?select=id,evento_id&limit=1”)
+]).then(function(res){
+var evs=res[0]||[];
 var sel=q(“ev-sel”);
 sel.innerHTML=”<option value=''>Selecione um evento…</option>”;
-(evs||[]).forEach(function(ev){sel.innerHTML+=”<option value='"+ev.id+"'>”+ev.nome+” (”+fd(ev.data)+”)</option>”;});
+evs.forEach(function(ev){sel.innerHTML+=”<option value='"+ev.id+"'>”+ev.nome+” (”+fd(ev.data)+”)</option>”;});
+window._evs=evs;
+}).catch(function(){
+q(“ev-sel”).innerHTML=”<option value=''>Erro ao carregar</option>”;
 });
 }
 
@@ -78,12 +85,12 @@ var evId=q(“ev-sel”).value;
 q(“conteudo”).innerHTML=””;
 q(“ev-info”).innerHTML=””;
 if(!evId)return;
-ap(“eventos?id=eq.”+evId+”&select=*”).then(function(d){
-evAtual=d&&d[0];
+var evs=window._evs||[];
+evAtual=null;
+for(var i=0;i<evs.length;i++){if(evs[i].id==evId){evAtual=evs[i];break;}}
 if(!evAtual)return;
 q(“ev-info”).innerHTML=”<div style='font-size:14px;font-weight:700;color:#fff'>”+evAtual.nome+”</div><div style='font-size:11px;color:#555'>”+fd(evAtual.data)+(evAtual.horario?” as “+evAtual.horario:””)+(evAtual.local?” - “+evAtual.local:””)+”</div>”;
 carregarItens();
-});
 }
 
 function carregarItens(){
