@@ -29,7 +29,7 @@ label{display:block;font-size:10px;color:#2aab47;letter-spacing:1px;margin-botto
   </div>
   <a href="home.html" class="back">&larr; Menu</a>
 </div>
-<select id="ev-sel" onchange="selecionarEvento()"><option value="">Carregando eventos...</option></select>
+<div style="display:flex;gap:8px;margin-bottom:10px"><select id="ev-sel" onchange="selecionarEvento()" style="flex:1;background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:12px;color:#eee;font-size:13px;outline:none"><option value="">Toque em Carregar</option></select><button onclick="loadEventos()" style="background:#1e7a35;border:none;border-radius:10px;padding:12px 14px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap">Carregar</button></div>
 <div id="ev-info" style="margin-bottom:12px;font-size:12px;color:#555"></div>
 <div id="conteudo"></div>
 <div id="modal">
@@ -226,7 +226,7 @@ h+=”</body></html>”;
 win.document.write(h);win.document.close();
 }
 
-loadEventos();
+// loadEventos chamado pelo botao
 
 </script>
 </body>
