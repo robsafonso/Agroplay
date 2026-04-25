@@ -66,17 +66,10 @@ function tog(id){var el=document.getElementById(id);if(el)el.style.display=el.st
 function q(id){return document.getElementById(id);}
 
 function loadEventos(){
-Promise.all([
-ap(“eventos?select=id,nome,data,horario,local&order=data.asc”),
-ap(“orcamentos?select=id,evento_id&limit=1”)
-]).then(function(res){
-var evs=res[0]||[];
+ap(“eventos?select=id,nome,data&order=data.asc”).then(function(evs){
 var sel=q(“ev-sel”);
 sel.innerHTML=”<option value=''>Selecione um evento…</option>”;
-evs.forEach(function(ev){sel.innerHTML+=”<option value='"+ev.id+"'>”+ev.nome+” (”+fd(ev.data)+”)</option>”;});
-window._evs=evs;
-}).catch(function(){
-q(“ev-sel”).innerHTML=”<option value=''>Erro ao carregar</option>”;
+(evs||[]).forEach(function(ev){sel.innerHTML+=”<option value='"+ev.id+"'>”+ev.nome+” (”+fd(ev.data)+”)</option>”;});
 });
 }
 
@@ -85,12 +78,12 @@ var evId=q(“ev-sel”).value;
 q(“conteudo”).innerHTML=””;
 q(“ev-info”).innerHTML=””;
 if(!evId)return;
-var evs=window._evs||[];
-evAtual=null;
-for(var i=0;i<evs.length;i++){if(evs[i].id==evId){evAtual=evs[i];break;}}
+ap(“eventos?id=eq.”+evId+”&select=*”).then(function(d){
+evAtual=d&&d[0];
 if(!evAtual)return;
 q(“ev-info”).innerHTML=”<div style='font-size:14px;font-weight:700;color:#fff'>”+evAtual.nome+”</div><div style='font-size:11px;color:#555'>”+fd(evAtual.data)+(evAtual.horario?” as “+evAtual.horario:””)+(evAtual.local?” - “+evAtual.local:””)+”</div>”;
 carregarItens();
+});
 }
 
 function carregarItens(){
@@ -204,29 +197,6 @@ carregarItens();
 }).catch(function(){alert(“Erro!”);btn.textContent=“Salvar”;btn.disabled=false;});
 }
 
-function gerarPDF(){
-if(!evAtual||!itens.length)return;
-var total=itens.reduce(function(s,it){return s+parseFloat(it.valor_total||0);},0);
-var cats={};
-itens.forEach(function(it){if(!cats[it.categoria])cats[it.categoria]=[];cats[it.categoria].push(it);});
-var win=window.open(””,”_blank”);
-var h=”<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Orcamento</title>”;
-h+=”<style>body{font-family:Arial;max-width:600px;margin:0 auto;padding:20px}table{width:100%;border-collapse:collapse}th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}th{background:#f5f5f5;font-size:11px}@media print{button{display:none}}</style></head><body>”;
-h+=”<h1>AGROPLAY</h1><h3>”+evAtual.nome+”</h3>”;
-h+=”<p style='color:#666;font-size:13px'>”+fd(evAtual.data)+(evAtual.horario?” as “+evAtual.horario:””)+(evAtual.local?” - “+evAtual.local:””)+”</p>”;
-h+=”<div style='background:#f0fff0;padding:12px;margin:16px 0;display:flex;justify-content:space-between'><b>TOTAL ESTIMADO</b><b style='font-size:20px;color:#1e7a35'>”+fmt(total)+”</b></div>”;
-Object.keys(cats).forEach(function(cat){
-var ct=cats[cat].reduce(function(s,it){return s+parseFloat(it.valor_total||0);},0);
-h+=”<h4 style='background:#eee;padding:8px;margin:12px 0 0'>”+cat+” - “+fmt(ct)+”</h4>”;
-h+=”<table><tr><th>Item</th><th>Qtd</th><th>Unit.</th><th>Total</th></tr>”;
-cats[cat].forEach(function(it){h+=”<tr><td>”+it.item+(it.observacao?”<br><small>”+it.observacao+”</small>”:””)+”</td><td>”+it.quantidade+”</td><td>”+fmt(it.valor_unitario)+”</td><td><b>”+fmt(it.valor_total)+”</b></td></tr>”;});
-h+=”</table>”;
-});
-h+=”<p style='color:#888;font-size:11px;margin-top:20px;text-align:center'>Agroplay Music - “+new Date().toLocaleDateString(“pt-BR”)+”</p>”;
-h+=”<br><button onclick='window.print()' style='width:100%;background:#1e7a35;color:#fff;border:none;padding:12px;cursor:pointer'>Imprimir / Salvar PDF</button>”;
-h+=”</body></html>”;
-win.document.write(h);win.document.close();
-}
 loadEventos();
 
 </script>
