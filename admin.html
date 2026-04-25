@@ -192,8 +192,15 @@ function rHistEv(){
 }
 function load(){
   q("lista-checkin").innerHTML="<div class='empty'>Carregando...</div>";
-  ap("cadastros?select=*&order=nome.asc").then(function(d){
-    cads=d||[];
+  // Paginated load
+var _adminCads=[];var _adminOff=0;
+function _loadAdminCads(cb){
+  ap("cadastros?select=*&order=nome.asc&limit=1000&offset="+_adminOff).then(function(d){
+    if(d&&d.length){_adminCads=_adminCads.concat(d);if(d.length===1000){_adminOff+=1000;_loadAdminCads(cb);}else{cads=_adminCads;cb();}}
+    else{cads=_adminCads;cb();}
+  }).catch(function(){cads=_adminCads;cb();});
+}
+_loadAdminCads(function(){
     ap("codigos?cadastro_id=not.is.null&select=codigo,cadastro_id").then(function(cods){
       var map={};(cods||[]).forEach(function(c){map[c.cadastro_id]=c.codigo;});
       cads.forEach(function(c){c.codigo=map[c.id]||'';});
