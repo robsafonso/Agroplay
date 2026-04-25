@@ -57,7 +57,7 @@ textarea{height:70px;resize:none}
 <div class="hdr">
   <div onclick="location.href='home.html'" style="cursor:pointer;display:flex;align-items:center;gap:0;border:1px solid #1a2a1a;border-radius:10px;overflow:hidden">
     <div style="background:#0d150d;padding:7px 12px;font-size:16px;font-weight:900;color:#fff;letter-spacing:1px">AGRO<span style="color:#2aab47">PLAY</span></div>
-    <div style="background:#2aab47;padding:7px 10px;font-size:11px;font-weight:700;color:#fff;letter-spacing:1px">v27</div>
+    <div style="background:#2aab47;padding:7px 10px;font-size:11px;font-weight:700;color:#fff;letter-spacing:1px">v28</div>
   </div>
   <div style="display:flex;gap:6px;align-items:center"><button onclick="togMenu()" style="background:transparent;border:none;color:#eee;font-size:20px;cursor:pointer;padding:4px 8px">&#9776;</button>
     <button class="bto" id="blinkc" style="font-size:11px;padding:6px 10px">Link Cadastro</button>
@@ -80,7 +80,7 @@ textarea{height:70px;resize:none}
   <div style="border-top:1px solid #1a2a1a;margin:4px 0"></div>
   <a href="home.html" onclick="sessionStorage.removeItem('ag_admin')" style="display:flex;align-items:center;gap:10px;padding:10px 14px;color:#c0392b;text-decoration:none;font-size:13px;border-radius:8px">&#128682; Sair</a>
   <div style="border-top:1px solid #1a2a1a;margin:4px 0"></div>
-  <div style="padding:6px 14px;font-size:10px;color:#333;text-align:center">v27</div>
+  <div style="padding:6px 14px;font-size:10px;color:#333;text-align:center">v28</div>
 </div>
 <div class="stats" id="sts"></div>
 <div class="tabs">
@@ -817,8 +817,8 @@ q("btn-salvar-cargo").onclick=function(){
 function togMenu(){var m=document.getElementById("mdrop");m.style.display=m.style.display==="none"||m.style.display===""?"block":"none";}
 function load(){
   q("tbl").innerHTML="<div class='empty'>Carregando...</div>";
-  ap("cadastros?select=*&order=criado_em.desc").then(function(d){cads=d||[];rSts();rChips();rend();}).catch(function(){cads=[];rSts();rChips();rend();});
-  ap("codigos?select=*&order=id.asc").then(function(d){cods=d||[];rSts();rCods();}).catch(function(){cods=[];});
+  ap("cadastros?select=*&order=criado_em.desc&limit=50000").then(function(d){cads=d||[];rSts();rChips();rend();}).catch(function(){cads=[];rSts();rChips();rend();});
+  ap("codigos?select=*&order=id.asc&limit=200000").then(function(d){cods=d||[];rSts();rCods();}).catch(function(){cods=[];});
   ap("eventos?select=*&order=data.asc").then(function(d){evs=d||[];rSts();rEvs();ap("lotes?select=*&order=criado_em.desc").then(function(dl){lotes=dl||[];rLotes();}).catch(function(){lotes=[];});}).catch(function(){evs=[];ap("lotes?select=*&order=criado_em.desc").then(function(dl){lotes=dl||[];rLotes();}).catch(function(){lotes=[];});});
 }
 function rSts(){
