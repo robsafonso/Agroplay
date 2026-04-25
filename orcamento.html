@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agroplay - Orcamento</title>
+<title>Agroplay - Tickets</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:16px;max-width:480px;margin:0 auto}
@@ -50,8 +50,7 @@ body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:16px;max
 </div>
 
 <div id="filtros-wrap" class="filtros" style="display:none"></div>
-<select id="ev-orc" onchange="selecionarEvOrc()" style="width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:12px;color:#eee;font-size:13px;margin-bottom:10px;outline:none"><option value="">Carregando eventos...</option></select>
-<div id="ev-orc-info" style="margin-bottom:12px;font-size:12px;color:#555"></div>
+<select id="ev-orc" onchange="selecionarEvOrc()" style="width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:12px;color:#eee;font-size:13px;margin-bottom:10px;outline:none"><option value="">Carregando...</option></select>
 <div id="conteudo"><div class="loading">Carregando...</div></div>
 
 <script>
@@ -160,15 +159,13 @@ function render(){
 
 Promise.all([
   ap("eventos?select=*&order=data.asc"),
-  ap("cadastros?select=id,nome,evento_id,bilhete_enviado,bilhete_confirmado,lote_nome&order=nome.asc&limit=500"),
+  ap("cadastros?select=id,nome,evento_id,bilhete_enviado,bilhete_confirmado,lote_nome&order=nome.asc&limit=200"),
   ap("lotes?select=*&order=criado_em.desc")
 ]).then(function(res){
   allEvs=res[0]||[];
+  var _s=document.getElementById('ev-orc');if(_s){_s.innerHTML="<option value=''>Selecione o evento...</option>";(allEvs||[]).forEach(function(ev){_s.innerHTML+="<option value='"+ev.id+"'>"+ev.nome+"</option>";});}
   allCads=res[1]||[];
   allLotes=res[2]||[];
-  // Populate orcamento dropdown
-  var orcSel=document.getElementById("ev-orc");
-  if(orcSel){orcSel.innerHTML="<option value=''>Selecione um evento...</option>";allEvs.forEach(function(ev){orcSel.innerHTML+="<option value='"+ev.id+"'>"+ev.nome+" ("+fd(ev.data)+")</option>";});}
 
   // Build responsavel filter from lote names
   var resps={"Todos":true};
@@ -188,23 +185,19 @@ Promise.all([
   document.getElementById("conteudo").innerHTML="<div class='loading'>Erro ao carregar.</div>";
 });
 
-// ORCAMENTO ADDON
+// === ORCAMENTO ===
 var evOrcAtual=null;
 var itensOrc=[];
 var CATS={"Artista":["Cache do artista","Passagem aerea artista","Passagem aerea banda","Hospedagem artista","Hospedagem banda","Translado aeroporto hotel","Translado hotel show","Alimentacao camarim"],"Estrutura Tecnica":["Sistema de som PA","Iluminacao","Gerador","Palco montagem desmontagem","Backline instrumentos","Telao LED"],"Local":["Aluguel do espaco","Banheiro quimico","Seguranca","Limpeza","Estacionamento","Energia eletrica"],"Equipe":["Garcom","Bartender","Producao local","Portaria credenciamento","Fotografo","Videomaker"],"Bebidas":["Agua mineral cx 24un","Cerveja cx 24un","Chope barril","Whisky garrafa","Vodca garrafa","Gin garrafa","Agua de coco cx","Refrigerante cx","Licor garrafa","Energetico cx","Gelo saco 5kg","Copo descartavel pct"],"Comunicacao":["Flyers impressao","Midia social trafego pago","Ingressos impressos"]};
-function fmt(v){return"R$ "+parseFloat(v||0).toLocaleString("pt-BR",{minimumFractionDigits:2});}
+function fmtR(v){return"R$ "+parseFloat(v||0).toLocaleString("pt-BR",{minimumFractionDigits:2});}
+function togO(id){var el=document.getElementById(id);if(el)el.style.display=el.style.display==="none"?"block":"none";}
 function selecionarEvOrc(){
   var evId=document.getElementById("ev-orc").value;
   document.getElementById("conteudo").innerHTML="";
-  document.getElementById("ev-orc-info").innerHTML="";
-  if(!evId)return;
-  evOrcAtual=null;
+  if(!evId){return;}
   for(var i=0;i<allEvs.length;i++){if(allEvs[i].id==evId){evOrcAtual=allEvs[i];break;}}
   if(!evOrcAtual)return;
-  document.getElementById("ev-orc-info").innerHTML="<div style='font-size:14px;font-weight:700;color:#fff'>"+evOrcAtual.nome+"</div><div style='font-size:11px;color:#555'>"+fd(evOrcAtual.data)+(evOrcAtual.horario?" as "+evOrcAtual.horario:"")+(evOrcAtual.local?" - "+evOrcAtual.local:"")+"</div>";
-  carregarItensOrc();
-}
-function carregarItensOrc(){
+  document.getElementById("conteudo").innerHTML="<div style='text-align:center;padding:20px;color:#555'>Carregando orcamento...</div>";
   ap("orcamentos?evento_id=eq."+evOrcAtual.id+"&order=categoria.asc,item.asc").then(function(d){
     itensOrc=Array.isArray(d)?d:[];
     renderOrc();
@@ -213,90 +206,79 @@ function carregarItensOrc(){
 function renderOrc(){
   var tot=0;var pc={};
   itensOrc.forEach(function(it){var v=parseFloat(it.valor_total)||0;tot+=v;if(!pc[it.categoria])pc[it.categoria]=0;pc[it.categoria]+=v;});
-  var html="<div style='background:#090e09;border:1px solid #1a2a1a;border-radius:12px;padding:14px;margin-bottom:12px'><div style='font-size:11px;color:#555;margin-bottom:4px'>TOTAL ESTIMADO</div><div style='font-size:24px;font-weight:900;color:#2aab47'>"+fmt(tot)+"</div>";
-  if(Object.keys(pc).length){html+="<div style='border-top:1px solid #1a2a1a;margin-top:10px;padding-top:10px;display:flex;flex-wrap:wrap;gap:6px'>";Object.keys(pc).forEach(function(c){html+="<div style='font-size:10px;background:#060a06;border:1px solid #1a2a1a;border-radius:6px;padding:3px 8px;color:#888'>"+c+": <b style='color:#eee'>"+fmt(pc[c])+"</b></div>";});html+="</div>";}
+  var html="<div style='background:#090e09;border:1px solid #1a2a1a;border-radius:12px;padding:14px;margin-bottom:12px'><div style='font-size:11px;color:#555;margin-bottom:4px'>TOTAL ESTIMADO</div><div style='font-size:24px;font-weight:900;color:#2aab47'>"+fmtR(tot)+"</div>";
+  if(Object.keys(pc).length){html+="<div style='border-top:1px solid #1a2a1a;margin-top:10px;padding-top:10px;display:flex;flex-wrap:wrap;gap:6px'>";Object.keys(pc).forEach(function(c){html+="<div style='font-size:10px;background:#060a06;border:1px solid #1a2a1a;border-radius:6px;padding:3px 8px;color:#888'>"+c+": <b style='color:#eee'>"+fmtR(pc[c])+"</b></div>";});html+="</div>";}
   html+="</div>";
-  html+="<div style='display:flex;gap:8px;margin-bottom:16px'><button onclick='abrirModalOrc(null)' style='flex:1;background:#1e7a35;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;color:#fff;cursor:pointer'>+ Adicionar item</button><button onclick='carregarItensOrc()' style='background:transparent;border:1px solid #1a2a1a;border-radius:10px;padding:12px;font-size:20px;color:#eee;cursor:pointer'>&#8635;</button></div>";
+  html+="<div style='display:flex;gap:8px;margin-bottom:16px'><button onclick='abrirOrc(null)' style='flex:1;background:#1e7a35;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;color:#fff;cursor:pointer'>+ Adicionar item</button><button onclick='selecionarEvOrc()' style='background:transparent;border:1px solid #1a2a1a;border-radius:10px;padding:12px;font-size:20px;color:#eee;cursor:pointer'>&#8635;</button></div>";
   Object.keys(CATS).forEach(function(cat){
     var ci=itensOrc.filter(function(it){return it.categoria===cat;});
     if(!ci.length)return;
     var ct=ci.reduce(function(s,it){return s+parseFloat(it.valor_total||0);},0);
-    var cid="c_"+cat.replace(/[^a-z0-9]/gi,"");
-    html+="<div style='margin-bottom:8px'>";
-    html+="<div onclick='togOrc(\\'+cid+'\\')' style='background:#090e09;border:1px solid #1a2a1a;border-radius:12px 12px 0 0;padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between'>";
-    html+="<span style='font-size:13px;font-weight:700;color:#eee'>"+cat+"</span><span style='font-size:13px;font-weight:700;color:#2aab47'>"+fmt(ct)+"</span></div>";
-    html+="<div id='"+cid+"' style='display:none;background:#060a06;border:1px solid #1a2a1a;border-top:none;border-radius:0 0 12px 12px'>";
-    ci.forEach(function(it){
-      html+="<div style='padding:10px 14px;border-bottom:1px solid #0a0f0a;display:flex;justify-content:space-between;align-items:center'>";
-      html+="<div style='flex:1'><div style='font-size:13px;color:#eee'>"+it.item+"</div><div style='font-size:10px;color:#555'>"+it.quantidade+"x "+fmt(it.valor_unitario)+(it.observacao?" - "+it.observacao:"")+"</div></div>";
-      html+="<div style='display:flex;align-items:center;gap:6px'><span style='font-size:13px;font-weight:700;color:#fff'>"+fmt(it.valor_total)+"</span>";
-      html+="<button onclick='abrirModalOrc("+it.id+")' style='background:transparent;border:1px solid #555;color:#888;border-radius:6px;padding:3px 7px;font-size:10px;cursor:pointer'>Ed</button>";
-      html+="<button onclick='deletarItemOrc("+it.id+")' style='background:transparent;border:1px solid #c0392b;color:#c0392b;border-radius:6px;padding:3px 7px;font-size:10px;cursor:pointer'>X</button>";
-      html+="</div></div>";
-    });
+    var cid="_orc_"+cat.replace(/[^a-z0-9]/gi,"");
+    html+="<div style='margin-bottom:8px'><div onclick='togO(""+cid+"")' style='background:#090e09;border:1px solid #1a2a1a;border-radius:12px 12px 0 0;padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between'><span style='font-size:13px;font-weight:700;color:#eee'>"+cat+"</span><span style='font-size:13px;font-weight:700;color:#2aab47'>"+fmtR(ct)+"</span></div><div id='"+cid+"' style='display:none;background:#060a06;border:1px solid #1a2a1a;border-top:none;border-radius:0 0 12px 12px'>";
+    ci.forEach(function(it){html+="<div style='padding:10px 14px;border-bottom:1px solid #0a0f0a;display:flex;justify-content:space-between;align-items:center'><div style='flex:1'><div style='font-size:13px;color:#eee'>"+it.item+"</div><div style='font-size:10px;color:#555'>"+it.quantidade+"x "+fmtR(it.valor_unitario)+(it.observacao?" - "+it.observacao:"")+"</div></div><div style='display:flex;align-items:center;gap:6px'><span style='font-size:13px;font-weight:700;color:#fff'>"+fmtR(it.valor_total)+"</span><button onclick='abrirOrc("+it.id+")' style='background:transparent;border:1px solid #555;color:#888;border-radius:6px;padding:3px 7px;font-size:10px;cursor:pointer'>Ed</button><button onclick='deletarOrc("+it.id+")' style='background:transparent;border:1px solid #c0392b;color:#c0392b;border-radius:6px;padding:3px 7px;font-size:10px;cursor:pointer'>X</button></div></div>";});
     html+="</div></div>";
   });
-  if(itensOrc.length)html+="<button onclick='gerarPDFOrc()' style='width:100%;background:#0891b2;border:none;border-radius:10px;padding:14px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;margin-top:8px'>Gerar PDF</button>";
+  if(itensOrc.length)html+="<button onclick='pdfOrc()' style='width:100%;background:#0891b2;border:none;border-radius:10px;padding:14px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;margin-top:8px'>Gerar PDF</button>";
   document.getElementById("conteudo").innerHTML=html;
 }
-
-function abrirModalOrc(id){
-  var item=null;if(id!==null){for(var i=0;i<itensOrc.length;i++){if(itensOrc[i].id===id){item=itensOrc[i];break;}}}
+function abrirOrc(id){
+  var item=null;if(id!==null&&id!==undefined){for(var i=0;i<itensOrc.length;i++){if(itensOrc[i].id===id){item=itensOrc[i];break;}}}
   var cs=document.getElementById("m-orc-cat");if(!cs)return;
   cs.innerHTML="";Object.keys(CATS).forEach(function(c){cs.innerHTML+="<option>"+c+"</option>";});
-  if(item){document.getElementById("m-orc-id").value=item.id;cs.value=item.categoria;atualizarSelectOrc(item.categoria);document.getElementById("m-orc-item").value=item.item;document.getElementById("m-orc-qtd").value=item.quantidade;document.getElementById("m-orc-val").value=item.valor_unitario;document.getElementById("m-orc-obs").value=item.observacao||"";document.getElementById("m-orc-title").textContent="Editar item";}
-  else{document.getElementById("m-orc-id").value="";atualizarSelectOrc(Object.keys(CATS)[0]);document.getElementById("m-orc-item").value="";document.getElementById("m-orc-qtd").value="1";document.getElementById("m-orc-val").value="";document.getElementById("m-orc-obs").value="";document.getElementById("m-orc-title").textContent="Adicionar item";}
+  if(item){document.getElementById("m-orc-id").value=item.id;cs.value=item.categoria;atualizarOrcSel(item.categoria);document.getElementById("m-orc-item").value=item.item;document.getElementById("m-orc-qtd").value=item.quantidade;document.getElementById("m-orc-val").value=item.valor_unitario;document.getElementById("m-orc-obs").value=item.observacao||"";document.getElementById("m-orc-tit").textContent="Editar item";}
+  else{document.getElementById("m-orc-id").value="";atualizarOrcSel(Object.keys(CATS)[0]);document.getElementById("m-orc-item").value="";document.getElementById("m-orc-qtd").value="1";document.getElementById("m-orc-val").value="";document.getElementById("m-orc-obs").value="";document.getElementById("m-orc-tit").textContent="Adicionar item";}
   document.getElementById("modal-orc").style.display="flex";
 }
-function atualizarSelectOrc(cat){var s=document.getElementById("m-orc-item");s.innerHTML="";(CATS[cat]||[]).forEach(function(i){s.innerHTML+="<option>"+i+"</option>";});s.innerHTML+="<option>Outro</option>";}
-function deletarItemOrc(id){if(!confirm("Excluir?"))return;fetch(SB+"/rest/v1/orcamentos?id=eq."+id,{method:"DELETE",headers:{"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json","Prefer":"return=minimal"}}).then(function(){carregarItensOrc();});}
-function salvarItemOrc(){
+function atualizarOrcSel(cat){var s=document.getElementById("m-orc-item");s.innerHTML="";(CATS[cat]||[]).forEach(function(i){s.innerHTML+="<option>"+i+"</option>";});s.innerHTML+="<option>Outro</option>";}
+function deletarOrc(id){if(!confirm("Excluir?"))return;fetch(SB+"/rest/v1/orcamentos?id=eq."+id,{method:"DELETE",headers:{"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json","Prefer":"return=minimal"}}).then(function(){selecionarEvOrc();});}
+function salvarOrc(){
   var id=document.getElementById("m-orc-id").value;
-  var cat=document.getElementById("m-orc-cat").value;
-  var item=document.getElementById("m-orc-item").value;
-  var qtd=parseFloat(document.getElementById("m-orc-qtd").value)||1;
-  var val=parseFloat(document.getElementById("m-orc-val").value)||0;
-  var obs=document.getElementById("m-orc-obs").value;
-  if(!item){alert("Preencha o item!");return;}
+  var body={evento_id:evOrcAtual.id,categoria:document.getElementById("m-orc-cat").value,item:document.getElementById("m-orc-item").value,quantidade:parseFloat(document.getElementById("m-orc-qtd").value)||1,valor_unitario:parseFloat(document.getElementById("m-orc-val").value)||0,observacao:document.getElementById("m-orc-obs").value};
+  body.valor_total=body.quantidade*body.valor_unitario;
+  if(!body.item){alert("Preencha o item!");return;}
   var btn=document.getElementById("m-orc-save");btn.textContent="Salvando...";btn.disabled=true;
-  var body=JSON.stringify({evento_id:evOrcAtual.id,categoria:cat,item:item,quantidade:qtd,valor_unitario:val,valor_total:qtd*val,observacao:obs});
-  var path=SB+"/rest/v1/"+(id?"orcamentos?id=eq."+id:"orcamentos");
-  var meth=id?"PATCH":"POST";
-  fetch(path,{method:meth,headers:{"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json","Prefer":"return=minimal"},body:body}).then(function(){document.getElementById("modal-orc").style.display="none";btn.textContent="Salvar";btn.disabled=false;carregarItensOrc();}).catch(function(){alert("Erro!");btn.textContent="Salvar";btn.disabled=false;});
+  fetch(SB+"/rest/v1/"+(id?"orcamentos?id=eq."+id:"orcamentos"),{method:id?"PATCH":"POST",headers:{"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json","Prefer":"return=minimal"},body:JSON.stringify(body)}).then(function(){document.getElementById("modal-orc").style.display="none";btn.textContent="Salvar";btn.disabled=false;selecionarEvOrc();}).catch(function(){alert("Erro!");btn.textContent="Salvar";btn.disabled=false;});
 }
-function gerarPDFOrc(){
+function pdfOrc(){
   if(!evOrcAtual||!itensOrc.length)return;
   var tot=itensOrc.reduce(function(s,it){return s+parseFloat(it.valor_total||0);},0);
   var cats={};itensOrc.forEach(function(it){if(!cats[it.categoria])cats[it.categoria]=[];cats[it.categoria].push(it);});
   var win=window.open("","_blank");
   var h="<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Orcamento</title><style>body{font-family:Arial;max-width:600px;margin:0 auto;padding:20px}table{width:100%;border-collapse:collapse}th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}th{background:#f5f5f5;font-size:11px}@media print{button{display:none}}</style></head><body>";
 
-h+=”<h1>AGROPLAY</h1><h3>”+evOrcAtual.nome+”</h3><p>”+fd(evOrcAtual.data)+(evOrcAtual.horario?” as “+evOrcAtual.horario:””)+”</p>”;
-h+=”<div style='background:#f0fff0;padding:12px;margin:16px 0;display:flex;justify-content:space-between'><b>TOTAL ESTIMADO</b><b style='font-size:20px;color:#1e7a35'>”+fmt(tot)+”</b></div>”;
-Object.keys(cats).forEach(function(cat){var ct=cats[cat].reduce(function(s,it){return s+parseFloat(it.valor_total||0);},0);h+=”<h4 style='background:#eee;padding:8px;margin:12px 0 0'>”+cat+” - “+fmt(ct)+”</h4><table><tr><th>Item</th><th>Qtd</th><th>Unit.</th><th>Total</th></tr>”;cats[cat].forEach(function(it){h+=”<tr><td>”+it.item+”</td><td>”+it.quantidade+”</td><td>”+fmt(it.valor_unitario)+”</td><td><b>”+fmt(it.valor_total)+”</b></td></tr>”;});h+=”</table>”;});
-h+=”<br><button onclick='window.print()' style='width:100%;background:#1e7a35;color:#fff;border:none;padding:12px;font-size:14px;cursor:pointer'>Imprimir / Salvar PDF</button></body></html>”;
-win.document.write(h);win.document.close();
+h+=”<h1>AGROPLAY</h1><h3>”+evOrcAtual.nome+”</h3>”;
+h+=”<div style='background:#f0fff0;padding:12px;margin:16px 0;display:flex;justify-content:space-between'><b>TOTAL ESTIMADO</b><b style='font-size:20px;color:#1e7a35'>”+fmtR(tot)+”</b></div>”;
+Object.keys(cats).forEach(function(cat){var ct=cats[cat].reduce(function(s,it){return s+parseFloat(it.valor_total||0);},0);h+=”<h4 style='background:#eee;padding:8px;margin:12px 0 0'>”+cat+” - “+fmtR(ct)+”</h4><table><tr><th>Item</th><th>Qtd</th><th>Unit.</th><th>Total</th></tr>”;cats[cat].forEach(function(it){h+=”<tr><td>”+it.item+”</td><td>”+it.quantidade+”</td><td>”+fmtR(it.valor_unitario)+”</td><td><b>”+fmtR(it.valor_total)+”</b></td></tr>”;});h+=”</table>”;});
+h+=”<br><button onclick='window.print()' style='width:100%;background:#1e7a35;color:#fff;border:none;padding:12px;font-size:14px;cursor:pointer'>Imprimir / Salvar PDF</button>
+
+<div id="modal-orc" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:9999;align-items:flex-end;justify-content:center">
+<div style="background:#0d150d;border:1px solid #1a2a1a;border-radius:16px 16px 0 0;padding:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><span id="m-orc-tit" style="font-size:16px;font-weight:900;color:#fff">Adicionar item</span><button onclick="document.getElementById('modal-orc').style.display='none'" style="background:transparent;border:none;color:#555;font-size:22px;cursor:pointer">x</button></div>
+<input type="hidden" id="m-orc-id">
+<div style="margin-bottom:8px"><label style="display:block;font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Categoria</label><select id="m-orc-cat" onchange="atualizarOrcSel(this.value)" style="width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></select></div>
+<div style="margin-bottom:8px"><label style="display:block;font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Item</label><select id="m-orc-item" style="width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></select></div>
+<div style="margin-bottom:8px"><label style="display:block;font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Quantidade</label><input type="number" id="m-orc-qtd" value="1" step="0.5" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></div>
+<div style="margin-bottom:8px"><label style="display:block;font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Valor unitario R$</label><input type="number" id="m-orc-val" placeholder="0.00" step="0.01" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></div>
+<div style="margin-bottom:8px"><label style="display:block;font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Observacao</label><input type="text" id="m-orc-obs" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></div>
+<button id="m-orc-save" onclick="salvarOrc()" style="width:100%;background:#2aab47;border:none;border-radius:10px;padding:14px;font-size:14px;font-weight:700;color:#fff;cursor:pointer">Salvar</button>
+</div></div>
+</body></html>";
+  win.document.write(h);win.document.close();
 }
-// Populate ev-orc select when allEvs loads
-var _origRender=typeof render===‘function’?render:null;
 
 </script>
 
 <div id="modal-orc" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:9999;align-items:flex-end;justify-content:center">
 <div style="background:#0d150d;border:1px solid #1a2a1a;border-radius:16px 16px 0 0;padding:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><span id="m-orc-title" style="font-size:16px;font-weight:900;color:#fff">Adicionar item</span><button onclick="document.getElementById('modal-orc').style.display='none'" style="background:transparent;border:none;color:#555;font-size:22px;cursor:pointer">x</button></div>
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><span id="m-orc-tit" style="font-size:16px;font-weight:900;color:#fff">Adicionar item</span><button onclick="document.getElementById('modal-orc').style.display='none'" style="background:transparent;border:none;color:#555;font-size:22px;cursor:pointer">x</button></div>
 <input type="hidden" id="m-orc-id">
-<label style="display:block;font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Categoria</label>
-<select id="m-orc-cat" onchange="atualizarSelectOrc(this.value)" style="width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none;margin-bottom:8px"></select>
-<label style="display:block;font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Item</label>
-<select id="m-orc-item" style="width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none;margin-bottom:8px"></select>
-<label style="display:block;font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Quantidade</label>
-<input type="number" id="m-orc-qtd" value="1" step="0.5" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none;margin-bottom:8px">
-<label style="display:block;font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Valor unitario R$</label>
-<input type="number" id="m-orc-val" placeholder="0.00" step="0.01" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none;margin-bottom:8px">
-<label style="display:block;font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Observacao</label>
-<input type="text" id="m-orc-obs" placeholder="Ex: inclui retorno" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none;margin-bottom:8px">
-<button id="m-orc-save" onclick="salvarItemOrc()" style="width:100%;background:#2aab47;border:none;border-radius:10px;padding:14px;font-size:14px;font-weight:700;color:#fff;cursor:pointer">Salvar</button>
+<div style="margin-bottom:8px"><label style="display:block;font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Categoria</label><select id="m-orc-cat" onchange="atualizarOrcSel(this.value)" style="width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></select></div>
+<div style="margin-bottom:8px"><label style="display:block;font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Item</label><select id="m-orc-item" style="width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></select></div>
+<div style="margin-bottom:8px"><label style="display:block;font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Quantidade</label><input type="number" id="m-orc-qtd" value="1" step="0.5" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></div>
+<div style="margin-bottom:8px"><label style="display:block;font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Valor unitario R$</label><input type="number" id="m-orc-val" placeholder="0.00" step="0.01" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></div>
+<div style="margin-bottom:8px"><label style="display:block;font-size:10px;color:#2aab47;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px">Observacao</label><input type="text" id="m-orc-obs" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;outline:none"></div>
+<button id="m-orc-save" onclick="salvarOrc()" style="width:100%;background:#2aab47;border:none;border-radius:10px;padding:14px;font-size:14px;font-weight:700;color:#fff;cursor:pointer">Salvar</button>
 </div></div>
 </body>
 </html>
