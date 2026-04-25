@@ -15,43 +15,19 @@ body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:16px;max
 .lv{background:#7c3aed;padding:7px 10px;font-size:11px;font-weight:700;color:#fff}
 .back{background:transparent;border:1px solid #1a2a1a;border-radius:8px;padding:6px 12px;color:#eee;font-size:12px;text-decoration:none}
 select{width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:12px;color:#eee;font-size:13px;margin-bottom:10px;outline:none}
-input[type=number],input[type=text]{width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;margin-bottom:8px;outline:none}
-label{display:block;font-size:10px;color:#2aab47;letter-spacing:1px;margin-bottom:4px;text-transform:uppercase}
-#modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:9999;align-items:flex-end;justify-content:center}
-.mbox{background:#0d150d;border:1px solid #1a2a1a;border-radius:16px 16px 0 0;padding:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
 </style>
 </head>
 <body>
 <div class="hdr">
   <div class="logo" onclick="location.href='home.html'">
     <div class="lt">AGRO<span>PLAY</span></div>
-    <div class="lv">Orc v10</div>
+    <div class="lv">Orc v11</div>
   </div>
   <a href="home.html" class="back">&larr; Menu</a>
 </div>
 <select id="ev-sel" onchange="selecionarEvento()"><option value="">Carregando eventos...</option></select>
 <div id="ev-info" style="margin-bottom:12px;font-size:12px"></div>
 <div id="conteudo"></div>
-<div id="modal">
-  <div class="mbox">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-      <span id="m-tit" style="font-size:16px;font-weight:900;color:#fff">Adicionar item</span>
-      <button onclick="document.getElementById('modal').style.display='none'" style="background:transparent;border:none;color:#555;font-size:22px;cursor:pointer">x</button>
-    </div>
-    <input type="hidden" id="m-id">
-    <label>Categoria</label>
-    <select id="m-cat" onchange="atualizarSel(this.value)"></select>
-    <label>Item</label>
-    <select id="m-item"></select>
-    <label>Quantidade</label>
-    <input type="number" id="m-qtd" value="1" min="0.5" step="0.5">
-    <label>Valor unitario R$</label>
-    <input type="number" id="m-val" placeholder="0.00" step="0.01" min="0">
-    <label>Observacao (opcional)</label>
-    <input type="text" id="m-obs" placeholder="Ex: inclui retorno">
-    <button id="m-save" onclick="salvarItem()" style="width:100%;background:#2aab47;border:none;border-radius:10px;padding:14px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;margin-top:4px">Salvar</button>
-  </div>
-</div>
 <script>
 var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
 var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
@@ -67,146 +43,156 @@ var CATS={
 };
 function fmt(v){return "R$ "+parseFloat(v||0).toLocaleString("pt-BR",{minimumFractionDigits:2});}
 function fd(d){if(!d)return"";var x=d.split("-");return x[2]+"/"+x[1]+"/"+x[0];}
-function tog(id){var el=document.getElementById(id);if(el)el.style.display=el.style.display==="none"?"block":"none";}
 function q(id){return document.getElementById(id);}
 function get(path){return fetch(SB+"/rest/v1/"+path,{headers:{"apikey":KY,"Authorization":"Bearer "+KY}}).then(function(r){return r.json();});}
 function post(path,meth,body){return fetch(SB+"/rest/v1/"+path,{method:meth,headers:{"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json","Prefer":"return=minimal"},body:JSON.stringify(body)}).then(function(r){return r.text();});}
+
 function carregarEventos(){
-  var sel=q("ev-sel");
-  sel.innerHTML="<option value=''>Carregando...</option>";
-  get("eventos?select=id,nome,data,horario,local&order=data.asc").then(function(evs){
-    sel.innerHTML="<option value=''>Selecione um evento...</option>";
-    (evs||[]).forEach(function(ev){
-      sel.innerHTML+="<option value='"+ev.id+"'>"+ev.nome+" ("+fd(ev.data)+")</option>";
-    });
-    window._evs=evs||[];
-  }).catch(function(){
-    sel.innerHTML="<option value=''>Erro - recarregue</option>";
-  });
+var sel=q(“ev-sel”);
+sel.innerHTML=”<option value=''>Carregando…</option>”;
+get(“eventos?select=id,nome,data,horario,local&order=data.asc”).then(function(evs){
+sel.innerHTML=”<option value=''>Selecione um evento…</option>”;
+(evs||[]).forEach(function(ev){sel.innerHTML+=”<option value='"+ev.id+"'>”+ev.nome+” (”+fd(ev.data)+”)</option>”;});
+window._evs=evs||[];
+}).catch(function(){sel.innerHTML=”<option value=''>Erro - recarregue</option>”;});
 }
+
 function selecionarEvento(){
-  var evId=q("ev-sel").value;
-  q("conteudo").innerHTML="";
-  q("ev-info").innerHTML="";
-  if(!evId)return;
-  var evs=window._evs||[];
-  for(var i=0;i<evs.length;i++){if(evs[i].id==evId){evAtual=evs[i];break;}}
-  if(!evAtual)return;
-  q("ev-info").innerHTML="<b style='color:#fff'>"+evAtual.nome+"</b> <span style='color:#555;font-size:11px'>"+fd(evAtual.data)+(evAtual.horario?" as "+evAtual.horario:"")+"</span>";
-  carregarItens();
+var evId=q(“ev-sel”).value;
+q(“ev-info”).innerHTML=””;
+q(“conteudo”).innerHTML=””;
+if(!evId)return;
+var evs=window._evs||[];
+for(var i=0;i<evs.length;i++){if(evs[i].id==evId){evAtual=evs[i];break;}}
+if(!evAtual)return;
+q(“ev-info”).innerHTML=”<b style='color:#fff'>”+evAtual.nome+”</b> <span style='color:#555;font-size:11px'>”+fd(evAtual.data)+(evAtual.horario?” as “+evAtual.horario:””)+”</span>”;
+get(“orcamentos?evento_id=eq.”+evAtual.id+”&order=categoria.asc,item.asc”).then(function(d){
+itens=Array.isArray(d)?d:[];
+renderPagina();
+});
 }
-function carregarItens(){
-  q("conteudo").innerHTML="<div style='text-align:center;padding:20px;color:#555'>Carregando...</div>";
-  get("orcamentos?evento_id=eq."+evAtual.id+"&order=categoria.asc,item.asc").then(function(d){
-    itens=Array.isArray(d)?d:[];
-    renderizar();
-  }).catch(function(){
-    q("conteudo").innerHTML="<div style='text-align:center;padding:20px;color:#e74c3c'>Erro ao carregar itens.</div>";
-  });
+
+function atualizarTotal(){
+var tot=itens.reduce(function(s,it){return s+parseFloat(it.valor_total||0);},0);
+var el=q(“total-geral”);
+if(el)el.textContent=fmt(tot);
 }
-function renderizar(){
-  var tot=0;var pc={};
-  itens.forEach(function(it){var v=parseFloat(it.valor_total)||0;tot+=v;if(!pc[it.categoria])pc[it.categoria]=0;pc[it.categoria]+=v;});
-  var h="<div style='background:#090e09;border:1px solid #1a2a1a;border-radius:12px;padding:14px;margin-bottom:12px'>";
-  h+="<div style='font-size:11px;color:#555;margin-bottom:4px'>TOTAL ESTIMADO</div>";
-  h+="<div style='font-size:24px;font-weight:900;color:#2aab47'>"+fmt(tot)+"</div>";
-  if(Object.keys(pc).length){
-    h+="<div style='display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid #1a2a1a'>";
-    Object.keys(pc).forEach(function(c){h+="<div style='font-size:10px;background:#060a06;border:1px solid #1a2a1a;border-radius:6px;padding:3px 8px;color:#888'>"+c+": <b style='color:#eee'>"+fmt(pc[c])+"</b></div>";});
-    h+="</div>";
-  }
-  h+="</div>";
-  h+="<div style='display:flex;gap:8px;margin-bottom:16px'>";
-  h+="<button onclick='abrirModal(0)' style='flex:1;background:#1e7a35;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;color:#fff;cursor:pointer'>+ Adicionar item</button>";
-  h+="<button onclick='carregarItens()' style='background:transparent;border:1px solid #1a2a1a;border-radius:10px;padding:12px;font-size:20px;color:#eee;cursor:pointer'>&#8635;</button>";
-  h+="</div>";
-  var cats=Object.keys(CATS);
-  itens.forEach(function(it){if(cats.indexOf(it.categoria)<0)cats.push(it.categoria);});
-  cats.forEach(function(cat){
-    var ci=itens.filter(function(it){return it.categoria===cat;});
-    if(!ci.length)return;
-    var ct=ci.reduce(function(s,it){return s+parseFloat(it.valor_total||0);},0);
-    var cid="c"+Math.abs(cat.split("").reduce(function(a,c){return a+c.charCodeAt(0);},0));
-    h+="<div style='margin-bottom:8px'>";
-    h+="<div onclick='tog(\""+cid+"\")' style='background:#090e09;border:1px solid #1a2a1a;border-radius:12px 12px 0 0;padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between'>";
-    h+="<span style='font-size:13px;font-weight:700;color:#eee'>"+cat+"</span>";
-    h+="<span style='font-size:13px;font-weight:700;color:#2aab47'>"+fmt(ct)+"</span></div>";
-    h+="<div id='"+cid+"' style='display:none;background:#060a06;border:1px solid #1a2a1a;border-top:none;border-radius:0 0 12px 12px'>";
-    ci.forEach(function(it){
-      h+="<div style='padding:10px 14px;border-bottom:1px solid #0a0f0a;display:flex;justify-content:space-between;align-items:center'>";
-      h+="<div style='flex:1'><div style='font-size:13px;color:#eee'>"+it.item+"</div>";
-      h+="<div style='font-size:10px;color:#555'>"+it.quantidade+"x "+fmt(it.valor_unitario)+(it.observacao?" - "+it.observacao:"")+"</div></div>";
-      h+="<div style='display:flex;align-items:center;gap:6px'><span style='font-size:13px;font-weight:700;color:#fff'>"+fmt(it.valor_total)+"</span>";
-      h+="<button onclick='abrirModal("+it.id+")' style='background:transparent;border:1px solid #555;color:#888;border-radius:6px;padding:3px 7px;font-size:10px;cursor:pointer'>Ed</button>";
-      h+="<button onclick='deletarItem("+it.id+")' style='background:transparent;border:1px solid #c0392b;color:#c0392b;border-radius:6px;padding:3px 7px;font-size:10px;cursor:pointer'>X</button>";
-      h+="</div></div>";
-    });
-    h+="</div></div>";
-  });
-  if(itens.length)h+="<button onclick='gerarPDF()' style='width:100%;background:#0891b2;border:none;border-radius:10px;padding:14px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;margin-top:8px'>Gerar PDF</button>";
-  q("conteudo").innerHTML=h;
+
+function renderPagina(){
+var h=”<div id='total-bar' style='background:#090e09;border:1px solid #1a2a1a;border-radius:12px;padding:14px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center'>”;
+h+=”<div style='font-size:11px;color:#555'>TOTAL ESTIMADO</div>”;
+h+=”<div id='total-geral' style='font-size:24px;font-weight:900;color:#2aab47'>”+fmt(0)+”</div></div>”;
+
+// Render all categories expanded
+var cats=Object.keys(CATS);
+itens.forEach(function(it){if(cats.indexOf(it.categoria)<0)cats.push(it.categoria);});
+
+cats.forEach(function(cat){
+var catId=“cat_”+cat.replace(/[^a-z0-9]/gi,”_”);
+h+=”<div style='background:#090e09;border:1px solid #1a2a1a;border-radius:12px;margin-bottom:10px;overflow:hidden'>”;
+h+=”<div style='background:#0d150d;padding:12px 14px;display:flex;justify-content:space-between;align-items:center'>”;
+h+=”<span style='font-size:13px;font-weight:700;color:#eee'>”+cat+”</span>”;
+h+=”<span id='tot_"+catId+"' style='font-size:12px;font-weight:700;color:#2aab47'>”+fmt(0)+”</span></div>”;
+// Items list for this category
+h+=”<div id='list_"+catId+"'></div>”;
+// Add form inline
+h+=”<div style='padding:10px 12px;border-top:1px solid #0a0f0a'>”;
+h+=”<div style='display:flex;gap:6px;align-items:center;flex-wrap:wrap'>”;
+h+=”<select id='item_"+catId+"' style='flex:2;min-width:120px;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:8px;color:#eee;font-size:12px;outline:none'>”;
+(CATS[cat]||[]).forEach(function(i){h+=”<option>”+i+”</option>”;});
+h+=”<option>Outro</option></select>”;
+h+=”<input type='number' id='qtd_"+catId+"' value='1' step='0.5' min='0.5' placeholder='Qtd' style='width:55px;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:8px;color:#eee;font-size:12px;outline:none'>”;
+h+=”<input type='number' id='val_"+catId+"' placeholder='R$' step='0.01' min='0' style='width:80px;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:8px;color:#eee;font-size:12px;outline:none'>”;
+h+=”<button onclick='addItem(\""+cat+"\",\""+catId+"\")' style='background:#1e7a35;border:none;border-radius:8px;padding:8px 12px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap'>+ Add</button>”;
+h+=”</div></div></div>”;
+});
+
+h+=”<button onclick='gerarPDF()' style='width:100%;background:#0891b2;border:none;border-radius:10px;padding:14px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;margin-top:8px'>Gerar PDF</button>”;
+
+q(“conteudo”).innerHTML=h;
+
+// Now render existing items
+itens.forEach(function(it){adicionarNaLista(it);});
+atualizarTotal();
 }
-function abrirModal(id){
-  var item=null;
-  if(id){for(var i=0;i<itens.length;i++){if(itens[i].id===id){item=itens[i];break;}}}
-  var cs=q("m-cat");
-  cs.innerHTML="";
-  Object.keys(CATS).forEach(function(c){cs.innerHTML+="<option>"+c+"</option>";});
-  if(item){
-    q("m-id").value=item.id;cs.value=item.categoria;atualizarSel(item.categoria);
-    q("m-item").value=item.item;q("m-qtd").value=item.quantidade;q("m-val").value=item.valor_unitario;q("m-obs").value=item.observacao||"";
-    q("m-tit").textContent="Editar item";
-  } else {
-    q("m-id").value="";atualizarSel(Object.keys(CATS)[0]);
-    q("m-item").value="";q("m-qtd").value="1";q("m-val").value="";q("m-obs").value="";
-    q("m-tit").textContent="Adicionar item";
-  }
-  q("modal").style.display="flex";
+
+function adicionarNaLista(it){
+var catId=“cat_”+it.categoria.replace(/[^a-z0-9]/gi,”*”);
+var lista=q(“list*”+catId);
+if(!lista)return;
+var div=document.createElement(“div”);
+div.id=“item_row_”+it.id;
+div.style.cssText=“padding:8px 12px;border-bottom:1px solid #0a0f0a;display:flex;justify-content:space-between;align-items:center”;
+div.innerHTML=”<div style='flex:1'><div style='font-size:12px;color:#eee'>”+it.item+”</div><div style='font-size:10px;color:#555'>”+it.quantidade+“x “+fmt(it.valor_unitario)+”</div></div><div style='display:flex;align-items:center;gap:6px'><span style='font-size:12px;font-weight:700;color:#2aab47'>”+fmt(it.valor_total)+”</span><button onclick='deletarItem("+it.id+",\"cat_"+it.categoria.replace(/[^a-z0-9]/gi,"_")+"\")' style='background:transparent;border:1px solid #c0392b;color:#c0392b;border-radius:6px;padding:2px 6px;font-size:10px;cursor:pointer'>X</button></div>”;
+lista.appendChild(div);
+// Update category total
+atualizarTotalCat(it.categoria);
 }
-function atualizarSel(cat){
-  q("m-item").innerHTML="";
-  (CATS[cat]||[]).forEach(function(i){q("m-item").innerHTML+="<option>"+i+"</option>";});
-  q("m-item").innerHTML+="<option>Outro</option>";
+
+function atualizarTotalCat(cat){
+var catId=“cat_”+cat.replace(/[^a-z0-9]/gi,”*”);
+var ct=itens.filter(function(i){return i.categoria===cat;}).reduce(function(s,i){return s+parseFloat(i.valor_total||0);},0);
+var el=q(“tot*”+catId);
+if(el)el.textContent=fmt(ct);
 }
-function deletarItem(id){
-  if(!confirm("Excluir este item?"))return;
-  post("orcamentos?id=eq."+id,"DELETE",{}).then(function(){carregarItens();});
+
+function addItem(cat,catId){
+if(!evAtual)return;
+var itemSel=q(“item_”+catId);
+var qtdEl=q(“qtd_”+catId);
+var valEl=q(“val_”+catId);
+var item=itemSel?itemSel.value:””;
+var qtd=parseFloat(qtdEl?qtdEl.value:1)||1;
+var val=parseFloat(valEl?valEl.value:0)||0;
+if(!item){alert(“Selecione um item!”);return;}
+if(!val){alert(“Digite o valor!”);return;}
+var body={evento_id:evAtual.id,categoria:cat,item:item,quantidade:qtd,valor_unitario:val,valor_total:qtd*val};
+var btn=event.target;btn.textContent=”…”;btn.disabled=true;
+post(“orcamentos”,“POST”,body).then(function(){
+// Reload just the new item
+get(“orcamentos?evento_id=eq.”+evAtual.id+”&categoria=eq.”+encodeURIComponent(cat)+”&item=eq.”+encodeURIComponent(item)+”&order=id.desc&limit=1”).then(function(d){
+if(d&&d[0]){
+itens.push(d[0]);
+adicionarNaLista(d[0]);
+atualizarTotal();
 }
-function salvarItem(){
-  var id=q("m-id").value;
-  var body={
-    evento_id:evAtual.id,
-    categoria:q("m-cat").value,
-    item:q("m-item").value,
-    quantidade:parseFloat(q("m-qtd").value)||1,
-    valor_unitario:parseFloat(q("m-val").value)||0,
-    observacao:q("m-obs").value
-  };
-  body.valor_total=body.quantidade*body.valor_unitario;
-  if(!body.item){alert("Preencha o item!");return;}
-  var btn=q("m-save");btn.textContent="Salvando...";btn.disabled=true;
-  post(id?"orcamentos?id=eq."+id:"orcamentos",id?"PATCH":"POST",body).then(function(){
-    q("modal").style.display="none";btn.textContent="Salvar";btn.disabled=false;carregarItens();
-  }).catch(function(){alert("Erro ao salvar!");btn.textContent="Salvar";btn.disabled=false;});
+btn.textContent=”+ Add”;btn.disabled=false;
+if(valEl)valEl.value=””;
+});
+}).catch(function(){alert(“Erro!”);btn.textContent=”+ Add”;btn.disabled=false;});
 }
+
+function deletarItem(id,catId){
+if(!confirm(“Excluir?”))return;
+post(“orcamentos?id=eq.”+id,“DELETE”,{}).then(function(){
+itens=itens.filter(function(i){return i.id!==id;});
+var row=q(“item_row_”+id);
+if(row)row.parentNode.removeChild(row);
+atualizarTotal();
+// Update all cat totals
+Object.keys(CATS).forEach(function(c){atualizarTotalCat(c);});
+});
+}
+
 function gerarPDF(){
-  if(!evAtual||!itens.length)return;
-  var tot=itens.reduce(function(s,it){return s+parseFloat(it.valor_total||0);},0);
-  var cats={};itens.forEach(function(it){if(!cats[it.categoria])cats[it.categoria]=[];cats[it.categoria].push(it);});
-  var win=window.open("","_blank");
-  var h="<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Orcamento</title><style>body{font-family:Arial;max-width:600px;margin:0 auto;padding:20px}table{width:100%;border-collapse:collapse}th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}th{background:#f5f5f5;font-size:11px}@media print{button{display:none}}</style></head><body>";
-  h+="<h1>AGROPLAY</h1><h3>"+evAtual.nome+"</h3>";
-  h+="<div style='background:#f0fff0;padding:12px;margin:16px 0;display:flex;justify-content:space-between'><b>TOTAL ESTIMADO</b><b style='font-size:20px;color:#1e7a35'>"+fmt(tot)+"</b></div>";
-  Object.keys(cats).forEach(function(cat){
-    var ct=cats[cat].reduce(function(s,it){return s+parseFloat(it.valor_total||0);},0);
-    h+="<h4 style='background:#eee;padding:8px;margin:12px 0 0'>"+cat+" - "+fmt(ct)+"</h4>";
-    h+="<table><tr><th>Item</th><th>Qtd</th><th>Unit.</th><th>Total</th></tr>";
-    cats[cat].forEach(function(it){h+="<tr><td>"+it.item+"</td><td>"+it.quantidade+"</td><td>"+fmt(it.valor_unitario)+"</td><td><b>"+fmt(it.valor_total)+"</b></td></tr>";});
-    h+="</table>";
-  });
-  h+="<br><button onclick='window.print()' style='width:100%;background:#1e7a35;color:#fff;border:none;padding:12px;font-size:14px;cursor:pointer'>Imprimir / Salvar PDF</button></body></html>";
-  win.document.write(h);win.document.close();
+if(!evAtual||!itens.length)return;
+var tot=itens.reduce(function(s,it){return s+parseFloat(it.valor_total||0);},0);
+var cats={};itens.forEach(function(it){if(!cats[it.categoria])cats[it.categoria]=[];cats[it.categoria].push(it);});
+var win=window.open(””,”_blank”);
+var h=”<!DOCTYPE html><html><head><meta charset='UTF-8'><title>Orcamento</title><style>body{font-family:Arial;max-width:600px;margin:0 auto;padding:20px}table{width:100%;border-collapse:collapse}th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}th{background:#f5f5f5;font-size:11px}@media print{button{display:none}}</style></head><body>”;
+h+=”<h1>AGROPLAY</h1><h3>”+evAtual.nome+”</h3>”;
+h+=”<div style='background:#f0fff0;padding:12px;margin:16px 0;display:flex;justify-content:space-between'><b>TOTAL ESTIMADO</b><b style='font-size:20px;color:#1e7a35'>”+fmt(tot)+”</b></div>”;
+Object.keys(cats).forEach(function(cat){
+var ct=cats[cat].reduce(function(s,it){return s+parseFloat(it.valor_total||0);},0);
+h+=”<h4 style='background:#eee;padding:8px;margin:12px 0 0'>”+cat+” - “+fmt(ct)+”</h4>”;
+h+=”<table><tr><th>Item</th><th>Qtd</th><th>Unit.</th><th>Total</th></tr>”;
+cats[cat].forEach(function(it){h+=”<tr><td>”+it.item+”</td><td>”+it.quantidade+”</td><td>”+fmt(it.valor_unitario)+”</td><td><b>”+fmt(it.valor_total)+”</b></td></tr>”;});
+h+=”</table>”;
+});
+h+=”<br><button onclick='window.print()' style='width:100%;background:#1e7a35;color:#fff;border:none;padding:12px;font-size:14px;cursor:pointer'>Imprimir / Salvar PDF</button></body></html>”;
+win.document.write(h);win.document.close();
 }
+
 carregarEventos();
 
 </script>
