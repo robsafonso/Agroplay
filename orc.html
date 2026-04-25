@@ -197,7 +197,7 @@ carregarItens();
 }).catch(function(){alert(“Erro!”);btn.textContent=“Salvar”;btn.disabled=false;});
 }
 
-loadEventos();
+setTimeout(function(){loadEventos();}, 500);
 
 </script>
 </body>
