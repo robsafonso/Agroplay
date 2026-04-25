@@ -826,7 +826,14 @@ function _loadCadsPage(){
   }).catch(function(){cads=_cads;rSts();rChips();rend();});
 }
 _loadCadsPage();
-  ap("codigos?select=*&order=id.asc&limit=200000").then(function(d){cods=d||[];rSts();rCods();}).catch(function(){cods=[];});
+  var _cods=[];var _codsOff=0;
+function _loadCodsPage(){
+  ap("codigos?select=*&order=id.asc&limit=1000&offset="+_codsOff).then(function(d){
+    if(d&&d.length){_cods=_cods.concat(d);if(d.length===1000){_codsOff+=1000;_loadCodsPage();}else{cods=_cods;rSts();rCods();}}
+    else{cods=_cods;rSts();rCods();}
+  }).catch(function(){cods=_cods;rSts();rCods();});
+}
+_loadCodsPage();
   ap("eventos?select=*&order=data.asc").then(function(d){evs=d||[];rSts();rEvs();ap("lotes?select=*&order=criado_em.desc").then(function(dl){lotes=dl||[];rLotes();}).catch(function(){lotes=[];});}).catch(function(){evs=[];ap("lotes?select=*&order=criado_em.desc").then(function(dl){lotes=dl||[];rLotes();}).catch(function(){lotes=[];});});
 }
 function rSts(){
