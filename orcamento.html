@@ -21,7 +21,7 @@ select{width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:10px
 <div class="hdr">
   <div class="logo" onclick="location.href='home.html'">
     <div class="lt">AGRO<span>PLAY</span></div>
-    <div class="lv">Orc v11</div>
+    <div class="lv">Orc v12</div>
   </div>
   <a href="home.html" class="back">&larr; Menu</a>
 </div>
@@ -136,7 +136,7 @@ var el=q(“tot*”+catId);
 if(el)el.textContent=fmt(ct);
 }
 
-function addItem(cat,catId){
+function addItem(cat,catId,btn){
 if(!evAtual)return;
 var itemSel=q(“item_”+catId);
 var qtdEl=q(“qtd_”+catId);
@@ -147,7 +147,7 @@ var val=parseFloat(valEl?valEl.value:0)||0;
 if(!item){alert(“Selecione um item!”);return;}
 if(!val){alert(“Digite o valor!”);return;}
 var body={evento_id:evAtual.id,categoria:cat,item:item,quantidade:qtd,valor_unitario:val,valor_total:qtd*val};
-var btn=event.target;btn.textContent=”…”;btn.disabled=true;
+if(btn){btn.textContent=”…”;btn.disabled=true;}
 post(“orcamentos”,“POST”,body).then(function(){
 // Reload just the new item
 get(“orcamentos?evento_id=eq.”+evAtual.id+”&categoria=eq.”+encodeURIComponent(cat)+”&item=eq.”+encodeURIComponent(item)+”&order=id.desc&limit=1”).then(function(d){
@@ -156,10 +156,10 @@ itens.push(d[0]);
 adicionarNaLista(d[0]);
 atualizarTotal();
 }
-btn.textContent=”+ Add”;btn.disabled=false;
+if(btn){btn.textContent=”+ Add”;btn.disabled=false;}
 if(valEl)valEl.value=””;
 });
-}).catch(function(){alert(“Erro!”);btn.textContent=”+ Add”;btn.disabled=false;});
+}).catch(function(){alert(“Erro!”);if(btn){btn.textContent=”+ Add”;btn.disabled=false;}});
 }
 
 function deletarItem(id,catId){
