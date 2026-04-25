@@ -817,7 +817,15 @@ q("btn-salvar-cargo").onclick=function(){
 function togMenu(){var m=document.getElementById("mdrop");m.style.display=m.style.display==="none"||m.style.display===""?"block":"none";}
 function load(){
   q("tbl").innerHTML="<div class='empty'>Carregando...</div>";
-  ap("cadastros?select=*&order=criado_em.desc&limit=50000").then(function(d){cads=d||[];rSts();rChips();rend();}).catch(function(){cads=[];rSts();rChips();rend();});
+  // Load all cadastros with pagination
+var _cads=[];var _offset=0;var _pageSize=1000;
+function _loadCadsPage(){
+  ap("cadastros?select=*&order=criado_em.desc&limit="+_pageSize+"&offset="+_offset).then(function(d){
+    if(d&&d.length){_cads=_cads.concat(d);if(d.length===_pageSize){_offset+=_pageSize;_loadCadsPage();}else{cads=_cads;rSts();rChips();rend();}}
+    else{cads=_cads;rSts();rChips();rend();}
+  }).catch(function(){cads=_cads;rSts();rChips();rend();});
+}
+_loadCadsPage();
   ap("codigos?select=*&order=id.asc&limit=200000").then(function(d){cods=d||[];rSts();rCods();}).catch(function(){cods=[];});
   ap("eventos?select=*&order=data.asc").then(function(d){evs=d||[];rSts();rEvs();ap("lotes?select=*&order=criado_em.desc").then(function(dl){lotes=dl||[];rLotes();}).catch(function(){lotes=[];});}).catch(function(){evs=[];ap("lotes?select=*&order=criado_em.desc").then(function(dl){lotes=dl||[];rLotes();}).catch(function(){lotes=[];});});
 }
