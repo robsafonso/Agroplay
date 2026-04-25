@@ -88,13 +88,17 @@ return fetch(SB+”/rest/v1/”+path,{method:m,headers:{“apikey”:KY,“Autho
 function loadEventos(){
 var sel=q(“ev-sel”);
 sel.innerHTML=”<option value=''>Buscando…</option>”;
-ap(“eventos?select=id,nome,data,horario,local&order=data.asc”).then(function(evs){
+var done=false;
+var timer=setTimeout(function(){if(!done){sel.innerHTML=”<option value=''>Timeout - toque para tentar novamente</option>”;sel.onclick=function(){loadEventos();};}},8000);
+fetch(SB+”/rest/v1/eventos?select=id,nome,data,horario,local&order=data.asc”,{headers:{“apikey”:KY,“Authorization”:“Bearer “+KY}}).then(function(r){return r.json();}).then(function(evs){
+done=true;clearTimeout(timer);
 if(!evs||!evs.length){sel.innerHTML=”<option value=''>Nenhum evento</option>”;return;}
 sel.innerHTML=”<option value=''>Selecione um evento…</option>”;
 evs.forEach(function(ev){sel.innerHTML+=”<option value='"+ev.id+"'>”+ev.nome+” (”+fd(ev.data)+”)</option>”;});
 window._evs=evs;
 }).catch(function(e){
-sel.innerHTML=”<option value=''>ERRO: “+(e?e.message:”?”)+”. Recarregue.</option>”;
+done=true;clearTimeout(timer);
+sel.innerHTML=”<option value=''>ERRO: “+(e?e.message:“conexao”)+”</option>”;
 });
 }
 function selecionarEvento(){
