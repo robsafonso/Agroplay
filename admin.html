@@ -190,9 +190,6 @@ function rHistEv(){
     el.innerHTML=h;
   }).catch(function(){el.innerHTML="<div class='empty'>Erro ao carregar</div>";});
 }
-function load(){
-  q("lista-checkin").innerHTML="<div class='empty'>Carregando...</div>";
-  // Paginated load
 var _adminCads=[];var _adminOff=0;
 function _loadAdminCads(cb){
   ap("cadastros?select=*&order=nome.asc&limit=1000&offset="+_adminOff).then(function(d){
@@ -200,13 +197,16 @@ function _loadAdminCads(cb){
     else{cads=_adminCads;cb();}
   }).catch(function(){cads=_adminCads;cb();});
 }
-_loadAdminCads(function(){
+function load(){
+  q("lista-checkin").innerHTML="<div class='empty'>Carregando...</div>";
+  _adminCads=[];_adminOff=0;
+  _loadAdminCads(function(){
     ap("codigos?cadastro_id=not.is.null&select=codigo,cadastro_id").then(function(cods){
       var map={};(cods||[]).forEach(function(c){map[c.cadastro_id]=c.codigo;});
       cads.forEach(function(c){c.codigo=map[c.id]||'';});
       rLista();
     }).catch(function(){rLista();});
-  }).catch(function(){cads=[];rLista();});
+  });
   ap("eventos?select=*&order=data.asc").then(function(d){
     evs=d||[];
     var sel=q("ev-sel");
