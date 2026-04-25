@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agroplay - Orcamento</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:16px;max-width:480px;margin:0 auto}
+.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.logo{cursor:pointer;display:flex;align-items:center;border:1px solid #1a2a1a;border-radius:10px;overflow:hidden}
+.lt{background:#0d150d;padding:7px 12px;font-size:16px;font-weight:900;color:#fff}
+.lt span{color:#2aab47}
+.lv{background:#c9973c;padding:7px 10px;font-size:11px;font-weight:700;color:#fff}
+.back{background:transparent;border:1px solid #1a2a1a;border-radius:8px;padding:6px 12px;color:#eee;font-size:12px;text-decoration:none}
+select{width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:12px;color:#eee;font-size:13px;margin-bottom:10px;outline:none}
+input{width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;color:#eee;font-size:13px;margin-bottom:8px;outline:none}
+label{display:block;font-size:10px;color:#2aab47;letter-spacing:1px;margin-bottom:4px;text-transform:uppercase}
+#modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:9999;align-items:flex-end;justify-content:center}
+.mbox{background:#0d150d;border:1px solid #1a2a1a;border-radius:16px 16px 0 0;padding:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="logo" onclick="location.href='home.html'">
+    <div class="lt">AGRO<span>PLAY</span></div>
+    <div class="lv">Orcamento</div>
+  </div>
+  <a href="home.html" class="back">&larr; Menu</a>
+</div>
+<select id="ev-sel" onchange="selecionarEvento()"><option value="">Carregando...</option></select>
+<div id="ev-info" style="margin-bottom:12px;font-size:12px;color:#555"></div>
+<div id="conteudo"></div>
+<div id="modal">
+  <div class="mbox">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <span id="m-title" style="font-size:16px;font-weight:900;color:#fff">Adicionar item</span>
+      <button onclick="document.getElementById('modal').style.display='none'" style="background:transparent;border:none;color:#555;font-size:22px;cursor:pointer">x</button>
+    </div>
+    <input type="hidden" id="m-id">
+    <label>Categoria</label>
+    <select id="m-cat" onchange="atualizarSelect(this.value)"></select>
+    <label>Item</label>
+    <select id="m-item"></select>
+    <label>Quantidade</label>
+    <input type="number" id="m-qtd" value="1" min="0.5" step="0.5">
+    <label>Valor unitario R$</label>
+    <input type="number" id="m-val" placeholder="0.00" step="0.01" min="0">
+    <label>Observacao (opcional)</label>
+    <input type="text" id="m-obs" placeholder="Ex: inclui retorno">
+    <button id="m-save" onclick="salvarItem()" style="width:100%;background:#2aab47;border:none;border-radius:10px;padding:14px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;margin-top:4px">Salvar</button>
+  </div>
+</div>
+<script>
+var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
+var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
+var evAtual=null;
+var itens=[];
+var CATS={"Artista":["Cache do artista","Passagem aerea artista","Passagem aerea banda","Hospedagem artista","Hospedagem banda","Translado aeroporto/hotel","Translado hotel/show","Alimentacao camarim"],"Estrutura Tecnica":["Sistema de som PA","Iluminacao","Gerador","Palco montagem/desmontagem","Backline instrumentos","Telao LED","Intercomunicadores"],"Local":["Aluguel do espaco","Banheiro quimico","Seguranca","Limpeza","Estacionamento","Energia eletrica"],"Equipe":["Garcom","Bartender","Producao local","Portaria credenciamento","Fotografo","Videomaker","MC Apresentador"],"Bebidas":["Agua mineral cx 24un","Cerveja cx 24un","Refrigerante cx","Drinks coqueteis litro","Gelo saco 5kg","Copo descartavel pct"],"Comunicacao":["Flyers impressao","Midia social trafego pago","Assessoria de imprensa","Ingressos impressos"]};
+function ap(path){return fetch(SB+"/rest/v1/"+path,{headers:{"apikey":KY,"Authorization":"Bearer "+KY}}).then(function(r){return r.json();});}
+function apm(path,m,body){return fetch(SB+"/rest/v1/"+path,{method:m,headers:{"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json","Prefer":"return=minimal"},body:JSON.stringify(body)}).then(function(r){return r.text();});}
+function fd(d){if(!d)return"";var x=d.split("-");return x[2]+"/"+x[1]+"/"+x[0];}
+function fmt(v){return"R$ "+parseFloat(v||0).toLocaleString("pt-BR",{minimumFractionDigits:2});}
+function tog(id){var el=document.getElementById(id);if(el)el.style.display=el.style.display==="none"?"block":"none";}
+function q(id){return document.getElementById(id);}
+
+function loadEventos(){
+ap(“eventos?select=id,nome,data&order=data.asc”).then(function(evs){
+var sel=q(“ev-sel”);
+sel.innerHTML=”<option value=''>Selecione um evento…</option>”;
+(evs||[]).forEach(function(ev){sel.innerHTML+=”<option value='"+ev.id+"'>”+ev.nome+” (”+fd(ev.data)+”)</option>”;});
+});
+}
+
+function selecionarEvento(){
+var evId=q(“ev-sel”).value;
+q(“conteudo”).innerHTML=””;
+q(“ev-info”).innerHTML=””;
+if(!evId)return;
+ap(“eventos?id=eq.”+evId+”&select=*”).then(function(d){
+evAtual=d&&d[0];
+if(!evAtual)return;
+q(“ev-info”).innerHTML=”<div style='font-size:14px;font-weight:700;color:#fff'>”+evAtual.nome+”</div><div style='font-size:11px;color:#555'>”+fd(evAtual.data)+(evAtual.horario?” as “+evAtual.horario:””)+(evAtual.local?” - “+evAtual.local:””)+”</div>”;
+carregarItens();
+});
+}
+
+function carregarItens(){
+ap(“orcamentos?evento_id=eq.”+evAtual.id+”&order=categoria.asc,item.asc”).then(function(d){
+itens=d||[];
+renderizar();
+});
+}
+
+function renderizar(){
+var totalGeral=0;
+var porCat={};
+itens.forEach(function(it){
+var v=parseFloat(it.valor_total)||0;
+totalGeral+=v;
+if(!porCat[it.categoria])porCat[it.categoria]=0;
+porCat[it.categoria]+=v;
+});
+
+var html=”<div style='background:#090e09;border:1px solid #1a2a1a;border-radius:12px;padding:14px;margin-bottom:12px'>”;
+html+=”<div style='font-size:11px;color:#555;margin-bottom:4px'>TOTAL ESTIMADO</div>”;
+html+=”<div style='font-size:24px;font-weight:900;color:#2aab47'>”+fmt(totalGeral)+”</div>”;
+if(Object.keys(porCat).length){
+html+=”<div style='border-top:1px solid #1a2a1a;margin-top:10px;padding-top:10px;display:flex;flex-wrap:wrap;gap:6px'>”;
+Object.keys(porCat).forEach(function(c){html+=”<div style='font-size:10px;background:#060a06;border:1px solid #1a2a1a;border-radius:6px;padding:3px 8px;color:#888'>”+c+”: <b style='color:#eee'>”+fmt(porCat[c])+”</b></div>”;});
+html+=”</div>”;
+}
+html+=”</div>”;
+html+=”<button onclick='abrirModal()' style='width:100%;background:#1e7a35;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:700;color:#fff;cursor:pointer;margin-bottom:16px'>+ Adicionar item</button>”;
+
+var catsUsadas=Object.keys(CATS);
+itens.forEach(function(it){if(catsUsadas.indexOf(it.categoria)<0)catsUsadas.push(it.categoria);});
+catsUsadas.forEach(function(cat){
+var ci=itens.filter(function(it){return it.categoria===cat;});
+if(!ci.length)return;
+var ct=ci.reduce(function(s,it){return s+parseFloat(it.valor_total||0);},0);
+var cid=“cat_”+cat.replace(/[^a-zA-Z0-9]/g,”_”);
+html+=”<div style='margin-bottom:8px'>”;
+html+=”<div onclick='tog(\""+cid+"\")' style='background:#090e09;border:1px solid #1a2a1a;border-radius:12px 12px 0 0;padding:12px 14px;cursor:pointer;display:flex;justify-content:space-between'>”;
+html+=”<span style='font-size:13px;font-weight:700;color:#eee'>”+cat+”</span>”;
+html+=”<span style='font-size:13px;font-weight:700;color:#2aab47'>”+fmt(ct)+” v</span></div>”;
+html+=”<div id='"+cid+"' style='background:#060a06;border:1px solid #1a2a1a;border-top:none;border-radius:0 0 12px 12px'>”;
+ci.forEach(function(it){
+html+=”<div style='padding:10px 14px;border-bottom:1px solid #0a0f0a;display:flex;justify-content:space-between;align-items:center'>”;
+html+=”<div style='flex:1'><div style='font-size:13px;color:#eee'>”+it.item+”</div>”;
+html+=”<div style='font-size:10px;color:#555'>”+it.quantidade+“x “+fmt(it.valor_unitario)+(it.observacao?” - “+it.observacao:””)+”</div></div>”;
+html+=”<div style='display:flex;align-items:center;gap:6px'>”;
+html+=”<span style='font-size:13px;font-weight:700;color:#fff'>”+fmt(it.valor_total)+”</span>”;
+html+=”<button onclick='editarItem("+it.id+")' style='background:transparent;border:1px solid #555;color:#888;border-radius:6px;padding:3px 7px;font-size:10px;cursor:pointer'>Edit</button>”;
+html+=”<button onclick='deletarItem("+it.id+")' style='background:transparent;border:1px solid #c0392b;color:#c0392b;border-radius:6px;padding:3px 7px;font-size:10px;cursor:pointer'>X</button>”;
+html+=”</div></div>”;
+});
+html+=”</div></div>”;
+});
+q(“conteudo”).innerHTML=html;
+}
+
+function abrirModal(item){
+var catSel=q(“m-cat”);
+catSel.innerHTML=Object.keys(CATS).map(function(c){return”<option>”+c+”</option>”;}).join(””);
+if(item){
+q(“m-id”).value=item.id;
+catSel.value=item.categoria;
+atualizarSelect(item.categoria);
+q(“m-item”).value=item.item;
+q(“m-qtd”).value=item.quantidade;
+q(“m-val”).value=item.valor_unitario;
+q(“m-obs”).value=item.observacao||””;
+q(“m-title”).textContent=“Editar item”;
+} else {
+q(“m-id”).value=””;
+atualizarSelect(Object.keys(CATS)[0]);
+q(“m-item”).value=””;
+q(“m-qtd”).value=“1”;
+q(“m-val”).value=””;
+q(“m-obs”).value=””;
+q(“m-title”).textContent=“Adicionar item”;
+}
+q(“modal”).style.display=“flex”;
+}
+
+function atualizarSelect(cat){
+var items=CATS[cat]||[];
+q(“m-item”).innerHTML=items.map(function(i){return”<option>”+i+”</option>”;}).join(””)+”<option>Outro</option>”;
+}
+
+function editarItem(id){var it=itens.filter(function(i){return i.id===id;})[0];if(it)abrirModal(it);}
+
+function deletarItem(id){
+if(!confirm(“Excluir?”))return;
+apm(“orcamentos?id=eq.”+id,“DELETE”).then(function(){carregarItens();});
+}
+
+function salvarItem(){
+var id=q(“m-id”).value;
+var cat=q(“m-cat”).value;
+var item=q(“m-item”).value;
+var qtd=parseFloat(q(“m-qtd”).value)||1;
+var val=parseFloat(q(“m-val”).value)||0;
+var obs=q(“m-obs”).value;
+if(!item){alert(“Preencha o item!”);return;}
+var btn=q(“m-save”);
+btn.textContent=“Salvando…”;btn.disabled=true;
+var body={evento_id:evAtual.id,categoria:cat,item:item,quantidade:qtd,valor_unitario:val,valor_total:qtd*val,observacao:obs};
+var path=id?“orcamentos?id=eq.”+id:“orcamentos”;
+var meth=id?“PATCH”:“POST”;
+apm(path,meth,body).then(function(){
+q(“modal”).style.display=“none”;
+btn.textContent=“Salvar”;btn.disabled=false;
+carregarItens();
+}).catch(function(){alert(“Erro!”);btn.textContent=“Salvar”;btn.disabled=false;});
+}
+
+loadEventos();
+
+</script>
+</body>
+</html>
