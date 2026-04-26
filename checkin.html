@@ -58,9 +58,12 @@ video{width:100%;display:block}
 </div>
 
 <div id="tela-checkin" class="gone">
-  <div style="text-align:center;margin-bottom:14px">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+    <div style="text-align:center;flex:1">
     <div style="font-size:16px;font-weight:700;color:#fff">Ola, <span id="val-nome" style="color:#2aab47"></span>!</div>
     <div style="font-size:11px;color:#555;margin-top:2px">Escaneie o QR Code do convidado</div>
+  </div>
+    <button onclick="sairScanner()" style="background:transparent;border:1px solid #555;color:#888;border-radius:8px;padding:7px 12px;font-size:11px;cursor:pointer;white-space:nowrap">Sair</button>
   </div>
 
   <div class="card">
