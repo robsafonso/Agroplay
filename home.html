@@ -4,281 +4,278 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agroplay</title>
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Agroplay">
-<link rel="apple-touch-icon" href="icon.png">
-<meta name="theme-color" content="#060a06">
+<title>Agroplay Music</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#060a06;color:#eee;font-family:Arial;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
-.logo{font-size:36px;font-weight:900;color:#fff;text-align:center;margin-bottom:6px;letter-spacing:2px}
-.logo span{color:#2aab47}
-.sub{font-size:12px;color:#444;letter-spacing:3px;text-transform:uppercase;text-align:center;margin-bottom:40px}
-.card{background:#090e09;border:1px solid #1a2a1a;border-radius:16px;padding:28px 24px;width:100%;max-width:360px}
-input,select{width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:11px 14px;color:#eee;font-size:14px;outline:none;margin-bottom:8px}
-input:focus,select:focus{border-color:#2aab47}
-.btn{background:linear-gradient(135deg,#1e7a35,#2aab47);color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;width:100%}
-.bto{background:transparent;color:#2aab47;border:1px solid #2aab47;border-radius:8px;padding:8px 14px;font-size:12px;cursor:pointer}
-.ea{background:#1a0000;border:1px solid #e74c3c;color:#e74c3c;padding:10px;border-radius:8px;margin-bottom:10px;font-size:13px}
-.ok{background:#0a1f0a;border:1px solid #2aab47;color:#2aab47;padding:10px;border-radius:8px;margin-bottom:10px;font-size:13px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:400px}
-.gc{background:#090e09;border:1px solid #1a2a1a;border-radius:16px;padding:20px 16px;text-align:center;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:8px}
-.gc:active{background:#0d150d;border-color:#2aab47}
-.gc-icon{font-size:30px}
-.gc-title{font-size:14px;font-weight:700;color:#fff}
-.gc-desc{font-size:11px;color:#555;line-height:1.4}
-.gc.green{border-color:rgba(42,171,71,.3)}
-.gc.blue{border-color:rgba(8,145,178,.3)}
-.gc.yellow{border-color:rgba(201,151,60,.3)}
-.gc.gray{border-color:rgba(255,255,255,.1)}
-.gone{display:none}
-.ov{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:100;display:none;align-items:flex-end;justify-content:center}
-.ov.on{display:flex}
-.mod{background:#090e09;border-radius:20px 20px 0 0;padding:20px;width:100%;max-height:90vh;overflow-y:auto}
-.fl{margin-bottom:10px}
-.fl label{display:block;font-size:10px;color:#2aab47;letter-spacing:1px;margin-bottom:4px;text-transform:uppercase}
-.acard{border:1px solid #1a2a1a;border-radius:10px;padding:12px;margin-bottom:8px;background:#030503}
-.btr{background:#c0392b;color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer}
-.btb{background:#0891b2;color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer}
-.bty{background:#b8860b;color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer}
-.btg{background:#1e7a35;color:#fff;border:none;border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer}
+:root{
+  --gold:#c9973c;
+  --gold2:#e8b84b;
+  --green:#1a8c3a;
+  --dark:#080a08;
+  --dark2:#0d110d;
+  --dark3:#111711;
+  --border:#1e2a1e;
+  --text:#e8e8e0;
+  --muted:#556655;
+}
+body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+
+/* Background grain */
+body::before{content:’’;position:fixed;inset:0;background-image:url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise)’ opacity=‘0.03’/%3E%3C/svg%3E”);pointer-events:none;z-index:0;opacity:.4;}
+
+.wrap{position:relative;z-index:1;max-width:420px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;}
+
+/* Header */
+.hdr{padding:40px 24px 0;text-align:center;}
+.logo-mark{display:inline-flex;align-items:center;gap:12px;margin-bottom:8px;}
+.logo-icon{width:52px;height:52px;background:linear-gradient(135deg,var(–gold),var(–gold2));border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:‘Bebas Neue’,sans-serif;font-size:22px;color:#080a08;letter-spacing:1px;box-shadow:0 8px 32px rgba(201,151,60,.3);}
+.logo-text{text-align:left;}
+.logo-name{font-family:‘Bebas Neue’,sans-serif;font-size:28px;letter-spacing:3px;color:var(–text);line-height:1;}
+.logo-sub{font-size:10px;letter-spacing:4px;color:var(–gold);text-transform:uppercase;font-weight:500;}
+
+.tagline{font-size:12px;color:var(–muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px;}
+
+/* Divider */
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(–gold),transparent);margin:28px 24px;}
+
+/* User info */
+.user-info{padding:0 24px;margin-bottom:24px;}
+.user-card{background:var(–dark2);border:1px solid var(–border);border-radius:16px;padding:16px 20px;display:flex;align-items:center;gap:14px;}
+.user-avatar{width:42px;height:42px;background:linear-gradient(135deg,var(–green),#2aab47);border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:‘Bebas Neue’,sans-serif;font-size:20px;color:#fff;flex-shrink:0;}
+.user-name{font-size:15px;font-weight:700;color:var(–text);}
+.user-role{font-size:11px;color:var(–muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
+.user-badge{margin-left:auto;background:rgba(201,151,60,.15);border:1px solid rgba(201,151,60,.3);color:var(–gold);font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:4px 8px;border-radius:6px;font-weight:700;}
+
+/* Nav grid */
+.nav{padding:0 24px;flex:1;}
+.section-label{font-size:10px;letter-spacing:3px;color:var(–muted);text-transform:uppercase;margin-bottom:12px;padding-left:4px;}
+
+.grid-main{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.grid-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+
+.nav-btn{background:var(–dark2);border:1px solid var(–border);border-radius:16px;padding:18px 16px;text-decoration:none;color:var(–text);display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden;transition:all .2s;cursor:pointer;}
+.nav-btn:active{transform:scale(.97);}
+.nav-btn::before{content:’’;position:absolute;inset:0;opacity:0;transition:opacity .2s;}
+.nav-btn:active::before{opacity:1;}
+
+.nav-btn.primary{background:linear-gradient(135deg,#0d2218,#0a1a10);border-color:#1e4028;}
+.nav-btn.primary::before{background:linear-gradient(135deg,rgba(42,171,71,.15),transparent);}
+.nav-btn.gold{background:linear-gradient(135deg,#1a1508,#120f04);border-color:#2a2008;}
+.nav-btn.gold::before{background:linear-gradient(135deg,rgba(201,151,60,.1),transparent);}
+.nav-btn.blue{background:linear-gradient(135deg,#060e1a,#040c16);border-color:#0a1e30;}
+.nav-btn.blue::before{background:linear-gradient(135deg,rgba(8,145,178,.1),transparent);}
+.nav-btn.purple{background:linear-gradient(135deg,#100a1a,#0c0814);border-color:#1e1030;}
+
+.nav-icon{font-size:24px;line-height:1;}
+.nav-label{font-size:13px;font-weight:700;color:var(–text);letter-spacing:.5px;}
+.nav-desc{font-size:10px;color:var(–muted);margin-top:2px;}
+
+.nav-btn.big{grid-column:1/-1;flex-direction:row;align-items:center;gap:16px;padding:20px 20px;}
+.nav-btn.big .nav-icon{font-size:28px;}
+.nav-btn.big .nav-label{font-size:15px;}
+
+/* Accent line */
+.accent-line{position:absolute;top:0;left:0;right:0;height:2px;border-radius:16px 16px 0 0;}
+.accent-green{background:linear-gradient(90deg,transparent,#2aab47,transparent);}
+.accent-gold{background:linear-gradient(90deg,transparent,var(–gold),transparent);}
+.accent-blue{background:linear-gradient(90deg,transparent,#0891b2,transparent);}
+.accent-purple{background:linear-gradient(90deg,transparent,#7c3aed,transparent);}
+
+/* Footer */
+.footer{padding:24px;text-align:center;}
+.footer-btn{background:transparent;border:1px solid var(–border);border-radius:10px;padding:10px 20px;color:var(–muted);font-size:11px;cursor:pointer;letter-spacing:1px;}
+
+/* Login overlay */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:100;align-items:flex-end;justify-content:center;}
+.ov.on{display:flex;}
+.ov-box{background:var(–dark2);border:1px solid var(–border);border-radius:24px 24px 0 0;padding:28px 24px 40px;width:100%;max-width:420px;}
+.ov-title{font-family:‘Bebas Neue’,sans-serif;font-size:26px;letter-spacing:2px;color:var(–text);margin-bottom:6px;}
+.ov-sub{font-size:12px;color:var(–muted);margin-bottom:24px;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:10px;color:var(–gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;font-weight:700;}
+.field input{width:100%;background:#030503;border:1px solid var(–border);border-radius:10px;padding:13px 14px;color:var(–text);font-size:14px;font-family:‘DM Sans’,sans-serif;outline:none;transition:border-color .2s;}
+.field input:focus{border-color:var(–gold);}
+.btn-login{width:100%;background:linear-gradient(135deg,var(–gold),var(–gold2));border:none;border-radius:12px;padding:15px;font-size:15px;font-weight:700;color:#080a08;cursor:pointer;font-family:‘DM Sans’,sans-serif;letter-spacing:.5px;margin-top:6px;}
+.alert{background:rgba(231,76,60,.1);border:1px solid rgba(231,76,60,.3);color:#e74c3c;padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:12px;display:none;}
 </style>
+
 </head>
 <body>
-<div class="logo">AGRO<span>PLAY</span></div>
-<div class="sub">Sistema de Gestao</div>
-
-<div id="tela-login" class="card gone">
-  <div id="al-login"></div>
-  <div class="fl"><label>Nome</label><input id="inp-nome" placeholder="Seu nome"></div>
-  <div class="fl"><label>Senha</label><input id="inp-senha" type="password" placeholder="Sua senha"></div>
-  <button class="btn" id="btn-login">Entrar</button>
-</div>
-
-<div id="tela-troca" class="card gone">
-  <div style="font-size:16px;font-weight:900;color:#fff;margin-bottom:4px">Primeiro acesso</div>
-  <div style="font-size:12px;color:#666;margin-bottom:16px">Crie sua senha pessoal para continuar.</div>
-  <div id="al-troca"></div>
-  <div class="fl"><label>Nova senha</label><input id="nova-senha" type="password" placeholder="Nova senha (minimo 4 caracteres)"></div>
-  <div class="fl"><label>Confirmar</label><input id="conf-senha" type="password" placeholder="Repita a senha"></div>
-  <button class="btn" id="btn-salvar-senha">Salvar e entrar</button>
-</div>
-
-<div id="tela-menu" class="gone" style="width:100%;max-width:400px">
-  <div style="text-align:center;margin-bottom:20px">
-    <div style="font-size:14px;color:#555">Bem-vindo, <span id="admin-nome" style="color:#2aab47;font-weight:700"></span>!</div>
-  </div>
-  <div class="grid">
-    <a href="dashboard.html" class="gc" style="border-color:#c9973c"><div class="gc-icon">&#128202;</div><div class="gc-title">Dashboard</div><div class="gc-desc">Painel geral dos eventos</div></a>
-    <a id="link-gerente" href="index.html" class="gc green"><div class="gc-icon">&#128507;</div><div class="gc-title">Gerente</div><div class="gc-desc">Cadastros, eventos e lotes</div></a>
-    <a id="link-admin" href="admin.html" class="gc blue"><div class="gc-icon">&#9989;</div><div class="gc-title">Admin</div><div class="gc-desc">Check-in e validadores</div></a>
-    <a href="checkin.html" class="gc yellow"><div class="gc-icon">&#128241;</div><div class="gc-title">Scanner</div><div class="gc-desc">Escanear QR na porta</div></a>
-    <a href="mediakit.html" class="gc gray"><div class="gc-icon">&#128203;</div><div class="gc-title">Media Kit</div><div class="gc-desc">Apresentacao do sistema</div></a>
-    <a href="manual.html" class="gc green"><div class="gc-icon">&#128218;</div><div class="gc-title">Manual</div><div class="gc-desc">Como usar o sistema</div></a>
-    <a href="orcamento.html" class="gc" style="border-color:#c9973c"><div class="gc-icon">&#128181;</div><div class="gc-title">Orcamento</div><div class="gc-desc">Planejamento financeiro do evento</div></a>
-    <a href="tickets.html" class="gc yellow"><div class="gc-icon">&#127903;</div><div class="gc-title">Tickets</div><div class="gc-desc">Status dos bilhetes</div></a>
-  </div>
-  <div id="menu-master" class="gone" style="margin-top:14px">
-    <button class="bto" id="btn-admins" style="width:100%">Gerenciar Administradores</button>
-  </div>
-  <div style="text-align:center;margin-top:12px;display:flex;gap:8px;justify-content:center">
-    <button class="bto" id="btn-trocar-menu" style="font-size:11px;padding:6px 14px">Trocar senha</button>
-    <button class="bto" id="btn-sair" style="font-size:11px;padding:6px 14px">Sair</button>
-  </div>
-</div>
-
-<div class="ov" id="ov-admins">
-  <div class="mod">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <div style="font-size:16px;font-weight:700;color:#fff">Administradores</div>
-      <button class="bto" id="btn-fad">X</button>
+<div class="wrap">
+  <div class="hdr">
+    <div class="logo-mark">
+      <div class="logo-icon">AG</div>
+      <div class="logo-text">
+        <div class="logo-name">AGROPLAY</div>
+        <div class="logo-sub">Music & Events</div>
+      </div>
     </div>
-    <div id="adm-alert"></div>
-    <div id="adm-form">
-      <div class="fl"><label>Nome</label><input id="adm-nome" placeholder="Nome do administrador"></div>
-      <div class="fl"><label>Senha temporaria</label><input id="adm-senha" placeholder="Senha inicial" type="text"></div>
-      <div class="fl"><label>Nivel</label><select id="adm-nivel"><option value="visualizador">Visualizador</option><option value="admin">Admin</option><option value="master">Master</option></select></div>
-      <button class="btn" id="btn-addadm" style="margin-bottom:16px">Adicionar</button>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="user-info" id="user-info" style="display:none">
+    <div class="user-card">
+      <div class="user-avatar" id="uav">R</div>
+      <div>
+        <div class="user-name" id="uname">Robson</div>
+        <div class="user-role" id="urole">Master</div>
+      </div>
+      <div class="user-badge" id="ubadge">MASTER</div>
     </div>
-    <div id="adm-lista"></div>
+  </div>
+
+  <div class="nav" id="nav-grid" style="display:none">
+    <div class="section-label">Gestao</div>
+    <div class="grid-main">
+      <a href="index.html" class="nav-btn primary">
+        <div class="accent-line accent-green"></div>
+        <div class="nav-icon">👥</div>
+        <div>
+          <div class="nav-label">Gerente</div>
+          <div class="nav-desc">Cadastros e convites</div>
+        </div>
+      </a>
+      <a href="dashboard.html" class="nav-btn primary">
+        <div class="accent-line accent-green"></div>
+        <div class="nav-icon">📊</div>
+        <div>
+          <div class="nav-label">Dashboard</div>
+          <div class="nav-desc">Visao geral</div>
+        </div>
+      </a>
+    </div>
+
+```
+<div class="grid-row" id="row-admin">
+  <a href="admin.html" class="nav-btn blue">
+    <div class="accent-line accent-blue"></div>
+    <div class="nav-icon">🎟️</div>
+    <div>
+      <div class="nav-label">Admin</div>
+      <div class="nav-desc">Check-in e lista</div>
+    </div>
+  </a>
+  <a href="checkin.html" class="nav-btn blue">
+    <div class="accent-line accent-blue"></div>
+    <div class="nav-icon">📷</div>
+    <div>
+      <div class="nav-label">Scanner</div>
+      <div class="nav-desc">Portaria QR Code</div>
+    </div>
+  </a>
+</div>
+
+<div class="grid-row">
+  <a href="tickets.html" class="nav-btn gold">
+    <div class="accent-line accent-gold"></div>
+    <div class="nav-icon">🎫</div>
+    <div>
+      <div class="nav-label">Tickets</div>
+      <div class="nav-desc">Por responsavel</div>
+    </div>
+  </a>
+  <a href="orcamento.html" class="nav-btn gold">
+    <div class="accent-line accent-gold"></div>
+    <div class="nav-icon">💰</div>
+    <div>
+      <div class="nav-label">Orcamento</div>
+      <div class="nav-desc">Custos do evento</div>
+    </div>
+  </a>
+</div>
+
+<div class="grid-row" id="row-extra">
+  <a href="#" class="nav-btn purple" id="btn-mediakit">
+    <div class="accent-line accent-purple"></div>
+    <div class="nav-icon">📋</div>
+    <div>
+      <div class="nav-label">Media Kit</div>
+      <div class="nav-desc">Material de apoio</div>
+    </div>
+  </a>
+  <a href="#" class="nav-btn purple" id="btn-manual">
+    <div class="accent-line accent-purple"></div>
+    <div class="nav-icon">📖</div>
+    <div>
+      <div class="nav-label">Manual</div>
+      <div class="nav-desc">Como usar</div>
+    </div>
+  </a>
+</div>
+```
+
+  </div>
+
+  <div class="footer">
+    <button class="footer-btn" id="btn-sair" style="display:none" onclick="sair()">Sair do sistema</button>
   </div>
 </div>
 
-<div class="ov" id="ov-trocar">
-  <div class="mod">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-      <div style="font-size:16px;font-weight:700;color:#fff">Trocar senha</div>
-      <button class="bto" id="btn-ftrocar">X</button>
+<!-- Login Overlay -->
+
+<div class="ov" id="ov-login">
+  <div class="ov-box">
+    <div class="ov-title">Entrar</div>
+    <div class="ov-sub">Sistema de gestao Agroplay</div>
+    <div class="alert" id="login-alert"></div>
+    <div class="field">
+      <label>Usuario</label>
+      <input type="text" id="lin" placeholder="Seu nome" autocomplete="off">
     </div>
-    <div id="trocar-alert"></div>
-    <div class="fl"><label>Nova senha</label><input id="trocar-nova" type="password" placeholder="Nova senha"></div>
-    <div class="fl"><label>Confirmar</label><input id="trocar-conf" type="password" placeholder="Repita a senha"></div>
-    <button class="btn" id="btn-confirmar-troca">Salvar nova senha</button>
+    <div class="field">
+      <label>Senha</label>
+      <input type="password" id="lpass" placeholder="••••••••">
+    </div>
+    <button class="btn-login" id="btn-entrar" onclick="entrar()">Entrar</button>
   </div>
 </div>
 
 <script>
 var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
 var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
-var adminAtual=null;
+
+function get(p){return fetch(SB+"/rest/v1/"+p,{headers:{"apikey":KY,"Authorization":"Bearer "+KY}}).then(function(r){return r.json();});}
 function q(id){return document.getElementById(id);}
-function ap(p,o){o=o||{};var h={"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json"};if(o.pref)h["Prefer"]=o.pref;return fetch(SB+"/rest/v1/"+p,{method:o.m||"GET",headers:h,body:o.b}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});}
-function cp2(txt,btn,lbl){if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){btn.textContent="Copiado!";setTimeout(function(){btn.textContent=lbl;},2000);});}else{var t=document.createElement("textarea");t.value=txt;document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t);btn.textContent="Copiado!";setTimeout(function(){btn.textContent=lbl;},2000);}}
 
-q("btn-login").onclick=function(){
-  var nome=q("inp-nome").value.trim();
-  var senha=q("inp-senha").value.trim();
-  var al=q("al-login");al.innerHTML="";
-  if(!nome||!senha){al.innerHTML="<div class='ea'>Preencha nome e senha</div>";return;}
-  var btn=this;btn.textContent="Entrando...";btn.disabled=true;
-  ap("admins?nome=eq."+encodeURIComponent(nome)+"&senha=eq."+encodeURIComponent(senha)+"&ativo=eq.true&select=*").then(function(d){
-    if(!d||!d.length){al.innerHTML="<div class='ea'>Nome ou senha invalidos</div>";btn.textContent="Entrar";btn.disabled=false;return;}
-    adminAtual=d[0];
-    if(adminAtual.primeiro_acesso){
-      q("tela-login").classList.add("gone");
-      q("tela-troca").classList.remove("gone");
-      return;
-    }
-    entrarNoMenu();
-  }).catch(function(){al.innerHTML="<div class='ea'>Erro de conexao</div>";btn.textContent="Entrar";btn.disabled=false;});
-};
-
-q("btn-salvar-senha").onclick=function(){
-  var nova=q("nova-senha").value.trim();
-  var conf=q("conf-senha").value.trim();
-  var al=q("al-troca");al.innerHTML="";
-  if(!nova||nova.length<4){al.innerHTML="<div class='ea'>Senha muito curta (minimo 4)</div>";return;}
-  if(nova!==conf){al.innerHTML="<div class='ea'>Senhas nao conferem</div>";return;}
-  var btn=this;btn.textContent="Salvando...";btn.disabled=true;
-  ap("admins?id=eq."+adminAtual.id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({senha:nova,primeiro_acesso:false})}).then(function(){
-    adminAtual.senha=nova;adminAtual.primeiro_acesso=false;
-    q("tela-troca").classList.add("gone");
-    entrarNoMenu();
-  }).catch(function(){al.innerHTML="<div class='ea'>Erro ao salvar</div>";btn.textContent="Salvar e entrar";btn.disabled=false;});
-};
-
-function salvarSessao(){try{sessionStorage.setItem("ag_admin",JSON.stringify(adminAtual));}catch(e){}}
-function carregarSessao(){try{var s=sessionStorage.getItem("ag_admin");if(s){adminAtual=JSON.parse(s);entrarNoMenu();return true;}}catch(e){}return false;}
-function entrarNoMenu(){
-  q("admin-nome").textContent=adminAtual.nome;
-  q("tela-login").classList.add("gone");
-  q("tela-troca").classList.add("gone");
-  q("tela-menu").classList.remove("gone");
-  if(adminAtual.nivel==="master"){q("menu-master").classList.remove("gone");}
-  salvarSessao();
-  if(adminAtual.nivel==="visualizador"){
-    q("link-gerente").href="index.html?modo=ver";
-    q("link-admin").href="admin.html?modo=ver";
-  }
+function mostrarHome(user){
+  q("uav").textContent=user.nome.charAt(0).toUpperCase();
+  q("uname").textContent=user.nome;
+  var roles={"master":"Master","admin":"Administrador","visualizador":"Visualizador"};
+  q("urole").textContent=roles[user.nivel]||user.nivel;
+  q("ubadge").textContent=(user.nivel||"").toUpperCase();
+  q("user-info").style.display="block";
+  q("nav-grid").style.display="block";
+  q("btn-sair").style.display="block";
+  q("ov-login").classList.remove("on");
+  if(user.nivel==="visualizador"){q("row-admin").style.display="none";}
+  sessionStorage.setItem("ag_user",JSON.stringify(user));
 }
 
-q("btn-sair").onclick=function(){
-  adminAtual=null;
-  try{sessionStorage.removeItem("ag_admin");}catch(e){}
-  q("tela-menu").classList.add("gone");
-  q("tela-login").classList.remove("gone");
-  q("inp-nome").value="";q("inp-senha").value="";
-};
-
-q("btn-trocar-menu").onclick=function(){
-  q("trocar-alert").innerHTML="";
-  q("trocar-nova").value="";q("trocar-conf").value="";
-  q("ov-trocar").classList.add("on");
-};
-q("btn-ftrocar").onclick=function(){q("ov-trocar").classList.remove("on");};
-q("btn-confirmar-troca").onclick=function(){
-  var nova=q("trocar-nova").value.trim();
-  var conf=q("trocar-conf").value.trim();
-  var al=q("trocar-alert");al.innerHTML="";
-  if(!nova||nova.length<4){al.innerHTML="<div class='ea'>Senha muito curta</div>";return;}
-  if(nova!==conf){al.innerHTML="<div class='ea'>Senhas nao conferem</div>";return;}
-  var btn=this;btn.textContent="Salvando...";btn.disabled=true;
-  ap("admins?id=eq."+adminAtual.id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({senha:nova})}).then(function(){
-    adminAtual.senha=nova;
-    al.innerHTML="<div class='ok'>Senha alterada!</div>";
-    setTimeout(function(){q("ov-trocar").classList.remove("on");},1500);
-  }).catch(function(){al.innerHTML="<div class='ea'>Erro</div>";
-  }).finally(function(){btn.textContent="Salvar nova senha";btn.disabled=false;});
-};
-
-q("btn-admins").onclick=function(){q("ov-admins").classList.add("on");carregarAdmins();};
-q("btn-fad").onclick=function(){q("ov-admins").classList.remove("on");};
-
-q("btn-addadm").onclick=function(){
-  var nome=q("adm-nome").value.trim();
-  var senha=q("adm-senha").value.trim();
-  var nivel=q("adm-nivel").value;
-  var al=q("adm-alert");al.innerHTML="";
-  if(!nome||!senha){al.innerHTML="<div class='ea'>Preencha nome e senha</div>";return;}
-  var btn=this;btn.textContent="Salvando...";btn.disabled=true;
-  ap("admins",{m:"POST",pref:"return=minimal",b:JSON.stringify({nome:nome,senha:senha,nivel:nivel,primeiro_acesso:true,ativo:true})}).then(function(){
-    q("adm-nome").value="";q("adm-senha").value="";
-    al.innerHTML="<div class='ok'>Admin adicionado!</div>";
-    carregarAdmins();
-  }).catch(function(){al.innerHTML="<div class='ea'>Erro</div>";
-  }).finally(function(){btn.textContent="Adicionar";btn.disabled=false;});
-};
-
-function carregarAdmins(){
-  ap("admins?select=*&order=criado_em.asc").then(function(d){
-    if(!d||!d.length){q("adm-lista").innerHTML="<div style='color:#555;font-size:12px;text-align:center;padding:10px'>Nenhum admin cadastrado</div>";return;}
-    var count=d.filter(function(a){return a.ativo;}).length;
-    var h="<div style='font-size:11px;color:#555;margin-bottom:10px'>"+count+"/10 admins ativos</div>";
-    d.forEach(function(a){
-      var minha=(a.id===adminAtual.id);
-      var cor=a.ativo?"#2aab47":"#555";
-      h+="<div class='acard'>";
-      h+="<div style='font-size:13px;color:#fff;font-weight:700;margin-bottom:2px'>"+a.nome+"</div>";
-      h+="<div style='font-size:11px;color:"+cor+";margin-bottom:8px'>"+a.nivel+" - "+(a.ativo?"Ativo":"Inativo")+(a.primeiro_acesso?" (primeiro acesso)":"")+"</div>";
-      if(minha){
-        h+="<div style='font-size:11px;color:#444;font-style:italic'>Esta e sua conta</div>";
-      } else {
-        h+="<select onchange='mudarNivel("+a.id+",this.value)' style='width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:6px;padding:6px;color:#eee;font-size:12px;margin-bottom:8px'>";
-        h+="<option value='visualizador'"+(a.nivel==="visualizador"?" selected":"")+" >Visualizador</option>";
-        h+="<option value='admin'"+(a.nivel==="admin"?" selected":"")+" >Admin</option>";
-        h+="<option value='master'"+(a.nivel==="master"?" selected":"")+" >Master</option>";
-        h+="</select>";
-        h+="<div style='display:flex;gap:5px'>";
-        if(a.ativo){h+="<button class='bty' onclick='toggleAdmin("+a.id+",false)'>Inativar</button>";}
-        else{h+="<button class='btg' onclick='toggleAdmin("+a.id+",true)'>Ativar</button>";}
-        h+="<button class='btr' onclick='delAdmin("+a.id+")'>Excluir</button>";
-        h+="<button class='btb' onclick='enviarLink(\""+a.nome+"\",\""+a.senha+"\")'>Enviar link</button>";
-        h+="</div>";
-      }
-      h+="</div>";
-    });
-    q("adm-lista").innerHTML=h;
-    if(count>=10){q("adm-form").style.display="none";}
-    else{q("adm-form").style.display="block";}
-  });
+function entrar(){
+  var nome=q("lin").value.trim();
+  var senha=q("lpass").value.trim();
+  if(!nome||!senha){q("login-alert").textContent="Preencha usuario e senha!";q("login-alert").style.display="block";return;}
+  var btn=q("btn-entrar");btn.textContent="Verificando...";btn.disabled=true;
+  q("login-alert").style.display="none";
+  get("admins?nome=eq."+encodeURIComponent(nome)+"&select=*").then(function(d){
+    if(!d||!d.length){q("login-alert").textContent="Usuario nao encontrado!";q("login-alert").style.display="block";return;}
+    var u=d[0];
+    if(u.senha!==senha&&u.senha_hash!==senha){q("login-alert").textContent="Senha incorreta!";q("login-alert").style.display="block";return;}
+    mostrarHome(u);
+  }).catch(function(){q("login-alert").textContent="Erro de conexao. Tente novamente.";q("login-alert").style.display="block";}).finally(function(){btn.textContent="Entrar";btn.disabled=false;});
 }
 
-function mudarNivel(id,nivel){
-  ap("admins?id=eq."+id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({nivel:nivel})}).then(function(){setTimeout(function(){carregarAdmins();},300);});
-}
-function toggleAdmin(id,ativo){
-  ap("admins?id=eq."+id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({ativo:ativo})}).then(function(){setTimeout(function(){carregarAdmins();},300);});
-}
-function delAdmin(id){
-  if(!confirm("Excluir este administrador?"))return;
-  ap("admins?id=eq."+id,{m:"DELETE",pref:"return=minimal"}).then(function(){carregarAdmins();});
-}
-if(!carregarSessao()){q("tela-login").classList.remove("gone");}
-function enviarLink(nome,senha){
-  var link="https://robsafonso.github.io/Agroplay/home.html";
-  var msg="AGROPLAY - Acesso ao Sistema\n\nOla "+nome+"!\n\nVoce foi cadastrado no sistema Agroplay.\n\nAcesse pelo link:\n"+link+"\n\nSeu nome: "+nome+"\nSua senha: "+senha+"\n\nNo primeiro acesso voce sera solicitado a criar uma nova senha.\n\nAgroplay Music - Londrina PR";
-  if(navigator.clipboard){
-    navigator.clipboard.writeText(msg).then(function(){
-      var el=document.createElement("div");
-      el.style.cssText="position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#0891b2;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:700;z-index:999";
-      el.textContent="Link copiado!";
-      document.body.appendChild(el);
-      setTimeout(function(){el.remove();},2000);
-    });
-  }
-}
+function sair(){sessionStorage.removeItem("ag_user");location.reload();}
+
+q("lin").addEventListener("keydown",function(e){if(e.key==="Enter")q("lpass").focus();});
+q("lpass").addEventListener("keydown",function(e){if(e.key==="Enter")entrar();});
+
+// Auto-login
+var saved=sessionStorage.getItem("ag_user");
+if(saved){try{mostrarHome(JSON.parse(saved));}catch(e){q("ov-login").classList.add("on");}}
+else{q("ov-login").classList.add("on");}
 </script>
 
 </body>
