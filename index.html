@@ -841,11 +841,7 @@ function rSts(){
   var pend=cads.filter(function(c){return c.status==="pendente"&&c.evento_id;}).length;
   q("sts").innerHTML="<div class='stat'><strong>"+cads.length+"</strong><small>Cadastros</small></div>"+"<div class='stat'><strong>"+evs.length+"</strong><small>Eventos</small></div>"+"<div class='stat'><strong>"+(pend>0?pend:d)+"</strong><small>"+(pend>0?"Pendentes":"Codigos")+"</small></div>";
 }
-function rChips(){
-  q("chips").innerHTML=SETS.map(function(s){
-    return "<button class='chip"+(fset===s?" on":"")+"' onclick='setF(\""+s+"\")'>" +s+"</button>";
-  }).join("");
-}
+function rChips(){var sel=q("chips-sel");if(!sel)return;sel.innerHTML=SETS.map(function(s){return "<option value='"+s+"'"+(fset===s?" selected":"")+">"+s+"</option>";}).join("");}
 function setF(s){fset=s;rChips();rend();}
 function rend(){
   var b=q("bsc").value.toLowerCase();
