@@ -4,198 +4,318 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agroplay Music - Media Kit</title>
+<title>Media Kit - Agroplay Music</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#060a06;color:#eee;font-family:Arial,sans-serif;max-width:480px;margin:0 auto}
-.hero{background:linear-gradient(180deg,#0a1a0a 0%,#060a06 100%);padding:48px 24px 40px;text-align:center;position:relative;overflow:hidden}
-.hero::before{content:"";position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:300px;height:300px;background:radial-gradient(circle,rgba(42,171,71,.15) 0%,transparent 70%);pointer-events:none}
-.nota{font-size:64px;display:block;margin-bottom:16px;filter:drop-shadow(0 0 20px rgba(42,171,71,.4))}
-.logo-text{font-size:38px;font-weight:900;color:#fff;letter-spacing:3px;line-height:1}
-.logo-text span{color:#2aab47}
-.logo-reg{font-size:11px;color:#2aab47;letter-spacing:4px;text-transform:uppercase;margin-top:6px}
-.tagline{font-size:13px;color:#555;margin-top:14px;letter-spacing:1px;line-height:1.6}
-.divider{width:60px;height:2px;background:linear-gradient(90deg,transparent,#2aab47,transparent);margin:20px auto}
-.section{padding:28px 20px}
-.section-label{font-size:10px;color:#2aab47;text-transform:uppercase;letter-spacing:3px;margin-bottom:16px;font-weight:700}
-.about-text{font-size:13px;color:#aaa;line-height:1.9}
-.about-text b{color:#fff}
-.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:0 20px;margin-bottom:28px}
-.stat{background:#090e09;border:1px solid #1a2a1a;border-radius:14px;padding:18px 14px;text-align:center;position:relative;overflow:hidden}
-.stat::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#2aab47,transparent)}
-.stat-num{font-size:28px;font-weight:900;color:#2aab47;display:block;line-height:1}
-.stat-label{font-size:9px;color:#555;text-transform:uppercase;letter-spacing:1px;margin-top:6px;line-height:1.4}
-.pillars{padding:0 20px 28px}
-.pillar{background:#090e09;border:1px solid #1a2a1a;border-radius:12px;padding:16px;margin-bottom:10px;display:flex;gap:14px;align-items:flex-start}
-.pillar-icon{font-size:24px;flex-shrink:0;margin-top:2px}
-.pillar-title{font-size:13px;font-weight:700;color:#fff;margin-bottom:4px}
-.pillar-desc{font-size:11px;color:#666;line-height:1.6}
-.services{padding:0 20px 28px}
-.service-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.service-item{background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:12px 10px;text-align:center}
-.service-icon{font-size:20px;display:block;margin-bottom:6px}
-.service-name{font-size:11px;color:#bbb;font-weight:600}
-.contact{background:#0a1a0a;border-top:1px solid #1a2a1a;padding:32px 20px;text-align:center}
-.contact-title{font-size:16px;font-weight:700;color:#fff;margin-bottom:6px}
-.contact-sub{font-size:12px;color:#555;margin-bottom:24px}
-.contact-item{display:flex;align-items:center;justify-content:center;gap:10px;padding:12px;background:#090e09;border:1px solid #1a2a1a;border-radius:10px;margin-bottom:8px;cursor:pointer;text-decoration:none}
-.contact-item:active{background:#0d150d}
-.contact-icon{font-size:18px}
-.contact-text{font-size:13px;color:#eee;font-weight:600}
-.contact-hint{font-size:10px;color:#555;display:block}
-.social{display:flex;gap:10px;justify-content:center;margin-top:16px}
-.social-btn{background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:10px 16px;font-size:12px;color:#2aab47;text-decoration:none;font-weight:600}
-.footer{text-align:center;padding:20px;font-size:10px;color:#333;letter-spacing:2px;text-transform:uppercase}
-.green{color:#2aab47}
-.badge{display:inline-block;background:rgba(42,171,71,.1);border:1px solid rgba(42,171,71,.3);color:#2aab47;padding:4px 12px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:1px;margin-bottom:20px}
+body{background:#07090a;color:#e8e8e0;font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;max-width:480px;margin:0 auto;padding-bottom:40px}
+
+/* HERO */
+.hero{background:linear-gradient(180deg,#0d1a0d 0%,#07090a 100%);padding:32px 20px 28px;text-align:center;border-bottom:1px solid rgba(42,171,71,.15)}
+.hero-logo{display:inline-block;margin-bottom:16px}
+.hero-logo img{height:40px;object-fit:contain}
+.hero-logo-txt{font-size:26px;font-weight:900;letter-spacing:3px;color:#fff}
+.hero-logo-txt span{color:#2aab47}
+.hero-tag{display:inline-block;background:rgba(42,171,71,.12);border:1px solid rgba(42,171,71,.25);color:#2aab47;font-size:10px;font-weight:700;letter-spacing:2px;padding:5px 12px;border-radius:20px;text-transform:uppercase;margin-bottom:16px}
+.hero-title{font-size:22px;font-weight:900;color:#fff;margin-bottom:8px;line-height:1.2}
+.hero-sub{font-size:13px;color:#778877;line-height:1.6}
+
+/* NAV */
+.nav{display:flex;overflow-x:auto;padding:12px 16px;gap:8px;border-bottom:1px solid rgba(255,255,255,.06);scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav-item{background:transparent;border:1px solid rgba(255,255,255,.08);border-radius:20px;padding:7px 14px;color:#778877;font-size:11px;font-weight:600;white-space:nowrap;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.nav-item.on{background:rgba(42,171,71,.12);border-color:rgba(42,171,71,.3);color:#2aab47}
+
+/* SECTIONS */
+.section{display:none;padding:20px}
+.section.on{display:block}
+
+/* SOBRE */
+.sobre-card{background:#0d1210;border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:20px;margin-bottom:12px}
+.sobre-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:10px}
+.sobre-text{font-size:13px;color:#9aaa9a;line-height:1.7}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.stat-card{background:#0d1210;border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:16px;text-align:center}
+.stat-num{font-size:22px;font-weight:900;color:#2aab47;line-height:1}
+.stat-label{font-size:10px;color:#556655;text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+.div-units{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.unit{background:#0d1210;border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px}
+.unit-icon{font-size:18px}
+.unit-name{font-size:12px;font-weight:700;color:#fff}
+.unit-desc{font-size:10px;color:#556655;margin-top:2px}
+
+/* ARTISTAS */
+.artista-card{background:#0d1210;border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:16px;margin-bottom:10px;display:flex;gap:14px;align-items:center}
+.artista-foto{width:60px;height:60px;border-radius:14px;object-fit:cover;flex-shrink:0;background:#1a2a1a}
+.artista-avatar{width:60px;height:60px;border-radius:14px;background:linear-gradient(135deg,#1e7a35,#2aab47);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#fff;flex-shrink:0}
+.artista-nome{font-size:15px;font-weight:700;color:#fff;margin-bottom:3px}
+.artista-desc{font-size:11px;color:#778877;line-height:1.5}
+.artista-tag{display:inline-block;background:rgba(42,171,71,.1);border:1px solid rgba(42,171,71,.2);color:#2aab47;font-size:9px;font-weight:700;padding:2px 7px;border-radius:6px;margin-top:5px;letter-spacing:.5px}
+
+/* SERVICOS */
+.serv-card{background:#0d1210;border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:18px;margin-bottom:10px}
+.serv-icon{font-size:24px;margin-bottom:10px}
+.serv-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:6px}
+.serv-desc{font-size:12px;color:#9aaa9a;line-height:1.6}
+.serv-items{margin-top:10px}
+.serv-item{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:12px;color:#c8c8c0}
+.serv-dot{width:5px;height:5px;border-radius:50%;background:#2aab47;flex-shrink:0}
+
+/* CONTATO */
+.contact-card{background:#0d1210;border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:18px;margin-bottom:10px;display:flex;align-items:center;gap:14px}
+.contact-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.contact-label{font-size:11px;color:#556655;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.contact-val{font-size:14px;font-weight:600;color:#fff}
+.contact-link{color:#2aab47;text-decoration:none}
+.bg-green{background:rgba(42,171,71,.1);border:1px solid rgba(42,171,71,.15)}
+.bg-blue{background:rgba(8,145,178,.1);border:1px solid rgba(8,145,178,.15)}
+.bg-purple{background:rgba(124,58,237,.1);border:1px solid rgba(124,58,237,.15)}
+.bg-gold{background:rgba(201,151,60,.1);border:1px solid rgba(201,151,60,.15)}
+
+/* FOOTER */
+.footer{text-align:center;padding:24px 20px;font-size:11px;color:#556655;line-height:1.8}
+.footer span{color:#2aab47}
+
+/* BACK */
+.back-bar{padding:14px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.04)}
+.back-btn{color:#2aab47;font-size:12px;text-decoration:none;display:flex;align-items:center;gap:6px}
+.back-badge{font-size:10px;color:#556655;letter-spacing:1px;text-transform:uppercase}
 </style>
+
 </head>
 <body>
 
-<!-- HERO -->
+<div class="back-bar">
+  <a href="home.html" class="back-btn">&larr; Menu</a>
+  <span class="back-badge">Media Kit 2026</span>
+</div>
 
 <div class="hero">
-  <span class="nota">&#9834;</span>
-  <div onclick="location.href='home.html'" style="cursor:pointer" class="logo-text">AGRO<span>PLAY</span></div>
-  <div class="logo-reg">MUSIC &reg;</div>
-  <div class="divider"></div>
-  <span class="badge">O maior ecossistema do Agronejo</span>
-  <div class="tagline">Gestao artistica, producao musical e entretenimento.<br>Nascemos no interior. Conquistamos o Brasil.</div>
+  <div class="hero-logo">
+    <img src="https://agroplaymusic.com.br/wp-content/uploads/2024/06/Logo-AgroPlay-01-white-1-300x87.png" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" alt="Agroplay">
+    <div class="hero-logo-txt" style="display:none">AGRO<span>PLAY</span></div>
+  </div>
+  <div class="hero-tag">Music &amp; Entertainment</div>
+  <div class="hero-title">Um dos maiores escritorios artisticos do Brasil</div>
+  <div class="hero-sub">Fundada em 2021 em Londrina-PR, conectando o agronejo ao mundo</div>
+</div>
+
+<!-- NAV -->
+
+<div class="nav">
+  <div class="nav-item on" onclick="showSec('sobre',this)">Sobre</div>
+  <div class="nav-item" onclick="showSec('artistas',this)">Artistas</div>
+  <div class="nav-item" onclick="showSec('servicos',this)">Servicos</div>
+  <div class="nav-item" onclick="showSec('contato',this)">Contato</div>
 </div>
 
 <!-- SOBRE -->
 
-<div class="section">
-  <div class="section-label">Quem somos</div>
-  <div class="about-text">
-    A <b>Agroplay Music</b> e um escritorio artistico e produtora musical fundado em <b>2021</b> em <b>Londrina, Parana</b>. Nascemos para agenciar a carreira da cantora Ana Castela e, em poucos anos, nos tornamos <b>um dos maiores escritorios artisticos do Brasil</b>.<br><br>
-    Somos especialistas no <b>Agronejo</b> -- o genero que une o sertanejo raiz com batidas urbanas, letras autenticas e a forca do agronegocio. Um movimento cultural que conquistou o Brasil e o mundo.<br><br>
-    Hoje operamos em toda a cadeia do entretenimento: <b>gestao artistica, producao musical, distribuicao digital, eventos e muito mais.</b>
+<div class="section on" id="sec-sobre">
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-num">2021</div><div class="stat-label">Fundacao</div></div>
+    <div class="stat-card"><div class="stat-num">120+</div><div class="stat-label">Colaboradores</div></div>
+    <div class="stat-card"><div class="stat-num">1M+</div><div class="stat-label">Inscritos YouTube</div></div>
+    <div class="stat-card"><div class="stat-num">&#127942;</div><div class="stat-label">Placa de Ouro</div></div>
+  </div>
+
+  <div class="sobre-card">
+    <div class="sobre-title">Quem somos</div>
+    <div class="sobre-text">A AgroPlay Music e uma produtora musical e agencia de gerenciamento artistico especializada no genero agronejo, fundada em 2021 por Raphael Soares e Rodolfo Alessi em Londrina, Parana.<br><br>Em pouco tempo, a AgroPlay se tornou um dos maiores escritorios artisticos do Brasil, responsavel por grandes nomes do cenario nacional como Ana Castela &mdash; o maior fenomeno musical da atualidade &mdash; e muitos outros artistas de sucesso.<br><br>Com DNA inovador, a marca transita entre sertanejo tradicional, pop, sons urbanos e latinos, consolidando o movimento chamado "Agronejo".</div>
+  </div>
+
+  <div class="sobre-card">
+    <div class="sobre-title">Ecossistema AgroPlay</div>
+    <div class="div-units">
+      <div class="unit"><div class="unit-icon">&#127925;</div><div><div class="unit-name">Music</div><div class="unit-desc">Gestao artistica</div></div></div>
+      <div class="unit"><div class="unit-icon">&#128247;</div><div><div class="unit-name">Digital</div><div class="unit-desc">Influenciadores</div></div></div>
+      <div class="unit"><div class="unit-icon">&#9917;</div><div><div class="unit-name">Sports</div><div class="unit-desc">Esportes</div></div></div>
+      <div class="unit"><div class="unit-icon">&#9749;</div><div><div class="unit-name">Verao</div><div class="unit-desc">Eventos</div></div></div>
+      <div class="unit"><div class="unit-icon">&#127381;</div><div><div class="unit-name">Kids</div><div class="unit-desc">Conteudo infantil</div></div></div>
+      <div class="unit"><div class="unit-icon">&#10024;</div><div><div class="unit-name">Praise</div><div class="unit-desc">Gospel</div></div></div>
+    </div>
+  </div>
+
+  <div class="sobre-card">
+    <div class="sobre-title">Parceria Warner Chappell</div>
+    <div class="sobre-text">A AgroPlay firmou parceria com a <b style="color:#fff">Warner Chappell Music</b> para a administracao de seu catalogo de obras musicais, consolidando sua posicao no mercado fonografico internacional.</div>
   </div>
 </div>
 
-<!-- NUMEROS -->
+<!-- ARTISTAS -->
 
-<div class="stats">
-  <div class="stat">
-    <span class="stat-num">2021</span>
-    <div class="stat-label">Fundacao em Londrina</div>
-  </div>
-  <div class="stat">
-    <span class="stat-num">9+</span>
-    <div class="stat-label">Artistas no casting</div>
-  </div>
-  <div class="stat">
-    <span class="stat-num">555K</span>
-    <div class="stat-label">Seguidores Instagram</div>
-  </div>
-  <div class="stat">
-    <span class="stat-num">1M+</span>
-    <div class="stat-label">Inscrito YouTube</div>
-  </div>
-</div>
-
-<!-- PILARES -->
-
-<div class="pillars">
-  <div class="section-label">Nossos pilares</div>
-
-  <div class="pillar">
-    <div class="pillar-icon">&#127925;</div>
+<div class="section" id="sec-artistas">
+  <div class="artista-card">
+    <div class="artista-avatar">A</div>
     <div>
-      <div class="pillar-title">Agroplay Music</div>
-      <div class="pillar-desc">Gestao de carreira artistica completa: planejamento de imagem, producao de shows, posicionamento e producao musical.</div>
+      <div class="artista-nome">Ana Castela</div>
+      <div class="artista-desc">A "Boiadeira" e o maior fenomeno musical do Brasil atualmente. Hits como Nosso Quadro, Pipoco e Boiadeira.</div>
+      <div class="artista-tag">&#9733; Headliner</div>
     </div>
   </div>
-
-  <div class="pillar">
-    <div class="pillar-icon">&#128250;</div>
+  <div class="artista-card">
+    <div class="artista-avatar">L</div>
     <div>
-      <div class="pillar-title">Agroplay Digital</div>
-      <div class="pillar-desc">Agenciamento de influenciadores e creators do universo Agro, com casting diversificado e presenca massiva nas redes.</div>
+      <div class="artista-nome">Luan Pereira</div>
+      <div class="artista-desc">Voz marcante e hits de sucesso, um dos principais representantes do agronejo nacional.</div>
+      <div class="artista-tag">Agronejo</div>
     </div>
   </div>
-
-  <div class="pillar">
-    <div class="pillar-icon">&#9917;</div>
+  <div class="artista-card">
+    <div class="artista-avatar">L</div>
     <div>
-      <div class="pillar-title">Agroplay Sports</div>
-      <div class="pillar-desc">Plataforma esportiva estrategica unindo musica, branding e conexao emocional com diferentes publicos.</div>
+      <div class="artista-nome">Leo &amp; Raphael</div>
+      <div class="artista-desc">Os "Menino da Pecuaria", percussores do Agronejo no Brasil desde 2014.</div>
+      <div class="artista-tag">Agronejo</div>
     </div>
   </div>
-
-  <div class="pillar">
-    <div class="pillar-icon">&#127881;</div>
+  <div class="artista-card">
+    <div class="artista-avatar">J</div>
     <div>
-      <div class="pillar-title">Agroplay Eventos</div>
-      <div class="pillar-desc">Producao completa de eventos: logistica, infraestrutura, credenciamento, ticketing proprio e experiencia de marca.</div>
+      <div class="artista-nome">Julia e Rafaela</div>
+      <div class="artista-desc">Dupla feminina com voz e presenca marcante no cenario sertanejo atual.</div>
+      <div class="artista-tag">Sertanejo</div>
     </div>
   </div>
-
-  <div class="pillar">
-    <div class="pillar-icon">&#128118;</div>
+  <div class="artista-card">
+    <div class="artista-avatar">J</div>
     <div>
-      <div class="pillar-title">Agroplay Kids</div>
-      <div class="pillar-desc">Entretenimento infantil com a cultura do campo: series animadas, licenciamentos e produtos educativos.</div>
+      <div class="artista-nome">Julya e Maryana</div>
+      <div class="artista-desc">Aposta forte da AgroPlay para o novo cenario musical feminino sertanejo.</div>
+      <div class="artista-tag">Sertanejo</div>
     </div>
   </div>
-
-  <div class="pillar">
-    <div class="pillar-icon">&#127807;</div>
+  <div class="artista-card">
+    <div class="artista-avatar">F</div>
     <div>
-      <div class="pillar-title">Instituto Agroplay</div>
-      <div class="pillar-desc">Responsabilidade social e impacto comunitario, apoiando familias e projetos pelo Brasil.</div>
+      <div class="artista-nome">Francisco</div>
+      <div class="artista-desc">Artista em ascensao com estilo unico que mistura sertanejo e pop.</div>
+      <div class="artista-tag">Pop Sertanejo</div>
+    </div>
+  </div>
+  <div class="artista-card">
+    <div class="artista-avatar">D</div>
+    <div>
+      <div class="artista-nome">Duda Bertelli</div>
+      <div class="artista-desc">Cantora e compositora, principal aposta da AgroPlay para o cenario sertanejo feminino.</div>
+      <div class="artista-tag">Revelacao</div>
+    </div>
+  </div>
+  <div class="artista-card">
+    <div class="artista-avatar">G</div>
+    <div>
+      <div class="artista-nome">Guilherme e Manuel</div>
+      <div class="artista-desc">Dupla com projetos incriveis lancados pela AgroPlay conectando novas linguagens.</div>
+      <div class="artista-tag">Nova Geracao</div>
+    </div>
+  </div>
+  <div class="artista-card">
+    <div class="artista-avatar">J</div>
+    <div>
+      <div class="artista-nome">Jads &amp; Jadson</div>
+      <div class="artista-desc">Mais de duas decadas de carreira, referencia do sertanejo raiz. Novo integrante do casting.</div>
+      <div class="artista-tag">Sertanejo Raiz</div>
     </div>
   </div>
 </div>
 
 <!-- SERVICOS -->
 
-<div class="services">
-  <div class="section-label">O que fazemos</div>
-  <div class="service-grid">
-    <div class="service-item"><span class="service-icon">&#127775;</span><div class="service-name">Gestao Artistica</div></div>
-    <div class="service-item"><span class="service-icon">&#127908;</span><div class="service-name">Producao Musical</div></div>
-    <div class="service-item"><span class="service-icon">&#128247;</span><div class="service-name">Marketing Digital</div></div>
-    <div class="service-item"><span class="service-icon">&#127916;</span><div class="service-name">Producao de Conteudo</div></div>
-    <div class="service-item"><span class="service-icon">&#127903;</span><div class="service-name">Distribuicao Digital</div></div>
-    <div class="service-item"><span class="service-icon">&#127878;</span><div class="service-name">Producao de Shows</div></div>
-    <div class="service-item"><span class="service-icon">&#129309;</span><div class="service-name">Parcerias Comerciais</div></div>
-    <div class="service-item"><span class="service-icon">&#127891;</span><div class="service-name">Licenciamento</div></div>
+<div class="section" id="sec-servicos">
+  <div class="serv-card">
+    <div class="serv-icon">&#127925;</div>
+    <div class="serv-title">Gestao Artistica</div>
+    <div class="serv-desc">Gerenciamento completo de carreira para artistas do agronejo e sertanejo.</div>
+    <div class="serv-items">
+      <div class="serv-item"><div class="serv-dot"></div>Planejamento de carreira</div>
+      <div class="serv-item"><div class="serv-dot"></div>Negociacao de caches e contratos</div>
+      <div class="serv-item"><div class="serv-dot"></div>Producao de shows e DVDs</div>
+      <div class="serv-item"><div class="serv-dot"></div>Gestao de imagem e branding</div>
+    </div>
+  </div>
+  <div class="serv-card">
+    <div class="serv-icon">&#128247;</div>
+    <div class="serv-title">AgroPlay Digital</div>
+    <div class="serv-desc">Agenciamento de influenciadores e creators do universo agro e sertanejo.</div>
+    <div class="serv-items">
+      <div class="serv-item"><div class="serv-dot"></div>Gestao de influenciadores</div>
+      <div class="serv-item"><div class="serv-dot"></div>Producao de conteudo digital</div>
+      <div class="serv-item"><div class="serv-dot"></div>Estrategia em plataformas digitais</div>
+      <div class="serv-item"><div class="serv-dot"></div>Parcerias com marcas</div>
+    </div>
+  </div>
+  <div class="serv-card">
+    <div class="serv-icon">&#127981;</div>
+    <div class="serv-title">Producao Musical</div>
+    <div class="serv-desc">Lancamento e distribuicao de conteudo musical nas principais plataformas.</div>
+    <div class="serv-items">
+      <div class="serv-item"><div class="serv-dot"></div>Gravacao e producao de albuns</div>
+      <div class="serv-item"><div class="serv-dot"></div>Distribuicao em streaming</div>
+      <div class="serv-item"><div class="serv-dot"></div>Parceria Warner Chappell Music</div>
+      <div class="serv-item"><div class="serv-dot"></div>Administracao de catalogo</div>
+    </div>
   </div>
 </div>
 
 <!-- CONTATO -->
 
-<div class="contact">
-  <div class="contact-title">Entre em contato</div>
-  <div class="contact-sub">Fale com nosso time comercial</div>
-
-  <a class="contact-item" href="https://wa.me/5543996666669">
-    <span class="contact-icon">&#128242;</span>
+<div class="section" id="sec-contato">
+  <div class="contact-card">
+    <div class="contact-icon bg-green">&#127968;</div>
     <div>
-      <div class="contact-text">(43) 99666-6669</div>
-      <span class="contact-hint">Robson Afonso - Comercial</span>
+      <div class="contact-label">Sede</div>
+      <div class="contact-val">Rua Euclides da Cunha, 443</div>
+      <div style="font-size:12px;color:#556655">Londrina - PR, 86.070-500</div>
     </div>
-  </a>
-
-  <a class="contact-item" href="mailto:contato@agroplaymusic.com.br">
-    <span class="contact-icon">&#128140;</span>
+  </div>
+  <div class="contact-card">
+    <div class="contact-icon bg-green">&#127760;</div>
     <div>
-      <div class="contact-text">contato@agroplaymusic.com.br</div>
-      <span class="contact-hint">E-mail comercial</span>
+      <div class="contact-label">Site oficial</div>
+      <div class="contact-val"><a href="https://agroplaymusic.com.br" class="contact-link" target="_blank">agroplaymusic.com.br</a></div>
     </div>
-  </a>
+  </div>
+  <div class="contact-card">
+    <div class="contact-icon bg-purple">&#128247;</div>
+    <div>
+      <div class="contact-label">Instagram</div>
+      <div class="contact-val"><a href="https://instagram.com/agroplaymusic" class="contact-link" target="_blank">@agroplaymusic</a></div>
+    </div>
+  </div>
+  <div class="contact-card">
+    <div class="contact-icon bg-gold">&#127757;</div>
+    <div>
+      <div class="contact-label">CNPJ</div>
+      <div class="contact-val">52.313.617/0001-60</div>
+    </div>
+  </div>
 
-  <div class="social">
-    <a href="https://instagram.com/agroplaymusic" class="social-btn">&#64;agroplaymusic</a>
-    <a href="https://agroplaymusic.com.br" class="social-btn">agroplaymusic.com.br</a>
+  <div style="background:#0d1210;border:1px solid rgba(42,171,71,.15);border-radius:16px;padding:20px;margin-top:4px;text-align:center">
+    <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:6px">Diretoria</div>
+    <div style="font-size:12px;color:#9aaa9a;line-height:1.8">
+      <b style="color:#fff">Raphael Soares</b> &mdash; Vice-Presidente<br>
+      <b style="color:#fff">Rodolfo Alessi</b> &mdash; Presidente<br>
+      <b style="color:#fff">Rodrigo Castela</b> &mdash; Conselho<br>
+      <b style="color:#fff">Valdir Cavallari</b> &mdash; CEO<br>
+      <b style="color:#fff">Marcos Mioto</b> &mdash; Diretor Comercial
+    </div>
   </div>
 </div>
 
 <div class="footer">
-  Agroplay Music &reg; &mdash; Londrina, Parana &mdash; 2021
+  <b style="color:#fff">AGROPLAY MUSIC LTDA</b><br>
+  Londrina &mdash; Parana &mdash; Brasil<br>
+  <span>agroplaymusic.com.br</span><br><br>
+  <span style="color:#334433">Media Kit 2026 &mdash; Sistema interno v29</span>
 </div>
+
+<script>
+function showSec(id,btn){
+  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('on');});
+  document.querySelectorAll('.nav-item').forEach(function(b){b.classList.remove('on');});
+  document.getElementById('sec-'+id).classList.add('on');
+  btn.classList.add('on');
+}
+</script>
 
 </body>
 </html>
