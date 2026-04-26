@@ -4,197 +4,276 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agroplay - Manual do Sistema</title>
+<title>Manual - Agroplay Sistema</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:20px;max-width:480px;margin:0 auto}
-.logo{font-size:22px;font-weight:900;color:#fff;text-align:center;padding:20px 0 4px;letter-spacing:2px;cursor:pointer}
+body{background:#07090a;color:#e8e8e0;font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;padding:16px;max-width:480px;margin:0 auto;padding-bottom:40px}
+.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.06)}
+.logo{font-size:18px;font-weight:900;color:#fff;letter-spacing:2px}
 .logo span{color:#2aab47}
-.sub{font-size:11px;color:#444;text-align:center;letter-spacing:2px;text-transform:uppercase;margin-bottom:24px}
-.section{margin-bottom:20px}
-.section-title{font-size:13px;color:#2aab47;text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #1a2a1a}
-.card{background:#090e09;border:1px solid #1a2a1a;border-radius:12px;padding:16px;margin-bottom:10px}
-.card-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:6px;display:flex;align-items:center;gap:8px}
-.card-title span{font-size:18px}
-.card-desc{font-size:12px;color:#888;line-height:1.7}
-.step{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid #111}
-.step:last-child{border-bottom:none}
-.step-num{width:22px;height:22px;background:#1e7a35;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;margin-top:1px}
-.step-text{font-size:12px;color:#bbb;line-height:1.6;flex:1}
+.back{color:#2aab47;font-size:12px;text-decoration:none;border:1px solid rgba(42,171,71,.3);padding:6px 12px;border-radius:8px}
+.version{font-size:10px;color:#556655;text-align:center;margin-bottom:20px;letter-spacing:1px}
+.section{background:#0d1210;border:1px solid rgba(255,255,255,.06);border-radius:16px;margin-bottom:12px;overflow:hidden}
+.section-hdr{padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;-webkit-tap-highlight-color:transparent}
+.section-hdr:active{background:rgba(42,171,71,.05)}
+.section-icon{font-size:20px;margin-right:10px}
+.section-title{font-size:14px;font-weight:700;color:#fff;flex:1}
+.section-arrow{color:#556655;font-size:12px;transition:transform .2s}
+.section-arrow.open{transform:rotate(180deg)}
+.section-body{display:none;padding:0 18px 16px;border-top:1px solid rgba(255,255,255,.04)}
+.section-body.open{display:block}
+.step{margin-top:14px}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;background:#2aab47;border-radius:50%;font-size:10px;font-weight:700;color:#fff;margin-right:8px;flex-shrink:0}
+.step-row{display:flex;align-items:flex-start;margin-bottom:10px}
+.step-text{font-size:13px;color:#c8c8c0;line-height:1.5;flex:1}
 .step-text b{color:#fff}
-.tip{background:#0a1a0a;border:1px solid rgba(42,171,71,.3);border-radius:8px;padding:10px;margin-top:8px;font-size:11px;color:#2aab47;line-height:1.6}
-.warn{background:#1a0a00;border:1px solid rgba(201,151,60,.3);border-radius:8px;padding:10px;margin-top:8px;font-size:11px;color:#c9973c;line-height:1.6}
-.link-box{background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:10px;margin-top:8px}
-.link-url{font-family:monospace;font-size:11px;color:#2aab47;word-break:break-all}
-.badge-azul{display:inline-block;background:rgba(8,145,178,.2);color:#0891b2;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700}
-.badge-amar{display:inline-block;background:rgba(201,151,60,.2);color:#c9973c;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700}
-.badge-verde{display:inline-block;background:rgba(42,171,71,.2);color:#2aab47;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700}
+.tip{background:rgba(42,171,71,.06);border:1px solid rgba(42,171,71,.15);border-radius:10px;padding:10px 14px;margin-top:12px;font-size:12px;color:#8dc8a0;line-height:1.5}
+.tip b{color:#2aab47}
+.warn{background:rgba(201,151,60,.06);border:1px solid rgba(201,151,60,.15);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:12px;color:#c8a870;line-height:1.5}
+.warn b{color:#c9973c}
+.tag{display:inline-block;background:rgba(42,171,71,.12);border:1px solid rgba(42,171,71,.2);color:#2aab47;font-size:10px;font-weight:700;padding:2px 8px;border-radius:6px;letter-spacing:.5px;margin:0 2px}
+.tag.blue{background:rgba(8,145,178,.12);border-color:rgba(8,145,178,.2);color:#0891b2}
+.tag.gold{background:rgba(201,151,60,.12);border-color:rgba(201,151,60,.2);color:#c9973c}
+.tag.purple{background:rgba(124,58,237,.12);border-color:rgba(124,58,237,.2);color:#8b5cf6}
+.divider{height:1px;background:rgba(255,255,255,.04);margin:12px 0}
+.sub{font-size:11px;font-weight:700;color:#2aab47;text-transform:uppercase;letter-spacing:1px;margin:14px 0 8px}
+p{font-size:13px;color:#c8c8c0;line-height:1.6;margin-bottom:8px}
 </style>
 </head>
 <body>
 
-<div class="logo" onclick="location.href='home.html'">AGRO<span>PLAY</span></div>
-<div class="sub">Manual do Sistema</div>
+<div class="hdr">
+  <div class="logo">AGRO<span>PLAY</span></div>
+  <a href="home.html" class="back">&larr; Menu</a>
+</div>
 
-<!-- ACESSO -->
+<div class="version">MANUAL DO SISTEMA &mdash; v29 &mdash; Abril 2026</div>
+
+<!-- HOME -->
 
 <div class="section">
-  <div class="section-title">Acesso ao Sistema</div>
-  <div class="card">
-    <div class="card-title"><span>&#128279;</span>Link oficial</div>
-    <div class="link-box"><div class="link-url">robsafonso.github.io/Agroplay/home.html</div></div>
-    <div class="card-desc" style="margin-top:8px">Entre com seu <b style="color:#fff">nome</b> e <b style="color:#fff">senha</b>. No primeiro acesso voce sera solicitado a criar uma nova senha.</div>
-    <div class="tip">Adicione o link na tela inicial do iPhone: Safari > Compartilhar > Adicionar a Tela de Inicio</div>
+  <div class="section-hdr" onclick="tog(this)">
+    <span class="section-icon">&#127968;</span>
+    <span class="section-title">Home &mdash; Acesso ao sistema</span>
+    <span class="section-arrow">&#9660;</span>
   </div>
-  <div class="card">
-    <div class="card-title"><span>&#9776;</span>Navegacao rapida</div>
-    <div class="card-desc">Em qualquer tela, toque no logo <b style="color:#fff">AGROPLAY</b> no canto superior para voltar ao menu principal. No gerente, toque no <b style="color:#fff">&#9776;</b> para acessar todas as paginas do sistema.</div>
-  </div>
-  <div class="card">
-    <div class="card-title"><span>&#128100;</span>Niveis de acesso</div>
-    <div class="step"><div class="step-num" style="background:#c9973c">M</div><div class="step-text"><b>Master</b> -- acesso total + gerenciar administradores</div></div>
-    <div class="step"><div class="step-num">A</div><div class="step-text"><b>Admin</b> -- acesso total ao sistema</div></div>
-    <div class="step"><div class="step-num" style="background:#555">V</div><div class="step-text"><b>Visualizador</b> -- apenas leitura, nao pode editar</div></div>
+  <div class="section-body">
+    <div class="step-row"><span class="step-num">1</span><span class="step-text">Acesse <b>robsafonso.github.io/Agroplay/home.html</b> e faca login com seu usuario e senha.</span></div>
+    <div class="step-row"><span class="step-num">2</span><span class="step-text">Niveis de acesso: <span class="tag">Master</span> ve tudo &mdash; <span class="tag blue">Admin</span> ve operacao &mdash; <span class="tag purple">Visualizador</span> so dashboards.</span></div>
+    <div class="step-row"><span class="step-num">3</span><span class="step-text">Para adicionar usuarios va em <b>Gestao do Sistema</b> (visivel so para Master).</span></div>
+    <div class="tip"><b>Dica:</b> Adicione a pagina na tela inicial do celular para acesso rapido.</div>
   </div>
 </div>
 
 <!-- GERENTE -->
 
 <div class="section">
-  <div class="section-title">Painel Gerente</div>
-  <div class="card">
-    <div class="card-title"><span>&#127968;</span>Filtro por empresa</div>
-    <div class="card-desc">Os chips no topo filtram os cadastros por empresa do Grupo Agroplay. Toque em <b style="color:#fff">Ana Castela</b>, <b style="color:#fff">Escritorio Agroplay</b> ou qualquer outro para ver so os cadastros daquela empresa.</div>
+  <div class="section-hdr" onclick="tog(this)">
+    <span class="section-icon">&#128101;</span>
+    <span class="section-title">Gerente &mdash; Cadastros e convites</span>
+    <span class="section-arrow">&#9660;</span>
   </div>
-  <div class="card">
-    <div class="card-title"><span>&#10133;</span>Cadastrar pessoa</div>
-    <div class="step"><div class="step-num">1</div><div class="step-text">Toque em <b>+ Cadastrar</b> (laranja)</div></div>
-    <div class="step"><div class="step-num">2</div><div class="step-text">Preencha nome, CPF, contato</div></div>
-    <div class="step"><div class="step-num">3</div><div class="step-text">Selecione empresa e funcao</div></div>
-    <div class="step"><div class="step-num">4</div><div class="step-text">Tire uma foto (opcional)</div></div>
-    <div class="tip">CPF duplicado e bloqueado automaticamente.</div>
-  </div>
-  <div class="card">
-    <div class="card-title"><span>&#128279;</span>Enviar link de cadastro</div>
-    <div class="step"><div class="step-num">1</div><div class="step-text">Toque em <b>Link Cadastro</b></div></div>
-    <div class="step"><div class="step-num">2</div><div class="step-text">Toque em <b>Gerar convite</b></div></div>
-    <div class="step"><div class="step-num">3</div><div class="step-text">Copie a mensagem e envie pelo WhatsApp</div></div>
-    <div class="tip">Cada codigo e de uso unico e intransferivel.</div>
-  </div>
-  <div class="card">
-    <div class="card-title"><span>&#9998;</span>Editar empresa e funcao</div>
-    <div class="card-desc">Abra o perfil de qualquer pessoa e toque em <b style="color:#fff">Editar empresa / funcao</b> para corrigir ou atualizar os dados dela.</div>
+  <div class="section-body">
+    <div class="sub">Cadastrar pessoa</div>
+    <div class="step-row"><span class="step-num">1</span><span class="step-text">Toque em <b>+ Cadastrar</b> no topo.</span></div>
+    <div class="step-row"><span class="step-num">2</span><span class="step-text">Preencha nome, CPF, email e telefone. Setor e empresa sao obrigatorios.</span></div>
+    <div class="step-row"><span class="step-num">3</span><span class="step-text">Toque em <b>Salvar</b>. O cadastro aparece na lista imediatamente.</span></div>
+    <div class="warn"><b>Atencao:</b> CPF duplicado e bloqueado automaticamente.</div>
+    <div class="sub">Filtrar cadastros</div>
+    <div class="step-row"><span class="step-num">1</span><span class="step-text">Use o <b>dropdown de empresa</b> para filtrar por artista ou escritorio.</span></div>
+    <div class="step-row"><span class="step-num">2</span><span class="step-text">Use a <b>barra de busca</b> para buscar por nome ou email.</span></div>
+    <div class="sub">Enviar convite</div>
+    <div class="step-row"><span class="step-num">1</span><span class="step-text">Va na aba <b>Eventos</b>, toque no evento e em <b>Enviar Convites</b>.</span></div>
+    <div class="step-row"><span class="step-num">2</span><span class="step-text">Selecione as pessoas e escolha o tipo de convite: <span class="tag">Direto</span> ou <span class="tag blue">Link Externo</span>.</span></div>
+    <div class="step-row"><span class="step-num">3</span><span class="step-text">Copie a mensagem e envie pelo WhatsApp.</span></div>
+    <div class="sub">Exportar dados</div>
+    <p>Botoes <b>Excel</b> e <b>CSV</b> exportam todos os cadastros filtrados no momento.</p>
   </div>
 </div>
 
 <!-- EVENTOS -->
 
 <div class="section">
-  <div class="section-title">Eventos</div>
-  <div class="card">
-    <div class="card-title"><span>&#127927;</span>Criar evento</div>
-    <div class="step"><div class="step-num">1</div><div class="step-text">Aba <b>Eventos</b> > <b>+ Criar novo evento</b></div></div>
-    <div class="step"><div class="step-num">2</div><div class="step-text">Preencha nome, data, horario, local, atracoes</div></div>
-    <div class="step"><div class="step-num">3</div><div class="step-text">Cole o link da foto e o link do Maps</div></div>
-    <div class="step"><div class="step-num">4</div><div class="step-text">Toque em <b>Salvar</b></div></div>
+  <div class="section-hdr" onclick="tog(this)">
+    <span class="section-icon">&#127916;</span>
+    <span class="section-title">Eventos &mdash; Criar e gerenciar</span>
+    <span class="section-arrow">&#9660;</span>
   </div>
-  <div class="card">
-    <div class="card-title"><span>&#128140;</span>4 tipos de convite</div>
-    <div class="step"><div class="step-num">1</div><div class="step-text"><b>Link Cadastro</b> -- pessoa nova sem evento vinculado</div></div>
-    <div class="step"><div class="step-num">2</div><div class="step-text"><b>Convite Externo</b> -- pessoa nova com evento vinculado</div></div>
-    <div class="step"><div class="step-num">3</div><div class="step-text"><b>Convite Interno</b> -- pessoa ja cadastrada confirma presenca</div></div>
-    <div class="step"><div class="step-num">4</div><div class="step-text"><b>Lote</b> -- colaborador distribui varios convites</div></div>
-  </div>
-</div>
-
-<!-- BILHETES -->
-
-<div class="section">
-  <div class="section-title">Bilhetes</div>
-  <div class="card">
-    <div class="card-title"><span>&#127903;</span>Fluxo do bilhete</div>
-    <div class="step"><div class="step-num" style="background:#0891b2">1</div><div class="step-text"><span class="badge-azul">Azul</span> -- bilhete ainda nao foi enviado</div></div>
-    <div class="step"><div class="step-num" style="background:#c9973c">2</div><div class="step-text"><span class="badge-amar">Amarelo</span> -- link copiado, aguardando confirmacao</div></div>
-    <div class="step"><div class="step-num">3</div><div class="step-text"><span class="badge-verde">Verde</span> -- pessoa confirmou o recebimento</div></div>
-    <div class="tip">Bilhetes ficam disponiveis somente 7 dias antes do evento.</div>
-  </div>
-  <div class="card">
-    <div class="card-title"><span>&#128247;</span>Como enviar bilhetes</div>
-    <div class="step"><div class="step-num">1</div><div class="step-text">Gerente > Eventos > toque em <b>Bilhetes</b></div></div>
-    <div class="step"><div class="step-num">2</div><div class="step-text">Toque em <b>Copiar bilhete</b> de cada pessoa</div></div>
-    <div class="step"><div class="step-num">3</div><div class="step-text">Envie pelo WhatsApp -- botao fica amarelo</div></div>
-    <div class="step"><div class="step-num">4</div><div class="step-text">Pessoa abre o link e confirma -- fica verde</div></div>
-  </div>
-  <div class="card">
-    <div class="card-title"><span>&#127903;</span>Painel Tickets</div>
-    <div class="card-desc">No menu principal toque em <b style="color:#fff">Tickets</b> para ver o status de todos os bilhetes por evento, com filtro por responsavel do lote.</div>
-  </div>
-</div>
-
-<!-- CHECK-IN -->
-
-<div class="section">
-  <div class="section-title">Check-in no Evento</div>
-  <div class="card">
-    <div class="card-title"><span>&#128242;</span>Scanner QR</div>
-    <div class="step"><div class="step-num">1</div><div class="step-text">Abra o link do scanner e entre com senha de validador</div></div>
-    <div class="step"><div class="step-num">2</div><div class="step-text">Aponte a camera para o QR Code do convidado</div></div>
-    <div class="step"><div class="step-num">3</div><div class="step-text">Toque em <b>Flash</b> para ligar a lanterna se necessario</div></div>
-    <div class="step"><div class="step-num">4</div><div class="step-text">Toque em <b>Confirmar entrada</b></div></div>
-    <div class="link-box" style="margin-top:8px"><div class="link-url">robsafonso.github.io/Agroplay/checkin.html</div></div>
-  </div>
-  <div class="card">
-    <div class="card-title"><span>&#128202;</span>Historico e estatisticas</div>
-    <div class="card-desc">No painel Admin, aba <b style="color:#fff">Historico</b> -- veja total de convidados, quantos entraram e quantos faltaram por evento.</div>
-    <div class="link-box" style="margin-top:8px"><div class="link-url">robsafonso.github.io/Agroplay/admin.html</div></div>
+  <div class="section-body">
+    <div class="step-row"><span class="step-num">1</span><span class="step-text">No Gerente, toque na aba <b>Eventos</b> e em <b>+ Novo Evento</b>.</span></div>
+    <div class="step-row"><span class="step-num">2</span><span class="step-text">Preencha nome, data, horario inicio e fim, local, link do mapa e foto.</span></div>
+    <div class="step-row"><span class="step-num">3</span><span class="step-text">Adicione as <b>atracoes</b> e os <b>Instagrams</b> dos artistas.</span></div>
+    <div class="step-row"><span class="step-num">4</span><span class="step-text">Toque em <b>Salvar</b>. O evento aparece em todos os modulos automaticamente.</span></div>
+    <div class="tip"><b>Dica:</b> Use o Google Maps para copiar o link do local do evento.</div>
   </div>
 </div>
 
 <!-- LOTES -->
 
 <div class="section">
-  <div class="section-title">Lotes de Convites</div>
-  <div class="card">
-    <div class="card-title"><span>&#127981;</span>Criar lote</div>
-    <div class="step"><div class="step-num">1</div><div class="step-text">Aba <b>Lotes</b> > <b>+ Criar novo lote</b></div></div>
-    <div class="step"><div class="step-num">2</div><div class="step-text">Nome do responsavel, quantidade e senha</div></div>
-    <div class="step"><div class="step-num">3</div><div class="step-text">Vincule a um evento (opcional)</div></div>
-    <div class="step"><div class="step-num">4</div><div class="step-text">Copie o link e envie para o colaborador</div></div>
-    <div class="warn">O colaborador acessa o painel com a senha e distribui os convites. Cada convite e de uso unico.</div>
+  <div class="section-hdr" onclick="tog(this)">
+    <span class="section-icon">&#127915;</span>
+    <span class="section-title">Lotes &mdash; Convites por responsavel</span>
+    <span class="section-arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+    <div class="step-row"><span class="step-num">1</span><span class="step-text">No Gerente, va na aba <b>Lotes</b> e crie um lote para cada responsavel.</span></div>
+    <div class="step-row"><span class="step-num">2</span><span class="step-text">Defina o <b>responsavel</b>, <b>evento</b> e <b>quantidade</b> de convites.</span></div>
+    <div class="step-row"><span class="step-num">3</span><span class="step-text">Toque em <b>Copiar link</b> e envie a mensagem com a senha para o responsavel.</span></div>
+    <div class="step-row"><span class="step-num">4</span><span class="step-text">O responsavel acessa o link, ve quantos convites tem e cadastra os convidados.</span></div>
+    <div class="tip"><b>Dica:</b> Cada responsavel tem uma senha unica gerada automaticamente.</div>
   </div>
 </div>
 
-<!-- DICAS -->
+<!-- BILHETES -->
 
 <div class="section">
-  <div class="section-title">Dicas Importantes</div>
-  <div class="card">
-    <div class="card-title"><span>&#128161;</span>Boas praticas</div>
-    <div class="step"><div class="step-num" style="background:#0891b2">1</div><div class="step-text">Sempre toque em <b>Atualizar</b> antes de usar</div></div>
-    <div class="step"><div class="step-num" style="background:#0891b2">2</div><div class="step-text">CPF duplicado e bloqueado automaticamente</div></div>
-    <div class="step"><div class="step-num" style="background:#0891b2">3</div><div class="step-text">Bilhetes so ficam disponiveis 7 dias antes do evento</div></div>
-    <div class="step"><div class="step-num" style="background:#0891b2">4</div><div class="step-text">Use o flash do scanner em ambientes escuros</div></div>
-    <div class="step"><div class="step-num" style="background:#0891b2">5</div><div class="step-text">Toque no logo AGROPLAY para voltar ao menu</div></div>
+  <div class="section-hdr" onclick="tog(this)">
+    <span class="section-icon">&#127903;</span>
+    <span class="section-title">Bilhetes &mdash; Envio e confirmacao</span>
+    <span class="section-arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+    <p>Os bilhetes ficam disponiveis para envio <b>7 dias antes do evento</b>.</p>
+    <div class="step-row"><span class="step-num">1</span><span class="step-text">Acesse <b>Bilhetes</b> pelo menu do evento no Gerente.</span></div>
+    <div class="step-row"><span class="step-num">2</span><span class="step-text">Os convidados aparecem agrupados por responsavel com status: <span class="tag blue">N/Env</span> <span class="tag gold">Aguard</span> <span class="tag">Conf</span>.</span></div>
+    <div class="step-row"><span class="step-num">3</span><span class="step-text">Toque em <b>N/Env</b> para enviar o bilhete digital com QR Code pelo WhatsApp.</span></div>
+    <div class="step-row"><span class="step-num">4</span><span class="step-text">O convidado acessa o link e confirma presenca. Status muda para <span class="tag">Conf</span>.</span></div>
+    <div class="warn"><b>Atencao:</b> Bilhetes so aparecem quando faltam 7 dias ou menos para o evento.</div>
   </div>
 </div>
 
-<div class="card" style="margin-bottom:20px">
-  <div style="font-size:11px;color:#2aab47;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Links rapidos</div>
-  <div style="font-family:monospace;font-size:11px;color:#eee;margin-bottom:6px;word-break:break-all">Sistema: robsafonso.github.io/Agroplay/home.html</div>
-  <div style="font-family:monospace;font-size:11px;color:#eee;word-break:break-all">Scanner: robsafonso.github.io/Agroplay/checkin.html</div>
-  <button onclick="copiarLinks()" id="btn-cop" style="width:100%;margin-top:10px;background:transparent;border:1px solid #2aab47;color:#2aab47;border-radius:8px;padding:10px;font-size:13px;cursor:pointer">Copiar link do sistema</button>
+<!-- SCANNER -->
+
+<div class="section">
+  <div class="section-hdr" onclick="tog(this)">
+    <span class="section-icon">&#128247;</span>
+    <span class="section-title">Scanner &mdash; Check-in na portaria</span>
+    <span class="section-arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+    <div class="step-row"><span class="step-num">1</span><span class="step-text">Acesse <b>Scanner</b> no menu principal e faca login com usuario e senha de validador.</span></div>
+    <div class="step-row"><span class="step-num">2</span><span class="step-text">No primeiro acesso, sera solicitada a criacao de uma senha pessoal.</span></div>
+    <div class="step-row"><span class="step-num">3</span><span class="step-text">Aponte a camera para o <b>QR Code</b> do bilhete do convidado.</span></div>
+    <div class="step-row"><span class="step-num">4</span><span class="step-text">Aparece o nome e foto do convidado. Toque em <b>Confirmar entrada</b>.</span></div>
+    <div class="step-row"><span class="step-num">5</span><span class="step-text">Para sair, toque em <b>Sair</b> no canto superior direito.</span></div>
+    <div class="tip"><b>Dica:</b> O botao de lanterna <b>&#9889;</b> ajuda em ambientes escuros.</div>
+    <div class="tip"><b>Busca manual:</b> Se o QR Code nao ler, busque pelo codigo de 6 digitos ou pelo nome do convidado.</div>
+  </div>
 </div>
 
-<div style="text-align:center;padding:16px 0;font-size:11px;color:#333;letter-spacing:2px;text-transform:uppercase">
-  Agroplay Music - Londrina PR
+<!-- ADMIN -->
+
+<div class="section">
+  <div class="section-hdr" onclick="tog(this)">
+    <span class="section-icon">&#127979;</span>
+    <span class="section-title">Admin &mdash; Controle do evento</span>
+    <span class="section-arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+    <p>Painel de controle em tempo real com totais de presenca por evento.</p>
+    <div class="step-row"><span class="step-num">1</span><span class="step-text">Selecione o evento no dropdown para ver os numeros: <b>Total / Entraram / Faltaram</b>.</span></div>
+    <div class="step-row"><span class="step-num">2</span><span class="step-text">Filtre por <b>Todos / Entraram / Nao entraram</b> para ver a lista detalhada.</span></div>
+    <div class="step-row"><span class="step-num">3</span><span class="step-text">Em <b>Validadores</b> ve quantos cada porteiro confirmou.</span></div>
+    <div class="step-row"><span class="step-num">4</span><span class="step-text">Em <b>Historico</b> ve todos os check-ins com horario.</span></div>
+    <div class="step-row"><span class="step-num">5</span><span class="step-text">Exporte a lista em <b>CSV</b> para planilha.</span></div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+
+<div class="section">
+  <div class="section-hdr" onclick="tog(this)">
+    <span class="section-icon">&#128202;</span>
+    <span class="section-title">Dashboard &mdash; Visao geral</span>
+    <span class="section-arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+    <p>Visao consolidada de todos os eventos com atualizacao automatica a cada 30 segundos.</p>
+    <p>Para cada evento mostra: <b>Total / Entraram / N/Enviado / Aguardando</b>.</p>
+    <div class="tip"><b>Dica:</b> Deixe o Dashboard aberto durante o evento para acompanhar a entrada em tempo real.</div>
+  </div>
+</div>
+
+<!-- TICKETS -->
+
+<div class="section">
+  <div class="section-hdr" onclick="tog(this)">
+    <span class="section-icon">&#127902;</span>
+    <span class="section-title">Tickets &mdash; Por responsavel</span>
+    <span class="section-arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+    <p>Visao de todos os eventos agrupados por responsavel de lote. Mostra percentual de confirmacao de cada um.</p>
+    <div class="step-row"><span class="step-num">1</span><span class="step-text">Filtre por responsavel nos chips do topo.</span></div>
+    <div class="step-row"><span class="step-num">2</span><span class="step-text">Toque em <b>Ver e enviar bilhetes</b> para gerenciar os bilhetes do evento.</span></div>
+  </div>
+</div>
+
+<!-- ORCAMENTO -->
+
+<div class="section">
+  <div class="section-hdr" onclick="tog(this)">
+    <span class="section-icon">&#128176;</span>
+    <span class="section-title">Orcamento &mdash; Custos do evento</span>
+    <span class="section-arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+    <div class="step-row"><span class="step-num">1</span><span class="step-text">Selecione o evento no dropdown do topo.</span></div>
+    <div class="step-row"><span class="step-num">2</span><span class="step-text">As categorias aparecem expandidas: Artista, Estrutura, Local, Equipe, Bebidas, Comunicacao.</span></div>
+    <div class="step-row"><span class="step-num">3</span><span class="step-text">Em cada categoria, selecione o item, quantidade e valor. Toque em <b>+ Add</b>.</span></div>
+    <div class="step-row"><span class="step-num">4</span><span class="step-text">O total geral e os subtotais atualizam automaticamente.</span></div>
+    <div class="step-row"><span class="step-num">5</span><span class="step-text">Toque em <b>Gerar PDF</b> para imprimir ou salvar o orcamento.</span></div>
+    <div class="step-row"><span class="step-num">6</span><span class="step-text">Para criar categoria personalizada, use o campo <b>+ Cat</b> no final da pagina.</span></div>
+    <div class="tip"><b>Dica:</b> Selecione "Outro" no dropdown do item para digitar um nome personalizado.</div>
+  </div>
+</div>
+
+<!-- CODIGOS -->
+
+<div class="section">
+  <div class="section-hdr" onclick="tog(this)">
+    <span class="section-icon">&#128273;</span>
+    <span class="section-title">Codigos &mdash; Controle de acesso</span>
+    <span class="section-arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+    <p>Os codigos sao tokens unicos de 8 digitos usados para validar a entrada dos convidados.</p>
+    <div class="divider"></div>
+    <p><b>Livre:</b> codigo disponivel para uso.</p>
+    <p><b>Usado:</b> codigo ja utilizado por um convidado.</p>
+    <div class="warn"><b>Atencao:</b> O sistema tem 10.000 codigos. Nunca reutilize um codigo ja usado.</div>
+  </div>
+</div>
+
+<!-- DICAS GERAIS -->
+
+<div class="section">
+  <div class="section-hdr" onclick="tog(this)">
+    <span class="section-icon">&#128161;</span>
+    <span class="section-title">Dicas gerais e boas praticas</span>
+    <span class="section-arrow">&#9660;</span>
+  </div>
+  <div class="section-body">
+    <div class="tip"><b>Antes do evento:</b> Crie o evento, crie os lotes, distribua os links dos responsaveis, envie os bilhetes 7 dias antes.</div>
+    <div class="tip" style="margin-top:8px"><b>No dia do evento:</b> Abra o Admin para ver entradas em tempo real. O Scanner fica com a equipe da portaria.</div>
+    <div class="tip" style="margin-top:8px"><b>Backup de dados:</b> Exporte o CSV periodicamente pelo Gerente para ter uma copia dos cadastros.</div>
+    <div class="warn" style="margin-top:8px"><b>Seguranca:</b> Nunca compartilhe sua senha. Cada porteiro deve ter seu proprio login de validador.</div>
+  </div>
+</div>
+
+<div style="text-align:center;margin-top:24px;font-size:11px;color:#556655">
+  Agroplay Music &mdash; Sistema v29 &mdash; Londrina PR<br>
+  <span style="color:#2aab47">robsafonso.github.io/Agroplay</span>
 </div>
 
 <script>
-function copiarLinks(){
-  var link="https://robsafonso.github.io/Agroplay/home.html";
-  var btn=document.getElementById("btn-cop");
-  if(navigator.clipboard){navigator.clipboard.writeText(link).then(function(){btn.textContent="Copiado!";setTimeout(function(){btn.textContent="Copiar link do sistema";},2000);});}
-  else{var t=document.createElement("textarea");t.value=link;document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t);btn.textContent="Copiado!";setTimeout(function(){btn.textContent="Copiar link do sistema";},2000);}
+function tog(hdr){
+  var body=hdr.nextElementSibling;
+  var arrow=hdr.querySelector('.section-arrow');
+  var isOpen=body.classList.contains('open');
+  body.classList.toggle('open',!isOpen);
+  arrow.classList.toggle('open',!isOpen);
 }
 </script>
 
