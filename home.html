@@ -4,277 +4,259 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agroplay Music</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<title>Agroplay — Sistema</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --gold:#c9973c;
-  --gold2:#e8b84b;
-  --green:#1a8c3a;
-  --dark:#080a08;
-  --dark2:#0d110d;
-  --dark3:#111711;
-  --border:#1e2a1e;
-  --text:#e8e8e0;
-  --muted:#556655;
+  --green:#2aab47;
+  --green-dark:#1a8c3a;
+  --green-dim:rgba(42,171,71,.08);
+  --bg:#07090a;
+  --bg2:#0d1210;
+  --bg3:#111a13;
+  --border:rgba(42,171,71,.12);
+  --border2:rgba(255,255,255,.06);
+  --text:#f0f2f0;
+  --muted:#6b7d6b;
+  --white:#ffffff;
 }
-body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;}
 
-/* Background grain */
-body::before{content:’’;position:fixed;inset:0;background-image:url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise)’ opacity=‘0.03’/%3E%3C/svg%3E”);pointer-events:none;z-index:0;opacity:.4;}
+.page{max-width:420px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;padding:0 0 24px;}
 
-.wrap{position:relative;z-index:1;max-width:420px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;}
+/* TOP BAR */
+.topbar{padding:20px 20px 0;display:flex;align-items:center;justify-content:space-between;}
+.logo-wrap{display:flex;align-items:center;gap:10px;}
+.logo-img{height:32px;object-fit:contain;}
+.logo-fallback{font-family:‘Montserrat’,sans-serif;font-weight:900;font-size:20px;letter-spacing:2px;color:var(–white);}
+.logo-fallback span{color:var(–green);}
+.sys-badge{background:var(–green-dim);border:1px solid var(–border);color:var(–green);font-size:9px;font-weight:600;letter-spacing:2px;padding:4px 9px;border-radius:20px;text-transform:uppercase;}
 
-/* Header */
-.hdr{padding:40px 24px 0;text-align:center;}
-.logo-mark{display:inline-flex;align-items:center;gap:12px;margin-bottom:8px;}
-.logo-icon{width:52px;height:52px;background:linear-gradient(135deg,var(–gold),var(–gold2));border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:‘Bebas Neue’,sans-serif;font-size:22px;color:#080a08;letter-spacing:1px;box-shadow:0 8px 32px rgba(201,151,60,.3);}
-.logo-text{text-align:left;}
-.logo-name{font-family:‘Bebas Neue’,sans-serif;font-size:28px;letter-spacing:3px;color:var(–text);line-height:1;}
-.logo-sub{font-size:10px;letter-spacing:4px;color:var(–gold);text-transform:uppercase;font-weight:500;}
+/* HERO */
+.hero{padding:28px 20px 20px;border-bottom:1px solid var(–border2);}
+.user-row{display:flex;align-items:center;gap:12px;}
+.avatar{width:44px;height:44px;border-radius:12px;background:var(–green-dark);display:flex;align-items:center;justify-content:center;font-family:‘Montserrat’,sans-serif;font-weight:900;font-size:18px;color:#fff;flex-shrink:0;border:1px solid var(–border);}
+.user-name{font-family:‘Montserrat’,sans-serif;font-weight:700;font-size:17px;color:var(–white);}
+.user-level{font-size:11px;color:var(–muted);margin-top:2px;letter-spacing:.5px;}
+.user-pill{margin-left:auto;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;border-radius:20px;}
+.pill-master{background:rgba(42,171,71,.15);border:1px solid rgba(42,171,71,.3);color:var(–green);}
+.pill-admin{background:rgba(8,145,178,.12);border:1px solid rgba(8,145,178,.25);color:#0891b2;}
+.pill-vis{background:rgba(255,255,255,.06);border:1px solid var(–border2);color:var(–muted);}
 
-.tagline{font-size:12px;color:var(–muted);letter-spacing:2px;text-transform:uppercase;margin-top:4px;}
+/* MODULES */
+.modules{padding:20px 20px 0;flex:1;}
+.section-title{font-size:10px;font-weight:600;letter-spacing:3px;color:var(–muted);text-transform:uppercase;margin-bottom:12px;}
 
-/* Divider */
-.divider{height:1px;background:linear-gradient(90deg,transparent,var(–gold),transparent);margin:28px 24px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.grid1{margin-bottom:10px;}
 
-/* User info */
-.user-info{padding:0 24px;margin-bottom:24px;}
-.user-card{background:var(–dark2);border:1px solid var(–border);border-radius:16px;padding:16px 20px;display:flex;align-items:center;gap:14px;}
-.user-avatar{width:42px;height:42px;background:linear-gradient(135deg,var(–green),#2aab47);border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:‘Bebas Neue’,sans-serif;font-size:20px;color:#fff;flex-shrink:0;}
-.user-name{font-size:15px;font-weight:700;color:var(–text);}
-.user-role{font-size:11px;color:var(–muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px;}
-.user-badge{margin-left:auto;background:rgba(201,151,60,.15);border:1px solid rgba(201,151,60,.3);color:var(–gold);font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:4px 8px;border-radius:6px;font-weight:700;}
+.mod{background:var(–bg2);border:1px solid var(–border2);border-radius:18px;padding:18px 16px;text-decoration:none;color:var(–text);display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden;transition:border-color .15s,transform .1s;-webkit-tap-highlight-color:transparent;}
+.mod:active{transform:scale(.97);}
+.mod:hover{border-color:var(–border);}
 
-/* Nav grid */
-.nav{padding:0 24px;flex:1;}
-.section-label{font-size:10px;letter-spacing:3px;color:var(–muted);text-transform:uppercase;margin-bottom:12px;padding-left:4px;}
+.mod-icon{font-size:22px;line-height:1;}
+.mod-name{font-family:‘Montserrat’,sans-serif;font-weight:700;font-size:13px;color:var(–white);letter-spacing:.3px;}
+.mod-desc{font-size:10px;color:var(–muted);line-height:1.4;}
 
-.grid-main{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
-.grid-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+/* accent top border */
+.mod::after{content:’’;position:absolute;top:0;left:16px;right:16px;height:1.5px;border-radius:0 0 4px 4px;background:var(–ac,transparent);opacity:.7;}
+.mod.g{–ac:var(–green);}
+.mod.b{–ac:#0891b2;}
+.mod.p{–ac:#8b5cf6;}
+.mod.o{–ac:#f59e0b;}
 
-.nav-btn{background:var(–dark2);border:1px solid var(–border);border-radius:16px;padding:18px 16px;text-decoration:none;color:var(–text);display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden;transition:all .2s;cursor:pointer;}
-.nav-btn:active{transform:scale(.97);}
-.nav-btn::before{content:’’;position:absolute;inset:0;opacity:0;transition:opacity .2s;}
-.nav-btn:active::before{opacity:1;}
+/* Wide mod */
+.mod.wide{flex-direction:row;align-items:center;gap:14px;}
+.mod.wide .mod-icon{font-size:26px;}
+.mod.wide .mod-info{flex:1;}
 
-.nav-btn.primary{background:linear-gradient(135deg,#0d2218,#0a1a10);border-color:#1e4028;}
-.nav-btn.primary::before{background:linear-gradient(135deg,rgba(42,171,71,.15),transparent);}
-.nav-btn.gold{background:linear-gradient(135deg,#1a1508,#120f04);border-color:#2a2008;}
-.nav-btn.gold::before{background:linear-gradient(135deg,rgba(201,151,60,.1),transparent);}
-.nav-btn.blue{background:linear-gradient(135deg,#060e1a,#040c16);border-color:#0a1e30;}
-.nav-btn.blue::before{background:linear-gradient(135deg,rgba(8,145,178,.1),transparent);}
-.nav-btn.purple{background:linear-gradient(135deg,#100a1a,#0c0814);border-color:#1e1030;}
+/* glow on active */
+.mod.g:active{background:#091409;}
+.mod.b:active{background:#04090e;}
+.mod.p:active{background:#0a0814;}
 
-.nav-icon{font-size:24px;line-height:1;}
-.nav-label{font-size:13px;font-weight:700;color:var(–text);letter-spacing:.5px;}
-.nav-desc{font-size:10px;color:var(–muted);margin-top:2px;}
+/* FOOTER */
+.footer{padding:20px 20px 0;display:flex;justify-content:center;}
+.btn-sair{background:transparent;border:1px solid var(–border2);border-radius:10px;padding:10px 20px;color:var(–muted);font-size:11px;font-family:‘Inter’,sans-serif;cursor:pointer;letter-spacing:.5px;transition:border-color .15s,color .15s;}
+.btn-sair:hover{border-color:rgba(255,255,255,.12);color:var(–text);}
 
-.nav-btn.big{grid-column:1/-1;flex-direction:row;align-items:center;gap:16px;padding:20px 20px;}
-.nav-btn.big .nav-icon{font-size:28px;}
-.nav-btn.big .nav-label{font-size:15px;}
-
-/* Accent line */
-.accent-line{position:absolute;top:0;left:0;right:0;height:2px;border-radius:16px 16px 0 0;}
-.accent-green{background:linear-gradient(90deg,transparent,#2aab47,transparent);}
-.accent-gold{background:linear-gradient(90deg,transparent,var(–gold),transparent);}
-.accent-blue{background:linear-gradient(90deg,transparent,#0891b2,transparent);}
-.accent-purple{background:linear-gradient(90deg,transparent,#7c3aed,transparent);}
-
-/* Footer */
-.footer{padding:24px;text-align:center;}
-.footer-btn{background:transparent;border:1px solid var(–border);border-radius:10px;padding:10px 20px;color:var(–muted);font-size:11px;cursor:pointer;letter-spacing:1px;}
-
-/* Login overlay */
-.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:100;align-items:flex-end;justify-content:center;}
+/* LOGIN */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:100;align-items:flex-end;justify-content:center;backdrop-filter:blur(8px);}
 .ov.on{display:flex;}
-.ov-box{background:var(–dark2);border:1px solid var(–border);border-radius:24px 24px 0 0;padding:28px 24px 40px;width:100%;max-width:420px;}
-.ov-title{font-family:‘Bebas Neue’,sans-serif;font-size:26px;letter-spacing:2px;color:var(–text);margin-bottom:6px;}
+.ov-box{background:var(–bg2);border:1px solid var(–border2);border-top-color:rgba(42,171,71,.2);border-radius:24px 24px 0 0;padding:32px 24px 44px;width:100%;max-width:420px;}
+.ov-logo{display:flex;align-items:center;gap:10px;margin-bottom:24px;}
+.ov-logo-img{height:28px;}
+.ov-logo-text{font-family:‘Montserrat’,sans-serif;font-weight:900;font-size:18px;letter-spacing:2px;color:var(–white);}
+.ov-logo-text span{color:var(–green);}
+.ov-title{font-family:‘Montserrat’,sans-serif;font-weight:700;font-size:22px;color:var(–white);margin-bottom:4px;}
 .ov-sub{font-size:12px;color:var(–muted);margin-bottom:24px;}
 .field{margin-bottom:14px;}
-.field label{display:block;font-size:10px;color:var(–gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;font-weight:700;}
-.field input{width:100%;background:#030503;border:1px solid var(–border);border-radius:10px;padding:13px 14px;color:var(–text);font-size:14px;font-family:‘DM Sans’,sans-serif;outline:none;transition:border-color .2s;}
-.field input:focus{border-color:var(–gold);}
-.btn-login{width:100%;background:linear-gradient(135deg,var(–gold),var(–gold2));border:none;border-radius:12px;padding:15px;font-size:15px;font-weight:700;color:#080a08;cursor:pointer;font-family:‘DM Sans’,sans-serif;letter-spacing:.5px;margin-top:6px;}
-.alert{background:rgba(231,76,60,.1);border:1px solid rgba(231,76,60,.3);color:#e74c3c;padding:10px 14px;border-radius:8px;font-size:12px;margin-bottom:12px;display:none;}
+.field label{display:block;font-size:10px;font-weight:600;color:var(–green);letter-spacing:2px;text-transform:uppercase;margin-bottom:7px;}
+.field input{width:100%;background:var(–bg);border:1px solid var(–border2);border-radius:12px;padding:14px 16px;color:var(–white);font-size:14px;font-family:‘Inter’,sans-serif;outline:none;transition:border-color .15s;}
+.field input:focus{border-color:rgba(42,171,71,.4);}
+.btn-login{width:100%;background:var(–green);border:none;border-radius:14px;padding:16px;font-size:15px;font-weight:700;color:#fff;cursor:pointer;font-family:‘Montserrat’,sans-serif;letter-spacing:.5px;margin-top:8px;transition:background .15s;}
+.btn-login:active{background:var(–green-dark);}
+.alert-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:#f87171;padding:11px 14px;border-radius:10px;font-size:12px;margin-bottom:14px;display:none;}
 </style>
 
 </head>
 <body>
-<div class="wrap">
-  <div class="hdr">
-    <div class="logo-mark">
-      <div class="logo-icon">AG</div>
-      <div class="logo-text">
-        <div class="logo-name">AGROPLAY</div>
-        <div class="logo-sub">Music & Events</div>
-      </div>
+<div class="page">
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="logo-wrap">
+      <img src="https://agroplaymusic.com.br/wp-content/uploads/2024/06/Logo-AgroPlay-01-white-1-300x87.png" class="logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" alt="Agroplay">
+      <div class="logo-fallback" style="display:none">AGRO<span>PLAY</span></div>
     </div>
+    <div class="sys-badge">Sistema</div>
   </div>
 
-  <div class="divider"></div>
+  <!-- USER HERO -->
 
-  <div class="user-info" id="user-info" style="display:none">
-    <div class="user-card">
-      <div class="user-avatar" id="uav">R</div>
+  <div class="hero" id="hero" style="display:none">
+    <div class="user-row">
+      <div class="avatar" id="uav">R</div>
       <div>
         <div class="user-name" id="uname">Robson</div>
-        <div class="user-role" id="urole">Master</div>
+        <div class="user-level" id="ulevel">Administrador master</div>
       </div>
-      <div class="user-badge" id="ubadge">MASTER</div>
+      <div class="user-pill" id="upill">Master</div>
     </div>
   </div>
 
-  <div class="nav" id="nav-grid" style="display:none">
-    <div class="section-label">Gestao</div>
-    <div class="grid-main">
-      <a href="index.html" class="nav-btn primary">
-        <div class="accent-line accent-green"></div>
-        <div class="nav-icon">👥</div>
-        <div>
-          <div class="nav-label">Gerente</div>
-          <div class="nav-desc">Cadastros e convites</div>
-        </div>
-      </a>
-      <a href="dashboard.html" class="nav-btn primary">
-        <div class="accent-line accent-green"></div>
-        <div class="nav-icon">📊</div>
-        <div>
-          <div class="nav-label">Dashboard</div>
-          <div class="nav-desc">Visao geral</div>
-        </div>
-      </a>
-    </div>
+  <!-- MODULES -->
+
+  <div class="modules" id="mods" style="display:none">
 
 ```
-<div class="grid-row" id="row-admin">
-  <a href="admin.html" class="nav-btn blue">
-    <div class="accent-line accent-blue"></div>
-    <div class="nav-icon">🎟️</div>
-    <div>
-      <div class="nav-label">Admin</div>
-      <div class="nav-desc">Check-in e lista</div>
-    </div>
+<div class="section-title" style="margin-top:20px">Gestao</div>
+<div class="grid2">
+  <a href="index.html" class="mod g">
+    <div class="mod-icon">👥</div>
+    <div class="mod-name">Gerente</div>
+    <div class="mod-desc">Cadastros e convites</div>
   </a>
-  <a href="checkin.html" class="nav-btn blue">
-    <div class="accent-line accent-blue"></div>
-    <div class="nav-icon">📷</div>
-    <div>
-      <div class="nav-label">Scanner</div>
-      <div class="nav-desc">Portaria QR Code</div>
-    </div>
+  <a href="dashboard.html" class="mod g">
+    <div class="mod-icon">📊</div>
+    <div class="mod-name">Dashboard</div>
+    <div class="mod-desc">Visao em tempo real</div>
   </a>
 </div>
 
-<div class="grid-row">
-  <a href="tickets.html" class="nav-btn gold">
-    <div class="accent-line accent-gold"></div>
-    <div class="nav-icon">🎫</div>
-    <div>
-      <div class="nav-label">Tickets</div>
-      <div class="nav-desc">Por responsavel</div>
-    </div>
+<div class="grid2" id="row-ops">
+  <a href="admin.html" class="mod b">
+    <div class="mod-icon">🎟️</div>
+    <div class="mod-name">Admin</div>
+    <div class="mod-desc">Check-in e listas</div>
   </a>
-  <a href="orcamento.html" class="nav-btn gold">
-    <div class="accent-line accent-gold"></div>
-    <div class="nav-icon">💰</div>
-    <div>
-      <div class="nav-label">Orcamento</div>
-      <div class="nav-desc">Custos do evento</div>
-    </div>
+  <a href="checkin.html" class="mod b">
+    <div class="mod-icon">📷</div>
+    <div class="mod-name">Scanner</div>
+    <div class="mod-desc">QR Code portaria</div>
   </a>
 </div>
 
-<div class="grid-row" id="row-extra">
-  <a href="#" class="nav-btn purple" id="btn-mediakit">
-    <div class="accent-line accent-purple"></div>
-    <div class="nav-icon">📋</div>
-    <div>
-      <div class="nav-label">Media Kit</div>
-      <div class="nav-desc">Material de apoio</div>
-    </div>
+<div class="section-title" style="margin-top:8px">Financeiro</div>
+<div class="grid2">
+  <a href="tickets.html" class="mod o">
+    <div class="mod-icon">🎫</div>
+    <div class="mod-name">Tickets</div>
+    <div class="mod-desc">Por responsavel</div>
   </a>
-  <a href="#" class="nav-btn purple" id="btn-manual">
-    <div class="accent-line accent-purple"></div>
-    <div class="nav-icon">📖</div>
-    <div>
-      <div class="nav-label">Manual</div>
-      <div class="nav-desc">Como usar</div>
-    </div>
+  <a href="orcamento.html" class="mod o">
+    <div class="mod-icon">💰</div>
+    <div class="mod-name">Orcamento</div>
+    <div class="mod-desc">Custos do evento</div>
+  </a>
+</div>
+
+<div class="section-title" style="margin-top:8px">Recursos</div>
+<div class="grid2">
+  <a href="#" class="mod p" id="btn-kit">
+    <div class="mod-icon">📋</div>
+    <div class="mod-name">Media Kit</div>
+    <div class="mod-desc">Material de apoio</div>
+  </a>
+  <a href="#" class="mod p" id="btn-manual">
+    <div class="mod-icon">📖</div>
+    <div class="mod-name">Manual</div>
+    <div class="mod-desc">Guia do sistema</div>
   </a>
 </div>
 ```
 
   </div>
 
-  <div class="footer">
-    <button class="footer-btn" id="btn-sair" style="display:none" onclick="sair()">Sair do sistema</button>
+  <div class="footer" id="footer" style="display:none">
+    <button class="btn-sair" onclick="sair()">Sair do sistema</button>
   </div>
 </div>
 
-<!-- Login Overlay -->
+<!-- LOGIN -->
 
 <div class="ov" id="ov-login">
   <div class="ov-box">
-    <div class="ov-title">Entrar</div>
-    <div class="ov-sub">Sistema de gestao Agroplay</div>
-    <div class="alert" id="login-alert"></div>
+    <div class="ov-logo">
+      <img src="https://agroplaymusic.com.br/wp-content/uploads/2024/06/Logo-AgroPlay-01-white-1-300x87.png" class="ov-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" alt="Agroplay">
+      <div class="ov-logo-text" style="display:none">AGRO<span>PLAY</span></div>
+    </div>
+    <div class="ov-title">Bem-vindo</div>
+    <div class="ov-sub">Acesso restrito — equipe interna</div>
+    <div class="alert-box" id="alrt"></div>
     <div class="field">
       <label>Usuario</label>
-      <input type="text" id="lin" placeholder="Seu nome" autocomplete="off">
+      <input type="text" id="lin" placeholder="Seu nome" autocomplete="off" autocapitalize="none">
     </div>
     <div class="field">
       <label>Senha</label>
       <input type="password" id="lpass" placeholder="••••••••">
     </div>
-    <button class="btn-login" id="btn-entrar" onclick="entrar()">Entrar</button>
+    <button class="btn-login" id="bent" onclick="entrar()">Entrar</button>
   </div>
 </div>
 
 <script>
 var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
 var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
-
-function get(p){return fetch(SB+"/rest/v1/"+p,{headers:{"apikey":KY,"Authorization":"Bearer "+KY}}).then(function(r){return r.json();});}
 function q(id){return document.getElementById(id);}
+function get(p){return fetch(SB+"/rest/v1/"+p,{headers:{"apikey":KY,"Authorization":"Bearer "+KY}}).then(function(r){return r.json();});}
 
-function mostrarHome(user){
-  q("uav").textContent=user.nome.charAt(0).toUpperCase();
-  q("uname").textContent=user.nome;
-  var roles={"master":"Master","admin":"Administrador","visualizador":"Visualizador"};
-  q("urole").textContent=roles[user.nivel]||user.nivel;
-  q("ubadge").textContent=(user.nivel||"").toUpperCase();
-  q("user-info").style.display="block";
-  q("nav-grid").style.display="block";
-  q("btn-sair").style.display="block";
+function mostrar(u){
+  q("uav").textContent=u.nome.charAt(0).toUpperCase();
+  q("uname").textContent=u.nome;
+  var lvls={master:"Administrador master",admin:"Administrador",visualizador:"Visualizador"};
+  q("ulevel").textContent=lvls[u.nivel]||u.nivel;
+  var pill=q("upill");
+  pill.textContent=(u.nivel||"").charAt(0).toUpperCase()+(u.nivel||"").slice(1);
+  pill.className="user-pill "+(u.nivel==="master"?"pill-master":u.nivel==="admin"?"pill-admin":"pill-vis");
+  q("hero").style.display="block";
+  q("mods").style.display="block";
+  q("footer").style.display="flex";
+  if(u.nivel==="visualizador")q("row-ops").style.display="none";
   q("ov-login").classList.remove("on");
-  if(user.nivel==="visualizador"){q("row-admin").style.display="none";}
-  sessionStorage.setItem("ag_user",JSON.stringify(user));
+  sessionStorage.setItem("ag_user",JSON.stringify(u));
 }
 
 function entrar(){
   var nome=q("lin").value.trim();
   var senha=q("lpass").value.trim();
-  if(!nome||!senha){q("login-alert").textContent="Preencha usuario e senha!";q("login-alert").style.display="block";return;}
-  var btn=q("btn-entrar");btn.textContent="Verificando...";btn.disabled=true;
-  q("login-alert").style.display="none";
+  if(!nome||!senha){q("alrt").textContent="Preencha usuario e senha!";q("alrt").style.display="block";return;}
+  var btn=q("bent");btn.textContent="Verificando...";btn.disabled=true;
+  q("alrt").style.display="none";
   get("admins?nome=eq."+encodeURIComponent(nome)+"&select=*").then(function(d){
-    if(!d||!d.length){q("login-alert").textContent="Usuario nao encontrado!";q("login-alert").style.display="block";return;}
+    if(!d||!d.length){q("alrt").textContent="Usuario nao encontrado.";q("alrt").style.display="block";return;}
     var u=d[0];
-    if(u.senha!==senha&&u.senha_hash!==senha){q("login-alert").textContent="Senha incorreta!";q("login-alert").style.display="block";return;}
-    mostrarHome(u);
-  }).catch(function(){q("login-alert").textContent="Erro de conexao. Tente novamente.";q("login-alert").style.display="block";}).finally(function(){btn.textContent="Entrar";btn.disabled=false;});
+    if(u.senha!==senha){q("alrt").textContent="Senha incorreta.";q("alrt").style.display="block";return;}
+    mostrar(u);
+  }).catch(function(){q("alrt").textContent="Erro de conexao. Tente novamente.";q("alrt").style.display="block";}).finally(function(){btn.textContent="Entrar";btn.disabled=false;});
 }
-
 function sair(){sessionStorage.removeItem("ag_user");location.reload();}
-
 q("lin").addEventListener("keydown",function(e){if(e.key==="Enter")q("lpass").focus();});
 q("lpass").addEventListener("keydown",function(e){if(e.key==="Enter")entrar();});
-
-// Auto-login
 var saved=sessionStorage.getItem("ag_user");
-if(saved){try{mostrarHome(JSON.parse(saved));}catch(e){q("ov-login").classList.add("on");}}
+if(saved){try{mostrar(JSON.parse(saved));}catch(e){q("ov-login").classList.add("on");}}
 else{q("ov-login").classList.add("on");}
 </script>
 
