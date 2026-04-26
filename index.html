@@ -57,7 +57,7 @@ textarea{height:70px;resize:none}
 <div class="hdr">
   <div onclick="location.href='home.html'" style="cursor:pointer;display:flex;align-items:center;gap:0;border:1px solid #1a2a1a;border-radius:10px;overflow:hidden">
     <div style="background:#0d150d;padding:7px 12px;font-size:16px;font-weight:900;color:#fff;letter-spacing:1px">AGRO<span style="color:#2aab47">PLAY</span></div>
-    <div style="background:#2aab47;padding:7px 10px;font-size:11px;font-weight:700;color:#fff;letter-spacing:1px">v28</div>
+    <div style="background:#2aab47;padding:7px 10px;font-size:11px;font-weight:700;color:#fff;letter-spacing:1px">v29</div>
   </div>
   <div style="display:flex;gap:6px;align-items:center"><button onclick="togMenu()" style="background:transparent;border:none;color:#eee;font-size:20px;cursor:pointer;padding:4px 8px">&#9776;</button>
     <button class="bto" id="blinkc" style="font-size:11px;padding:6px 10px">Link Cadastro</button>
@@ -80,7 +80,7 @@ textarea{height:70px;resize:none}
   <div style="border-top:1px solid #1a2a1a;margin:4px 0"></div>
   <a href="home.html" onclick="sessionStorage.removeItem('ag_admin')" style="display:flex;align-items:center;gap:10px;padding:10px 14px;color:#c0392b;text-decoration:none;font-size:13px;border-radius:8px">&#128682; Sair</a>
   <div style="border-top:1px solid #1a2a1a;margin:4px 0"></div>
-  <div style="padding:6px 14px;font-size:10px;color:#333;text-align:center">v28</div>
+  <div style="padding:6px 14px;font-size:10px;color:#333;text-align:center">v29</div>
 </div>
 <div class="stats" id="sts"></div>
 <div class="tabs">
@@ -96,7 +96,7 @@ textarea{height:70px;resize:none}
     <button class="bto" id="bxls">Excel</button>
     <button class="bto" id="bcsv">CSV</button>
   </div>
-  <div class="chips" id="chips"></div>
+  <div style="margin-bottom:10px"><select id="chips-sel" onchange="setF(this.value)" style="width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:11px 14px;color:#eee;font-size:13px;outline:none;font-weight:600"></select></div>
   <div id="gbar" style="display:none;background:rgba(42,171,71,.06);border:1px solid rgba(42,171,71,.2);border-radius:10px;padding:10px;margin-bottom:10px;align-items:center;flex-wrap:wrap;gap:8px">
     <span style="color:#2aab47;font-size:12px;font-weight:700" id="sct"></span>
     <input id="evnm" placeholder="Nome do evento..." style="flex:1;margin:0">
