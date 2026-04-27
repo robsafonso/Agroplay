@@ -1,167 +1,340 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Gestão de Eventos</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            min-height: 100vh;
-            color: #fff;
-        }
-        .navbar {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #00d9ff;
-        }
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-        .nav-links a {
-            color: #fff;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        .nav-links a:hover {
-            color: #00d9ff;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-        .hero {
-            text-align: center;
-            padding: 4rem 0;
-        }
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        .hero p {
-            font-size: 1.2rem;
-            color: #ccc;
-            margin-bottom: 2rem;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #00d9ff, #0077ff);
-            color: #fff;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 30px;
-            font-size: 1rem;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0,217,255,0.3);
-        }
-        .dashboard {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-top: 3rem;
-        }
-        .card {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 15px;
-            padding: 2rem;
-            text-align: center;
-            transition: transform 0.3s;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-        }
-        .card-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        .card h3 {
-            margin-bottom: 0.5rem;
-        }
-        .card p {
-            color: #aaa;
-        }
-        .status-badge {
-            background: #00ff88;
-            color: #000;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-        footer {
-            text-align: center;
-            padding: 2rem;
-            color: #666;
-            margin-top: 4rem;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agroplay - Sistema</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#2aab47;
+  --green-dark:#1a8c3a;
+  --green-dim:rgba(42,171,71,.08);
+  --bg:#07090a;
+  --bg2:#0d1210;
+  --bg3:#111a13;
+  --border:rgba(42,171,71,.12);
+  --border2:rgba(255,255,255,.06);
+  --text:#f0f2f0;
+  --muted:#6b7d6b;
+  --white:#ffffff;
+}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;-webkit-font-smoothing:antialiased;}
+
+.page{max-width:420px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;padding:0 0 24px;}
+
+/* TOP BAR */
+.topbar{padding:20px 20px 0;display:flex;align-items:center;justify-content:space-between;}
+.logo-wrap{display:flex;align-items:center;gap:10px;}
+.logo-img{height:32px;object-fit:contain;}
+.logo-fallback{font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;font-weight:900;font-size:20px;letter-spacing:2px;color:var(--white);}
+.logo-fallback span{color:var(--green);}
+.sys-badge{background:var(--green-dim);border:1px solid var(--border);color:var(--green);font-size:9px;font-weight:600;letter-spacing:2px;padding:4px 9px;border-radius:20px;text-transform:uppercase;}
+
+/* HERO */
+.hero{padding:28px 20px 20px;border-bottom:1px solid var(--border2);}
+.user-row{display:flex;align-items:center;gap:12px;}
+.avatar{width:44px;height:44px;border-radius:12px;background:var(--green-dark);display:flex;align-items:center;justify-content:center;font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;font-weight:900;font-size:18px;color:#fff;flex-shrink:0;border:1px solid var(--border);}
+.user-name{font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:17px;color:var(--white);}
+.user-level{font-size:11px;color:var(--muted);margin-top:2px;letter-spacing:.5px;}
+.user-pill{margin-left:auto;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;border-radius:20px;}
+.pill-master{background:rgba(42,171,71,.15);border:1px solid rgba(42,171,71,.3);color:var(--green);}
+.pill-admin{background:rgba(8,145,178,.12);border:1px solid rgba(8,145,178,.25);color:#0891b2;}
+.pill-vis{background:rgba(255,255,255,.06);border:1px solid var(--border2);color:var(--muted);}
+
+/* MODULES */
+.modules{padding:20px 20px 0;flex:1;}
+.section-title{font-size:10px;font-weight:600;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:12px;}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+.grid1{margin-bottom:10px;}
+
+.mod{background:var(--bg2);border:1px solid var(--border2);border-radius:18px;padding:18px 16px;text-decoration:none;color:var(--text);display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden;transition:border-color .15s,transform .1s;-webkit-tap-highlight-color:transparent;}
+.mod:active{transform:scale(.97);}
+.mod:hover{border-color:var(--border);}
+
+.mod-icon{font-size:22px;line-height:1;}
+.mod-name{font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:13px;color:var(--white);letter-spacing:.3px;}
+.mod-desc{font-size:10px;color:var(--muted);line-height:1.4;}
+
+/* accent top border */
+.mod::after{content:'';position:absolute;top:0;left:16px;right:16px;height:1.5px;border-radius:0 0 4px 4px;background:var(--ac,transparent);opacity:.7;}
+.mod.g{--ac:var(--green);}
+.mod.b{--ac:#0891b2;}
+.mod.p{--ac:#8b5cf6;}
+.mod.o{--ac:#f59e0b;}
+
+/* Wide mod */
+.mod.wide{flex-direction:row;align-items:center;gap:14px;}
+.mod.wide .mod-icon{font-size:26px;}
+.mod.wide .mod-info{flex:1;}
+
+/* glow on active */
+.mod.g:active{background:#091409;}
+.mod.b:active{background:#04090e;}
+.mod.p:active{background:#0a0814;}
+
+/* FOOTER */
+.footer{padding:20px 20px 0;display:flex;justify-content:center;}
+.btn-sair{background:transparent;border:1px solid var(--border2);border-radius:10px;padding:10px 20px;color:var(--muted);font-size:11px;font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;cursor:pointer;letter-spacing:.5px;transition:border-color .15s,color .15s;}
+.btn-sair:hover{border-color:rgba(255,255,255,.12);color:var(--text);}
+
+/* LOGIN */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:100;align-items:flex-end;justify-content:center;backdrop-filter:blur(8px);}
+.ov.on{display:flex;}
+.ov-box{background:var(--bg2);border:1px solid var(--border2);border-top-color:rgba(42,171,71,.2);border-radius:24px 24px 0 0;padding:32px 24px 44px;width:100%;max-width:420px;}
+.ov-logo{display:flex;align-items:center;gap:10px;margin-bottom:24px;}
+.ov-logo-img{height:28px;}
+.ov-logo-text{font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;font-weight:900;font-size:18px;letter-spacing:2px;color:var(--white);}
+.ov-logo-text span{color:var(--green);}
+.ov-title{font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:22px;color:var(--white);margin-bottom:4px;}
+.ov-sub{font-size:12px;color:var(--muted);margin-bottom:24px;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:10px;font-weight:600;color:var(--green);letter-spacing:2px;text-transform:uppercase;margin-bottom:7px;}
+.field input{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:12px;padding:14px 16px;color:var(--white);font-size:14px;font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;outline:none;transition:border-color .15s;}
+.field input:focus{border-color:rgba(42,171,71,.4);}
+.btn-login{width:100%;background:var(--green);border:none;border-radius:14px;padding:16px;font-size:15px;font-weight:700;color:#fff;cursor:pointer;font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;letter-spacing:.5px;margin-top:8px;transition:background .15s;}
+.btn-login:active{background:var(--green-dark);}
+.alert-box{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:#f87171;padding:11px 14px;border-radius:10px;font-size:12px;margin-bottom:14px;display:none;}
+</style>
+
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo">EventosPro</div>
-        <ul class="nav-links">
-            <li><a href="#">Inicio</a></li>
-            <li><a href="#">Eventos</a></li>
-            <li><a href="#">Calendario</a></li>
-            <li><a href="#">Relatorios</a></li>
-            <li><a href="#">Configuracoes</a></li>
-        </ul>
-        <span class="status-badge">Agente Ativo</span>
-    </nav>
-    <div class="container">
-        <section class="hero">
-            <h1>Gestao de Eventos Inteligente</h1>
-            <p>Organize, gerencie e acompanhe todos os seus eventos em um so lugar</p>
-            <a href="#" class="btn-primary">Criar Novo Evento</a>
-        </section>
-        <section class="dashboard">
-            <div class="card">
-                <div class="card-icon">📅</div>
-                <h3>12</h3>
-                <p>Eventos Ativos</p>
-            </div>
-            <div class="card">
-                <div class="card-icon">👥</div>
-                <h3>1.234</h3>
-                <p>Participantes</p>
-            </div>
-            <div class="card">
-                <div class="card-icon">✅</div>
-                <h3>89</h3>
-                <p>Eventos Concluidos</p>
-            </div>
-            <div class="card">
-                <div class="card-icon">📊</div>
-                <h3>95%</h3>
-                <p>Taxa de Satisfacao</p>
-            </div>
-        </section>
+<div class="page">
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="logo-wrap">
+      <img src="https://agroplaymusic.com.br/wp-content/uploads/2024/06/Logo-AgroPlay-01-white-1-300x87.png" class="logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" alt="Agroplay">
+      <div class="logo-fallback" style="display:none">AGRO<span>PLAY</span></div>
     </div>
-    <footer>
-        <p>Sistema de Gestao de Eventos - Agente Claude Funcionando</p>
-    </footer>
+    <div class="sys-badge">Sistema</div>
+  </div>
+
+  <!-- USER HERO -->
+
+  <div class="hero" id="hero" style="display:none">
+    <div class="user-row">
+      <div class="avatar" id="uav">R</div>
+      <div>
+        <div class="user-name" id="uname">Robson</div>
+        <div class="user-level" id="ulevel">Administrador master</div>
+      </div>
+      <div class="user-pill" id="upill">Master</div>
+    </div>
+  </div>
+
+  <!-- MODULES -->
+
+  <div class="modules" id="mods" style="display:none">
+
+```
+<div class="section-title" style="margin-top:20px">Gestao</div>
+<div class="grid2">
+  <a href="index.html" class="mod g" id="link-gerente">
+    <div class="mod-icon">&#128101;</div>
+    <div class="mod-name">Gerente</div>
+    <div class="mod-desc">Cadastros e convites</div>
+  </a>
+  <a href="dashboard.html" class="mod g">
+    <div class="mod-icon">&#128202;</div>
+    <div class="mod-name">Dashboard</div>
+    <div class="mod-desc">Visao em tempo real</div>
+  </a>
+</div>
+
+<div class="grid2" id="row-ops">
+  <a href="admin.html" class="mod b">
+    <div class="mod-icon">&#127903;</div>
+    <div class="mod-name">Admin</div>
+    <div class="mod-desc">Check-in e listas</div>
+  </a>
+  <a href="checkin.html" class="mod b">
+    <div class="mod-icon">&#128247;</div>
+    <div class="mod-name">Scanner</div>
+    <div class="mod-desc">QR Code portaria</div>
+  </a>
+</div>
+
+<div class="section-title" style="margin-top:8px">Financeiro</div>
+<div class="grid2">
+  <a href="tickets.html" class="mod o">
+    <div class="mod-icon">&#127915;</div>
+    <div class="mod-name">Tickets</div>
+    <div class="mod-desc">Por responsavel</div>
+  </a>
+  <a href="orcamento.html" class="mod o">
+    <div class="mod-icon">&#128176;</div>
+    <div class="mod-name">Orcamento</div>
+    <div class="mod-desc">Custos do evento</div>
+  </a>
+</div>
+
+<div class="section-title" style="margin-top:8px">Recursos</div>
+<div class="grid2">
+  <a href="mediakit.html" class="mod p" id="btn-kit">
+    <div class="mod-icon">&#128203;</div>
+    <div class="mod-name">Media Kit</div>
+    <div class="mod-desc">Material de apoio</div>
+  </a>
+  <a href="manual.html" class="mod p" id="btn-manual">
+    <div class="mod-icon">&#128214;</div>
+    <div class="mod-name">Manual</div>
+    <div class="mod-desc">Guia do sistema</div>
+  </a>
+</div>
+
+<div class="section-title" style="margin-top:8px" id="sec-sistema">Sistema</div>
+<div class="grid1" id="row-sistema">
+  <a href="#" class="mod g wide" onclick="abrirGestao();return false;">
+    <div class="mod-icon">&#9881;</div>
+    <div class="mod-info">
+      <div class="mod-name">Gestao do Sistema</div>
+      <div class="mod-desc">Adicionar e gerenciar usuarios</div>
+    </div>
+  </a>
+</div>
+```
+
+  </div>
+
+  <div class="footer" id="footer" style="display:none">
+    <button class="btn-sair" onclick="sair()">Sair do sistema</button>
+  </div>
+</div>
+
+<!-- GESTAO USUARIOS -->
+
+<div class="ov" id="ov-gestao">
+  <div class="ov-box">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+      <div class="ov-title">Gestao de Usuarios</div>
+      <button onclick="q('ov-gestao').classList.remove('on')" style="background:transparent;border:none;color:#6b7d6b;font-size:22px;cursor:pointer">x</button>
+    </div>
+    <div id="lista-admins" style="margin-bottom:20px;max-height:200px;overflow-y:auto"></div>
+    <div style="border-top:1px solid rgba(255,255,255,.06);padding-top:16px">
+      <div style="font-size:10px;font-weight:600;letter-spacing:2px;color:#6b7d6b;text-transform:uppercase;margin-bottom:12px">Novo usuario</div>
+      <div class="field"><label>Nome</label><input type="text" id="new-nome" placeholder="Nome do usuario" autocapitalize="words"></div>
+      <div class="field"><label>Senha</label><input type="text" id="new-senha" placeholder="Senha inicial"></div>
+      <div class="field">
+        <label>Nivel</label>
+        <select id="new-nivel" style="width:100%;background:#07090a;border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:14px 16px;color:#f0f2f0;font-size:14px;outline:none;">
+          <option value="master">Master</option>
+          <option value="admin">Admin</option>
+          <option value="visualizador">Visualizador</option>
+        </select>
+      </div>
+      <div id="gestao-alert" style="color:#f87171;font-size:12px;margin-bottom:10px;display:none"></div>
+      <button class="btn-login" id="btn-add-admin" onclick="addAdmin()">Adicionar usuario</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+
+<div class="ov" id="ov-login">
+  <div class="ov-box">
+    <div class="ov-logo">
+      <img src="https://agroplaymusic.com.br/wp-content/uploads/2024/06/Logo-AgroPlay-01-white-1-300x87.png" class="ov-logo-img" onerror="this.style.display='none';this.nextElementSibling.style.display='block'" alt="Agroplay">
+      <div class="ov-logo-text" style="display:none">AGRO<span>PLAY</span></div>
+    </div>
+    <div class="ov-title">Bem-vindo</div>
+    <div class="ov-sub">Acesso restrito - equipe interna</div>
+    <div class="alert-box" id="alrt"></div>
+    <div class="field">
+      <label>Usuario</label>
+      <input type="text" id="lin" placeholder="Seu nome" autocomplete="off" autocapitalize="none">
+    </div>
+    <div class="field">
+      <label>Senha</label>
+      <input type="password" id="lpass" placeholder="">
+    </div>
+    <button class="btn-login" id="bent" onclick="entrar()">Entrar</button>
+  </div>
+</div>
+
+<script>
+var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
+var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
+function q(id){return document.getElementById(id);}
+function get(p){return fetch(SB+"/rest/v1/"+p,{headers:{"apikey":KY,"Authorization":"Bearer "+KY}}).then(function(r){return r.json();});}
+
+function mostrar(u){
+  q("uav").textContent=u.nome.charAt(0).toUpperCase();
+  q("uname").textContent=u.nome;
+  var lvls={master:"Administrador master",admin:"Administrador",visualizador:"Visualizador"};
+  q("ulevel").textContent=lvls[u.nivel]||u.nivel;
+  var pill=q("upill");
+  pill.textContent=(u.nivel||"").charAt(0).toUpperCase()+(u.nivel||"").slice(1);
+  pill.className="user-pill "+(u.nivel==="master"?"pill-master":u.nivel==="admin"?"pill-admin":"pill-vis");
+  q("hero").style.display="block";
+  q("mods").style.display="block";
+  q("footer").style.display="flex";
+  if(u.nivel==="visualizador"){
+    q("row-ops").style.display="none";
+    var lg=q("link-gerente");
+    if(lg)lg.href="index.html?modo=ver";
+  }
+  if(u.nivel!=="master"){q("row-sistema").style.display="none";q("sec-sistema").style.display="none";}
+  q("ov-login").classList.remove("on");
+  sessionStorage.setItem("ag_user",JSON.stringify(u));
+}
+
+function entrar(){
+  var nome=q("lin").value.trim();
+  var senha=q("lpass").value.trim();
+  if(!nome||!senha){q("alrt").textContent="Preencha usuario e senha!";q("alrt").style.display="block";return;}
+  var btn=q("bent");btn.textContent="Verificando...";btn.disabled=true;
+  q("alrt").style.display="none";
+  get("admins?nome=eq."+encodeURIComponent(nome)+"&select=*").then(function(d){
+    if(!d||!d.length){q("alrt").textContent="Usuario nao encontrado.";q("alrt").style.display="block";return;}
+    var u=d[0];
+    if(u.senha!==senha){q("alrt").textContent="Senha incorreta.";q("alrt").style.display="block";return;}
+    mostrar(u);
+  }).catch(function(){q("alrt").textContent="Erro de conexao. Tente novamente.";q("alrt").style.display="block";}).finally(function(){btn.textContent="Entrar";btn.disabled=false;});
+}
+function sair(){sessionStorage.removeItem("ag_user");location.reload();}
+function abrirGestao(){
+  get("admins?select=id,nome,nivel&order=nome.asc").then(function(d){
+    var h="";
+    (d||[]).forEach(function(a){
+      var lvl={master:"Master",admin:"Admin",visualizador:"Visualizador"};
+      h+="<div style='display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)'>";
+      h+="<div><div style='font-size:13px;font-weight:600;color:#f0f2f0'>"+a.nome+"</div><div style='font-size:10px;color:#6b7d6b;margin-top:2px'>"+(lvl[a.nivel]||a.nivel)+"</div></div>";
+      h+="<button onclick='delAdmin("+a.id+")' style='background:transparent;border:1px solid rgba(239,68,68,.2);color:#f87171;border-radius:8px;padding:4px 10px;font-size:11px;cursor:pointer'>Remover</button>";
+      h+="</div>";
+    });
+    if(!h)h="<div style='color:#6b7d6b;font-size:12px;padding:10px 0'>Nenhum usuario cadastrado</div>";
+    q("lista-admins").innerHTML=h;
+  });
+  q("new-nome").value="";q("new-senha").value="";
+  q("gestao-alert").style.display="none";
+  q("ov-gestao").classList.add("on");
+}
+function addAdmin(){
+  var nome=q("new-nome").value.trim();
+  var senha=q("new-senha").value.trim();
+  var nivel=q("new-nivel").value;
+  if(!nome||!senha){q("gestao-alert").textContent="Preencha nome e senha!";q("gestao-alert").style.display="block";return;}
+  var btn=q("btn-add-admin");btn.textContent="Salvando...";btn.disabled=true;
+  fetch(SB+"/rest/v1/admins",{method:"POST",headers:{"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json","Prefer":"return=minimal"},body:JSON.stringify({nome:nome,senha:senha,nivel:nivel})}).then(function(){
+    q("new-nome").value="";q("new-senha").value="";
+    q("gestao-alert").style.display="none";
+    abrirGestao();
+  }).catch(function(){q("gestao-alert").textContent="Erro ao salvar!";q("gestao-alert").style.display="block";}).finally(function(){btn.textContent="Adicionar usuario";btn.disabled=false;});
+}
+function delAdmin(id){
+  if(!confirm("Remover este usuario?"))return;
+  fetch(SB+"/rest/v1/admins?id=eq."+id,{method:"DELETE",headers:{"apikey":KY,"Authorization":"Bearer "+KY,"Prefer":"return=minimal"}}).then(function(){abrirGestao();});
+}
+q("lin").addEventListener("keydown",function(e){if(e.key==="Enter")q("lpass").focus();});
+q("lpass").addEventListener("keydown",function(e){if(e.key==="Enter")entrar();});
+var saved=sessionStorage.getItem("ag_user");
+if(saved){try{mostrar(JSON.parse(saved));}catch(e){q("ov-login").classList.add("on");}}
+else{q("ov-login").classList.add("on");}
+</script>
+
 </body>
 </html>
