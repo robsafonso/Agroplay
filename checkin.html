@@ -236,9 +236,20 @@ q("btn-buscar").onclick=function(){
   buscarCodigo(c);
 };
 
+function buscarCadastroDirecto(cadId,btn){
+  ap("cadastros?id=eq."+cadId+"&select=*").then(function(d){
+    if(!d||!d.length){mostrarErro("Cadastro nao encontrado.");if(btn){btn.textContent="Buscar";btn.disabled=false;}return;}
+    mostrarCadastro(d[0],null);if(btn){btn.textContent="Buscar";btn.disabled=false;}
+  }).catch(function(){mostrarErro("Erro ao buscar.");if(btn){btn.textContent="Buscar";btn.disabled=false;}});
+}
 function buscarCodigo(cod){
   var btn=q("btn-buscar");btn.textContent="Buscando...";btn.disabled=true;
   q("al-scan").innerHTML="";
+  // Handle CAD+id format from QR code
+  if(cod.indexOf("CAD")===0){
+    var cadId=parseInt(cod.replace("CAD",""));
+    if(cadId){buscarCadastroDirecto(cadId,btn);return;}
+  }
   ap("codigos?codigo=eq."+cod+"&select=cadastro_id").then(function(d){
     if(!d||!d.length){mostrarErro("Codigo invalido.");btn.textContent="Buscar";btn.disabled=false;return;}
     var cadId=d[0].cadastro_id;
