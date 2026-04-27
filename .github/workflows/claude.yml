@@ -1,0 +1,61 @@
+name: Claude Code Assistant
+
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  process:
+    if: contains(github.event.issue.labels.*.name, 'claude')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Process with Claude
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          pip install anthropic PyGithub -q
+          python3 << 'PYEOF'
+          import anthropic, os, base64
+          from github import Github
+
+          g = Github(os.environ['GITHUB_TOKEN'])
+          repo = g.get_repo(os.environ['GITHUB_REPOSITORY'])
+          issue = repo.get_issue(int(os.environ['GITHUB_ISSUE_NUMBER']))
+          
+          client = anthropic.Anthropic(api_key=os.environ['ANTHROPIC_API_KEY'])
+          
+          prompt = f"""Voce e um assistente que modifica arquivos HTML de um sistema de gestao de eventos.
+          
+          Instrucao do usuario: {issue.body}
+          
+          Responda APENAS com JSON no formato:
+          {{"arquivo": "nome.html", "descricao": "o que foi feito", "conteudo": "conteudo completo do arquivo"}}
+          """
+          
+          response = client.messages.create(
+              model="claude-opus-4-5",
+              max_tokens=8000,
+              messages=[{"role": "user", "content": prompt}]
+          )
+          
+          import json
+          result = json.loads(response.content[0].text)
+          
+          try:
+              f = repo.get_contents(result['arquivo'])
+              repo.update_file(result['arquivo'], f"Claude: {result['descricao']}", result['conteudo'], f.sha)
+          except:
+              repo.create_file(result['arquivo'], f"Claude: {result['descricao']}", result['conteudo'])
+          
+          issue.create_comment(f"✅ Feito! Arquivo `{result['arquivo']}` atualizado.\n\n{result['descricao']}")
+          issue.edit(state='closed')
+          PYEOF
+        env:
+          GITHUB_ISSUE_NUMBER: ${{ github.event.issue.number }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
