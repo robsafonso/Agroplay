@@ -11,47 +11,17 @@ jobs:
     permissions:
       contents: write
       issues: write
-    env:
-      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_KEY }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      GITHUB_ISSUE_NUMBER: ${{ github.event.issue.number }}
-      GITHUB_REPOSITORY: ${{ github.repository }}
-      ISSUE_BODY: ${{ github.event.issue.body }}
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Process with Claude
-        run: |
-          pip install anthropic PyGithub -q
-          python3 << 'PYEOF'
-          import anthropic, os, json
-          from github import Github
 
-          g = Github(os.environ['GITHUB_TOKEN'])
-          repo = g.get_repo(os.environ['GITHUB_REPOSITORY'])
-          issue = repo.get_issue(int(os.environ['GITHUB_ISSUE_NUMBER']))
-          issue_body = os.environ['ISSUE_BODY']
+      - name: Install deps
+        run: pip install anthropic PyGithub -q
 
-          client = anthropic.Anthropic(api_key=os.environ['ANTHROPIC_API_KEY'])
-
-          prompt = f"""Voce modifica arquivos HTML de um sistema de gestao de eventos.
-          Instrucao: {issue_body}
-          Responda APENAS com JSON: {{"arquivo": "nome.html", "descricao": "resumo", "conteudo": "html completo"}}"""
-
-          response = client.messages.create(
-              model="claude-opus-4-5",
-              max_tokens=8000,
-              messages=[{"role": "user", "content": prompt}]
-          )
-
-          result = json.loads(response.content[0].text)
-
-          try:
-              f = repo.get_contents(result['arquivo'])
-              repo.update_file(result['arquivo'], f"Claude: {result['descricao']}", result['conteudo'], f.sha)
-          except Exception:
-              repo.create_file(result['arquivo'], f"Claude: {result['descricao']}", result['conteudo'])
-
-          issue.create_comment(f"Feito! `{result['arquivo']}` atualizado.\n\n{result['descricao']}")
-          issue.edit(state='closed')
-          PYEOF
+      - name: Run Claude
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          REPO_NAME: ${{ github.repository }}
+        run: python3 .github/scripts/claude_agent.py
