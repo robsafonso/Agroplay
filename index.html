@@ -216,6 +216,33 @@ textarea{height:70px;resize:none}
     <div id="links-lista"></div>
   </div>
 </div>
+<div id="sd" class="gone">
+  <div style="margin-bottom:14px">
+    <div style="font-size:11px;font-weight:700;color:#2aab47;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">Mensagem de Divulgacao</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <div><label style="font-size:10px;color:#555;display:block;margin-bottom:4px">Evento</label><input id="d-ev" placeholder="Nome do evento" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px;color:#eee;font-size:12px;outline:none"></div>
+      <div><label style="font-size:10px;color:#555;display:block;margin-bottom:4px">Data</label><input id="d-dt" placeholder="15/05/2026" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px;color:#eee;font-size:12px;outline:none"></div>
+      <div><label style="font-size:10px;color:#555;display:block;margin-bottom:4px">Horario</label><input id="d-hr" placeholder="21h" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px;color:#eee;font-size:12px;outline:none"></div>
+      <div><label style="font-size:10px;color:#555;display:block;margin-bottom:4px">Local</label><input id="d-lc" placeholder="Nome do local" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px;color:#eee;font-size:12px;outline:none"></div>
+    </div>
+    <div style="margin-bottom:8px"><label style="font-size:10px;color:#555;display:block;margin-bottom:4px">Link do evento (opcional)</label><input id="d-lk" placeholder="https://..." style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px;color:#eee;font-size:12px;outline:none"></div>
+    <div style="margin-bottom:10px"><label style="font-size:10px;color:#555;display:block;margin-bottom:4px">Mensagem extra (opcional)</label><textarea id="d-ex" placeholder="Ex: Apresente esse link na entrada e ganhe desconto!" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px;color:#eee;font-size:12px;outline:none;height:60px;resize:none"></textarea></div>
+    <button onclick="previaMensagem()" style="width:100%;background:#0891b2;border:none;border-radius:10px;padding:11px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;margin-bottom:8px">Ver previa</button>
+    <div id="d-preview" style="display:none;background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:12px;font-size:12px;color:#c8c8c0;white-space:pre-wrap;line-height:1.6;margin-bottom:10px"></div>
+  </div>
+  <div style="border-top:1px solid #1a2a1a;padding-top:14px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div style="font-size:11px;font-weight:700;color:#2aab47;letter-spacing:1px;text-transform:uppercase">Destinatarios</div>
+      <div style="display:flex;gap:6px">
+        <button onclick="filtDisparos('todos')" id="df-t" style="background:#1e7a35;border:none;border-radius:6px;padding:5px 10px;font-size:10px;font-weight:700;color:#fff;cursor:pointer">Todos</button>
+        <button onclick="filtDisparos('sev')" id="df-s" style="background:transparent;border:1px solid #1a2a1a;border-radius:6px;padding:5px 10px;font-size:10px;color:#888;cursor:pointer">Sem evento</button>
+      </div>
+    </div>
+    <input id="d-busca" placeholder="Buscar por nome..." oninput="rDisparos()" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px;color:#eee;font-size:12px;outline:none;margin-bottom:10px">
+    <div id="d-lista"></div>
+    <div id="d-stats" style="font-size:11px;color:#555;text-align:center;margin-top:8px"></div>
+  </div>
+</div>
 <div class="ov ovc" id="ovlote">
   <div class="mod" style="border-radius:20px;max-width:400px;margin:20px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
@@ -1150,7 +1177,7 @@ function mkXls(rows,name){
 function tab(t){
   ["c","e","k","l","lt","d"].forEach(function(x){q("s"+x).classList.add("gone");q("t"+x).classList.remove("on");});
   q("s"+t).classList.remove("gone");q("t"+t).classList.add("on");
-  if(t==="l")rLst();if(t==="k")rCods();if(t==="e")rEvs();if(t==="lt")rLotes();
+  if(t==="l")rLst();if(t==="k")rCods();if(t==="e")rEvs();if(t==="lt")rLotes();if(t==="d")rDisparos();
 }
 var dFiltro="todos";
 function filtDisparos(f){
