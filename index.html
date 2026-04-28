@@ -1209,6 +1209,43 @@ function pegarCodigoSeguro(){
   };
 
 })();
-</script>
+</script>function pegarCodigoSeguro(){
+  return fetch(SB + "/rest/v1/rpc/pegar_codigo", {
+    method: "POST",
+    headers: {
+      apikey: KY,
+      Authorization: "Bearer " + KY,
+      "Content-Type": "application/json"
+    }
+  }).then(r => r.json());
+}
+
+// INTERCEPTA TODAS AS CHAMADAS ANTIGAS
+(function(){
+
+  const originalFetch = window.fetch;
+
+  window.fetch = function(url, options){
+
+    if(typeof url === "string" && url.includes("codigos?usado=eq.false")){
+
+      return pegarCodigoSeguro().then(function(cod){
+
+        const fakeResponse = {
+          ok: true,
+          status: 200,
+          json: () => Promise.resolve([{ codigo: cod }]),
+          text: () => Promise.resolve(JSON.stringify([{ codigo: cod }]))
+        };
+
+        return Promise.resolve(fakeResponse);
+      });
+
+    }
+
+    return originalFetch(url, options);
+  };
+
+})();
 </body>
 </html>
