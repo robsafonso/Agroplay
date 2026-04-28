@@ -1178,5 +1178,62 @@ document.getElementById(“r”).style.opacity=“1”;
 }
 
 </script>
+<script>
+
+var MODO = new URLSearchParams(window.location.search).get("modo") || "edit";
+
+var SB = "https://wexwcnezjadoutyzkbcj.supabase.co";
+
+var KY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
+
+var LC = "https://robsafonso.github.io/Agroplay/cadastro-externo.html";
+
+var LCV = "https://robsafonso.github.io/Agroplay/convite.html";
+
+var SETS = ["Todos","Ana Castela","Leo e Raphael","Country Beat","Muierada","Francisco","Julia e Rafaela","Julya e Maryana","Duda Bertelli","Kamila e Kavic","Escritorio Agroplay","Outros"];
+
+var COR = {
+  Artista:"#7c3aed",
+  Influenciador:"#0891b2",
+  Diretoria:"#b45309",
+  Colaborador:"#1e7a35",
+  Convidado:"#555"
+};
+
+function q(id){ return document.getElementById(id); }
+
+function ap(p,o){
+  o=o||{};
+  var h={
+    "apikey":KY,
+    "Authorization":"Bearer "+KY,
+    "Content-Type":"application/json"
+  };
+  if(o.pref) h["Prefer"]=o.pref;
+  if(!o.m || o.m==="GET") h["Range"]="0-99999";
+
+  return fetch(SB+"/rest/v1/"+p,{
+    method:o.m||"GET",
+    headers:h,
+    body:o.b
+  })
+  .then(r=>r.text())
+  .then(t=>t?JSON.parse(t):null);
+}
+
+function cp2(txt,btn,lbl){
+  navigator.clipboard.writeText(txt).then(()=>{
+    btn.textContent="Copiado!";
+    setTimeout(()=>btn.textContent=lbl,2000);
+  });
+}
+
+function load(){
+  console.log("Sistema carregando...");
+}
+
+load();
+
+</script>
 </body>
 </html>
