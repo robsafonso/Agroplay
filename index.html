@@ -89,6 +89,7 @@ textarea{height:70px;resize:none}
   <button class="tab" id="tk">Codigos</button>
   <button class="tab" id="tl">Lista</button>
   <button class="tab" id="tlt">Lotes</button>
+  <button class="tab" id="td">Disparos</button>
 </div>
 <div id="sc">
   <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;align-items:center">
@@ -1147,23 +1148,88 @@ function mkXls(rows,name){
   dl("<?xml version='1.0'?><Workbook xmlns='urn:schemas-microsoft-com:office:spreadsheet' xmlns:ss='urn:schemas-microsoft-com:office:spreadsheet'><Worksheet ss:Name='Dados'><Table>"+hdr+body+"</Table></Worksheet></Workbook>","application/vnd.ms-excel",name+".xls");
 }
 function tab(t){
-  ["c","e","k","l","lt"].forEach(function(x){q("s"+x).classList.add("gone");q("t"+x).classList.remove("on");});
+  ["c","e","k","l","lt","d"].forEach(function(x){q("s"+x).classList.add("gone");q("t"+x).classList.remove("on");});
   q("s"+t).classList.remove("gone");q("t"+t).classList.add("on");
   if(t==="l")rLst();if(t==="k")rCods();if(t==="e")rEvs();if(t==="lt")rLotes();
 }
+var dFiltro="todos";
+function filtDisparos(f){
+  dFiltro=f;
+  var bt=q("df-t");var bs=q("df-s");
+  if(bt){bt.style.background=f==="todos"?"#1e7a35":"transparent";bt.style.border=f==="todos"?"none":"1px solid #1a2a1a";bt.style.color=f==="todos"?"#fff":"#888";}
+  if(bs){bs.style.background=f==="sev"?"#1e7a35":"transparent";bs.style.border=f==="sev"?"none":"1px solid #1a2a1a";bs.style.color=f==="sev"?"#fff":"#888";}
+  rDisparos();
+}
+function previaMensagem(){
+  var ev=(q("d-ev")&&q("d-ev").value.trim())||"[EVENTO]";
+  var dt=(q("d-dt")&&q("d-dt").value.trim())||"[DATA]";
+  var hr=(q("d-hr")&&q("d-hr").value.trim())||"[HORARIO]";
+  var lc=(q("d-lc")&&q("d-lc").value.trim())||"[LOCAL]";
+  var lk=q("d-lk")?q("d-lk").value.trim():"";
+  var ex=q("d-ex")?q("d-ex").value.trim():"";
+  var msg="Ola, [NOME]!\n\nA Agroplay Music convida voce para:\n\n* "+ev+" *\n"+dt+" as "+hr+"\n"+lc;
+  if(lk)msg+="\n\n"+lk;
+  if(ex)msg+="\n\n"+ex;
+  msg+="\n\nAgroplay Music - Londrina PR";
+  if(q("d-preview")){q("d-preview").textContent=msg;q("d-preview").style.display="block";}
+}
+function rDisparos(){
+  if(!q("d-lista"))return;
+  var busca=q("d-busca")?q("d-busca").value.toLowerCase():"";
+  var lista=cads.filter(function(c){
+    if(!c.telefone)return false;
+    if(dFiltro==="sev"&&c.evento_id)return false;
+    if(busca&&c.nome.toLowerCase().indexOf(busca)<0)return false;
+    return true;
+  });
+  if(!lista.length){q("d-lista").innerHTML="<div class='empty'>Nenhuma pessoa com telefone</div>";if(q("d-stats"))q("d-stats").textContent="";return;}
+  var ev=(q("d-ev")&&q("d-ev").value.trim())||"[EVENTO]";
+  var dt=(q("d-dt")&&q("d-dt").value.trim())||"[DATA]";
+  var hr=(q("d-hr")&&q("d-hr").value.trim())||"[HORARIO]";
+  var lc=(q("d-lc")&&q("d-lc").value.trim())||"[LOCAL]";
+  var lk=q("d-lk")?q("d-lk").value.trim():"";
+  var ex=q("d-ex")?q("d-ex").value.trim():"";
+  var h="";
+  lista.forEach(function(c){
+    var tel=c.telefone.replace(/[^0-9]/g,"");
+    if(tel.length===11||tel.length===10)tel="55"+tel;
+    var fn=c.nome.split(" ")[0];
+    var msg="Ola, "+fn+"!\n\nA Agroplay Music convida voce para:\n\n* "+ev+" *\n"+dt+" as "+hr+"\n"+lc;
+    if(lk)msg+="\n\n"+lk;
+    if(ex)msg+="\n\n"+ex;
+    msg+="\n\nAgroplay Music - Londrina PR";
+    var wl="https://wa.me/"+tel+"?text="+encodeURIComponent(msg);
+    var env=c.disparo_enviado?"<span style='color:#2aab47;font-size:10px'> Enviado</span>":"";
+    h+="<div style='display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #0a0f0a'>";
+    h+="<div style='flex:1'><div style='font-size:13px;color:#eee'>"+c.nome+"</div>";
+    h+="<div style='font-size:10px;color:#555'>"+c.telefone+(c.empresa?" - "+c.empresa:"")+env+"</div></div>";
+    h+="<a href='"+wl+"' target='_blank' onclick='marcarEnviado("+c.id+")' style='background:#1e7a35;border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;color:#fff;text-decoration:none;margin-left:8px'>WhatsApp</a>";
+    h+="</div>";
+  });
+  q("d-lista").innerHTML=h;
+  var env=lista.filter(function(c){return c.disparo_enviado;}).length;
+  if(q("d-stats"))q("d-stats").textContent=lista.length+" pessoas | "+env+" enviados";
+}
+function marcarEnviado(id){
+  for(var i=0;i<cads.length;i++){if(cads[i].id===id){cads[i].disparo_enviado=true;break;}}
+  ap("cadastros?id=eq."+id,{m:"PATCH",pref:"return=minimal",b:JSON.stringify({disparo_enviado:true,disparo_em:new Date().toISOString()})});
+  setTimeout(rDisparos,400);
+}
+
 load();
-if(MODO==="ver"){
-  var vb=document.createElement("div");
-  vb.style.cssText="background:#0a1a2a;border:1px solid #0891b2;color:#0891b2;padding:8px 14px;border-radius:8px;font-size:12px;margin-bottom:12px;text-align:center";
-  vb.textContent="Modo visualizacao - apenas leitura";
-  document.body.insertBefore(vb,document.body.children[1]);
-  ["r","bgl","bxls","bcsv","bexk","bnev","blinkc"].forEach(function(id){var el=document.getElementById(id);if(el){el.disabled=true;el.style.opacity="0.3";}});
-  var style=document.createElement("style");
-  style.textContent=".btn{pointer-events:none;opacity:0.3!important}.btr{pointer-events:none;opacity:0.3!important}.bty{pointer-events:none;opacity:0.3!important}";
-  document.head.appendChild(style);
-  document.getElementById("r").disabled=false;
-  document.getElementById("r").style.opacity="1";
+if(MODO===“ver”){
+var vb=document.createElement(“div”);
+vb.style.cssText=“background:#0a1a2a;border:1px solid #0891b2;color:#0891b2;padding:8px 14px;border-radius:8px;font-size:12px;margin-bottom:12px;text-align:center”;
+vb.textContent=“Modo visualizacao - apenas leitura”;
+document.body.insertBefore(vb,document.body.children[1]);
+[“r”,“bgl”,“bxls”,“bcsv”,“bexk”,“bnev”,“blinkc”].forEach(function(id){var el=document.getElementById(id);if(el){el.disabled=true;el.style.opacity=“0.3”;}});
+var style=document.createElement(“style”);
+style.textContent=”.btn{pointer-events:none;opacity:0.3!important}.btr{pointer-events:none;opacity:0.3!important}.bty{pointer-events:none;opacity:0.3!important}”;
+document.head.appendChild(style);
+document.getElementById(“r”).disabled=false;
+document.getElementById(“r”).style.opacity=“1”;
 }
 </script>
+
 </body>
 </html>
