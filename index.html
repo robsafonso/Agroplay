@@ -3,53 +3,122 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agroplay Gerente</title>
+<title>Agroplay Sistema</title>
 
 <style>
 body{
   background:#060a06;
   color:#eee;
   font-family:Arial;
-  padding:20px;
+  padding:16px;
+}
+
+.hdr{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
 }
 
 .btn{
   background:#1e7a35;
   color:#fff;
   border:none;
-  padding:12px;
   border-radius:8px;
+  padding:12px;
   cursor:pointer;
+  font-weight:bold;
 }
 
 .card{
   background:#090e09;
-  padding:16px;
+  border:1px solid #1a2a1a;
   border-radius:12px;
+  padding:16px;
   margin-bottom:10px;
+}
+
+.codigo{
+  font-size:24px;
+  font-weight:900;
+  letter-spacing:3px;
+}
+
+.badge{
+  padding:4px 8px;
+  border-radius:20px;
+  font-size:10px;
+}
+
+.livre{background:#1e7a35;}
+.usado{background:#444;}
+
+.tabs{
+  display:flex;
+  gap:10px;
+  margin-bottom:15px;
+}
+
+.tab{
+  padding:8px 12px;
+  border:1px solid #333;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.tab.on{
+  border-color:#2aab47;
+  color:#2aab47;
 }
 </style>
 </head>
 
 <body>
 
-<h2>Agroplay Sistema</h2>
+<div class="hdr">
+  <h2>Agroplay Sistema</h2>
+  <button class="btn" onclick="load()">Atualizar</button>
+</div>
 
-<button class="btn" onclick="gerarCodigo()">Gerar Código</button>
+<div class="tabs">
+  <div class="tab on" onclick="trocar('codigos')" id="t1">Códigos</div>
+  <div class="tab" onclick="trocar('gerar')" id="t2">Gerar</div>
+</div>
 
-<div id="codigo" style="margin-top:20px;font-size:28px;font-weight:bold;"></div>
+<div id="gerar" style="display:none">
+  <button class="btn" onclick="gerarCodigo()" style="width:100%">
+    Gerar Código
+  </button>
+
+  <div id="codigo" class="codigo" style="margin-top:20px"></div>
+</div>
+
+<div id="codigos"></div>
 
 <script>
 
 const SB = "https://wexwcnezjadoutyzkbcj.supabase.co";
-const KY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
+const KY = "SEU_TOKEN_AQUI";
 
+// TROCAR TELA
+function trocar(t){
+  document.getElementById("gerar").style.display = t==="gerar" ? "block":"none";
+  document.getElementById("codigos").style.display = t==="codigos" ? "block":"none";
+
+  document.getElementById("t1").classList.remove("on");
+  document.getElementById("t2").classList.remove("on");
+
+  if(t==="codigos") document.getElementById("t1").classList.add("on");
+  if(t==="gerar") document.getElementById("t2").classList.add("on");
+}
+
+// GERAR CODIGO
 async function gerarCodigo(){
   try{
     const res = await fetch(SB + "/rest/v1/rpc/pegar_codigo", {
       method:"POST",
       headers:{
-        "apikey":KY,
+        "apikey": KY,
         "Authorization":"Bearer " + KY,
         "Content-Type":"application/json"
       }
@@ -59,11 +128,82 @@ async function gerarCodigo(){
 
     document.getElementById("codigo").innerText = data || "SEM_CODIGO";
 
+    load();
+
   }catch(e){
     alert("Erro ao gerar código");
-    console.error(e);
   }
 }
+
+// LISTAR
+async function load(){
+  const res = await fetch(SB + "/rest/v1/codigos?select=*&order=id.desc", {
+    headers:{
+      "apikey": KY,
+      "Authorization":"Bearer " + KY
+    }
+  });
+
+  const data = await res.json();
+
+  render(data);
+}
+
+// RENDER
+function render(lista){
+  const el = document.getElementById("codigos");
+
+  if(!lista.length){
+    el.innerHTML = "Nenhum código";
+    return;
+  }
+
+  let html = "";
+
+  lista.forEach(c=>{
+    html += `
+      <div class="card">
+        <div class="codigo">${c.codigo}</div>
+
+        <div style="margin-top:8px">
+          <span class="badge ${c.usado ? 'usado':'livre'}">
+            ${c.usado ? 'USADO':'LIVRE'}
+          </span>
+        </div>
+
+        ${
+          !c.usado
+          ? `<button class="btn" style="margin-top:10px" onclick="usar('${c.codigo}')">Usar</button>`
+          : ''
+        }
+      </div>
+    `;
+  });
+
+  el.innerHTML = html;
+}
+
+// USAR CODIGO
+async function usar(cod){
+  await fetch(SB + "/rest/v1/codigos?codigo=eq."+cod, {
+    method:"PATCH",
+    headers:{
+      "apikey": KY,
+      "Authorization":"Bearer " + KY,
+      "Content-Type":"application/json",
+      "Prefer":"return=minimal"
+    },
+    body: JSON.stringify({
+      usado:true,
+      usado_em:new Date().toISOString()
+    })
+  });
+
+  load();
+}
+
+// INIT
+load();
 
 </script>
 
