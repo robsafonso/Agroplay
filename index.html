@@ -57,7 +57,7 @@ textarea{height:70px;resize:none}
 <div class="hdr">
   <div onclick="location.href='home.html'" style="cursor:pointer;display:flex;align-items:center;gap:0;border:1px solid #1a2a1a;border-radius:10px;overflow:hidden">
     <div style="background:#0d150d;padding:7px 12px;font-size:16px;font-weight:900;color:#fff;letter-spacing:1px">AGRO<span style="color:#2aab47">PLAY</span></div>
-    <div style="background:#2aab47;padding:7px 10px;font-size:11px;font-weight:700;color:#fff;letter-spacing:1px">v29</div>
+    <div style="background:#2aab47;padding:7px 10px;font-size:11px;font-weight:700;color:#fff;letter-spacing:1px">v30</div>
   </div>
   <div style="display:flex;gap:6px;align-items:center"><button onclick="togMenu()" style="background:transparent;border:none;color:#eee;font-size:20px;cursor:pointer;padding:4px 8px">&#9776;</button>
     <button class="bto" id="blinkc" style="font-size:11px;padding:6px 10px">Link Cadastro</button>
@@ -216,34 +216,7 @@ textarea{height:70px;resize:none}
     <div id="links-lista"></div>
   </div>
 </div>
-<div id="sd" class="gone">
-  <div style="margin-bottom:14px">
-    <div style="font-size:11px;font-weight:700;color:#2aab47;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">Mensagem de Divulgacao</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
-      <div><label style="font-size:10px;color:#555;display:block;margin-bottom:4px">Evento</label><input id="d-ev" placeholder="Nome do evento" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px;color:#eee;font-size:12px;outline:none"></div>
-      <div><label style="font-size:10px;color:#555;display:block;margin-bottom:4px">Data</label><input id="d-dt" placeholder="15/05/2026" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px;color:#eee;font-size:12px;outline:none"></div>
-      <div><label style="font-size:10px;color:#555;display:block;margin-bottom:4px">Horario</label><input id="d-hr" placeholder="21h" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px;color:#eee;font-size:12px;outline:none"></div>
-      <div><label style="font-size:10px;color:#555;display:block;margin-bottom:4px">Local</label><input id="d-lc" placeholder="Nome do local" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px;color:#eee;font-size:12px;outline:none"></div>
-    </div>
-    <div style="margin-bottom:8px"><label style="font-size:10px;color:#555;display:block;margin-bottom:4px">Link (opcional)</label><input id="d-lk" placeholder="https://..." style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px;color:#eee;font-size:12px;outline:none"></div>
-    <div style="margin-bottom:10px"><label style="font-size:10px;color:#555;display:block;margin-bottom:4px">Mensagem extra (opcional)</label><textarea id="d-ex" placeholder="Ex: Apresente esse link e ganhe desconto!" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px;color:#eee;font-size:12px;outline:none;height:60px;resize:none"></textarea></div>
-    <button onclick="previaMensagem()" style="width:100%;background:#0891b2;border:none;border-radius:10px;padding:11px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;margin-bottom:8px">Ver previa da mensagem</button>
-    <div id="d-preview" style="display:none;background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:12px;font-size:12px;color:#c8c8c0;white-space:pre-wrap;line-height:1.6;margin-bottom:10px"></div>
-  </div>
-  <div style="border-top:1px solid #1a2a1a;padding-top:14px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-      <div style="font-size:11px;font-weight:700;color:#2aab47;letter-spacing:1px;text-transform:uppercase">Destinatarios</div>
-      <div style="display:flex;gap:6px">
-        <button onclick="filtDisparos('todos')" id="df-t" style="background:#1e7a35;border:none;border-radius:6px;padding:5px 10px;font-size:10px;font-weight:700;color:#fff;cursor:pointer">Todos</button>
-        <button onclick="filtDisparos('sev')" id="df-s" style="background:transparent;border:1px solid #1a2a1a;border-radius:6px;padding:5px 10px;font-size:10px;color:#888;cursor:pointer">Sem evento</button>
-      </div>
-    </div>
-    <input id="d-busca" placeholder="Buscar por nome..." oninput="rDisparos()" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px;color:#eee;font-size:12px;outline:none;margin-bottom:10px">
-    <div id="d-lista"></div>
-    <div id="d-stats" style="font-size:11px;color:#555;text-align:center;margin-top:8px"></div>
-  </div>
-</div>
-<div class="ov ovc" id="ovlote">
+<div id="sd" class="gone"><div style="margin-bottom:14px"><div style="font-size:11px;font-weight:700;color:#2aab47;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">Mensagem de Divulgacao</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px"><div><label style="font-size:10px;color:#555;display:block;margin-bottom:4px">Evento</label><input id="d-ev" placeholder="Nome do evento" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px;color:#eee;font-size:12px;outline:none"></div><div><label style="font-size:10px;color:#555;display:block;margin-bottom:4px">Data</label><input id="d-dt" placeholder="15/05/2026" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px;color:#eee;font-size:12px;outline:none"></div><div><label style="font-size:10px;color:#555;display:block;margin-bottom:4px">Horario</label><input id="d-hr" placeholder="21h" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px;color:#eee;font-size:12px;outline:none"></div><div><label style="font-size:10px;color:#555;display:block;margin-bottom:4px">Local</label><input id="d-lc" placeholder="Nome do local" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px;color:#eee;font-size:12px;outline:none"></div></div><div style="margin-bottom:8px"><label style="font-size:10px;color:#555;display:block;margin-bottom:4px">Link (opcional)</label><input id="d-lk" placeholder="https://..." style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px;color:#eee;font-size:12px;outline:none"></div><div style="margin-bottom:10px"><label style="font-size:10px;color:#555;display:block;margin-bottom:4px">Mensagem extra (opcional)</label><textarea id="d-ex" placeholder="Ex: Apresente esse link e ganhe desconto!" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px;color:#eee;font-size:12px;outline:none;height:60px;resize:none"></textarea></div><button onclick="previaMensagem()" style="width:100%;background:#0891b2;border:none;border-radius:10px;padding:11px;font-size:13px;font-weight:700;color:#fff;cursor:pointer;margin-bottom:8px">Ver previa da mensagem</button><div id="d-preview" style="display:none;background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:12px;font-size:12px;color:#c8c8c0;white-space:pre-wrap;line-height:1.6;margin-bottom:10px"></div></div><div style="border-top:1px solid #1a2a1a;padding-top:14px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div style="font-size:11px;font-weight:700;color:#2aab47;letter-spacing:1px;text-transform:uppercase">Destinatarios</div><div style="display:flex;gap:6px"><button onclick="filtDisparos('todos')" id="df-t" style="background:#1e7a35;border:none;border-radius:6px;padding:5px 10px;font-size:10px;font-weight:700;color:#fff;cursor:pointer">Todos</button><button onclick="filtDisparos('sev')" id="df-s" style="background:transparent;border:1px solid #1a2a1a;border-radius:6px;padding:5px 10px;font-size:10px;color:#888;cursor:pointer">Sem evento</button></div></div><input id="d-busca" placeholder="Buscar por nome..." oninput="rDisparos()" style="width:100%;background:#030503;border:1px solid #1a2a1a;border-radius:8px;padding:9px;color:#eee;font-size:12px;outline:none;margin-bottom:10px"><div id="d-lista"></div><div id="d-stats" style="font-size:11px;color:#555;text-align:center;margin-top:8px"></div></div></div><div class="ov ovc" id="ovlote">
   <div class="mod" style="border-radius:20px;max-width:400px;margin:20px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
       <div style="font-size:16px;font-weight:700;color:#fff">Novo Lote de Convites</div>
@@ -381,113 +354,21 @@ textarea{height:70px;resize:none}
   </div>
 </div>
 <script>
-var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
-var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
-var LC="https://robsafonso.github.io/Agroplay/cadastro-externo.html";
-var SETS=["Todos","Ana Castela","Leo e Raphael","Country Beat","Muierada","Francisco","Julia e Rafaela","Julya e Maryana","Duda Bertelli","Kamila e Kavic","Escritorio Agroplay","Outros"];
-var COR={Artista:"#7c3aed",Influenciador:"#0891b2",Diretoria:"#b45309",Colaborador:"#1e7a35",Convidado:"#555"};
-var cads=[],cods=[],evs=[],lotes=[],sel=[],fset="Todos",pa=null,eva=null,cs=[],cf="Todos",eid=null,lista=null,lstExcluidos=[],lstSel=[],lstFiltBil=false,dFiltro="todos";
+
+var dFiltro=“todos”;
+var MODO=new URLSearchParams(window.location.search).get(“modo”)||“edit”;
+var SB=“https://wexwcnezjadoutyzkbcj.supabase.co”;
+var KY=“eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ”;
+var LC=“https://robsafonso.github.io/Agroplay/cadastro-externo.html”;
+var LCV=“https://robsafonso.github.io/Agroplay/convite.html”;
+var SETS=[“Todos”,“Ana Castela”,“Leo e Raphael”,“Country Beat”,“Muierada”,“Francisco”,“Julia e Rafaela”,“Julya e Maryana”,“Duda Bertelli”,“Kamila e Kavic”,“Escritorio Agroplay”,“Outros”];
+var COR={Artista:”#7c3aed”,Influenciador:”#0891b2”,Diretoria:”#b45309”,Colaborador:”#1e7a35”,Convidado:”#555”};
+var cads=[],cods=[],evs=[],sel=[],fset=“Todos”,fk=“t”,lista=null,pa=null,eva=null,cf=“Todos”,cs=[],eid=null;
 function q(id){return document.getElementById(id);}
-function fd(d){if(!d)return"";var x=d.split("-");return x[2]+"/"+x[1]+"/"+x[0];}
-function ap(p,o){o=o||{};var h={"apikey":KY,"Authorization":"Bearer "+KY,"Content-Type":"application/json"};if(o.pref)h["Prefer"]=o.pref;return fetch(SB+"/rest/v1/"+p,{method:o.m||"GET",headers:h,body:o.b}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});}
-function cp2(txt,btn,lbl){if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){if(btn){btn.textContent="Copiado!";setTimeout(function(){btn.textContent=lbl;},2000);}});}else{var t=document.createElement("textarea");t.value=txt;document.body.appendChild(t);t.select();document.execCommand("copy");document.body.removeChild(t);if(btn){btn.textContent="Copiado!";setTimeout(function(){btn.textContent=lbl;},2000);}}}
-function dl(cnt,t,n){var b=new Blob([cnt],{type:t});var u=URL.createObjectURL(b);var a=document.createElement("a");a.href=u;a.download=n;a.click();}
-function fd(d){if(!d)return"";var x=d.split("-");return x[2]+"/"+x[1]+"/"+x[0];}
-function _fmtEv(ev){var d=ev.data?ev.data.split("-"):["","",""];var df=ev.data?d[2]+"/"+d[1]+"/"+d[0]:"";return(df?"\n&#128197; "+df+(ev.horario?" as "+ev.horario+(ev.horario_fim?" - "+ev.horario_fim:""):""):"")+(ev.local?"\n&#128205; "+ev.local:"")+(ev.atracao1?"\n&#127908; "+ev.atracao1+(ev.atracao2?" + "+ev.atracao2:""):"");}
-
-// LOAD
-var _cads=[],_coff=0,_cods=[],_koff=0;
-function _loadCads(){ap(“cadastros?select=*&order=criado_em.desc&limit=1000&offset=”+_coff).then(function(d){if(d&&d.length){_cads=_cads.concat(d);if(d.length===1000){_coff+=1000;_loadCads();}else{cads=_cads;rSts();rChips();rend();}}else{cads=_cads;rSts();rChips();rend();}}).catch(function(){cads=_cads;rSts();rChips();rend();});}
-function _loadCods(){ap(“codigos?select=*&order=id.asc&limit=1000&offset=”+_koff).then(function(d){if(d&&d.length){_cods=_cods.concat(d);if(d.length===1000){_koff+=1000;_loadCods();}else{cods=_cods;rSts();rCods();}}else{cods=_cods;rSts();rCods();}}).catch(function(){cods=_cods;rSts();rCods();});}
-function load(){q(“tbl”).innerHTML=”<div class='empty'>Carregando…</div>”;_cads=[];_coff=0;_cods=[];_koff=0;_loadCads();_loadCods();ap(“eventos?select=*&order=data.asc”).then(function(d){evs=d||[];rSts();rEvs();ap(“lotes?select=*&order=criado_em.desc”).then(function(dl){lotes=dl||[];rLotes();}).catch(function(){lotes=[];});}).catch(function(){evs=[];});}
-
-// STATUS
-function rSts(){var pend=cads.filter(function(c){return c.status===“pendente”&&c.evento_id;}).length;var dsp=cods.filter(function(c){return !c.usado;}).length;q(“sts”).innerHTML=”<div class='stat'><strong>”+cads.length+”</strong><small>Cadastros</small></div><div class='stat'><strong>”+evs.length+”</strong><small>Eventos</small></div><div class='stat'><strong>”+(pend>0?pend:dsp)+”</strong><small>”+(pend>0?“Pendentes”:“Codigos”)+”</small></div>”;}
-function rChips(){var sel=q(“chips-sel”);if(!sel)return;sel.innerHTML=SETS.map(function(s){return “<option value=’”+s+”’”+(fset===s?” selected”:””)+”>”+s+”</option>”;}).join(””);}
-function setF(s){fset=s;rChips();rend();}
-function togMenu(){var m=q(“mdrop”);m.style.display=m.style.display===“none”||m.style.display===””?“block”:“none”;}
-
-// CADASTROS
-function rend(){
-var b=q(“bsc”).value.toLowerCase();
-var f=cads.filter(function(c){var emp=c.empresa||””;var em=fset===“Todos”||(fset===“Outros”?(!emp||SETS.indexOf(emp)<1):emp===fset);return em&&(!b||c.nome.toLowerCase().indexOf(b)>=0||(c.email||””).toLowerCase().indexOf(b)>=0);});
-var gb=q(“gbar”);if(sel.length>0){gb.style.display=“flex”;q(“sct”).textContent=sel.length+” sel.”;}else gb.style.display=“none”;
-if(!f.length){q(“tbl”).innerHTML=”<div class='empty'>Nenhum cadastro</div>”;return;}
-var all=f.every(function(c){return sel.indexOf(c.id)>=0;});
-var h=”<div class='tbl'><table><thead><tr><th><input type=‘checkbox’”+(all?” checked”:””)+” id=‘cball’></th><th>NOME</th><th>SETOR</th><th>STATUS</th></tr></thead><tbody>”;
-f.forEach(function(c){var cor=COR[c.setor]||”#555”;var sb=c.status===“aprovado”?”<span class='ab'>Aprov</span>”:c.status===“reprovado”?”<span class='rb'>Reprov</span>”:c.evento_id?”<span class='pb'>Pend</span>”:””;if(c.lote_nome)sb=(sb||””)+”<span style='background:#0891b2;color:#fff;padding:2px 6px;border-radius:10px;font-size:9px;display:block;margin-top:3px'>”+c.lote_nome+”</span>”;h+=”<tr><td><input type=‘checkbox’”+(sel.indexOf(c.id)>=0?” checked”:””)+” onchange=‘togS(”+c.id+”,this.checked)’></td><td><span class='nlink' onclick='verP("+c.id+")'>”+c.nome+”</span></td><td><span class='badge' style='background:"+cor+"'>”+c.setor+”</span></td><td>”+sb+”</td></tr>”;});
-h+=”</tbody></table></div>”;q(“tbl”).innerHTML=h;
-var cb=q(“cball”);if(cb)cb.onchange=function(){togAll(f.map(function(c){return c.id;}),this.checked);};}
-function togS(id,v){if(v){if(sel.indexOf(id)<0)sel.push(id);}else{sel=sel.filter(function(x){return x!==id;});}rend();}
-function togAll(ids,v){if(v)ids.forEach(function(id){if(sel.indexOf(id)<0)sel.push(id);});else sel=sel.filter(function(x){return ids.indexOf(x)<0;});rend();}
-
-// TABS
-function tab(t){[“c”,“e”,“k”,“l”,“lt”,“d”].forEach(function(x){q(“s”+x).classList.add(“gone”);q(“t”+x).classList.remove(“on”);});q(“s”+t).classList.remove(“gone”);q(“t”+t).classList.add(“on”);if(t===“l”)rLst();if(t===“k”)rCods();if(t===“e”)rEvs();if(t===“lt”)rLotes();if(t===“d”)rDisparos();}
-
-// DISPAROS
-function filtDisparos(f){
-dFiltro=f;
-var bt=q(“df-t”);var bs=q(“df-s”);
-if(bt){bt.style.background=f===“todos”?”#1e7a35”:“transparent”;bt.style.border=f===“todos”?“none”:“1px solid #1a2a1a”;bt.style.color=f===“todos”?”#fff”:”#888”;}
-if(bs){bs.style.background=f===“sev”?”#1e7a35”:“transparent”;bs.style.border=f===“sev”?“none”:“1px solid #1a2a1a”;bs.style.color=f===“sev”?”#fff”:”#888”;}
-rDisparos();
-}
-function previaMensagem(){
-var ev=(q(“d-ev”)&&q(“d-ev”).value.trim())||”[EVENTO]”;
-var dt=(q(“d-dt”)&&q(“d-dt”).value.trim())||”[DATA]”;
-var hr=(q(“d-hr”)&&q(“d-hr”).value.trim())||”[HORARIO]”;
-var lc=(q(“d-lc”)&&q(“d-lc”).value.trim())||”[LOCAL]”;
-var lk=q(“d-lk”)?q(“d-lk”).value.trim():””;
-var ex=q(“d-ex”)?q(“d-ex”).value.trim():””;
-var msg=“Ola, [NOME]!\n\nA Agroplay Music convida voce para:\n\n* “+ev+” *\n”+dt+” as “+hr+”\n”+lc;
-if(lk)msg+=”\n\n”+lk;
-if(ex)msg+=”\n\n”+ex;
-msg+=”\n\nAgroplay Music - Londrina PR”;
-if(q(“d-preview”)){q(“d-preview”).textContent=msg;q(“d-preview”).style.display=“block”;}
-}
-function rDisparos(){
-if(!q(“d-lista”))return;
-var busca=q(“d-busca”)?q(“d-busca”).value.toLowerCase():””;
-var lista=cads.filter(function(c){
-if(!c.telefone)return false;
-if(dFiltro===“sev”&&c.evento_id)return false;
-if(busca&&c.nome.toLowerCase().indexOf(busca)<0)return false;
-return true;
-});
-if(!lista.length){q(“d-lista”).innerHTML=”<div class='empty'>Nenhuma pessoa com telefone</div>”;if(q(“d-stats”))q(“d-stats”).textContent=””;return;}
-var ev=(q(“d-ev”)&&q(“d-ev”).value.trim())||”[EVENTO]”;
-var dt=(q(“d-dt”)&&q(“d-dt”).value.trim())||”[DATA]”;
-var hr=(q(“d-hr”)&&q(“d-hr”).value.trim())||”[HORARIO]”;
-var lc=(q(“d-lc”)&&q(“d-lc”).value.trim())||”[LOCAL]”;
-var lk=q(“d-lk”)?q(“d-lk”).value.trim():””;
-var ex=q(“d-ex”)?q(“d-ex”).value.trim():””;
-var h=””;
-lista.forEach(function(c){
-var tel=c.telefone.replace(/[^0-9]/g,””);
-if(tel.length===11||tel.length===10)tel=“55”+tel;
-var fn=c.nome.split(” “)[0];
-var msg=“Ola, “+fn+”!\n\nA Agroplay Music convida voce para:\n\n* “+ev+” *\n”+dt+” as “+hr+”\n”+lc;
-if(lk)msg+=”\n\n”+lk;
-if(ex)msg+=”\n\n”+ex;
-msg+=”\n\nAgroplay Music - Londrina PR”;
-var wl=“https://wa.me/”+tel+”?text=”+encodeURIComponent(msg);
-var env=c.disparo_enviado?”<span style='color:#2aab47;font-size:10px'> Enviado</span>”:””;
-h+=”<div style='display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #0a0f0a'>”;
-h+=”<div style='flex:1'><div style='font-size:13px;color:#eee'>”+c.nome+”</div>”;
-h+=”<div style='font-size:10px;color:#555'>”+c.telefone+(c.empresa?” - “+c.empresa:””)+env+”</div></div>”;
-h+=”<a href='"+wl+"' target='_blank' onclick='marcarEnviado("+c.id+")' style='background:#1e7a35;border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;color:#fff;text-decoration:none;margin-left:8px'>WhatsApp</a>”;
-h+=”</div>”;
-});
-q(“d-lista”).innerHTML=h;
-var env=lista.filter(function(c){return c.disparo_enviado;}).length;
-if(q(“d-stats”))q(“d-stats”).textContent=lista.length+” pessoas | “+env+” enviados”;
-}
-function marcarEnviado(id){
-for(var i=0;i<cads.length;i++){if(cads[i].id===id){cads[i].disparo_enviado=true;break;}}
-ap(“cadastros?id=eq.”+id,{m:“PATCH”,pref:“return=minimal”,b:JSON.stringify({disparo_enviado:true,disparo_em:new Date().toISOString()})});
-setTimeout(rDisparos,400);
-}
-
+function fd(d){if(!d)return””;var x=d.split(”-”);return x[2]+”/”+x[1]+”/”+x[0];}
+function ap(p,o){o=o||{};var h={“apikey”:KY,“Authorization”:“Bearer “+KY,“Content-Type”:“application/json”};if(o.pref)h[“Prefer”]=o.pref;if(!o.m||o.m===“GET”)h[“Range”]=“0-99999”;return fetch(SB+”/rest/v1/”+p,{method:o.m||“GET”,headers:h,body:o.b}).then(function(r){return r.text();}).then(function(t){return t?JSON.parse(t):null;});}
+function cp2(txt,btn,lbl){if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){btn.textContent=“Copiado!”;setTimeout(function(){btn.textContent=lbl;},2000);});}else{var t=document.createElement(“textarea”);t.value=txt;document.body.appendChild(t);t.select();document.execCommand(“copy”);document.body.removeChild(t);btn.textContent=“Copiado!”;setTimeout(function(){btn.textContent=lbl;},2000);}}
+function dl(cnt,t,n){var b=new Blob([cnt],{type:t});var u=URL.createObjectURL(b);var a=document.createElement(“a”);a.href=u;a.download=n;a.click();}
 q(“r”).onclick=load;
 q(“bnovocad”).onclick=function(){
 q(“ovcad”).classList.add(“on”);
@@ -963,11 +844,7 @@ var d=cods.filter(function(c){return !c.usado;}).length;
 var pend=cads.filter(function(c){return c.status===“pendente”&&c.evento_id;}).length;
 q(“sts”).innerHTML=”<div class='stat'><strong>”+cads.length+”</strong><small>Cadastros</small></div>”+”<div class='stat'><strong>”+evs.length+”</strong><small>Eventos</small></div>”+”<div class='stat'><strong>”+(pend>0?pend:d)+”</strong><small>”+(pend>0?“Pendentes”:“Codigos”)+”</small></div>”;
 }
-function rChips(){
-q(“chips”).innerHTML=SETS.map(function(s){
-return “<button class='chip"+(fset===s?" on":"")+"' onclick='setF(\""+s+"\")'>” +s+”</button>”;
-}).join(””);
-}
+function rChips(){var sel=q(“chips-sel”);if(!sel)return;sel.innerHTML=SETS.map(function(s){return “<option value=’”+s+”’”+(fset===s?” selected”:””)+”>”+s+”</option>”;}).join(””);}
 function setF(s){fset=s;rChips();rend();}
 function rend(){
 var b=q(“bsc”).value.toLowerCase();
@@ -1273,12 +1150,28 @@ var body=rows.map(function(r){return “<Row>”+r.map(function(v){return”<Cel
 dl(”<?xml version='1.0'?><Workbook xmlns='urn:schemas-microsoft-com:office:spreadsheet' xmlns:ss='urn:schemas-microsoft-com:office:spreadsheet'><Worksheet ss:Name='Dados'><Table>”+hdr+body+”</Table></Worksheet></Workbook>”,“application/vnd.ms-excel”,name+”.xls”);
 }
 function tab(t){
-[“c”,“e”,“k”,“l”,“lt”].forEach(function(x){q(“s”+x).classList.add(“gone”);q(“t”+x).classList.remove(“on”);});
+[“c”,“e”,“k”,“l”,“lt”,“d”].forEach(function(x){q(“s”+x).classList.add(“gone”);q(“t”+x).classList.remove(“on”);});
 q(“s”+t).classList.remove(“gone”);q(“t”+t).classList.add(“on”);
 if(t===“l”)rLst();if(t===“k”)rCods();if(t===“e”)rEvs();if(t===“lt”)rLotes();
 }
+function filtDisparos(f){dFiltro=f;var bt=q(“df-t”);var bs=q(“df-s”);if(bt){bt.style.background=f===“todos”?”#1e7a35”:“transparent”;bt.style.border=f===“todos”?“none”:“1px solid #1a2a1a”;bt.style.color=f===“todos”?”#fff”:”#888”;}if(bs){bs.style.background=f===“sev”?”#1e7a35”:“transparent”;bs.style.border=f===“sev”?“none”:“1px solid #1a2a1a”;bs.style.color=f===“sev”?”#fff”:”#888”;}rDisparos();}
+function previaMensagem(){var ev=(q(“d-ev”)&&q(“d-ev”).value.trim())||”[EVENTO]”;var dt=(q(“d-dt”)&&q(“d-dt”).value.trim())||”[DATA]”;var hr=(q(“d-hr”)&&q(“d-hr”).value.trim())||”[HORARIO]”;var lc=(q(“d-lc”)&&q(“d-lc”).value.trim())||”[LOCAL]”;var lk=q(“d-lk”)?q(“d-lk”).value.trim():””;var ex=q(“d-ex”)?q(“d-ex”).value.trim():””;var msg=“Ola, [NOME]!\n\nA Agroplay Music convida voce para:\n\n* “+ev+” *\n”+dt+” as “+hr+”\n”+lc;if(lk)msg+=”\n\n”+lk;if(ex)msg+=”\n\n”+ex;msg+=”\n\nAgroplay Music - Londrina PR”;if(q(“d-preview”)){q(“d-preview”).textContent=msg;q(“d-preview”).style.display=“block”;}}
+function rDisparos(){if(!q(“d-lista”))return;var busca=q(“d-busca”)?q(“d-busca”).value.toLowerCase():””;var lista=cads.filter(function(c){if(!c.telefone)return false;if(dFiltro===“sev”&&c.evento_id)return false;if(busca&&c.nome.toLowerCase().indexOf(busca)<0)return false;return true;});if(!lista.length){q(“d-lista”).innerHTML=”<div class='empty'>Nenhuma pessoa com telefone</div>”;if(q(“d-stats”))q(“d-stats”).textContent=””;return;}var ev=(q(“d-ev”)&&q(“d-ev”).value.trim())||”[EVENTO]”;var dt=(q(“d-dt”)&&q(“d-dt”).value.trim())||”[DATA]”;var hr=(q(“d-hr”)&&q(“d-hr”).value.trim())||”[HORARIO]”;var lc=(q(“d-lc”)&&q(“d-lc”).value.trim())||”[LOCAL]”;var lk=q(“d-lk”)?q(“d-lk”).value.trim():””;var ex=q(“d-ex”)?q(“d-ex”).value.trim():””;var h=””;lista.forEach(function(c){var tel=c.telefone.replace(/[^0-9]/g,””);if(tel.length===11||tel.length===10)tel=“55”+tel;var fn=c.nome.split(” “)[0];var msg=“Ola, “+fn+”!\n\nA Agroplay Music convida voce para:\n\n* “+ev+” *\n”+dt+” as “+hr+”\n”+lc;if(lk)msg+=”\n\n”+lk;if(ex)msg+=”\n\n”+ex;msg+=”\n\nAgroplay Music - Londrina PR”;var wl=“https://wa.me/”+tel+”?text=”+encodeURIComponent(msg);var env=c.disparo_enviado?”<span style='color:#2aab47;font-size:10px'> Enviado</span>”:””;h+=”<div style='display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #0a0f0a'>”;h+=”<div style='flex:1'><div style='font-size:13px;color:#eee'>”+c.nome+”</div>”;h+=”<div style='font-size:10px;color:#555'>”+c.telefone+(c.empresa?” - “+c.empresa:””)+env+”</div></div>”;h+=”<a href='"+wl+"' target='_blank' onclick='marcarEnviado("+c.id+")' style='background:#1e7a35;border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;color:#fff;text-decoration:none;margin-left:8px'>WhatsApp</a>”;h+=”</div>”;});q(“d-lista”).innerHTML=h;var env=lista.filter(function(c){return c.disparo_enviado;}).length;if(q(“d-stats”))q(“d-stats”).textContent=lista.length+” pessoas | “+env+” enviados”;}
+function marcarEnviado(id){for(var i=0;i<cads.length;i++){if(cads[i].id===id){cads[i].disparo_enviado=true;break;}}ap(“cadastros?id=eq.”+id,{m:“PATCH”,pref:“return=minimal”,b:JSON.stringify({disparo_enviado:true,disparo_em:new Date().toISOString()})});setTimeout(rDisparos,400);}
 load();
-</script>
+if(MODO===“ver”){
+var vb=document.createElement(“div”);
+vb.style.cssText=“background:#0a1a2a;border:1px solid #0891b2;color:#0891b2;padding:8px 14px;border-radius:8px;font-size:12px;margin-bottom:12px;text-align:center”;
+vb.textContent=“Modo visualizacao - apenas leitura”;
+document.body.insertBefore(vb,document.body.children[1]);
+[“r”,“bgl”,“bxls”,“bcsv”,“bexk”,“bnev”,“blinkc”].forEach(function(id){var el=document.getElementById(id);if(el){el.disabled=true;el.style.opacity=“0.3”;}});
+var style=document.createElement(“style”);
+style.textContent=”.btn{pointer-events:none;opacity:0.3!important}.btr{pointer-events:none;opacity:0.3!important}.bty{pointer-events:none;opacity:0.3!important}”;
+document.head.appendChild(style);
+document.getElementById(“r”).disabled=false;
+document.getElementById(“r”).style.opacity=“1”;
+}
 
+</script>
 </body>
 </html>
