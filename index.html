@@ -80,7 +80,7 @@ textarea{height:70px;resize:none}
   <div style="border-top:1px solid #1a2a1a;margin:4px 0"></div>
   <a href="home.html" onclick="sessionStorage.removeItem('ag_admin')" style="display:flex;align-items:center;gap:10px;padding:10px 14px;color:#c0392b;text-decoration:none;font-size:13px;border-radius:8px">&#128682; Sair</a>
   <div style="border-top:1px solid #1a2a1a;margin:4px 0"></div>
-  <div style="padding:6px 14px;font-size:10px;color:#333;text-align:center">v29</div>
+  <div style="padding:6px 14px;font-size:10px;color:#333;text-align:center">v30</div>
 </div>
 <div class="stats" id="sts"></div>
 <div class="tabs">
@@ -353,9 +353,9 @@ textarea{height:70px;resize:none}
     </div>
   </div>
 </div>
-<script>
+<script><script>
+var dFiltro="todos";
 
-var dFiltro=“todos”;
 var MODO=new URLSearchParams(window.location.search).get(“modo”)||“edit”;
 var SB=“https://wexwcnezjadoutyzkbcj.supabase.co”;
 var KY=“eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ”;
@@ -1158,6 +1158,7 @@ function filtDisparos(f){dFiltro=f;var bt=q(“df-t”);var bs=q(“df-s”);if(
 function previaMensagem(){var ev=(q(“d-ev”)&&q(“d-ev”).value.trim())||”[EVENTO]”;var dt=(q(“d-dt”)&&q(“d-dt”).value.trim())||”[DATA]”;var hr=(q(“d-hr”)&&q(“d-hr”).value.trim())||”[HORARIO]”;var lc=(q(“d-lc”)&&q(“d-lc”).value.trim())||”[LOCAL]”;var lk=q(“d-lk”)?q(“d-lk”).value.trim():””;var ex=q(“d-ex”)?q(“d-ex”).value.trim():””;var msg=“Ola, [NOME]!\n\nA Agroplay Music convida voce para:\n\n* “+ev+” *\n”+dt+” as “+hr+”\n”+lc;if(lk)msg+=”\n\n”+lk;if(ex)msg+=”\n\n”+ex;msg+=”\n\nAgroplay Music - Londrina PR”;if(q(“d-preview”)){q(“d-preview”).textContent=msg;q(“d-preview”).style.display=“block”;}}
 function rDisparos(){if(!q(“d-lista”))return;var busca=q(“d-busca”)?q(“d-busca”).value.toLowerCase():””;var lista=cads.filter(function(c){if(!c.telefone)return false;if(dFiltro===“sev”&&c.evento_id)return false;if(busca&&c.nome.toLowerCase().indexOf(busca)<0)return false;return true;});if(!lista.length){q(“d-lista”).innerHTML=”<div class='empty'>Nenhuma pessoa com telefone</div>”;if(q(“d-stats”))q(“d-stats”).textContent=””;return;}var ev=(q(“d-ev”)&&q(“d-ev”).value.trim())||”[EVENTO]”;var dt=(q(“d-dt”)&&q(“d-dt”).value.trim())||”[DATA]”;var hr=(q(“d-hr”)&&q(“d-hr”).value.trim())||”[HORARIO]”;var lc=(q(“d-lc”)&&q(“d-lc”).value.trim())||”[LOCAL]”;var lk=q(“d-lk”)?q(“d-lk”).value.trim():””;var ex=q(“d-ex”)?q(“d-ex”).value.trim():””;var h=””;lista.forEach(function(c){var tel=c.telefone.replace(/[^0-9]/g,””);if(tel.length===11||tel.length===10)tel=“55”+tel;var fn=c.nome.split(” “)[0];var msg=“Ola, “+fn+”!\n\nA Agroplay Music convida voce para:\n\n* “+ev+” *\n”+dt+” as “+hr+”\n”+lc;if(lk)msg+=”\n\n”+lk;if(ex)msg+=”\n\n”+ex;msg+=”\n\nAgroplay Music - Londrina PR”;var wl=“https://wa.me/”+tel+”?text=”+encodeURIComponent(msg);var env=c.disparo_enviado?”<span style='color:#2aab47;font-size:10px'> Enviado</span>”:””;h+=”<div style='display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid #0a0f0a'>”;h+=”<div style='flex:1'><div style='font-size:13px;color:#eee'>”+c.nome+”</div>”;h+=”<div style='font-size:10px;color:#555'>”+c.telefone+(c.empresa?” - “+c.empresa:””)+env+”</div></div>”;h+=”<a href='"+wl+"' target='_blank' onclick='marcarEnviado("+c.id+")' style='background:#1e7a35;border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;color:#fff;text-decoration:none;margin-left:8px'>WhatsApp</a>”;h+=”</div>”;});q(“d-lista”).innerHTML=h;var env=lista.filter(function(c){return c.disparo_enviado;}).length;if(q(“d-stats”))q(“d-stats”).textContent=lista.length+” pessoas | “+env+” enviados”;}
 function marcarEnviado(id){for(var i=0;i<cads.length;i++){if(cads[i].id===id){cads[i].disparo_enviado=true;break;}}ap(“cadastros?id=eq.”+id,{m:“PATCH”,pref:“return=minimal”,b:JSON.stringify({disparo_enviado:true,disparo_em:new Date().toISOString()})});setTimeout(rDisparos,400);}
+
 load();
 if(MODO===“ver”){
 var vb=document.createElement(“div”);
