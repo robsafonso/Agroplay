@@ -585,7 +585,7 @@ q(“tc”).onclick=function(){tab(“c”);};
 q(“te”).onclick=function(){tab(“e”);};
 q(“tk”).onclick=function(){tab(“k”);};
 q(“tl”).onclick=function(){tab(“l”);};
-q(“tlt”).onclick=function(){tab(“lt”);};
+q(“tlt”).onclick=function(){tab(“lt”);};q(“td”).onclick=function(){tab(“d”);};
 q(“bnovolote”).onclick=function(){
 q(“ovlote”).classList.add(“on”);q(“lote-alert”).innerHTML=””;q(“lote-resp”).value=””;q(“lote-qtd”).value=“10”;q(“lote-senha”).value=””;
 var sel=q(“lote-ev”);sel.innerHTML=”<option value=''>Nenhum evento</option>”;
@@ -1152,7 +1152,7 @@ dl(”<?xml version='1.0'?><Workbook xmlns='urn:schemas-microsoft-com:office:spr
 function tab(t){
 [“c”,“e”,“k”,“l”,“lt”,“d”].forEach(function(x){q(“s”+x).classList.add(“gone”);q(“t”+x).classList.remove(“on”);});
 q(“s”+t).classList.remove(“gone”);q(“t”+t).classList.add(“on”);
-if(t===“l”)rLst();if(t===“k”)rCods();if(t===“e”)rEvs();if(t===“lt”)rLotes();
+if(t===“l”)rLst();if(t===“k”)rCods();if(t===“e”)rEvs();if(t===“lt”)rLotes();if(t===“d”)rDisparos();
 }
 function filtDisparos(f){dFiltro=f;var bt=q(“df-t”);var bs=q(“df-s”);if(bt){bt.style.background=f===“todos”?”#1e7a35”:“transparent”;bt.style.border=f===“todos”?“none”:“1px solid #1a2a1a”;bt.style.color=f===“todos”?”#fff”:”#888”;}if(bs){bs.style.background=f===“sev”?”#1e7a35”:“transparent”;bs.style.border=f===“sev”?“none”:“1px solid #1a2a1a”;bs.style.color=f===“sev”?”#fff”:”#888”;}rDisparos();}
 function previaMensagem(){var ev=(q(“d-ev”)&&q(“d-ev”).value.trim())||”[EVENTO]”;var dt=(q(“d-dt”)&&q(“d-dt”).value.trim())||”[DATA]”;var hr=(q(“d-hr”)&&q(“d-hr”).value.trim())||”[HORARIO]”;var lc=(q(“d-lc”)&&q(“d-lc”).value.trim())||”[LOCAL]”;var lk=q(“d-lk”)?q(“d-lk”).value.trim():””;var ex=q(“d-ex”)?q(“d-ex”).value.trim():””;var msg=“Ola, [NOME]!\n\nA Agroplay Music convida voce para:\n\n* “+ev+” *\n”+dt+” as “+hr+”\n”+lc;if(lk)msg+=”\n\n”+lk;if(ex)msg+=”\n\n”+ex;msg+=”\n\nAgroplay Music - Londrina PR”;if(q(“d-preview”)){q(“d-preview”).textContent=msg;q(“d-preview”).style.display=“block”;}}
