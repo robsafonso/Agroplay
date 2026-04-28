@@ -1176,77 +1176,7 @@ document.head.appendChild(style);
 document.getElementById(“r”).disabled=false;
 document.getElementById(“r”).style.opacity=“1”;
 }
-function pegarCodigoSeguro(){
-  return fetch(SB + "/rest/v1/rpc/pegar_codigo", {
-    method: "POST",
-    headers: {
-      apikey: KY,
-      Authorization: "Bearer " + KY,
-      "Content-Type": "application/json"
-    }
-  }).then(r => r.json());
-}
 
-// SOBRESCREVE TODAS AS CHAMADAS ANTIGAS AUTOMATICAMENTE
-(function(){
-
-  const originalFetch = window.fetch;
-
-  window.fetch = function(url, options){
-
-    // intercepta chamadas antigas de código
-    if(typeof url === "string" && url.includes("codigos?usado=eq.false")){
-
-      return pegarCodigoSeguro().then(function(cod){
-        return Promise.resolve({
-          json: () => Promise.resolve([{ codigo: cod }])
-        });
-      });
-
-    }
-
-    return originalFetch(url, options);
-  };
-
-})();
 </script>
-function pegarCodigoSeguro(){
-  return fetch(SB + "/rest/v1/rpc/pegar_codigo", {
-    method: "POST",
-    headers: {
-      apikey: KY,
-      Authorization: "Bearer " + KY,
-      "Content-Type": "application/json"
-    }
-  }).then(r => r.json());
-}
-
-// INTERCEPTA TODAS AS CHAMADAS ANTIGAS
-(function(){
-
-  const originalFetch = window.fetch;
-
-  window.fetch = function(url, options){
-
-    if(typeof url === "string" && url.includes("codigos?usado=eq.false")){
-
-      return pegarCodigoSeguro().then(function(cod){
-
-        const fakeResponse = {
-          ok: true,
-          status: 200,
-          json: () => Promise.resolve([{ codigo: cod }]),
-          text: () => Promise.resolve(JSON.stringify([{ codigo: cod }]))
-        };
-
-        return Promise.resolve(fakeResponse);
-      });
-
-    }
-
-    return originalFetch(url, options);
-  };
-
-})();
 </body>
 </html>
