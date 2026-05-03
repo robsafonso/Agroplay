@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agroplay — Gerente</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+body {
+font-family: -apple-system, BlinkMacSystemFont, ‘Segoe UI’, sans-serif;
+background: #0a0a0a;
+color: #fafafa;
+min-height: 100vh;
+padding-bottom: 40px;
+}
+
+header {
+background: #161616;
+border-bottom: 1px solid #262626;
+padding: 14px 16px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+position: sticky;
+top: 0;
+z-index: 10;
+}
+
+.header-left {
+display: flex;
+align-items: center;
+gap: 12px;
+}
+
+.btn-voltar {
+background: transparent;
+border: 1px solid #404040;
+color: #fafafa;
+width: 32px;
+height: 32px;
+border-radius: 6px;
+font-size: 16px;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.header-logo {
+height: 24px;
+filter: invert(1);
+}
+
+.header-titulo {
+font-size: 14px;
+font-weight: 600;
+}
+
+.header-user {
+font-size: 12px;
+color: #a3a3a3;
+}
+
+.abas {
+background: #161616;
+border-bottom: 1px solid #262626;
+display: flex;
+overflow-x: auto;
+position: sticky;
+top: 60px;
+z-index: 9;
+}
+
+.abas::-webkit-scrollbar {
+display: none;
+}
+
+.aba {
+background: transparent;
+border: none;
+color: #a3a3a3;
+padding: 14px 18px;
+font-size: 13px;
+font-weight: 500;
+cursor: pointer;
+white-space: nowrap;
+border-bottom: 2px solid transparent;
+transition: color 0.15s, border-color 0.15s;
+}
+
+.aba.ativa {
+color: #f5c518;
+border-bottom-color: #f5c518;
+}
+
+main {
+max-width: 800px;
+margin: 0 auto;
+padding: 20px 16px;
+}
+
+.conteudo-aba {
+display: none;
+}
+
+.conteudo-aba.ativa {
+display: block;
+}
+
+.topo-aba {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 16px;
+}
+
+.topo-aba h2 {
+font-size: 18px;
+font-weight: 600;
+}
+
+.btn-primario {
+background: #f5c518;
+color: #0a0a0a;
+border: none;
+padding: 10px 16px;
+border-radius: 8px;
+font-size: 13px;
+font-weight: 600;
+cursor: pointer;
+}
+
+.btn-primario:hover {
+opacity: 0.9;
+}
+
+.btn-secundario {
+background: transparent;
+color: #fafafa;
+border: 1px solid #404040;
+padding: 8px 14px;
+border-radius: 8px;
+font-size: 12px;
+cursor: pointer;
+}
+
+.btn-secundario:hover {
+border-color: #f5c518;
+}
+
+.btn-perigo {
+background: transparent;
+color: #ef4444;
+border: 1px solid #4a1f1f;
+padding: 8px 14px;
+border-radius: 8px;
+font-size: 12px;
+cursor: pointer;
+}
+
+.btn-perigo:hover {
+background: #2a0f0f;
+}
+
+.vazio {
+text-align: center;
+padding: 48px 16px;
+color: #525252;
+font-size: 14px;
+}
+
+.lista {
+display: flex;
+flex-direction: column;
+gap: 10px;
+}
+
+.item {
+background: #161616;
+border: 1px solid #262626;
+border-radius: 10px;
+padding: 16px;
+}
+
+.item-titulo {
+font-size: 15px;
+font-weight: 600;
+margin-bottom: 4px;
+}
+
+.item-info {
+font-size: 12px;
+color: #a3a3a3;
+margin-bottom: 10px;
+}
+
+.item-info span {
+margin-right: 12px;
+}
+
+.item-acoes {
+display: flex;
+gap: 8px;
+}
+
+.modal-overlay {
+position: fixed;
+inset: 0;
+background: rgba(0, 0, 0, 0.7);
+display: none;
+align-items: center;
+justify-content: center;
+z-index: 100;
+padding: 16px;
+}
+
+.modal-overlay.aberto {
+display: flex;
+}
+
+.modal {
+background: #161616;
+border: 1px solid #262626;
+border-radius: 14px;
+width: 100%;
+max-width: 500px;
+max-height: 90vh;
+overflow-y: auto;
+padding: 24px 20px;
+}
+
+.modal h3 {
+font-size: 17px;
+margin-bottom: 18px;
+}
+
+.campo {
+margin-bottom: 12px;
+}
+
+.campo label {
+display: block;
+font-size: 12px;
+color: #a3a3a3;
+margin-bottom: 5px;
+}
+
+.campo input,
+.campo textarea,
+.campo select {
+width: 100%;
+padding: 10px 12px;
+background: #0a0a0a;
+border: 1px solid #262626;
+border-radius: 7px;
+color: #fafafa;
+font-size: 14px;
+font-family: inherit;
+outline: none;
+}
+
+.campo input:focus,
+.campo textarea:focus,
+.campo select:focus {
+border-color: #f5c518;
+}
+
+.campo textarea {
+resize: vertical;
+min-height: 70px;
+}
+
+.linha2 {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 10px;
+}
+
+.modal-botoes {
+display: flex;
+gap: 10px;
+margin-top: 16px;
+justify-content: flex-end;
+}
+
+.construcao {
+text-align: center;
+padding: 60px 20px;
+color: #525252;
+}
+
+.construcao .icone {
+font-size: 40px;
+margin-bottom: 12px;
+}
+
+.construcao p {
+font-size: 14px;
+}
+
+.erro-msg {
+color: #ef4444;
+font-size: 12px;
+margin-top: 10px;
+text-align: center;
+min-height: 16px;
+}
+
+.badge {
+display: inline-block;
+padding: 2px 8px;
+border-radius: 4px;
+font-size: 10px;
+font-weight: 600;
+text-transform: uppercase;
+margin-left: 6px;
+}
+
+.badge-externo {
+background: #1f2937;
+color: #93c5fd;
+}
+
+.badge-interno {
+background: #1f2e1f;
+color: #86efac;
+}
+</style>
+
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <button class="btn-voltar" onclick="window.location.href='home.html'">‹</button>
+    <img src="logo.png" alt="" class="header-logo">
+    <span class="header-titulo">Gerente</span>
+  </div>
+  <span class="header-user" id="nomeUsuario"></span>
+</header>
+
+<nav class="abas">
+  <button class="aba ativa" data-aba="eventos">Eventos</button>
+  <button class="aba" data-aba="lotes">Lotes</button>
+  <button class="aba" data-aba="cadastros">Cadastros</button>
+  <button class="aba" data-aba="validadores">Validadores</button>
+  <button class="aba" data-aba="orcamento">Orçamento</button>
+</nav>
+
+<main>
+
+  <section class="conteudo-aba ativa" id="aba-eventos">
+    <div class="topo-aba">
+      <h2>Eventos</h2>
+      <button class="btn-primario" id="btnNovoEvento">+ Novo</button>
+    </div>
+    <div id="listaEventos" class="lista"></div>
+  </section>
+
+  <section class="conteudo-aba" id="aba-lotes">
+    <div class="construcao">
+      <div class="icone">🚧</div>
+      <p>Em construção</p>
+    </div>
+  </section>
+
+  <section class="conteudo-aba" id="aba-cadastros">
+    <div class="construcao">
+      <div class="icone">🚧</div>
+      <p>Em construção</p>
+    </div>
+  </section>
+
+  <section class="conteudo-aba" id="aba-validadores">
+    <div class="construcao">
+      <div class="icone">🚧</div>
+      <p>Em construção</p>
+    </div>
+  </section>
+
+  <section class="conteudo-aba" id="aba-orcamento">
+    <div class="construcao">
+      <div class="icone">🚧</div>
+      <p>Em construção</p>
+    </div>
+  </section>
+
+</main>
+
+<div class="modal-overlay" id="modalEvento">
+  <div class="modal">
+    <h3 id="modalEventoTitulo">Novo evento</h3>
+
+```
+<div class="campo">
+  <label>Nome *</label>
+  <input type="text" id="evNome" placeholder="Ex: Agroplay Verão 2026">
+</div>
+
+<div class="linha2">
+  <div class="campo">
+    <label>Data</label>
+    <input type="date" id="evData">
+  </div>
+  <div class="campo">
+    <label>Tipo</label>
+    <select id="evTipo">
+      <option value="externo">Externo</option>
+      <option value="interno">Interno</option>
+    </select>
+  </div>
+</div>
+
+<div class="linha2">
+  <div class="campo">
+    <label>Hora início</label>
+    <input type="time" id="evHorario">
+  </div>
+  <div class="campo">
+    <label>Hora fim</label>
+    <input type="time" id="evHorarioFim">
+  </div>
+</div>
+
+<div class="campo">
+  <label>Local</label>
+  <input type="text" id="evLocal" placeholder="Ex: Balneário Camboriú/SC">
+</div>
+
+<div class="campo">
+  <label>Link do Maps</label>
+  <input type="url" id="evMaps" placeholder="https://maps.google.com/...">
+</div>
+
+<div class="linha2">
+  <div class="campo">
+    <label>Atração 1</label>
+    <input type="text" id="evAtr1">
+  </div>
+  <div class="campo">
+    <label>Instagram da atração 1</label>
+    <input type="text" id="evInsta1" placeholder="@perfil">
+  </div>
+</div>
+
+<div class="linha2">
+  <div class="campo">
+    <label>Atração 2</label>
+    <input type="text" id="evAtr2">
+  </div>
+  <div class="campo">
+    <label>Instagram da atração 2</label>
+    <input type="text" id="evInsta2" placeholder="@perfil">
+  </div>
+</div>
+
+<div class="campo">
+  <label>Capacidade</label>
+  <input type="number" id="evCapacidade" placeholder="0">
+</div>
+
+<div class="campo">
+  <label>Foto (URL)</label>
+  <input type="url" id="evFoto" placeholder="https://...">
+</div>
+
+<div class="campo">
+  <label>Descrição</label>
+  <textarea id="evDescricao"></textarea>
+</div>
+
+<div class="erro-msg" id="erroEvento"></div>
+
+<div class="modal-botoes">
+  <button class="btn-secundario" id="btnCancelarEvento">Cancelar</button>
+  <button class="btn-primario" id="btnSalvarEvento">Salvar</button>
+</div>
+```
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  const URL_API = 'https://wexwcnezjadoutyzkbcj.supabase.co';
+  const KEY_API = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ';
+
+  const sb = supabase.createClient(URL_API, KEY_API);
+
+  const adminId = localStorage.getItem('admin_id');
+  const adminNome = localStorage.getItem('admin_nome');
+
+  if (!adminId) {
+    window.location.href = 'index.html';
+  }
+
+  document.getElementById('nomeUsuario').textContent = adminNome || '';
+
+  const abas = document.querySelectorAll('.aba');
+  const conteudos = document.querySelectorAll('.conteudo-aba');
+
+  abas.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      const alvo = btn.dataset.aba;
+      abas.forEach(function (a) { a.classList.remove('ativa'); });
+      conteudos.forEach(function (c) { c.classList.remove('ativa'); });
+      btn.classList.add('ativa');
+      document.getElementById('aba-' + alvo).classList.add('ativa');
+    });
+  });
+
+  const listaEventos = document.getElementById('listaEventos');
+  const modalEvento = document.getElementById('modalEvento');
+  const erroEvento = document.getElementById('erroEvento');
+  let eventoEditandoId = null;
+
+  function escaparHtml(txt) {
+    if (!txt) return '';
+    return String(txt)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;');
+  }
+
+  function formatarData(dataIso) {
+    if (!dataIso) return '';
+    const partes = dataIso.split('-');
+    return partes[2] + '/' + partes[1] + '/' + partes[0];
+  }
+
+  async function carregarEventos() {
+    listaEventos.innerHTML = '<div class="vazio">Carregando...</div>';
+
+    const { data, error } = await sb
+      .from('eventos')
+      .select('*')
+      .order('data', { ascending: false });
+
+    if (error) {
+      listaEventos.innerHTML = '<div class="vazio">Erro ao carregar</div>';
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      listaEventos.innerHTML = '<div class="vazio">Nenhum evento ainda. Toque em + Novo para começar.</div>';
+      return;
+    }
+
+    listaEventos.innerHTML = '';
+
+    data.forEach(function (ev) {
+      const div = document.createElement('div');
+      div.className = 'item';
+
+      const tipoBadge = ev.tipo === 'interno'
+        ? '<span class="badge badge-interno">Interno</span>'
+        : '<span class="badge badge-externo">Externo</span>';
+
+      const dataFmt = formatarData(ev.data);
+      const horario = ev.horario ? ev.horario.substring(0, 5) : '';
+
+      div.innerHTML =
+        '<div class="item-titulo">' + escaparHtml(ev.nome) + tipoBadge + '</div>' +
+        '<div class="item-info">' +
+          (dataFmt ? '<span>📅 ' + dataFmt + '</span>' : '') +
+          (horario ? '<span>🕐 ' + horario + '</span>' : '') +
+          (ev.local ? '<span>📍 ' + escaparHtml(ev.local) + '</span>' : '') +
+        '</div>' +
+        '<div class="item-acoes">' +
+          '<button class="btn-secundario" data-acao="editar" data-id="' + ev.id + '">Editar</button>' +
+          '<button class="btn-perigo" data-acao="apagar" data-id="' + ev.id + '">Apagar</button>' +
+        '</div>';
+
+      listaEventos.appendChild(div);
+    });
+
+    listaEventos.querySelectorAll('button').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        const id = btn.dataset.id;
+        const acao = btn.dataset.acao;
+        if (acao === 'editar') abrirModalEditar(id);
+        if (acao === 'apagar') apagarEvento(id);
+      });
+    });
+  }
+
+  function abrirModalNovo() {
+    eventoEditandoId = null;
+    document.getElementById('modalEventoTitulo').textContent = 'Novo evento';
+    document.getElementById('evNome').value = '';
+    document.getElementById('evData').value = '';
+    document.getElementById('evTipo').value = 'externo';
+    document.getElementById('evHorario').value = '';
+    document.getElementById('evHorarioFim').value = '';
+    document.getElementById('evLocal').value = '';
+    document.getElementById('evMaps').value = '';
+    document.getElementById('evAtr1').value = '';
+    document.getElementById('evInsta1').value = '';
+    document.getElementById('evAtr2').value = '';
+    document.getElementById('evInsta2').value = '';
+    document.getElementById('evCapacidade').value = '';
+    document.getElementById('evFoto').value = '';
+    document.getElementById('evDescricao').value = '';
+    erroEvento.textContent = '';
+    modalEvento.classList.add('aberto');
+  }
+
+  async function abrirModalEditar(id) {
+    eventoEditandoId = id;
+
+    const { data, error } = await sb
+      .from('eventos')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (error || !data) {
+      alert('Erro ao carregar evento');
+      return;
+    }
+
+    document.getElementById('modalEventoTitulo').textContent = 'Editar evento';
+    document.getElementById('evNome').value = data.nome || '';
+    document.getElementById('evData').value = data.data || '';
+    document.getElementById('evTipo').value = data.tipo || 'externo';
+    document.getElementById('evHorario').value = data.horario ? data.horario.substring(0, 5) : '';
+    document.getElementById('evHorarioFim').value = data.horario_fim ? data.horario_fim.substring(0, 5) : '';
+    document.getElementById('evLocal').value = data.local || '';
+    document.getElementById('evMaps').value = data.maps_url || '';
+    document.getElementById('evAtr1').value = data.atracao1 || '';
+    document.getElementById('evInsta1').value = data.insta_atr1 || '';
+    document.getElementById('evAtr2').value = data.atracao2 || '';
+    document.getElementById('evInsta2').value = data.insta_atr2 || '';
+    document.getElementById('evCapacidade').value = data.capacidade || '';
+    document.getElementById('evFoto').value = data.foto_url || '';
+    document.getElementById('evDescricao').value = data.descricao || '';
+    erroEvento.textContent = '';
+    modalEvento.classList.add('aberto');
+  }
+
+  function fecharModal() {
+    modalEvento.classList.remove('aberto');
+  }
+
+  async function salvarEvento() {
+    erroEvento.textContent = '';
+
+    const nome = document.getElementById('evNome').value.trim();
+
+    if (!nome) {
+      erroEvento.textContent = 'O nome é obrigatório';
+      return;
+    }
+
+    const dados = {
+      nome: nome,
+      data: document.getElementById('evData').value || null,
+      tipo: document.getElementById('evTipo').value,
+      horario: document.getElementById('evHorario').value || null,
+      horario_fim: document.getElementById('evHorarioFim').value || null,
+      local: document.getElementById('evLocal').value.trim() || null,
+      maps_url: document.getElementById('evMaps').value.trim() || null,
+      atracao1: document.getElementById('evAtr1').value.trim() || null,
+      insta_atr1: document.getElementById('evInsta1').value.trim() || null,
+      atracao2: document.getElementById('evAtr2').value.trim() || null,
+      insta_atr2: document.getElementById('evInsta2').value.trim() || null,
+      capacidade: parseInt(document.getElementById('evCapacidade').value) || 0,
+      foto_url: document.getElementById('evFoto').value.trim() || null,
+      descricao: document.getElementById('evDescricao').value.trim() || null
+    };
+
+    let resposta;
+
+    if (eventoEditandoId) {
+      resposta = await sb.from('eventos').update(dados).eq('id', eventoEditandoId);
+    } else {
+      resposta = await sb.from('eventos').insert(dados);
+    }
+
+    if (resposta.error) {
+      erroEvento.textContent = 'Erro ao salvar: ' + resposta.error.message;
+      return;
+    }
+
+    fecharModal();
+    carregarEventos();
+  }
+
+  async function apagarEvento(id) {
+    const ok = confirm('Apagar este evento?\n\nLotes, códigos e orçamento vinculados também serão apagados.\nCadastros das pessoas serão mantidos.');
+    if (!ok) return;
+
+    const { error } = await sb.from('eventos').delete().eq('id', id);
+
+    if (error) {
+      alert('Erro ao apagar: ' + error.message);
+      return;
+    }
+
+    carregarEventos();
+  }
+
+  document.getElementById('btnNovoEvento').addEventListener('click', abrirModalNovo);
+  document.getElementById('btnSalvarEvento').addEventListener('click', salvarEvento);
+  document.getElementById('btnCancelarEvento').addEventListener('click', fecharModal);
+
+  modalEvento.addEventListener('click', function (e) {
+    if (e.target === modalEvento) fecharModal();
+  });
+
+  carregarEventos();
+</script>
+
+</body>
+</html>
