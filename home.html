@@ -5,208 +5,300 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Agroplay — Início</title>
 <style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: #0a0a0a;
-    color: #fafafa;
+    font-family: Arial, sans-serif;
+    background: #060a06;
+    color: #eee;
     min-height: 100vh;
   }
 
   header {
-    background: #161616;
-    border-bottom: 1px solid #262626;
-    padding: 16px 20px;
+    background: #060a06;
+    border-bottom: 2px solid #1e7a35;
+    padding: 12px 16px;
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
   }
 
-  .header-logo {
-    height: 32px;
-    width: auto;
-    filter: invert(1);
-  }
-
-  .header-user {
+  .logo {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 0;
+    border: 1px solid #1a2a1a;
+    border-radius: 10px;
+    overflow: hidden;
   }
 
-  .header-user span {
-    font-size: 13px;
-    color: #a3a3a3;
+  .logo .a {
+    background: #0d150d;
+    padding: 7px 12px;
+    font-size: 16px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: 1px;
+  }
+
+  .logo .a span { color: #2aab47; }
+
+  .logo .v {
+    background: #c9973c;
+    padding: 7px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 1px;
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .user-name {
+    font-size: 12px;
+    color: #888;
   }
 
   .btn-sair {
     background: transparent;
-    border: 1px solid #404040;
-    color: #fafafa;
+    border: 1px solid #c0392b;
+    color: #c0392b;
     padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 12px;
+    border-radius: 8px;
+    font-size: 11px;
     cursor: pointer;
   }
 
   .btn-sair:hover {
-    border-color: #f5c518;
-    color: #f5c518;
+    background: rgba(192, 57, 43, 0.1);
   }
 
   main {
-    max-width: 600px;
+    max-width: 700px;
     margin: 0 auto;
-    padding: 32px 20px;
+    padding: 24px 16px 40px;
   }
 
   .saudacao {
-    font-size: 22px;
-    font-weight: 600;
-    margin-bottom: 4px;
+    margin-bottom: 22px;
   }
 
-  .saudacao-sub {
-    color: #a3a3a3;
-    font-size: 14px;
-    margin-bottom: 28px;
+  .saudacao h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 3px;
   }
 
-  .grid {
+  .saudacao p {
+    font-size: 12px;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .secao-titulo {
+    font-size: 10px;
+    color: #2aab47;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 18px 0 10px;
+    font-weight: 700;
+  }
+
+  .grid-principal {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
   }
 
   .card {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    background: #161616;
-    border: 1px solid #262626;
+    background: #090e09;
+    border: 1px solid #1a2a1a;
     border-radius: 12px;
-    padding: 20px;
+    padding: 18px 14px;
     cursor: pointer;
     text-decoration: none;
     color: inherit;
     transition: border-color 0.15s, transform 0.1s;
+    text-align: center;
   }
 
-  .card:hover {
-    border-color: #f5c518;
+  .card:hover { border-color: #2aab47; }
+  .card:active { transform: scale(0.98); }
+
+  .card .icone {
+    font-size: 28px;
+    margin-bottom: 8px;
   }
 
-  .card:active {
-    transform: scale(0.99);
-  }
-
-  .card-icon {
-    width: 48px;
-    height: 48px;
-    background: #0a0a0a;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    flex-shrink: 0;
-  }
-
-  .card-content {
-    flex: 1;
-  }
-
-  .card-title {
-    font-size: 16px;
-    font-weight: 600;
+  .card .nome {
+    font-size: 13px;
+    font-weight: 700;
+    color: #fff;
     margin-bottom: 2px;
   }
 
-  .card-desc {
+  .card .desc {
+    font-size: 10px;
+    color: #555;
+  }
+
+  .card-destaque {
+    grid-column: 1 / -1;
+    background: linear-gradient(135deg, #0d1f0d 0%, #090e09 100%);
+    border-color: #2aab47;
+    padding: 22px 16px;
+  }
+
+  .card-destaque .icone {
+    font-size: 36px;
+  }
+
+  .card-destaque .nome {
+    font-size: 16px;
+  }
+
+  .lista-secundaria {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .link-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #090e09;
+    border: 1px solid #1a2a1a;
+    border-radius: 10px;
+    padding: 12px 14px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s;
+  }
+
+  .link-item:hover { border-color: #2aab47; }
+
+  .link-item .icone-pequeno {
+    font-size: 18px;
+    width: 22px;
+    text-align: center;
+  }
+
+  .link-item .texto {
+    flex: 1;
+  }
+
+  .link-item .nome {
     font-size: 13px;
-    color: #a3a3a3;
+    color: #fff;
+    font-weight: 600;
   }
 
-  .card-arrow {
-    color: #525252;
-    font-size: 20px;
+  .link-item .desc {
+    font-size: 10px;
+    color: #555;
   }
 
-  .destaque {
-    border-color: #f5c518;
-    background: linear-gradient(180deg, #1a1a1a 0%, #161616 100%);
-  }
-
-  .destaque .card-icon {
-    background: #f5c518;
-    color: #0a0a0a;
+  .link-item .seta {
+    color: #333;
+    font-size: 18px;
   }
 </style>
 </head>
 <body>
 
 <header>
-  <img src="logo.png" alt="Agroplay" class="header-logo">
-  <div class="header-user">
-    <span id="nomeUsuario"></span>
+  <div class="logo">
+    <div class="a">AGRO<span>PLAY</span></div>
+    <div class="v">v32</div>
+  </div>
+  <div class="user-info">
+    <span class="user-name" id="userName"></span>
     <button class="btn-sair" id="btnSair">Sair</button>
   </div>
 </header>
 
 <main>
-  <h1 class="saudacao" id="saudacao">Olá</h1>
-  <p class="saudacao-sub">O que você quer fazer hoje?</p>
+  <div class="saudacao">
+    <h1 id="saudacao">Olá</h1>
+    <p>O que você quer fazer?</p>
+  </div>
 
-  <div class="grid">
-    <a href="gerente.html" class="card destaque">
-      <div class="card-icon">⚡</div>
-      <div class="card-content">
-        <div class="card-title">Gerente</div>
-        <div class="card-desc">Eventos, lotes, cadastros, orçamento</div>
-      </div>
-      <div class="card-arrow">›</div>
+  <div class="grid-principal">
+    <a href="gerente.html" class="card card-destaque">
+      <div class="icone">⚡</div>
+      <div class="nome">Gerente</div>
+      <div class="desc">Cadastros, eventos, lotes, códigos</div>
     </a>
 
-    <a href="manual.html" class="card">
-      <div class="card-icon">📖</div>
-      <div class="card-content">
-        <div class="card-title">Manual</div>
-        <div class="card-desc">Como usar o sistema</div>
-      </div>
-      <div class="card-arrow">›</div>
+    <a href="dashboard.html" class="card">
+      <div class="icone">📊</div>
+      <div class="nome">Dashboard</div>
+      <div class="desc">Visão geral</div>
     </a>
 
-    <a href="mediakit.html" class="card">
-      <div class="card-icon">🎬</div>
-      <div class="card-content">
-        <div class="card-title">Mediakit</div>
-        <div class="card-desc">Material de divulgação</div>
+    <a href="checkin.html" class="card">
+      <div class="icone">📱</div>
+      <div class="nome">Scanner QR</div>
+      <div class="desc">Entrada do evento</div>
+    </a>
+  </div>
+
+  <div class="secao-titulo">Outros</div>
+
+  <div class="lista-secundaria">
+    <a href="tickets.html" class="link-item">
+      <div class="icone-pequeno">🎫</div>
+      <div class="texto">
+        <div class="nome">Tickets</div>
+        <div class="desc">Bilhetes do evento</div>
       </div>
-      <div class="card-arrow">›</div>
+      <div class="seta">›</div>
+    </a>
+
+    <a href="manual.html" class="link-item">
+      <div class="icone-pequeno">📚</div>
+      <div class="texto">
+        <div class="nome">Manual</div>
+        <div class="desc">Como usar o sistema</div>
+      </div>
+      <div class="seta">›</div>
+    </a>
+
+    <a href="mediakit.html" class="link-item">
+      <div class="icone-pequeno">📋</div>
+      <div class="texto">
+        <div class="nome">Media Kit</div>
+        <div class="desc">Material de divulgação</div>
+      </div>
+      <div class="seta">›</div>
     </a>
   </div>
 </main>
 
 <script>
-  const adminId = localStorage.getItem('admin_id');
-  const adminNome = localStorage.getItem('admin_nome');
+  const adminData = sessionStorage.getItem('ag_admin');
 
-  if (!adminId) {
+  if (!adminData) {
     window.location.href = 'index.html';
   }
 
-  document.getElementById('nomeUsuario').textContent = adminNome || '';
-  document.getElementById('saudacao').textContent = 'Olá, ' + (adminNome || 'admin');
+  const admin = JSON.parse(adminData || '{}');
+
+  document.getElementById('userName').textContent = admin.nome || '';
+  document.getElementById('saudacao').textContent = 'Olá, ' + (admin.nome || 'admin');
 
   document.getElementById('btnSair').addEventListener('click', function () {
-    localStorage.removeItem('admin_id');
-    localStorage.removeItem('admin_nome');
-    localStorage.removeItem('admin_nivel');
+    sessionStorage.removeItem('ag_admin');
     window.location.href = 'index.html';
   });
 </script>
