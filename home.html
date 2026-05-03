@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agroplay — Início</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0a0a0a;
+    color: #fafafa;
+    min-height: 100vh;
+  }
+
+  header {
+    background: #161616;
+    border-bottom: 1px solid #262626;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .header-logo {
+    height: 32px;
+    width: auto;
+    filter: invert(1);
+  }
+
+  .header-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .header-user span {
+    font-size: 13px;
+    color: #a3a3a3;
+  }
+
+  .btn-sair {
+    background: transparent;
+    border: 1px solid #404040;
+    color: #fafafa;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  .btn-sair:hover {
+    border-color: #f5c518;
+    color: #f5c518;
+  }
+
+  main {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 32px 20px;
+  }
+
+  .saudacao {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .saudacao-sub {
+    color: #a3a3a3;
+    font-size: 14px;
+    margin-bottom: 28px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #161616;
+    border: 1px solid #262626;
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.15s, transform 0.1s;
+  }
+
+  .card:hover {
+    border-color: #f5c518;
+  }
+
+  .card:active {
+    transform: scale(0.99);
+  }
+
+  .card-icon {
+    width: 48px;
+    height: 48px;
+    background: #0a0a0a;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  .card-content {
+    flex: 1;
+  }
+
+  .card-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: #a3a3a3;
+  }
+
+  .card-arrow {
+    color: #525252;
+    font-size: 20px;
+  }
+
+  .destaque {
+    border-color: #f5c518;
+    background: linear-gradient(180deg, #1a1a1a 0%, #161616 100%);
+  }
+
+  .destaque .card-icon {
+    background: #f5c518;
+    color: #0a0a0a;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="logo.png" alt="Agroplay" class="header-logo">
+  <div class="header-user">
+    <span id="nomeUsuario"></span>
+    <button class="btn-sair" id="btnSair">Sair</button>
+  </div>
+</header>
+
+<main>
+  <h1 class="saudacao" id="saudacao">Olá</h1>
+  <p class="saudacao-sub">O que você quer fazer hoje?</p>
+
+  <div class="grid">
+    <a href="gerente.html" class="card destaque">
+      <div class="card-icon">⚡</div>
+      <div class="card-content">
+        <div class="card-title">Gerente</div>
+        <div class="card-desc">Eventos, lotes, cadastros, orçamento</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </a>
+
+    <a href="manual.html" class="card">
+      <div class="card-icon">📖</div>
+      <div class="card-content">
+        <div class="card-title">Manual</div>
+        <div class="card-desc">Como usar o sistema</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </a>
+
+    <a href="mediakit.html" class="card">
+      <div class="card-icon">🎬</div>
+      <div class="card-content">
+        <div class="card-title">Mediakit</div>
+        <div class="card-desc">Material de divulgação</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </a>
+  </div>
+</main>
+
+<script>
+  const adminId = localStorage.getItem('admin_id');
+  const adminNome = localStorage.getItem('admin_nome');
+
+  if (!adminId) {
+    window.location.href = 'index.html';
+  }
+
+  document.getElementById('nomeUsuario').textContent = adminNome || '';
+  document.getElementById('saudacao').textContent = 'Olá, ' + (adminNome || 'admin');
+
+  document.getElementById('btnSair').addEventListener('click', function () {
+    localStorage.removeItem('admin_id');
+    localStorage.removeItem('admin_nome');
+    localStorage.removeItem('admin_nivel');
+    window.location.href = 'index.html';
+  });
+</script>
+
+</body>
+</html>
