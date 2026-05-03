@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agroplay — Login</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0a0a0a;
+    color: #fafafa;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .card {
+    width: 100%;
+    max-width: 380px;
+    background: #161616;
+    border: 1px solid #262626;
+    border-radius: 16px;
+    padding: 40px 28px;
+  }
+
+  .logo {
+    display: block;
+    margin: 0 auto 32px;
+    width: 120px;
+    height: auto;
+    filter: invert(1);
+  }
+
+  h1 {
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 4px;
+    color: #fafafa;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: #a3a3a3;
+    font-size: 13px;
+    margin-bottom: 28px;
+  }
+
+  .field {
+    margin-bottom: 14px;
+  }
+
+  label {
+    display: block;
+    font-size: 12px;
+    color: #a3a3a3;
+    margin-bottom: 6px;
+  }
+
+  input {
+    width: 100%;
+    padding: 12px 14px;
+    background: #0a0a0a;
+    border: 1px solid #262626;
+    border-radius: 8px;
+    color: #fafafa;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  input:focus {
+    border-color: #f5c518;
+  }
+
+  button {
+    width: 100%;
+    padding: 13px;
+    background: #f5c518;
+    color: #0a0a0a;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: opacity 0.15s;
+  }
+
+  button:hover {
+    opacity: 0.9;
+  }
+
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .erro {
+    color: #ef4444;
+    font-size: 13px;
+    text-align: center;
+    margin-top: 14px;
+    min-height: 18px;
+  }
+
+  .rodape {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 11px;
+    color: #525252;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <img src="logo.png" alt="Agroplay" class="logo">
+  <h1>Painel do Administrador</h1>
+  <p class="subtitle">Entre com seu usuário e senha</p>
+
+  <div class="field">
+    <label for="usuario">Usuário</label>
+    <input type="text" id="usuario" autocomplete="username" autocapitalize="none">
+  </div>
+
+  <div class="field">
+    <label for="senha">Senha</label>
+    <input type="password" id="senha" autocomplete="current-password">
+  </div>
+
+  <button id="btn">Entrar</button>
+
+  <div class="erro" id="erro"></div>
+
+  <div class="rodape">v32 · Agroplay</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const URL_API = 'https://wexwcnezjadoutyzkbcj.supabase.co';
+  const KEY_API = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ';
+
+  const sb = supabase.createClient(URL_API, KEY_API);
+
+  const inputUsuario = document.getElementById('usuario');
+  const inputSenha = document.getElementById('senha');
+  const btn = document.getElementById('btn');
+  const erro = document.getElementById('erro');
+
+  function mostrarErro(msg) {
+    erro.textContent = msg;
+  }
+
+  function limparErro() {
+    erro.textContent = '';
+  }
+
+  async function entrar() {
+    limparErro();
+
+    const usuario = inputUsuario.value.trim();
+    const senha = inputSenha.value.trim();
+
+    if (!usuario || !senha) {
+      mostrarErro('Preencha usuário e senha');
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Entrando...';
+
+    const { data, error } = await sb
+      .from('admins')
+      .select('id, nome, nivel, ativo')
+      .eq('nome', usuario)
+      .eq('senha', senha)
+      .maybeSingle();
+
+    btn.disabled = false;
+    btn.textContent = 'Entrar';
+
+    if (error) {
+      mostrarErro('Erro ao conectar. Tente novamente.');
+      return;
+    }
+
+    if (!data) {
+      mostrarErro('Usuário ou senha inválidos');
+      return;
+    }
+
+    if (!data.ativo) {
+      mostrarErro('Usuário desativado');
+      return;
+    }
+
+    localStorage.setItem('admin_id', data.id);
+    localStorage.setItem('admin_nome', data.nome);
+    localStorage.setItem('admin_nivel', data.nivel);
+
+    window.location.href = 'home.html';
+  }
+
+  btn.addEventListener('click', entrar);
+
+  inputSenha.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') entrar();
+  });
+
+  inputUsuario.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') inputSenha.focus();
+  });
+</script>
+
+</body>
+</html>
