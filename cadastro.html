@@ -434,6 +434,8 @@ const EV_ID = params.get('ev') || null;
 
 let codigoValido = null;
 let codigoIdValido = null;
+let codigoLoteId = null;
+let codigoEventoId = null;
 let fotoData = null;
 let stream = null;
 let respNome = RESP;
@@ -527,7 +529,7 @@ q('btn-cod').onclick = async function() {
   btn.textContent = 'Verificando...';
   btn.disabled = true;
 
-  const { data, error } = await sb.from('codigos').select('id, codigo, usado, cadastro_id').eq('codigo', cod).maybeSingle();
+  const { data, error } = await sb.from('codigos').select('id, codigo, usado, cadastro_id, lote_id, evento_id').eq('codigo', cod).maybeSingle();
 
   btn.textContent = 'Continuar';
   btn.disabled = false;
@@ -538,6 +540,9 @@ q('btn-cod').onclick = async function() {
 
   codigoValido = data.codigo;
   codigoIdValido = data.id;
+  // Pega lote_id e evento_id do PRÓPRIO código (mais confiável que URL)
+  if (data.lote_id) codigoLoteId = data.lote_id;
+  if (data.evento_id) codigoEventoId = data.evento_id;
   ir('t-dados');
 };
 
@@ -726,15 +731,21 @@ q('btn-salvar').onclick = async function() {
     lote_nome: respNome || null
   };
 
-  // Valida lote_id - se foi removido, ignora
-  if (LOTE_ID) {
-    const { data: loteCheck } = await sb.from('lotes').select('id').eq('id', LOTE_ID).maybeSingle();
-    if (loteCheck) dados.lote_id = LOTE_ID;
+  // Define lote_id: prioriza URL, senao pega do codigo
+  const loteIdFinal = LOTE_ID || codigoLoteId;
+  if (loteIdFinal) {
+    const { data: loteCheck } = await sb.from('lotes').select('id, responsavel').eq('id', loteIdFinal).maybeSingle();
+    if (loteCheck) {
+      dados.lote_id = loteIdFinal;
+      // Tambem garante o lote_nome correto se nao veio na URL
+      if (!dados.lote_nome) dados.lote_nome = loteCheck.responsavel;
+    }
   }
-  // Valida evento_id - se foi removido, ignora
-  if (EV_ID) {
-    const { data: evCheck } = await sb.from('eventos').select('id').eq('id', EV_ID).maybeSingle();
-    if (evCheck) dados.evento_id = EV_ID;
+  // Define evento_id: prioriza URL, senao pega do codigo
+  const evIdFinal = EV_ID || codigoEventoId;
+  if (evIdFinal) {
+    const { data: evCheck } = await sb.from('eventos').select('id').eq('id', evIdFinal).maybeSingle();
+    if (evCheck) dados.evento_id = evIdFinal;
   }
 
   // 1. Cria cadastro
