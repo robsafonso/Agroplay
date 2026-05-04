@@ -16,7 +16,6 @@ font-size: 14px;
 padding-bottom: 40px;
 }
 
-/* HEADER */
 header {
 background: #060a06;
 border-bottom: 2px solid #1e7a35;
@@ -40,477 +39,112 @@ cursor: pointer;
 flex-shrink: 0;
 }
 
-.logo .a {
-background: #0d150d;
-padding: 7px 12px;
-font-size: 16px;
-font-weight: 900;
-color: #fff;
-letter-spacing: 1px;
-}
-
+.logo .a { background: #0d150d; padding: 7px 12px; font-size: 16px; font-weight: 900; color: #fff; letter-spacing: 1px; }
 .logo .a span { color: #2aab47; }
+.logo .v { background: #c9973c; padding: 7px 10px; font-size: 11px; font-weight: 700; color: #fff; letter-spacing: 1px; }
 
-.logo .v {
-background: #c9973c;
-padding: 7px 10px;
-font-size: 11px;
-font-weight: 700;
-color: #fff;
-letter-spacing: 1px;
-}
+.header-acoes { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
 
-.header-acoes {
-display: flex;
-gap: 6px;
-align-items: center;
-flex-wrap: wrap;
-justify-content: flex-end;
-}
-
-/* BOTOES */
-.btn {
-background: #1e7a35;
-color: #fff;
-border: none;
-border-radius: 8px;
-padding: 10px 16px;
-font-size: 13px;
-font-weight: 700;
-cursor: pointer;
-}
+.btn { background: #1e7a35; color: #fff; border: none; border-radius: 8px; padding: 10px 16px; font-size: 13px; font-weight: 700; cursor: pointer; }
 .btn:hover { background: #2aab47; }
 .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-.bto {
-background: transparent;
-color: #2aab47;
-border: 1px solid #2aab47;
-border-radius: 8px;
-padding: 8px 12px;
-font-size: 12px;
-cursor: pointer;
-}
+.bto { background: transparent; color: #2aab47; border: 1px solid #2aab47; border-radius: 8px; padding: 8px 12px; font-size: 12px; cursor: pointer; }
 .bto:hover { background: rgba(42, 171, 71, 0.1); }
 
-.btr {
-background: #c0392b;
-color: #fff;
-border: none;
-border-radius: 8px;
-padding: 8px 12px;
-font-size: 12px;
-cursor: pointer;
-}
+.btr { background: #c0392b; color: #fff; border: none; border-radius: 8px; padding: 8px 12px; font-size: 12px; cursor: pointer; }
 .btr:hover { background: #e74c3c; }
 
-.bty {
-background: #c9973c;
-color: #fff;
-border: none;
-border-radius: 8px;
-padding: 8px 12px;
-font-size: 12px;
-cursor: pointer;
-}
+.bty { background: #c9973c; color: #fff; border: none; border-radius: 8px; padding: 8px 12px; font-size: 12px; cursor: pointer; }
 .bty:hover { background: #e0aa4a; }
 
-/* CONTAINER */
-main {
-padding: 16px;
-max-width: 900px;
-margin: 0 auto;
-}
+main { padding: 16px; max-width: 900px; margin: 0 auto; }
 
-/* STATS */
-.stats {
-display: flex;
-gap: 8px;
-margin-bottom: 16px;
-}
+.stats { display: flex; gap: 8px; margin-bottom: 16px; }
+.stat { background: #090e09; border: 1px solid #1a2a1a; border-radius: 10px; padding: 12px 8px; text-align: center; flex: 1; }
+.stat strong { font-size: 22px; color: #2aab47; display: block; }
+.stat small { font-size: 9px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
 
-.stat {
-background: #090e09;
-border: 1px solid #1a2a1a;
-border-radius: 10px;
-padding: 12px 8px;
-text-align: center;
-flex: 1;
-}
-
-.stat strong {
-font-size: 22px;
-color: #2aab47;
-display: block;
-}
-
-.stat small {
-font-size: 9px;
-color: #555;
-text-transform: uppercase;
-letter-spacing: 1px;
-}
-
-/* ABAS */
-.tabs {
-display: flex;
-gap: 5px;
-margin-bottom: 14px;
-overflow-x: auto;
-padding-bottom: 4px;
-}
+.tabs { display: flex; gap: 5px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 4px; }
 .tabs::-webkit-scrollbar { display: none; }
-
-.tab {
-background: transparent;
-border: 1px solid #333;
-border-radius: 8px;
-padding: 8px 14px;
-color: #555;
-cursor: pointer;
-font-size: 12px;
-white-space: nowrap;
-font-weight: 600;
-}
-
-.tab.on {
-border-color: #2aab47;
-color: #2aab47;
-background: rgba(42, 171, 71, 0.1);
-}
+.tab { background: transparent; border: 1px solid #333; border-radius: 8px; padding: 8px 14px; color: #555; cursor: pointer; font-size: 12px; white-space: nowrap; font-weight: 600; }
+.tab.on { border-color: #2aab47; color: #2aab47; background: rgba(42, 171, 71, 0.1); }
 
 .gone { display: none !important; }
 
-/* CARDS */
-.card {
-background: #090e09;
-border: 1px solid #1a2a1a;
-border-radius: 12px;
-padding: 16px;
-margin-bottom: 12px;
-}
+.empty { text-align: center; padding: 32px; color: #555; font-size: 13px; }
 
-.empty {
-text-align: center;
-padding: 32px;
-color: #555;
-font-size: 13px;
-}
+.busca-bar { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; align-items: center; }
 
-/* BUSCA */
-.busca-bar {
-display: flex;
-gap: 8px;
-margin-bottom: 10px;
-flex-wrap: wrap;
-align-items: center;
-}
-
-/* INPUTS */
-input, textarea, select {
-background: #030503;
-border: 1px solid #1a2a1a;
-border-radius: 8px;
-padding: 10px 12px;
-color: #eee;
-font-size: 13px;
-outline: none;
-width: 100%;
-font-family: inherit;
-}
+input, textarea, select { background: #030503; border: 1px solid #1a2a1a; border-radius: 8px; padding: 10px 12px; color: #eee; font-size: 13px; outline: none; width: 100%; font-family: inherit; }
 input:focus, textarea:focus, select:focus { border-color: #2aab47; }
 textarea { resize: vertical; min-height: 70px; }
 
 .fl { margin-bottom: 10px; }
-.fl label {
-display: block;
-font-size: 10px;
-color: #2aab47;
-letter-spacing: 1px;
-margin-bottom: 4px;
-text-transform: uppercase;
-font-weight: 700;
-}
+.fl label { display: block; font-size: 10px; color: #2aab47; letter-spacing: 1px; margin-bottom: 4px; text-transform: uppercase; font-weight: 700; }
 
-.g2 {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 10px;
-}
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
-/* TABELA */
-.tbl {
-overflow-x: auto;
-border: 1px solid #1a2a1a;
-border-radius: 10px;
-}
-
-table {
-width: 100%;
-border-collapse: collapse;
-font-size: 13px;
-}
-
-th {
-padding: 10px 8px;
-text-align: left;
-background: #060a06;
-color: #555;
-font-size: 9px;
-text-transform: uppercase;
-letter-spacing: 1px;
-border-bottom: 1px solid #1a2a1a;
-font-weight: 700;
-}
-
-td {
-padding: 10px 8px;
-border-bottom: 1px solid #111;
-color: #bbb;
-}
-
+.tbl { overflow-x: auto; border: 1px solid #1a2a1a; border-radius: 10px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { padding: 10px 8px; text-align: left; background: #060a06; color: #555; font-size: 9px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #1a2a1a; font-weight: 700; }
+td { padding: 10px 8px; border-bottom: 1px solid #111; color: #bbb; }
 tr:last-child td { border-bottom: none; }
 
-/* BADGES */
-.badge {
-padding: 3px 8px;
-border-radius: 20px;
-font-size: 10px;
-color: #fff;
-font-weight: 700;
-display: inline-block;
-}
-
+.badge { padding: 3px 8px; border-radius: 20px; font-size: 10px; color: #fff; font-weight: 700; display: inline-block; }
 .pb { background: #b8860b; }
 .ab { background: #1e7a35; }
 .rb { background: #c0392b; }
 
-.nlink {
-color: #fff;
-font-weight: 700;
-cursor: pointer;
-text-decoration: underline;
-text-decoration-color: #2aab47;
-}
+.nlink { color: #fff; font-weight: 700; cursor: pointer; text-decoration: underline; text-decoration-color: #2aab47; }
 
-/* MODAL */
-.ov {
-position: fixed;
-inset: 0;
-background: rgba(0, 0, 0, 0.85);
-z-index: 100;
-display: none;
-align-items: flex-end;
-justify-content: center;
-}
+.ov { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); z-index: 100; display: none; align-items: flex-end; justify-content: center; }
 .ov.on { display: flex; }
 .ovc { align-items: center !important; }
 
-.mod {
-background: #090e09;
-border-radius: 20px 20px 0 0;
-padding: 20px;
-width: 100%;
-max-height: 90vh;
-overflow-y: auto;
-border: 1px solid #1a2a1a;
-}
+.mod { background: #090e09; border-radius: 20px 20px 0 0; padding: 20px; width: 100%; max-height: 90vh; overflow-y: auto; border: 1px solid #1a2a1a; }
+.ovc .mod { border-radius: 20px; max-width: 420px; margin: 20px; }
 
-.ovc .mod {
-border-radius: 20px;
-max-width: 420px;
-margin: 20px;
-}
+.mod-titulo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.mod-titulo h3 { font-size: 16px; font-weight: 700; color: #fff; }
+.mod-fechar { background: transparent; color: #2aab47; border: 1px solid #2aab47; border-radius: 8px; padding: 6px 12px; font-size: 12px; cursor: pointer; }
 
-.mod-titulo {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 14px;
-}
+.perfil-cabec { text-align: center; margin-bottom: 18px; }
+.perfil-foto { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #2aab47; margin: 0 auto 10px; display: block; cursor: pointer; }
+.perfil-inicial { width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 28px; color: #fff; font-weight: 700; }
+.perfil-nome { font-size: 17px; font-weight: 700; color: #fff; }
+.perfil-lote { font-size: 11px; color: #0891b2; margin-top: 6px; }
 
-.mod-titulo h3 {
-font-size: 16px;
-font-weight: 700;
-color: #fff;
-}
+.prow { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #111; font-size: 13px; }
+.prow span:first-child { color: #555; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
+.prow span:last-child { color: #fff; font-weight: 600; text-align: right; max-width: 60%; word-break: break-word; }
 
-.mod-fechar {
-background: transparent;
-color: #2aab47;
-border: 1px solid #2aab47;
-border-radius: 8px;
-padding: 6px 12px;
-font-size: 12px;
-cursor: pointer;
-}
+.foto-wrap { text-align: center; margin-bottom: 8px; }
+.video-circ { width: 120px; height: 120px; border-radius: 50%; overflow: hidden; border: 2px solid #1a2a1a; margin: 0 auto 8px; }
+.video-circ video { width: 100%; height: 100%; object-fit: cover; }
+.foto-prev { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 2px solid #2aab47; margin: 0 auto 8px; display: block; }
 
-/* PERFIL */
-.perfil-cabec {
-text-align: center;
-margin-bottom: 18px;
-}
+.codt { font-family: monospace; font-size: 24px; font-weight: 900; color: #fff; letter-spacing: 4px; margin: 8px 0 12px; text-align: center; }
+.msgt { font-size: 12px; color: #aaa; line-height: 1.7; background: #030503; border-radius: 8px; padding: 10px; margin-bottom: 10px; white-space: pre-wrap; word-break: break-word; border: 1px solid #1a2a1a; }
+.label-pq { font-size: 10px; color: #2aab47; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; font-weight: 700; }
 
-.perfil-foto {
-width: 100px;
-height: 100px;
-border-radius: 50%;
-object-fit: cover;
-border: 3px solid #2aab47;
-margin: 0 auto 10px;
-display: block;
-cursor: pointer;
-}
+.ea { background: rgba(192, 57, 43, 0.15); border: 1px solid #c0392b; color: #e74c3c; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 13px; }
+.ok { background: rgba(42, 171, 71, 0.15); border: 1px solid #2aab47; color: #2aab47; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 13px; }
 
-.perfil-inicial {
-width: 80px;
-height: 80px;
-border-radius: 50%;
-display: flex;
-align-items: center;
-justify-content: center;
-margin: 0 auto 10px;
-font-size: 28px;
-color: #fff;
-font-weight: 700;
-}
+.construcao { text-align: center; padding: 60px 20px; color: #555; }
+.construcao .icone-grande { font-size: 40px; margin-bottom: 12px; }
 
-.perfil-nome {
-font-size: 17px;
-font-weight: 700;
-color: #fff;
-}
+.ev-card { background: #090e09; border: 1px solid #1a2a1a; border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+.ev-card-nome { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.ev-card-info { font-size: 12px; color: #888; line-height: 1.6; margin-bottom: 10px; }
+.ev-card-acoes { display: flex; gap: 6px; flex-wrap: wrap; }
 
-.perfil-lote {
-font-size: 11px;
-color: #0891b2;
-margin-top: 6px;
-}
-
-.prow {
-display: flex;
-justify-content: space-between;
-padding: 10px 0;
-border-bottom: 1px solid #111;
-font-size: 13px;
-}
-
-.prow span:first-child {
-color: #555;
-font-size: 11px;
-text-transform: uppercase;
-letter-spacing: 1px;
-}
-
-.prow span:last-child {
-color: #fff;
-font-weight: 600;
-text-align: right;
-max-width: 60%;
-word-break: break-word;
-}
-
-/* CAMERA */
-.foto-wrap {
-text-align: center;
-margin-bottom: 8px;
-}
-
-.video-circ {
-width: 120px;
-height: 120px;
-border-radius: 50%;
-overflow: hidden;
-border: 2px solid #1a2a1a;
-margin: 0 auto 8px;
-}
-
-.video-circ video {
-width: 100%;
-height: 100%;
-object-fit: cover;
-}
-
-.foto-prev {
-width: 120px;
-height: 120px;
-border-radius: 50%;
-object-fit: cover;
-border: 2px solid #2aab47;
-margin: 0 auto 8px;
-display: block;
-}
-
-/* CODIGO E MENSAGEM */
-.codt {
-font-family: monospace;
-font-size: 24px;
-font-weight: 900;
-color: #fff;
-letter-spacing: 4px;
-margin: 8px 0 12px;
-text-align: center;
-}
-
-.msgt {
-font-size: 12px;
-color: #aaa;
-line-height: 1.7;
-background: #030503;
-border-radius: 8px;
-padding: 10px;
-margin-bottom: 10px;
-white-space: pre-wrap;
-word-break: break-word;
-border: 1px solid #1a2a1a;
-}
-
-.label-pq {
-font-size: 10px;
-color: #2aab47;
-text-transform: uppercase;
-letter-spacing: 1px;
-margin-bottom: 4px;
-font-weight: 700;
-}
-
-/* ALERTAS */
-.ea {
-background: rgba(192, 57, 43, 0.15);
-border: 1px solid #c0392b;
-color: #e74c3c;
-padding: 10px;
-border-radius: 8px;
-margin-bottom: 10px;
-font-size: 13px;
-}
-
-.ok {
-background: rgba(42, 171, 71, 0.15);
-border: 1px solid #2aab47;
-color: #2aab47;
-padding: 10px;
-border-radius: 8px;
-margin-bottom: 10px;
-font-size: 13px;
-}
-
-.construcao {
-text-align: center;
-padding: 60px 20px;
-color: #555;
-}
-
-.construcao .icone-grande {
-font-size: 40px;
-margin-bottom: 12px;
-}
+.topo-acoes { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
+.topo-acoes h2 { font-size: 16px; color: #fff; }
 </style>
 
 </head>
 <body>
-
-<!-- HEADER -->
 
 <header>
   <div class="logo" onclick="window.location.href='home.html'">
@@ -525,12 +159,7 @@ margin-bottom: 12px;
 </header>
 
 <main>
-
-  <!-- ESTATISTICAS -->
-
   <div class="stats" id="stats"></div>
-
-  <!-- ABAS -->
 
   <div class="tabs">
     <button class="tab on" data-aba="cadastros">Cadastros</button>
@@ -539,8 +168,6 @@ margin-bottom: 12px;
     <button class="tab" data-aba="lotes">Lotes</button>
     <button class="tab" data-aba="lista">Lista</button>
   </div>
-
-  <!-- ABA: CADASTROS -->
 
   <section id="aba-cadastros">
     <div class="busca-bar">
@@ -552,45 +179,26 @@ margin-bottom: 12px;
     <div id="tabelaCadastros"></div>
   </section>
 
-  <!-- ABA: EVENTOS -->
-
   <section id="aba-eventos" class="gone">
-    <div class="construcao">
-      <div class="icone-grande">🚧</div>
-      <div>Em construção</div>
+    <div class="topo-acoes">
+      <h2>Eventos</h2>
+      <button class="btn" id="btnNovoEvento">+ Criar evento</button>
     </div>
+    <div id="listaEventos"></div>
   </section>
-
-  <!-- ABA: CODIGOS -->
 
   <section id="aba-codigos" class="gone">
-    <div class="construcao">
-      <div class="icone-grande">🚧</div>
-      <div>Em construção</div>
-    </div>
+    <div class="construcao"><div class="icone-grande">🚧</div><div>Em construção</div></div>
   </section>
-
-  <!-- ABA: LOTES -->
 
   <section id="aba-lotes" class="gone">
-    <div class="construcao">
-      <div class="icone-grande">🚧</div>
-      <div>Em construção</div>
-    </div>
+    <div class="construcao"><div class="icone-grande">🚧</div><div>Em construção</div></div>
   </section>
-
-  <!-- ABA: LISTA -->
 
   <section id="aba-lista" class="gone">
-    <div class="construcao">
-      <div class="icone-grande">🚧</div>
-      <div>Em construção</div>
-    </div>
+    <div class="construcao"><div class="icone-grande">🚧</div><div>Em construção</div></div>
   </section>
-
 </main>
-
-<!-- MODAL: NOVO CADASTRO -->
 
 <div class="ov" id="modalNovoCad">
   <div class="mod">
@@ -599,90 +207,74 @@ margin-bottom: 12px;
       <button class="mod-fechar" onclick="fecharModal('modalNovoCad')">X</button>
     </div>
     <div id="alertaNovoCad"></div>
-
-```
-<div class="fl"><label>Nome</label><input id="ncNome" placeholder="Nome completo"></div>
-
-<div class="g2">
-  <div class="fl"><label>CPF</label><input id="ncCpf" placeholder="000.000.000-00" inputmode="numeric"></div>
-  <div class="fl"><label>RG</label><input id="ncRg" placeholder="RG" inputmode="numeric"></div>
-</div>
-
-<div class="fl"><label>E-mail</label><input id="ncEmail" type="email" placeholder="email@email.com"></div>
-
-<div class="g2">
-  <div class="fl"><label>Telefone</label><input id="ncTel" placeholder="(00) 00000-0000" inputmode="numeric"></div>
-  <div class="fl"><label>Nascimento</label><input id="ncNasc" type="date"></div>
-</div>
-
-<div class="fl">
-  <label>Setor</label>
-  <select id="ncSetor">
-    <option value="Convidado">Convidado</option>
-    <option value="Artista">Artista</option>
-    <option value="Influenciador">Influenciador</option>
-    <option value="Diretoria">Diretoria</option>
-    <option value="Colaborador">Colaborador</option>
-  </select>
-</div>
-
-<div class="fl">
-  <label>Empresa</label>
-  <select id="ncEmpresa" onchange="atualizarCargosCadastro()">
-    <option value="">Selecione...</option>
-    <optgroup label="Grupo Agroplay">
-      <option value="Ana Castela">Ana Castela</option>
-      <option value="Leo e Raphael">Leo e Raphael</option>
-      <option value="Country Beat">Country Beat</option>
-      <option value="Muierada">Muierada</option>
-      <option value="Francisco">Francisco</option>
-      <option value="Julia e Rafaela">Julia e Rafaela</option>
-      <option value="Julya e Maryana">Julya e Maryana</option>
-      <option value="Duda Bertelli">Duda Bertelli</option>
-      <option value="Kamila e Kavic">Kamila e Kavic</option>
-      <option value="Escritorio Agroplay">Escritório Agroplay</option>
-    </optgroup>
-    <option value="outra">Outra empresa</option>
-  </select>
-</div>
-
-<div class="fl gone" id="ncEmpresaOutraWrap">
-  <label>Nome da empresa</label>
-  <input id="ncEmpresaOutra" placeholder="Digite o nome">
-</div>
-
-<div class="fl">
-  <label>Função</label>
-  <select id="ncCargo"><option value="">Selecione a empresa primeiro...</option></select>
-</div>
-
-<div class="fl gone" id="ncCargoOutroWrap">
-  <label>Qual função?</label>
-  <input id="ncCargoOutro" placeholder="Digite sua função">
-</div>
-
-<div class="fl">
-  <label>Foto (opcional)</label>
-  <div class="foto-wrap">
-    <div class="video-circ gone" id="ncVideoWrap"><video id="ncVideo" autoplay playsinline muted></video></div>
-    <canvas id="ncCanvas" style="display:none"></canvas>
-    <img class="foto-prev gone" id="ncFotoPrev"/>
-    <div style="display:flex;gap:8px;justify-content:center">
-      <button type="button" class="bto" id="ncBtnAbrirCam">Abrir câmera</button>
-      <button type="button" class="bto gone" id="ncBtnTirarFoto">Tirar foto</button>
-      <button type="button" class="bto gone" id="ncBtnNovaFoto">Nova foto</button>
+    <div class="fl"><label>Nome</label><input id="ncNome" placeholder="Nome completo"></div>
+    <div class="g2">
+      <div class="fl"><label>CPF</label><input id="ncCpf" placeholder="000.000.000-00"></div>
+      <div class="fl"><label>RG</label><input id="ncRg" placeholder="RG"></div>
     </div>
+    <div class="fl"><label>E-mail</label><input id="ncEmail" type="email" placeholder="email@email.com"></div>
+    <div class="g2">
+      <div class="fl"><label>Telefone</label><input id="ncTel" placeholder="(00) 00000-0000"></div>
+      <div class="fl"><label>Nascimento</label><input id="ncNasc" type="date"></div>
+    </div>
+    <div class="fl">
+      <label>Setor</label>
+      <select id="ncSetor">
+        <option value="Convidado">Convidado</option>
+        <option value="Artista">Artista</option>
+        <option value="Influenciador">Influenciador</option>
+        <option value="Diretoria">Diretoria</option>
+        <option value="Colaborador">Colaborador</option>
+      </select>
+    </div>
+    <div class="fl">
+      <label>Empresa</label>
+      <select id="ncEmpresa" onchange="atualizarCargosCadastro()">
+        <option value="">Selecione...</option>
+        <optgroup label="Grupo Agroplay">
+          <option value="Ana Castela">Ana Castela</option>
+          <option value="Leo e Raphael">Leo e Raphael</option>
+          <option value="Country Beat">Country Beat</option>
+          <option value="Muierada">Muierada</option>
+          <option value="Francisco">Francisco</option>
+          <option value="Julia e Rafaela">Julia e Rafaela</option>
+          <option value="Julya e Maryana">Julya e Maryana</option>
+          <option value="Duda Bertelli">Duda Bertelli</option>
+          <option value="Kamila e Kavic">Kamila e Kavic</option>
+          <option value="Escritorio Agroplay">Escritório Agroplay</option>
+        </optgroup>
+        <option value="outra">Outra empresa</option>
+      </select>
+    </div>
+    <div class="fl gone" id="ncEmpresaOutraWrap">
+      <label>Nome da empresa</label>
+      <input id="ncEmpresaOutra" placeholder="Digite o nome">
+    </div>
+    <div class="fl">
+      <label>Função</label>
+      <select id="ncCargo"><option value="">Selecione a empresa primeiro...</option></select>
+    </div>
+    <div class="fl gone" id="ncCargoOutroWrap">
+      <label>Qual função?</label>
+      <input id="ncCargoOutro" placeholder="Digite sua função">
+    </div>
+    <div class="fl">
+      <label>Foto (opcional)</label>
+      <div class="foto-wrap">
+        <div class="video-circ gone" id="ncVideoWrap"><video id="ncVideo" autoplay playsinline muted></video></div>
+        <canvas id="ncCanvas" style="display:none"></canvas>
+        <img class="foto-prev gone" id="ncFotoPrev"/>
+        <div style="display:flex;gap:8px;justify-content:center">
+          <button type="button" class="bto" id="ncBtnAbrirCam">Abrir câmera</button>
+          <button type="button" class="bto gone" id="ncBtnTirarFoto">Tirar foto</button>
+          <button type="button" class="bto gone" id="ncBtnNovaFoto">Nova foto</button>
+        </div>
+      </div>
+    </div>
+    <button class="btn" id="btnSalvarCad" style="width:100%">Salvar cadastro</button>
+    <button class="bto" onclick="fecharModal('modalNovoCad')" style="width:100%;margin-top:8px">Cancelar</button>
   </div>
 </div>
-
-<button class="btn" id="btnSalvarCad" style="width:100%">Salvar cadastro</button>
-<button class="bto" onclick="fecharModal('modalNovoCad')" style="width:100%;margin-top:8px">Cancelar</button>
-```
-
-  </div>
-</div>
-
-<!-- MODAL: LINK CADASTRO -->
 
 <div class="ov ovc" id="modalLinkCad">
   <div class="mod">
@@ -691,27 +283,20 @@ margin-bottom: 12px;
       <button class="mod-fechar" onclick="fecharModal('modalLinkCad')">X</button>
     </div>
     <div id="alertaLinkCad"></div>
-
-```
-<div id="lcForm">
-  <div style="font-size:12px;color:#888;margin-bottom:14px;line-height:1.6">Gera um convite com código único para a pessoa se cadastrar no sistema.</div>
-  <button class="btn" id="btnGerarLink" style="width:100%">Gerar convite de cadastro</button>
-</div>
-
-<div id="lcResult" class="gone">
-  <div class="label-pq">Código</div>
-  <div class="codt" id="lcCodigo"></div>
-  <div class="label-pq">Mensagem</div>
-  <div class="msgt" id="lcMensagem"></div>
-  <button class="btn" id="btnCopiarMsg" style="width:100%">Copiar mensagem</button>
-  <button class="bto" id="btnGerarOutro" style="width:100%;margin-top:8px">Gerar outro</button>
-</div>
-```
-
+    <div id="lcForm">
+      <div style="font-size:12px;color:#888;margin-bottom:14px;line-height:1.6">Gera um convite com código único para a pessoa se cadastrar no sistema.</div>
+      <button class="btn" id="btnGerarLink" style="width:100%">Gerar convite de cadastro</button>
+    </div>
+    <div id="lcResult" class="gone">
+      <div class="label-pq">Código</div>
+      <div class="codt" id="lcCodigo"></div>
+      <div class="label-pq">Mensagem</div>
+      <div class="msgt" id="lcMensagem"></div>
+      <button class="btn" id="btnCopiarMsg" style="width:100%">Copiar mensagem</button>
+      <button class="bto" id="btnGerarOutro" style="width:100%;margin-top:8px">Gerar outro</button>
+    </div>
   </div>
 </div>
-
-<!-- MODAL: PERFIL DA PESSOA -->
 
 <div class="ov" id="modalPerfil">
   <div class="mod">
@@ -720,78 +305,68 @@ margin-bottom: 12px;
       <button class="mod-fechar" onclick="fecharModal('modalPerfil')">Fechar</button>
     </div>
     <div id="perfilConteudo"></div>
-
-```
-<div id="aprovarBox" class="gone" style="margin-top:12px">
-  <div class="label-pq" style="margin-bottom:8px">Aprovação</div>
-  <div style="display:flex;gap:8px">
-    <button class="btn" id="btnAprovar" style="flex:1">Aprovar</button>
-    <button class="btr" id="btnReprovar" style="flex:1">Reprovar</button>
+    <div id="aprovarBox" class="gone" style="margin-top:12px">
+      <div class="label-pq" style="margin-bottom:8px">Aprovação</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn" id="btnAprovar" style="flex:1">Aprovar</button>
+        <button class="btr" id="btnReprovar" style="flex:1">Reprovar</button>
+      </div>
+    </div>
+    <button class="bto" id="btnEditarCargo" style="width:100%;margin-top:12px;border-color:#c9973c;color:#c9973c">Editar empresa / função</button>
+    <div id="editarCargoBox" class="gone" style="margin-top:10px">
+      <div class="fl">
+        <label>Setor</label>
+        <select id="edSetor">
+          <option value="Artista">Artista</option>
+          <option value="Influenciador">Influenciador</option>
+          <option value="Diretoria">Diretoria</option>
+          <option value="Colaborador">Colaborador</option>
+          <option value="Convidado">Convidado</option>
+        </select>
+      </div>
+      <div class="fl">
+        <label>Empresa</label>
+        <select id="edEmpresa" onchange="atualizarCargosEdit()">
+          <option value="">Selecione...</option>
+          <optgroup label="Grupo Agroplay">
+            <option value="Ana Castela">Ana Castela</option>
+            <option value="Leo e Raphael">Leo e Raphael</option>
+            <option value="Country Beat">Country Beat</option>
+            <option value="Muierada">Muierada</option>
+            <option value="Francisco">Francisco</option>
+            <option value="Julia e Rafaela">Julia e Rafaela</option>
+            <option value="Julya e Maryana">Julya e Maryana</option>
+            <option value="Duda Bertelli">Duda Bertelli</option>
+            <option value="Kamila e Kavic">Kamila e Kavic</option>
+            <option value="Escritorio Agroplay">Escritório Agroplay</option>
+          </optgroup>
+          <option value="outra">Outra empresa</option>
+        </select>
+      </div>
+      <div class="fl gone" id="edEmpresaOutraWrap">
+        <label>Nome da empresa</label>
+        <input id="edEmpresaOutra" placeholder="Digite o nome">
+      </div>
+      <div class="fl">
+        <label>Função</label>
+        <select id="edCargo"><option value="">Selecione a empresa primeiro...</option></select>
+      </div>
+      <div class="fl gone" id="edCargoOutroWrap">
+        <label>Qual função?</label>
+        <input id="edCargoOutro" placeholder="Digite sua função">
+      </div>
+      <button class="bty" id="btnSalvarCargo" style="width:100%">Salvar</button>
+    </div>
+    <button class="bto" id="btnAtualizarFoto" style="width:100%;margin-top:8px;border-color:#0891b2;color:#0891b2">Atualizar foto</button>
+    <div id="atualizarFotoBox" class="gone foto-wrap" style="margin-top:10px">
+      <div class="video-circ"><video id="afVideo" autoplay playsinline muted></video></div>
+      <canvas id="afCanvas" style="display:none"></canvas>
+      <button type="button" class="bto" id="btnTirarFotoAf" style="border-color:#0891b2;color:#0891b2">Tirar foto</button>
+    </div>
+    <button class="bto" id="btnCopiarDados" style="width:100%;margin-top:8px">Copiar dados</button>
+    <button class="btr" id="btnExcluirPerfil" style="width:100%;margin-top:8px">Excluir</button>
   </div>
 </div>
-
-<button class="bto" id="btnEditarCargo" style="width:100%;margin-top:12px;border-color:#c9973c;color:#c9973c">Editar empresa / função</button>
-
-<div id="editarCargoBox" class="gone" style="margin-top:10px">
-  <div class="fl">
-    <label>Setor</label>
-    <select id="edSetor">
-      <option value="Artista">Artista</option>
-      <option value="Influenciador">Influenciador</option>
-      <option value="Diretoria">Diretoria</option>
-      <option value="Colaborador">Colaborador</option>
-      <option value="Convidado">Convidado</option>
-    </select>
-  </div>
-  <div class="fl">
-    <label>Empresa</label>
-    <select id="edEmpresa" onchange="atualizarCargosEdit()">
-      <option value="">Selecione...</option>
-      <optgroup label="Grupo Agroplay">
-        <option value="Ana Castela">Ana Castela</option>
-        <option value="Leo e Raphael">Leo e Raphael</option>
-        <option value="Country Beat">Country Beat</option>
-        <option value="Muierada">Muierada</option>
-        <option value="Francisco">Francisco</option>
-        <option value="Julia e Rafaela">Julia e Rafaela</option>
-        <option value="Julya e Maryana">Julya e Maryana</option>
-        <option value="Duda Bertelli">Duda Bertelli</option>
-        <option value="Kamila e Kavic">Kamila e Kavic</option>
-        <option value="Escritorio Agroplay">Escritório Agroplay</option>
-      </optgroup>
-      <option value="outra">Outra empresa</option>
-    </select>
-  </div>
-  <div class="fl gone" id="edEmpresaOutraWrap">
-    <label>Nome da empresa</label>
-    <input id="edEmpresaOutra" placeholder="Digite o nome">
-  </div>
-  <div class="fl">
-    <label>Função</label>
-    <select id="edCargo"><option value="">Selecione a empresa primeiro...</option></select>
-  </div>
-  <div class="fl gone" id="edCargoOutroWrap">
-    <label>Qual função?</label>
-    <input id="edCargoOutro" placeholder="Digite sua função">
-  </div>
-  <button class="bty" id="btnSalvarCargo" style="width:100%">Salvar</button>
-</div>
-
-<button class="bto" id="btnAtualizarFoto" style="width:100%;margin-top:8px;border-color:#0891b2;color:#0891b2">Atualizar foto</button>
-<div id="atualizarFotoBox" class="gone foto-wrap" style="margin-top:10px">
-  <div class="video-circ"><video id="afVideo" autoplay playsinline muted></video></div>
-  <canvas id="afCanvas" style="display:none"></canvas>
-  <button type="button" class="bto" id="btnTirarFotoAf" style="border-color:#0891b2;color:#0891b2">Tirar foto</button>
-</div>
-
-<button class="bto" id="btnCopiarDados" style="width:100%;margin-top:8px">Copiar dados</button>
-<button class="btr" id="btnExcluirPerfil" style="width:100%;margin-top:8px">Excluir</button>
-```
-
-  </div>
-</div>
-
-<!-- MODAL: FOTO GRANDE -->
 
 <div class="ov ovc" id="modalFotoGrande">
   <div style="max-width:90vw;max-height:90vh;text-align:center">
@@ -800,90 +375,75 @@ margin-bottom: 12px;
   </div>
 </div>
 
+<div class="ov" id="modalEvento">
+  <div class="mod">
+    <div class="mod-titulo">
+      <h3 id="modalEventoTitulo">Novo Evento</h3>
+      <button class="mod-fechar" onclick="fecharModal('modalEvento')">X</button>
+    </div>
+    <div id="alertaEvento"></div>
+    <div class="fl"><label>Nome *</label><input id="evNome" placeholder="Nome do evento"></div>
+    <div class="g2">
+      <div class="fl"><label>Data</label><input id="evData" type="date"></div>
+      <div class="fl"><label>Local</label><input id="evLocal" placeholder="Ex: Parque Ney Braga"></div>
+    </div>
+    <div class="g2">
+      <div class="fl"><label>Hora início</label><input id="evHorario" type="time"></div>
+      <div class="fl"><label>Hora fim</label><input id="evHorarioFim" type="time"></div>
+    </div>
+    <div class="fl"><label>Tipo</label>
+      <select id="evTipo">
+        <option value="externo">Externo</option>
+        <option value="interno">Interno</option>
+      </select>
+    </div>
+    <div class="fl"><label>Capacidade</label><input id="evCapacidade" type="number" placeholder="0" min="0"></div>
+    <div class="fl"><label>Link Maps</label><input id="evMaps" placeholder="https://maps.google.com/..."></div>
+    <div class="fl"><label>Atração 1</label><input id="evAtr1" placeholder="Ex: Ana Castela"></div>
+    <div class="fl"><label>Instagram Atração 1</label><input id="evInsta1" placeholder="@perfil"></div>
+    <div class="fl"><label>Atração 2</label><input id="evAtr2" placeholder="Ex: Country Beat"></div>
+    <div class="fl"><label>Instagram Atração 2</label><input id="evInsta2" placeholder="@perfil"></div>
+    <div class="fl"><label>Foto convite (URL)</label><input id="evFoto" placeholder="https://...imagem.jpg"></div>
+    <div class="fl"><label>Descrição</label><textarea id="evDescricao" placeholder="Detalhes do evento..."></textarea></div>
+    <button class="btn" id="btnSalvarEvento" style="width:100%">Salvar</button>
+    <button class="bto" onclick="fecharModal('modalEvento')" style="width:100%;margin-top:8px">Cancelar</button>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-// =======================================
-// CONFIG
-// =======================================
 const SB_URL = 'https://wexwcnezjadoutyzkbcj.supabase.co';
 const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ';
 const sb = supabase.createClient(SB_URL, SB_KEY);
-
 const URL_BASE = window.location.origin + window.location.pathname.replace('gerente.html', '');
 
-// =======================================
-// CHECAR LOGIN
-// =======================================
 const adminData = sessionStorage.getItem('ag_admin');
 if (!adminData) window.location.href = 'index.html';
 const admin = JSON.parse(adminData || '{}');
 
-// =======================================
-// ESTADO
-// =======================================
 const estado = {
-  cadastros: [],
-  eventos: [],
-  lotes: [],
-  perfilAtual: null,
-  filtroEmpresa: 'Todos',
-  fotoNovoCad: null
+  cadastros: [], codigos: [], eventos: [], lotes: [],
+  perfilAtual: null, eventoEditandoId: null,
+  filtroEmpresa: 'Todos', fotoNovoCad: null
 };
 
-// =======================================
-// CARGOS POR EMPRESA
-// =======================================
 const CARGOS_ARTISTA = ['Artista / Cantor', 'Músico / Banda', 'Bailarino / Dançarino', 'Diretor de Palco', 'Produção', 'Técnico de Som', 'Técnico de Luz', 'Fotógrafo', 'Videomaker', 'Camarim', 'Maquiagem', 'Assessoria de Imprensa', 'Comercial / Agenciamento', 'Segurança', 'Motorista / Transfer', 'Road Manager', 'Outro'];
-
 const CARGOS_ESCRITORIO = ['Sócio / Fundador', 'CEO / Presidente', 'CMO / Diretor de Marketing', 'CFO / Diretor Financeiro', 'Diretor Comercial', 'Diretor de Eventos', 'Gerente de Marketing', 'Marketing Digital', 'Publicidade', 'Licenciamento', 'Assessoria de Imprensa', 'Produção de Eventos', 'RH / Recursos Humanos', 'Financeiro / Contabilidade', 'Jurídico', 'Administrativo', 'Secretaria', 'Segurança', 'Outro'];
-
 const CARGOS_OUTRA = ['Presidente / CEO', 'Vice-Presidente', 'Diretor Executivo', 'Diretor Comercial', 'Diretor de Marketing', 'Diretor Financeiro', 'Gerente Geral', 'Gerente Comercial', 'Coordenador', 'Supervisor', 'Analista', 'Consultor', 'Relações Públicas', 'Marketing', 'Comercial / Vendas', 'Financeiro', 'Jurídico', 'RH', 'Administrativo', 'Secretaria', 'Outro'];
-
 const EMPRESAS_FILTRO = ['Todos', 'Ana Castela', 'Leo e Raphael', 'Country Beat', 'Muierada', 'Francisco', 'Julia e Rafaela', 'Julya e Maryana', 'Duda Bertelli', 'Kamila e Kavic', 'Escritorio Agroplay', 'Outras'];
+const COR_SETOR = { Artista: '#7c3aed', Influenciador: '#0891b2', Diretoria: '#b45309', Colaborador: '#1e7a35', Convidado: '#555' };
 
-const COR_SETOR = {
-  Artista: '#7c3aed',
-  Influenciador: '#0891b2',
-  Diretoria: '#b45309',
-  Colaborador: '#1e7a35',
-  Convidado: '#555'
-};
-
-// =======================================
-// HELPERS
-// =======================================
-function escaparHtml(t) {
-  if (!t) return '';
-  return String(t)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;');
-}
-
-function formatarData(iso) {
-  if (!iso) return '';
-  const p = iso.split('-');
-  return p[2] + '/' + p[1] + '/' + p[0];
-}
-
-function abrirModal(id) {
-  document.getElementById(id).classList.add('on');
-}
-
-function fecharModal(id) {
-  document.getElementById(id).classList.remove('on');
-  pararCameras();
-}
+function escaparHtml(t) { if (!t) return ''; return String(t).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;'); }
+function formatarData(iso) { if (!iso) return ''; const p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
+function formatarHora(t) { if (!t) return ''; return t.substring(0, 5); }
+function abrirModal(id) { document.getElementById(id).classList.add('on'); }
+function fecharModal(id) { document.getElementById(id).classList.remove('on'); pararCameras(); }
 
 function copiar(texto, botao, label) {
   const original = label || (botao ? botao.textContent : '');
   navigator.clipboard.writeText(texto).then(() => {
-    if (botao) {
-      botao.textContent = 'Copiado!';
-      setTimeout(() => { botao.textContent = original; }, 1800);
-    }
+    if (botao) { botao.textContent = 'Copiado!'; setTimeout(() => { botao.textContent = original; }, 1800); }
   });
 }
 
@@ -891,31 +451,17 @@ function baixar(conteudo, mime, nome) {
   const blob = new Blob([conteudo], { type: mime });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url;
-  a.download = nome;
-  a.click();
+  a.href = url; a.download = nome; a.click();
 }
 
-// =======================================
-// CAMERAS
-// =======================================
 let streamNovoCad = null;
 let streamAtualizarFoto = null;
 
 function pararCameras() {
-  if (streamNovoCad) {
-    streamNovoCad.getTracks().forEach(t => t.stop());
-    streamNovoCad = null;
-  }
-  if (streamAtualizarFoto) {
-    streamAtualizarFoto.getTracks().forEach(t => t.stop());
-    streamAtualizarFoto = null;
-  }
+  if (streamNovoCad) { streamNovoCad.getTracks().forEach(t => t.stop()); streamNovoCad = null; }
+  if (streamAtualizarFoto) { streamAtualizarFoto.getTracks().forEach(t => t.stop()); streamAtualizarFoto = null; }
 }
 
-// =======================================
-// LOAD: carrega tudo do banco
-// =======================================
 async function carregarTudo() {
   document.getElementById('tabelaCadastros').innerHTML = '<div class="empty">Carregando...</div>';
 
@@ -934,53 +480,35 @@ async function carregarTudo() {
   renderEstatisticas();
   renderFiltroEmpresa();
   renderTabelaCadastros();
+  renderListaEventos();
 }
 
-// =======================================
-// ESTATISTICAS
-// =======================================
 function renderEstatisticas() {
   const totalCadastros = estado.cadastros.length;
   const totalEventos = estado.eventos.length;
-  const codigosLivres = (estado.codigos || []).filter(c => !c.usado).length;
+  const codigosLivres = estado.codigos.filter(c => !c.usado).length;
   const pendentes = estado.cadastros.filter(c => c.status === 'pendente' && c.evento_id).length;
 
-  document.getElementById('stats').innerHTML = `
-    <div class="stat"><strong>${totalCadastros}</strong><small>Cadastros</small></div>
-    <div class="stat"><strong>${totalEventos}</strong><small>Eventos</small></div>
-    <div class="stat"><strong>${pendentes > 0 ? pendentes : codigosLivres}</strong><small>${pendentes > 0 ? 'Pendentes' : 'Códigos'}</small></div>
-  `;
+  document.getElementById('stats').innerHTML =
+    '<div class="stat"><strong>' + totalCadastros + '</strong><small>Cadastros</small></div>' +
+    '<div class="stat"><strong>' + totalEventos + '</strong><small>Eventos</small></div>' +
+    '<div class="stat"><strong>' + (pendentes > 0 ? pendentes : codigosLivres) + '</strong><small>' + (pendentes > 0 ? 'Pendentes' : 'Códigos') + '</small></div>';
 }
 
-// =======================================
-// FILTRO EMPRESA
-// =======================================
 function renderFiltroEmpresa() {
   const sel = document.getElementById('filtroEmpresa');
-  sel.innerHTML = EMPRESAS_FILTRO.map(e =>
-    `<option value="${e}" ${estado.filtroEmpresa === e ? 'selected' : ''}>${e}</option>`
-  ).join('');
-  sel.onchange = (e) => {
-    estado.filtroEmpresa = e.target.value;
-    renderTabelaCadastros();
-  };
+  sel.innerHTML = EMPRESAS_FILTRO.map(e => '<option value="' + e + '"' + (estado.filtroEmpresa === e ? ' selected' : '') + '>' + e + '</option>').join('');
+  sel.onchange = (e) => { estado.filtroEmpresa = e.target.value; renderTabelaCadastros(); };
 }
 
-// =======================================
-// TABELA CADASTROS
-// =======================================
 function renderTabelaCadastros() {
   const busca = document.getElementById('inputBusca').value.toLowerCase();
   const fEmp = estado.filtroEmpresa;
 
   const filtrados = estado.cadastros.filter(c => {
     const emp = c.empresa || '';
-    const matchEmpresa =
-      fEmp === 'Todos' ||
-      (fEmp === 'Outras' ? (!emp || EMPRESAS_FILTRO.indexOf(emp) < 1) : emp === fEmp);
-    const matchBusca = !busca ||
-      (c.nome || '').toLowerCase().includes(busca) ||
-      (c.email || '').toLowerCase().includes(busca);
+    const matchEmpresa = fEmp === 'Todos' || (fEmp === 'Outras' ? (!emp || EMPRESAS_FILTRO.indexOf(emp) < 1) : emp === fEmp);
+    const matchBusca = !busca || (c.nome || '').toLowerCase().includes(busca) || (c.email || '').toLowerCase().includes(busca);
     return matchEmpresa && matchBusca;
   });
 
@@ -993,79 +521,51 @@ function renderTabelaCadastros() {
 
   filtrados.forEach(c => {
     const cor = COR_SETOR[c.setor] || '#555';
-
     let status = '';
     if (c.status === 'aprovado') status = '<span class="badge ab">Aprov</span>';
     else if (c.status === 'reprovado') status = '<span class="badge rb">Reprov</span>';
     else if (c.evento_id) status = '<span class="badge pb">Pend</span>';
+    if (c.lote_nome) status += '<div style="margin-top:4px"><span class="badge" style="background:#0891b2;font-size:9px">' + escaparHtml(c.lote_nome) + '</span></div>';
 
-    if (c.lote_nome) {
-      status += `<div style="margin-top:4px"><span class="badge" style="background:#0891b2;font-size:9px">${escaparHtml(c.lote_nome)}</span></div>`;
-    }
-
-    h += `<tr>
-      <td><span class="nlink" onclick="verPerfil('${c.id}')">${escaparHtml(c.nome)}</span></td>
-      <td><span class="badge" style="background:${cor}">${c.setor || '-'}</span></td>
-      <td>${status || '<span style="color:#444;font-size:11px">—</span>'}</td>
-    </tr>`;
+    h += '<tr>' +
+      '<td><span class="nlink" onclick="verPerfil(\'' + c.id + '\')">' + escaparHtml(c.nome) + '</span></td>' +
+      '<td><span class="badge" style="background:' + cor + '">' + (c.setor || '-') + '</span></td>' +
+      '<td>' + (status || '<span style="color:#444;font-size:11px">—</span>') + '</td>' +
+      '</tr>';
   });
 
   h += '</tbody></table></div>';
   document.getElementById('tabelaCadastros').innerHTML = h;
 }
 
-// =======================================
-// VER PERFIL
-// =======================================
 function verPerfil(id) {
   const c = estado.cadastros.find(x => x.id === id);
   if (!c) return;
   estado.perfilAtual = c;
-
   const cor = COR_SETOR[c.setor] || '#555';
 
   let cabec;
-  if (c.foto_url) {
-    cabec = `<img src="${c.foto_url}" class="perfil-foto" onclick="abrirFotoGrande('${c.id}')">`;
-  } else {
-    cabec = `<div class="perfil-inicial" style="background:${cor}">${(c.nome || '?').charAt(0).toUpperCase()}</div>`;
-  }
+  if (c.foto_url) cabec = '<img src="' + c.foto_url + '" class="perfil-foto" onclick="abrirFotoGrande(\'' + c.id + '\')">';
+  else cabec = '<div class="perfil-inicial" style="background:' + cor + '">' + (c.nome || '?').charAt(0).toUpperCase() + '</div>';
 
-  cabec += `<div class="perfil-nome">${escaparHtml(c.nome)}</div>
-    <span class="badge" style="background:${cor};margin-top:6px">${c.setor || '-'}</span>`;
+  cabec += '<div class="perfil-nome">' + escaparHtml(c.nome) + '</div>' +
+    '<span class="badge" style="background:' + cor + ';margin-top:6px">' + (c.setor || '-') + '</span>';
+  if (c.lote_nome) cabec += '<div class="perfil-lote">Convidado por <b>' + escaparHtml(c.lote_nome) + '</b></div>';
 
-  if (c.lote_nome) {
-    cabec += `<div class="perfil-lote">Convidado por <b>${escaparHtml(c.lote_nome)}</b></div>`;
-  }
-
-  let rows = [
-    ['CPF', c.cpf],
-    ['RG', c.rg],
-    ['Email', c.email],
-    ['Telefone', c.telefone],
-    ['Nascimento', formatarData(c.nascimento)]
-  ];
-
+  let rows = [['CPF', c.cpf], ['RG', c.rg], ['Email', c.email], ['Telefone', c.telefone], ['Nascimento', formatarData(c.nascimento)]];
   if (c.empresa) rows.push(['Empresa', c.empresa]);
   if (c.cargo) rows.push(['Cargo', c.cargo]);
   if (c.status && c.evento_id) rows.push(['Status', c.status]);
 
-  let h = `<div class="perfil-cabec">${cabec}</div>`;
-  rows.forEach(r => {
-    h += `<div class="prow"><span>${r[0]}</span><span>${escaparHtml(r[1] || '-')}</span></div>`;
-  });
+  let h = '<div class="perfil-cabec">' + cabec + '</div>';
+  rows.forEach(r => { h += '<div class="prow"><span>' + r[0] + '</span><span>' + escaparHtml(r[1] || '-') + '</span></div>'; });
 
   document.getElementById('perfilConteudo').innerHTML = h;
-
-  // Aprovar box
   document.getElementById('aprovarBox').classList.toggle('gone', c.status !== 'pendente');
-
-  // Reset
   document.getElementById('editarCargoBox').classList.add('gone');
   document.getElementById('atualizarFotoBox').classList.add('gone');
   document.getElementById('btnEditarCargo').textContent = 'Editar empresa / função';
   document.getElementById('btnAtualizarFoto').textContent = 'Atualizar foto';
-
   abrirModal('modalPerfil');
 }
 
@@ -1076,69 +576,52 @@ function abrirFotoGrande(id) {
   abrirModal('modalFotoGrande');
 }
 
-// =======================================
-// APROVAR / REPROVAR / EXCLUIR
-// =======================================
 async function aprovarPerfil() {
-  const c = estado.perfilAtual;
-  if (!c) return;
+  const c = estado.perfilAtual; if (!c) return;
   await sb.from('cadastros').update({ status: 'aprovado' }).eq('id', c.id);
   c.status = 'aprovado';
   document.getElementById('btnAprovar').textContent = 'Aprovado!';
   setTimeout(() => { document.getElementById('btnAprovar').textContent = 'Aprovar'; }, 1800);
-  renderTabelaCadastros();
-  renderEstatisticas();
+  renderTabelaCadastros(); renderEstatisticas();
 }
 
 async function reprovarPerfil() {
-  const c = estado.perfilAtual;
-  if (!c) return;
+  const c = estado.perfilAtual; if (!c) return;
   await sb.from('cadastros').update({ status: 'reprovado' }).eq('id', c.id);
   c.status = 'reprovado';
-  const msg = `Olá ${c.nome},\n\nSua solicitação não foi confirmada.\nContate o escritório Agroplay.\n\nAgroplay Music · Londrina PR`;
+  const msg = 'Olá ' + c.nome + ',\n\nSua solicitação não foi confirmada.\nContate o escritório Agroplay.\n\nAgroplay Music · Londrina PR';
   copiar(msg, document.getElementById('btnReprovar'), 'Reprovar');
-  renderTabelaCadastros();
-  renderEstatisticas();
+  renderTabelaCadastros(); renderEstatisticas();
 }
 
 async function excluirPerfil() {
-  const c = estado.perfilAtual;
-  if (!c) return;
+  const c = estado.perfilAtual; if (!c) return;
   if (!confirm('Excluir cadastro de ' + c.nome + '?')) return;
   await sb.from('cadastros').delete().eq('id', c.id);
   estado.cadastros = estado.cadastros.filter(x => x.id !== c.id);
   fecharModal('modalPerfil');
-  renderTabelaCadastros();
-  renderEstatisticas();
+  renderTabelaCadastros(); renderEstatisticas();
 }
 
 function copiarDados() {
-  const c = estado.perfilAtual;
-  if (!c) return;
-  let txt = `Nome: ${c.nome}\nCPF: ${c.cpf || '-'}\nRG: ${c.rg || '-'}\nEmail: ${c.email || '-'}\nTelefone: ${c.telefone || '-'}\nNascimento: ${formatarData(c.nascimento) || '-'}\nSetor: ${c.setor || '-'}`;
-  if (c.empresa) txt += `\nEmpresa: ${c.empresa}`;
-  if (c.cargo) txt += `\nCargo: ${c.cargo}`;
+  const c = estado.perfilAtual; if (!c) return;
+  let txt = 'Nome: ' + c.nome + '\nCPF: ' + (c.cpf || '-') + '\nRG: ' + (c.rg || '-') + '\nEmail: ' + (c.email || '-') + '\nTelefone: ' + (c.telefone || '-') + '\nNascimento: ' + (formatarData(c.nascimento) || '-') + '\nSetor: ' + (c.setor || '-');
+  if (c.empresa) txt += '\nEmpresa: ' + c.empresa;
+  if (c.cargo) txt += '\nCargo: ' + c.cargo;
   copiar(txt, document.getElementById('btnCopiarDados'), 'Copiar dados');
 }
 
-// =======================================
-// EDITAR EMPRESA/CARGO
-// =======================================
 function toggleEditarCargo() {
   const box = document.getElementById('editarCargoBox');
   const btn = document.getElementById('btnEditarCargo');
-  const c = estado.perfilAtual;
-  if (!c) return;
+  const c = estado.perfilAtual; if (!c) return;
 
   if (box.classList.contains('gone')) {
     box.classList.remove('gone');
     btn.textContent = 'Fechar edição';
-
     document.getElementById('edSetor').value = c.setor || 'Convidado';
-
     const ig = ['Ana Castela', 'Leo e Raphael', 'Country Beat', 'Muierada', 'Francisco', 'Julia e Rafaela', 'Julya e Maryana', 'Duda Bertelli', 'Kamila e Kavic', 'Escritorio Agroplay'];
     const emp = c.empresa || '';
-
     if (ig.includes(emp)) {
       document.getElementById('edEmpresa').value = emp;
       atualizarCargosEdit();
@@ -1157,118 +640,67 @@ function toggleEditarCargo() {
 
 function atualizarCargosEdit() {
   const v = document.getElementById('edEmpresa').value;
-  const w = document.getElementById('edEmpresaOutraWrap');
-  w.classList.toggle('gone', v !== 'outra');
-
-  const lista = v === 'Escritorio Agroplay' ? CARGOS_ESCRITORIO :
-                v === 'outra' ? CARGOS_OUTRA :
-                v ? CARGOS_ARTISTA : [];
-
+  document.getElementById('edEmpresaOutraWrap').classList.toggle('gone', v !== 'outra');
+  const lista = v === 'Escritorio Agroplay' ? CARGOS_ESCRITORIO : v === 'outra' ? CARGOS_OUTRA : v ? CARGOS_ARTISTA : [];
   const sel = document.getElementById('edCargo');
   sel.innerHTML = '';
-  lista.forEach(c => {
-    sel.innerHTML += `<option value="${c === 'Outro' ? 'outro' : c}">${c}</option>`;
-  });
-
+  lista.forEach(c => { sel.innerHTML += '<option value="' + (c === 'Outro' ? 'outro' : c) + '">' + c + '</option>'; });
   document.getElementById('edCargoOutroWrap').classList.add('gone');
-  sel.onchange = function () {
-    document.getElementById('edCargoOutroWrap').classList.toggle('gone', this.value !== 'outro');
-  };
+  sel.onchange = function () { document.getElementById('edCargoOutroWrap').classList.toggle('gone', this.value !== 'outro'); };
 }
 
 async function salvarEdicaoCargo() {
-  const c = estado.perfilAtual;
-  if (!c) return;
-
+  const c = estado.perfilAtual; if (!c) return;
   const empSel = document.getElementById('edEmpresa').value;
   const empresa = empSel === 'outra' ? document.getElementById('edEmpresaOutra').value.trim() : empSel;
-
   const carSel = document.getElementById('edCargo').value;
   const cargo = carSel === 'outro' ? document.getElementById('edCargoOutro').value.trim() : carSel;
-
   const setor = document.getElementById('edSetor').value;
-
   const btn = document.getElementById('btnSalvarCargo');
-  btn.textContent = 'Salvando...';
-  btn.disabled = true;
-
+  btn.textContent = 'Salvando...'; btn.disabled = true;
   await sb.from('cadastros').update({ empresa, cargo, setor }).eq('id', c.id);
-
-  c.empresa = empresa;
-  c.cargo = cargo;
-  c.setor = setor;
-
-  btn.textContent = 'Salvar';
-  btn.disabled = false;
-
+  c.empresa = empresa; c.cargo = cargo; c.setor = setor;
+  btn.textContent = 'Salvar'; btn.disabled = false;
   document.getElementById('editarCargoBox').classList.add('gone');
   document.getElementById('btnEditarCargo').textContent = 'Editar empresa / função';
-
-  verPerfil(c.id);
-  renderTabelaCadastros();
+  verPerfil(c.id); renderTabelaCadastros();
 }
 
-// =======================================
-// ATUALIZAR FOTO
-// =======================================
 function toggleAtualizarFoto() {
   const box = document.getElementById('atualizarFotoBox');
   const btn = document.getElementById('btnAtualizarFoto');
-
   if (box.classList.contains('gone')) {
     box.classList.remove('gone');
     btn.textContent = 'Fechar câmera';
     navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false })
-      .then(s => {
-        streamAtualizarFoto = s;
-        document.getElementById('afVideo').srcObject = s;
-      })
-      .catch(() => {
-        box.classList.add('gone');
-        alert('Câmera indisponível');
-      });
+      .then(s => { streamAtualizarFoto = s; document.getElementById('afVideo').srcObject = s; })
+      .catch(() => { box.classList.add('gone'); alert('Câmera indisponível'); });
   } else {
     box.classList.add('gone');
     btn.textContent = 'Atualizar foto';
-    if (streamAtualizarFoto) {
-      streamAtualizarFoto.getTracks().forEach(t => t.stop());
-      streamAtualizarFoto = null;
-    }
+    if (streamAtualizarFoto) { streamAtualizarFoto.getTracks().forEach(t => t.stop()); streamAtualizarFoto = null; }
   }
 }
 
 async function tirarFotoAtualizar() {
-  const c = estado.perfilAtual;
-  if (!c) return;
-
+  const c = estado.perfilAtual; if (!c) return;
   const v = document.getElementById('afVideo');
   const cv = document.getElementById('afCanvas');
-  cv.width = 200;
-  cv.height = 200;
+  cv.width = 200; cv.height = 200;
   const ctx = cv.getContext('2d');
   const size = Math.min(v.videoWidth || 200, v.videoHeight || 200);
   ctx.drawImage(v, (v.videoWidth - size) / 2, (v.videoHeight - size) / 2, size, size, 0, 0, 200, 200);
-
   const foto = cv.toDataURL('image/jpeg', 0.5);
   await sb.from('cadastros').update({ foto_url: foto }).eq('id', c.id);
-
   c.foto_url = foto;
   document.getElementById('atualizarFotoBox').classList.add('gone');
   document.getElementById('btnAtualizarFoto').textContent = 'Atualizar foto';
-  if (streamAtualizarFoto) {
-    streamAtualizarFoto.getTracks().forEach(t => t.stop());
-    streamAtualizarFoto = null;
-  }
+  if (streamAtualizarFoto) { streamAtualizarFoto.getTracks().forEach(t => t.stop()); streamAtualizarFoto = null; }
   verPerfil(c.id);
 }
 
-// =======================================
-// NOVO CADASTRO
-// =======================================
 function abrirNovoCadastro() {
-  ['ncNome', 'ncCpf', 'ncRg', 'ncEmail', 'ncTel', 'ncNasc'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
+  ['ncNome', 'ncCpf', 'ncRg', 'ncEmail', 'ncTel', 'ncNasc'].forEach(id => { document.getElementById(id).value = ''; });
   document.getElementById('ncSetor').value = 'Convidado';
   document.getElementById('ncEmpresa').selectedIndex = 0;
   document.getElementById('ncCargo').innerHTML = '<option>Selecione a empresa primeiro...</option>';
@@ -1288,21 +720,12 @@ function abrirNovoCadastro() {
 function atualizarCargosCadastro() {
   const v = document.getElementById('ncEmpresa').value;
   document.getElementById('ncEmpresaOutraWrap').classList.toggle('gone', v !== 'outra');
-
-  const lista = v === 'Escritorio Agroplay' ? CARGOS_ESCRITORIO :
-                v === 'outra' ? CARGOS_OUTRA :
-                v ? CARGOS_ARTISTA : [];
-
+  const lista = v === 'Escritorio Agroplay' ? CARGOS_ESCRITORIO : v === 'outra' ? CARGOS_OUTRA : v ? CARGOS_ARTISTA : [];
   const sel = document.getElementById('ncCargo');
   sel.innerHTML = '';
-  lista.forEach(c => {
-    sel.innerHTML += `<option value="${c === 'Outro' ? 'outro' : c}">${c}</option>`;
-  });
-
+  lista.forEach(c => { sel.innerHTML += '<option value="' + (c === 'Outro' ? 'outro' : c) + '">' + c + '</option>'; });
   document.getElementById('ncCargoOutroWrap').classList.add('gone');
-  sel.onchange = function () {
-    document.getElementById('ncCargoOutroWrap').classList.toggle('gone', this.value !== 'outro');
-  };
+  sel.onchange = function () { document.getElementById('ncCargoOutroWrap').classList.toggle('gone', this.value !== 'outro'); };
 }
 
 function abrirCameraNovo() {
@@ -1312,56 +735,38 @@ function abrirCameraNovo() {
   document.getElementById('ncVideoWrap').classList.remove('gone');
   document.getElementById('ncBtnAbrirCam').classList.add('gone');
   document.getElementById('ncBtnTirarFoto').classList.remove('gone');
-
   navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false })
-    .then(s => {
-      streamNovoCad = s;
-      document.getElementById('ncVideo').srcObject = s;
-    })
-    .catch(() => {
-      document.getElementById('alertaNovoCad').innerHTML = '<div class="ea">Câmera indisponível</div>';
-    });
+    .then(s => { streamNovoCad = s; document.getElementById('ncVideo').srcObject = s; })
+    .catch(() => { document.getElementById('alertaNovoCad').innerHTML = '<div class="ea">Câmera indisponível</div>'; });
 }
 
 function tirarFotoNovo() {
   const v = document.getElementById('ncVideo');
   const cv = document.getElementById('ncCanvas');
-  cv.width = 200;
-  cv.height = 200;
+  cv.width = 200; cv.height = 200;
   const ctx = cv.getContext('2d');
   const size = Math.min(v.videoWidth || 200, v.videoHeight || 200);
   ctx.drawImage(v, (v.videoWidth - size) / 2, (v.videoHeight - size) / 2, size, size, 0, 0, 200, 200);
-
   estado.fotoNovoCad = cv.toDataURL('image/jpeg', 0.5);
   document.getElementById('ncFotoPrev').src = estado.fotoNovoCad;
   document.getElementById('ncFotoPrev').classList.remove('gone');
   document.getElementById('ncVideoWrap').classList.add('gone');
   document.getElementById('ncBtnTirarFoto').classList.add('gone');
   document.getElementById('ncBtnNovaFoto').classList.remove('gone');
-
-  if (streamNovoCad) {
-    streamNovoCad.getTracks().forEach(t => t.stop());
-    streamNovoCad = null;
-  }
+  if (streamNovoCad) { streamNovoCad.getTracks().forEach(t => t.stop()); streamNovoCad = null; }
 }
 
 async function salvarCadastro() {
   const nome = document.getElementById('ncNome').value.trim();
   const al = document.getElementById('alertaNovoCad');
   al.innerHTML = '';
-
-  if (!nome) {
-    al.innerHTML = '<div class="ea">Nome obrigatório</div>';
-    return;
-  }
+  if (!nome) { al.innerHTML = '<div class="ea">Nome obrigatório</div>'; return; }
 
   const btn = document.getElementById('btnSalvarCad');
-  btn.textContent = 'Salvando...';
-  btn.disabled = true;
+  btn.textContent = 'Salvando...'; btn.disabled = true;
 
   const empSel = document.getElementById('ncEmpresa').value;
   const empresa = empSel === 'outra' ? document.getElementById('ncEmpresaOutra').value.trim() : empSel;
-
   const carSel = document.getElementById('ncCargo').value;
   const cargo = carSel === 'outro' ? document.getElementById('ncCargoOutro').value.trim() : carSel;
 
@@ -1382,22 +787,14 @@ async function salvarCadastro() {
 
   const { error } = await sb.from('cadastros').insert(dados);
 
-  btn.textContent = 'Salvar cadastro';
-  btn.disabled = false;
-
-  if (error) {
-    al.innerHTML = '<div class="ea">Erro ao salvar: ' + error.message + '</div>';
-    return;
-  }
+  btn.textContent = 'Salvar cadastro'; btn.disabled = false;
+  if (error) { al.innerHTML = '<div class="ea">Erro ao salvar: ' + error.message + '</div>'; return; }
 
   al.innerHTML = '<div class="ok">Cadastro salvo!</div>';
   await carregarTudo();
   setTimeout(() => fecharModal('modalNovoCad'), 1200);
 }
 
-// =======================================
-// LINK DE CADASTRO (consome 1 codigo)
-// =======================================
 function abrirLinkCadastro() {
   document.getElementById('lcResult').classList.add('gone');
   document.getElementById('lcForm').classList.remove('gone');
@@ -1407,103 +804,182 @@ function abrirLinkCadastro() {
 
 async function gerarLinkCadastro() {
   const btn = document.getElementById('btnGerarLink');
-  btn.textContent = 'Gerando...';
-  btn.disabled = true;
+  btn.textContent = 'Gerando...'; btn.disabled = true;
   document.getElementById('alertaLinkCad').innerHTML = '';
 
-  const { data: codigos } = await sb
-    .from('codigos')
-    .select('id, codigo')
-    .eq('usado', false)
-    .is('lote_id', null)
-    .limit(1);
+  const { data: codigos } = await sb.from('codigos').select('id, codigo').eq('usado', false).is('lote_id', null).limit(1);
 
   if (!codigos || !codigos.length) {
     document.getElementById('alertaLinkCad').innerHTML = '<div class="ea">Nenhum código disponível!</div>';
-    btn.textContent = 'Gerar convite de cadastro';
-    btn.disabled = false;
-    return;
+    btn.textContent = 'Gerar convite de cadastro'; btn.disabled = false; return;
   }
 
   const cod = codigos[0];
   await sb.from('codigos').update({ usado: true, usado_em: new Date().toISOString() }).eq('id', cod.id);
 
   const link = URL_BASE + 'cadastro.html?cod=' + cod.codigo + '&resp=' + encodeURIComponent(admin.nome || 'Robson');
-
-  const msg = `AGROPLAY Music 🎵\n\nOlá! Você foi convidado por ${admin.nome || 'Robson'} para fazer parte do nosso sistema.\n\nAcesse o link abaixo e faça seu cadastro:\n${link}\n\nCódigo: ${cod.codigo}\nCódigo intransferível e de uso único.`;
+  const msg = 'AGROPLAY Music 🎵\n\nOlá! Você foi convidado por ' + (admin.nome || 'Robson') + ' para fazer parte do nosso sistema.\n\nAcesse o link abaixo e faça seu cadastro:\n' + link + '\n\nCódigo: ' + cod.codigo + '\nCódigo intransferível e de uso único.';
 
   document.getElementById('lcCodigo').textContent = cod.codigo;
   document.getElementById('lcMensagem').textContent = msg;
   document.getElementById('lcForm').classList.add('gone');
   document.getElementById('lcResult').classList.remove('gone');
 
-  btn.textContent = 'Gerar convite de cadastro';
-  btn.disabled = false;
-
+  btn.textContent = 'Gerar convite de cadastro'; btn.disabled = false;
   carregarTudo();
 }
 
-// =======================================
-// EXPORTAR
-// =======================================
 function dadosExport(arr) {
-  return arr.map(c => [
-    c.nome || '', c.cpf || '', c.rg || '', c.email || '',
-    c.telefone || '', formatarData(c.nascimento),
-    c.setor || '', c.empresa || '', c.cargo || '',
-    c.status || '', c.lote_nome || ''
-  ]);
+  return arr.map(c => [c.nome || '', c.cpf || '', c.rg || '', c.email || '', c.telefone || '', formatarData(c.nascimento), c.setor || '', c.empresa || '', c.cargo || '', c.status || '', c.lote_nome || '']);
 }
 
 function exportarCsv() {
   const cab = 'Nome,CPF,RG,Email,Telefone,Nascimento,Setor,Empresa,Cargo,Status,Convidado por\n';
-  const rows = dadosExport(estado.cadastros).map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+  const rows = dadosExport(estado.cadastros).map(r => r.map(v => '"' + v + '"').join(',')).join('\n');
   baixar(cab + rows, 'text/csv', 'Cadastros.csv');
 }
 
 function exportarXls() {
   const head = ['Nome', 'CPF', 'RG', 'Email', 'Telefone', 'Nascimento', 'Setor', 'Empresa', 'Cargo', 'Status', 'Convidado por'];
-  const headHtml = '<Row>' + head.map(h => `<Cell><Data ss:Type="String">${h}</Data></Cell>`).join('') + '</Row>';
-  const bodyHtml = dadosExport(estado.cadastros).map(r =>
-    '<Row>' + r.map(v => `<Cell><Data ss:Type="String">${String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;')}</Data></Cell>`).join('') + '</Row>'
-  ).join('');
-  const xml = `<?xml version="1.0"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"><Worksheet ss:Name="Cadastros"><Table>${headHtml}${bodyHtml}</Table></Worksheet></Workbook>`;
+  const headHtml = '<Row>' + head.map(h => '<Cell><Data ss:Type="String">' + h + '</Data></Cell>').join('') + '</Row>';
+  const bodyHtml = dadosExport(estado.cadastros).map(r => '<Row>' + r.map(v => '<Cell><Data ss:Type="String">' + String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</Data></Cell>').join('') + '</Row>').join('');
+  const xml = '<?xml version="1.0"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"><Worksheet ss:Name="Cadastros"><Table>' + headHtml + bodyHtml + '</Table></Worksheet></Workbook>';
   baixar(xml, 'application/vnd.ms-excel', 'Cadastros.xls');
 }
 
-// =======================================
-// ABAS
-// =======================================
+function renderListaEventos() {
+  const el = document.getElementById('listaEventos');
+  if (!estado.eventos.length) {
+    el.innerHTML = '<div class="empty">Nenhum evento criado. Toque em + Criar evento.</div>';
+    return;
+  }
+
+  let h = '';
+  estado.eventos.forEach(ev => {
+    const data = formatarData(ev.data);
+    const horaIni = formatarHora(ev.horario);
+    const horaFim = formatarHora(ev.horario_fim);
+    const cadVinc = estado.cadastros.filter(c => c.evento_id === ev.id).length;
+    const tipoBadge = ev.tipo === 'interno' ? '<span class="badge" style="background:#0891b2;font-size:9px;margin-left:6px">INT</span>' : '<span class="badge" style="background:#1f2937;font-size:9px;margin-left:6px">EXT</span>';
+
+    h += '<div class="ev-card">' +
+      '<div class="ev-card-nome">' + escaparHtml(ev.nome) + tipoBadge + '</div>' +
+      '<div class="ev-card-info">';
+
+    if (data) h += '📅 ' + data + (horaIni ? ' às ' + horaIni + (horaFim ? ' - ' + horaFim : '') : '') + '<br>';
+    if (ev.local) h += '📍 ' + escaparHtml(ev.local) + '<br>';
+    if (ev.atracao1) h += '🎵 ' + escaparHtml(ev.atracao1) + (ev.atracao2 ? ' + ' + escaparHtml(ev.atracao2) : '') + '<br>';
+    if (cadVinc > 0) h += '👥 ' + cadVinc + ' cadastro(s) vinculado(s)<br>';
+
+    h += '</div>' +
+      '<div class="ev-card-acoes">' +
+        '<button class="bty" onclick="editarEvento(\'' + ev.id + '\')">Editar</button>' +
+        '<button class="btr" onclick="excluirEvento(\'' + ev.id + '\')">Excluir</button>' +
+      '</div>' +
+    '</div>';
+  });
+
+  el.innerHTML = h;
+}
+
+function abrirNovoEvento() {
+  estado.eventoEditandoId = null;
+  document.getElementById('modalEventoTitulo').textContent = 'Novo Evento';
+  document.getElementById('alertaEvento').innerHTML = '';
+  ['evNome', 'evData', 'evLocal', 'evHorario', 'evHorarioFim', 'evCapacidade', 'evMaps', 'evAtr1', 'evInsta1', 'evAtr2', 'evInsta2', 'evFoto', 'evDescricao'].forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('evTipo').value = 'externo';
+  abrirModal('modalEvento');
+}
+
+function editarEvento(id) {
+  const ev = estado.eventos.find(e => e.id === id);
+  if (!ev) return;
+  estado.eventoEditandoId = id;
+  document.getElementById('modalEventoTitulo').textContent = 'Editar Evento';
+  document.getElementById('alertaEvento').innerHTML = '';
+  document.getElementById('evNome').value = ev.nome || '';
+  document.getElementById('evData').value = ev.data || '';
+  document.getElementById('evLocal').value = ev.local || '';
+  document.getElementById('evHorario').value = ev.horario ? ev.horario.substring(0, 5) : '';
+  document.getElementById('evHorarioFim').value = ev.horario_fim ? ev.horario_fim.substring(0, 5) : '';
+  document.getElementById('evTipo').value = ev.tipo || 'externo';
+  document.getElementById('evCapacidade').value = ev.capacidade || '';
+  document.getElementById('evMaps').value = ev.maps_url || '';
+  document.getElementById('evAtr1').value = ev.atracao1 || '';
+  document.getElementById('evInsta1').value = ev.insta_atr1 || '';
+  document.getElementById('evAtr2').value = ev.atracao2 || '';
+  document.getElementById('evInsta2').value = ev.insta_atr2 || '';
+  document.getElementById('evFoto').value = ev.foto_url || '';
+  document.getElementById('evDescricao').value = ev.descricao || '';
+  abrirModal('modalEvento');
+}
+
+async function salvarEvento() {
+  const nome = document.getElementById('evNome').value.trim();
+  const al = document.getElementById('alertaEvento');
+  al.innerHTML = '';
+  if (!nome) { al.innerHTML = '<div class="ea">Nome obrigatório</div>'; return; }
+
+  const btn = document.getElementById('btnSalvarEvento');
+  btn.textContent = 'Salvando...'; btn.disabled = true;
+
+  const dados = {
+    nome,
+    data: document.getElementById('evData').value || null,
+    local: document.getElementById('evLocal').value.trim() || null,
+    horario: document.getElementById('evHorario').value || null,
+    horario_fim: document.getElementById('evHorarioFim').value || null,
+    tipo: document.getElementById('evTipo').value,
+    capacidade: parseInt(document.getElementById('evCapacidade').value) || 0,
+    maps_url: document.getElementById('evMaps').value.trim() || null,
+    atracao1: document.getElementById('evAtr1').value.trim() || null,
+    insta_atr1: document.getElementById('evInsta1').value.trim() || null,
+    atracao2: document.getElementById('evAtr2').value.trim() || null,
+    insta_atr2: document.getElementById('evInsta2').value.trim() || null,
+    foto_url: document.getElementById('evFoto').value.trim() || null,
+    descricao: document.getElementById('evDescricao').value.trim() || null
+  };
+
+  let resposta;
+  if (estado.eventoEditandoId) resposta = await sb.from('eventos').update(dados).eq('id', estado.eventoEditandoId);
+  else resposta = await sb.from('eventos').insert(dados);
+
+  btn.textContent = 'Salvar'; btn.disabled = false;
+  if (resposta.error) { al.innerHTML = '<div class="ea">Erro ao salvar: ' + resposta.error.message + '</div>'; return; }
+
+  al.innerHTML = '<div class="ok">Evento salvo!</div>';
+  await carregarTudo();
+  setTimeout(() => fecharModal('modalEvento'), 1000);
+}
+
+async function excluirEvento(id) {
+  const ev = estado.eventos.find(e => e.id === id);
+  if (!ev) return;
+  if (!confirm('Excluir o evento "' + ev.nome + '"?\n\nLotes, códigos e orçamento vinculados serão apagados.\nCadastros das pessoas serão mantidos.')) return;
+  const { error } = await sb.from('eventos').delete().eq('id', id);
+  if (error) { alert('Erro ao excluir: ' + error.message); return; }
+  estado.eventos = estado.eventos.filter(e => e.id !== id);
+  estado.cadastros.forEach(c => { if (c.evento_id === id) { c.evento_id = null; c.lote_id = null; c.lote_nome = null; c.validador_id = null; c.validador_nome = null; } });
+  renderListaEventos(); renderEstatisticas(); renderTabelaCadastros();
+}
+
 function trocarAba(nome) {
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.aba === nome));
   document.querySelectorAll('main > section').forEach(s => s.classList.add('gone'));
   document.getElementById('aba-' + nome).classList.remove('gone');
 }
 
-// =======================================
-// EVENT LISTENERS
-// =======================================
-document.querySelectorAll('.tab').forEach(t => {
-  t.addEventListener('click', () => trocarAba(t.dataset.aba));
-});
-
+document.querySelectorAll('.tab').forEach(t => { t.addEventListener('click', () => trocarAba(t.dataset.aba)); });
 document.getElementById('btnAtualizar').addEventListener('click', carregarTudo);
 document.getElementById('btnNovoCad').addEventListener('click', abrirNovoCadastro);
 document.getElementById('btnLinkCad').addEventListener('click', abrirLinkCadastro);
 document.getElementById('btnGerarLink').addEventListener('click', gerarLinkCadastro);
-document.getElementById('btnGerarOutro').addEventListener('click', () => {
-  document.getElementById('lcResult').classList.add('gone');
-  document.getElementById('lcForm').classList.remove('gone');
-});
-document.getElementById('btnCopiarMsg').addEventListener('click', () => {
-  copiar(document.getElementById('lcMensagem').textContent, document.getElementById('btnCopiarMsg'), 'Copiar mensagem');
-});
-
+document.getElementById('btnGerarOutro').addEventListener('click', () => { document.getElementById('lcResult').classList.add('gone'); document.getElementById('lcForm').classList.remove('gone'); });
+document.getElementById('btnCopiarMsg').addEventListener('click', () => { copiar(document.getElementById('lcMensagem').textContent, document.getElementById('btnCopiarMsg'), 'Copiar mensagem'); });
 document.getElementById('btnSalvarCad').addEventListener('click', salvarCadastro);
 document.getElementById('ncBtnAbrirCam').addEventListener('click', abrirCameraNovo);
 document.getElementById('ncBtnTirarFoto').addEventListener('click', tirarFotoNovo);
 document.getElementById('ncBtnNovaFoto').addEventListener('click', abrirCameraNovo);
-
 document.getElementById('btnAprovar').addEventListener('click', aprovarPerfil);
 document.getElementById('btnReprovar').addEventListener('click', reprovarPerfil);
 document.getElementById('btnExcluirPerfil').addEventListener('click', excluirPerfil);
@@ -1512,12 +988,12 @@ document.getElementById('btnEditarCargo').addEventListener('click', toggleEditar
 document.getElementById('btnSalvarCargo').addEventListener('click', salvarEdicaoCargo);
 document.getElementById('btnAtualizarFoto').addEventListener('click', toggleAtualizarFoto);
 document.getElementById('btnTirarFotoAf').addEventListener('click', tirarFotoAtualizar);
-
 document.getElementById('inputBusca').addEventListener('input', renderTabelaCadastros);
 document.getElementById('btnExpCsv').addEventListener('click', exportarCsv);
 document.getElementById('btnExpXls').addEventListener('click', exportarXls);
+document.getElementById('btnNovoEvento').addEventListener('click', abrirNovoEvento);
+document.getElementById('btnSalvarEvento').addEventListener('click', salvarEvento);
 
-// Iniciar
 carregarTudo();
 </script>
 
