@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html>
+<head><meta charset="UTF-8"><title>Teste</title></head>
+<body style="background:#000;color:#fff;font-family:Arial;padding:20px">
+
+<h1>TESTE DE JS</h1>
+
+<div id="r1">teste 1: aguardando...</div>
+<div id="r2">teste 2: aguardando...</div>
+<div id="r3">teste 3: aguardando...</div>
+
+<script>
+document.getElementById('r1').innerHTML='TESTE 1 OK - script inline rodou';
+</script>
+
+<script>
+var x=1;
+var y=2;
+document.getElementById('r2').innerHTML='TESTE 2 OK - segundo script rodou. soma='+(x+y);
+</script>
+
+<script>
+function meuTeste(){
+  document.getElementById('r3').innerHTML='TESTE 3 OK - funcao rodou';
+}
+meuTeste();
+</script>
+
+</body>
+</html>
