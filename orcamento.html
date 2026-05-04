@@ -62,6 +62,8 @@ select,input{width:100%;background:#090e09;border:1px solid #1a2a1a;border-radiu
 <select id="esel"><option value="">Carregando…</option></select>
 
 <div id="einfo"></div>
+<button id="btnTeste" style="background:#ff0;color:#000;border:none;padding:14px;width:100%;font-weight:700;border-radius:8px;margin:10px 0;cursor:pointer">TESTE: ADICIONAR ARTISTA R$1000</button>
+
 <div id="conteudo"></div>
 
 <script>
@@ -93,6 +95,24 @@ function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/<
 </script>
 
 <script>
+document.getElementById('btnTeste').onclick=function(){
+  if(!evAtual){alert('TESTE: selecione um evento primeiro');return;}
+  alert('TESTE 1: vai postar...');
+  var body={evento_id:evAtual.id,categoria:'Artista',item:'TESTE BUTTON',quantidade:1,valor_unitario:1000,valor_total:1000};
+  fetch(SB+'/rest/v1/orcamentos',{
+    method:'POST',
+    headers:{apikey:KY,Authorization:'Bearer '+KY,'Content-Type':'application/json',Prefer:'return=representation'},
+    body:JSON.stringify(body)
+  }).then(function(r){
+    alert('TESTE 2: status='+r.status);
+    return r.text();
+  }).then(function(t){
+    alert('TESTE 3: resposta='+t.substring(0,200));
+  }).catch(function(e){
+    alert('TESTE ERRO: '+e.message);
+  });
+};
+
 fetch(SB+'/rest/v1/eventos?select=id,nome,data,horario,local&order=data.asc',{
   headers:{apikey:KY,Authorization:'Bearer '+KY}
 }).then(function(r){return r.json();}).then(function(d){
