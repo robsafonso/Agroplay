@@ -150,6 +150,7 @@ tr:last-child td { border-bottom: none; }
     <button class="tab" data-aba="codigos">Códigos</button>
     <button class="tab" data-aba="lotes">Lotes</button>
     <button class="tab" data-aba="bilhetes">Bilhetes</button>
+    <button class="tab" data-aba="validadores">Validadores</button>
     <button class="tab" data-aba="lista">Lista</button>
   </div>
 
@@ -188,6 +189,14 @@ tr:last-child td { border-bottom: none; }
       Selecione um evento na aba <b style="color:#2aab47">Eventos</b> e toque em <b style="color:#2aab47">Bilhetes</b>.
     </div>
     <div id="bilhetesConteudo" class="gone"></div>
+  </section>
+
+  <section id="aba-validadores" class="gone">
+    <div class="topo-acoes">
+      <h2>Validadores</h2>
+      <button class="btn" id="btnNovoValidador">+ Novo validador</button>
+    </div>
+    <div id="listaValidadores"></div>
   </section>
 
   <section id="aba-lista" class="gone">
@@ -454,6 +463,22 @@ tr:last-child td { border-bottom: none; }
   </div>
 </div>
 
+<!-- MODAL: NOVO VALIDADOR -->
+
+<div class="ov ovc" id="modalValidador">
+  <div class="mod">
+    <div class="mod-titulo">
+      <h3>Novo Validador</h3>
+      <button class="mod-fechar" onclick="fecharModal('modalValidador')">X</button>
+    </div>
+    <div id="alertaValidador"></div>
+    <div class="fl"><label>Nome do validador *</label><input id="vlNome" placeholder="Ex: João"></div>
+    <div style="font-size:11px;color:#888;margin-bottom:14px;line-height:1.6">Uma senha será gerada automaticamente. No primeiro acesso, ele vai trocar por uma senha pessoal.</div>
+    <button class="btn" id="btnSalvarValidador" style="width:100%">Criar validador</button>
+    <button class="bto" onclick="fecharModal('modalValidador')" style="width:100%;margin-top:8px">Cancelar</button>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
@@ -467,7 +492,7 @@ if (!adminData) window.location.href = 'index.html';
 const admin = JSON.parse(adminData || '{}');
 
 const estado = {
-  cadastros: [], codigos: [], eventos: [], lotes: [],
+  cadastros: [], codigos: [], eventos: [], lotes: [], validadores: [],
   perfilAtual: null, eventoEditandoId: null,
   filtroEmpresa: 'Todos', fotoNovoCad: null,
   listaEvento: null,
@@ -476,7 +501,7 @@ const estado = {
   listaFiltroSetor: 'Todos',
   listaFiltroEmpresa: 'Todas',
   listaFiltroBilhete: 'Todos',
-  bilhetesEvento: null      // qual evento ta sendo mostrado na aba Bilhetes
+  bilhetesEvento: null
 };
 
 const CARGOS_ARTISTA = ['Artista / Cantor', 'Músico / Banda', 'Bailarino / Dançarino', 'Diretor de Palco', 'Produção', 'Técnico de Som', 'Técnico de Luz', 'Fotógrafo', 'Videomaker', 'Camarim', 'Maquiagem', 'Assessoria de Imprensa', 'Comercial / Agenciamento', 'Segurança', 'Motorista / Transfer', 'Road Manager', 'Outro'];
@@ -521,23 +546,26 @@ function pararCameras() {
 async function carregarTudo() {
   document.getElementById('tabelaCadastros').innerHTML = '<div class="empty">Carregando...</div>';
 
-  const [cadResp, codResp, evResp, lotResp] = await Promise.all([
+  const [cadResp, codResp, evResp, lotResp, valResp] = await Promise.all([
     sb.from('cadastros').select('*').order('criado_em', { ascending: false }),
     sb.from('codigos').select('*'),
     sb.from('eventos').select('*').order('data', { ascending: true }),
-    sb.from('lotes').select('*').order('criado_em', { ascending: false })
+    sb.from('lotes').select('*').order('criado_em', { ascending: false }),
+    sb.from('validadores').select('*').order('criado_em', { ascending: false })
   ]);
 
   estado.cadastros = cadResp.data || [];
   estado.codigos = codResp.data || [];
   estado.eventos = evResp.data || [];
   estado.lotes = lotResp.data || [];
+  estado.validadores = valResp.data || [];
 
   renderEstatisticas();
   renderFiltroEmpresa();
   renderTabelaCadastros();
   renderListaEventos();
   renderListaLotes();
+  renderListaValidadores();
 }
 
 function renderEstatisticas() {
@@ -1693,6 +1721,104 @@ async function enviarBilhete(cadastroId, btn) {
   }
 }
 
+// =================
+// VALIDADORES
+// =================
+function renderListaValidadores() {
+  const el = document.getElementById('listaValidadores');
+  if (!estado.validadores.length) {
+    el.innerHTML = '<div class="empty">Nenhum validador cadastrado. Toque em + Novo validador.</div>';
+    return;
+  }
+
+  let h = '';
+  estado.validadores.forEach(v => {
+    // Conta quantas validacoes ele fez
+    const validacoes = estado.cadastros.filter(c => c.validador_id === v.id).length;
+
+    h += '<div class="lt-card">' +
+      '<div class="lt-card-nome">' + escaparHtml(v.nome) + '</div>' +
+      '<div class="lt-card-info">' +
+        '👮 Check-ins realizados: ' + validacoes + '<br>' +
+        (v.primeiro_acesso ? '🔑 Senha padrão (ainda não trocou)' : '✓ Senha pessoal definida') +
+      '</div>' +
+      '<div class="lt-info-block">' +
+        '<div class="titulo">Senha de acesso</div>' +
+        '<div class="valor">' + escaparHtml(v.senha || '-') + '</div>' +
+      '</div>' +
+      '<div class="lt-card-acoes">' +
+        '<button class="bto" onclick="copiarLinkValidador(\'' + v.id + '\', this)" style="font-size:11px;padding:8px 10px">Copiar link</button>' +
+        '<button class="bto" onclick="resetarSenhaValidador(\'' + v.id + '\')" style="font-size:11px;padding:8px 10px;border-color:#c9973c;color:#c9973c">Resetar senha</button>' +
+        '<button class="btr" onclick="excluirValidador(\'' + v.id + '\')" style="font-size:11px;padding:8px 10px">Excluir</button>' +
+      '</div>' +
+    '</div>';
+  });
+  el.innerHTML = h;
+}
+
+function abrirNovoValidador() {
+  document.getElementById('alertaValidador').innerHTML = '';
+  document.getElementById('vlNome').value = '';
+  abrirModal('modalValidador');
+}
+
+function gerarSenhaValidador(nome) {
+  const base = (nome || 'val').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const num = Math.floor(Math.random() * 900 + 100);
+  return base + num;
+}
+
+async function salvarValidador() {
+  const nome = document.getElementById('vlNome').value.trim();
+  const al = document.getElementById('alertaValidador');
+  al.innerHTML = '';
+  if (!nome) { al.innerHTML = '<div class="ea">Nome obrigatório</div>'; return; }
+
+  const btn = document.getElementById('btnSalvarValidador');
+  btn.textContent = 'Criando...'; btn.disabled = true;
+
+  const senha = gerarSenhaValidador(nome);
+  const { error } = await sb.from('validadores').insert({ nome, senha, primeiro_acesso: true });
+
+  btn.textContent = 'Criar validador'; btn.disabled = false;
+  if (error) {
+    al.innerHTML = '<div class="ea">Erro: ' + error.message + (error.message.includes('duplic') ? ' (nome já existe)' : '') + '</div>';
+    return;
+  }
+
+  al.innerHTML = '<div class="ok">Validador criado! Senha: ' + senha + '</div>';
+  await carregarTudo();
+  setTimeout(() => fecharModal('modalValidador'), 1500);
+}
+
+function copiarLinkValidador(valId, btn) {
+  const v = estado.validadores.find(x => x.id === valId);
+  if (!v) return;
+  const link = URL_BASE + 'checkin.html';
+  const msg = 'AGROPLAY Music 🎵\n\nOlá ' + v.nome + '!\n\nVocê foi designado como validador de check-in.\n\nAcesse o app:\n' + link + '\n\n👤 Nome: ' + v.nome + '\n🔑 Senha: ' + v.senha + '\n\n(No primeiro acesso, defina sua senha pessoal.)\n\nAgroplay Music · Londrina PR';
+  copiar(msg, btn, 'Copiar link');
+}
+
+async function resetarSenhaValidador(valId) {
+  const v = estado.validadores.find(x => x.id === valId);
+  if (!v) return;
+  if (!confirm('Resetar a senha de ' + v.nome + '?\n\nUma nova senha padrão será gerada e ele terá que trocar de novo.')) return;
+
+  const novaSenha = gerarSenhaValidador(v.nome);
+  await sb.from('validadores').update({ senha: novaSenha, primeiro_acesso: true }).eq('id', valId);
+  await carregarTudo();
+  alert('Nova senha de ' + v.nome + ': ' + novaSenha);
+}
+
+async function excluirValidador(valId) {
+  const v = estado.validadores.find(x => x.id === valId);
+  if (!v) return;
+  if (!confirm('Excluir validador "' + v.nome + '"?\n\nOs check-ins já feitos por ele serão mantidos no histórico.')) return;
+  const { error } = await sb.from('validadores').delete().eq('id', valId);
+  if (error) { alert('Erro: ' + error.message); return; }
+  await carregarTudo();
+}
+
 function trocarAba(nome) {
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.aba === nome));
   document.querySelectorAll('main > section').forEach(s => s.classList.add('gone'));
@@ -1725,6 +1851,8 @@ document.getElementById('btnNovoEvento').addEventListener('click', abrirNovoEven
 document.getElementById('btnSalvarEvento').addEventListener('click', salvarEvento);
 document.getElementById('btnNovoLote').addEventListener('click', abrirNovoLote);
 document.getElementById('btnSalvarLote').addEventListener('click', salvarLote);
+document.getElementById('btnNovoValidador').addEventListener('click', abrirNovoValidador);
+document.getElementById('btnSalvarValidador').addEventListener('click', salvarValidador);
 document.getElementById('btnCopiarTodosConvites').addEventListener('click', copiarTodosConvites);
 
 carregarTudo();
