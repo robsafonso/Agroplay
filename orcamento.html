@@ -62,8 +62,6 @@ select,input{width:100%;background:#090e09;border:1px solid #1a2a1a;border-radiu
 <select id="esel"><option value="">Carregando…</option></select>
 
 <div id="einfo"></div>
-<button id="btnTeste" style="background:#ff0;color:#000;border:none;padding:14px;width:100%;font-weight:700;border-radius:8px;margin:10px 0;cursor:pointer">TESTE: ADICIONAR ARTISTA R$1000</button>
-
 <div id="conteudo"></div>
 
 <script>
@@ -95,24 +93,6 @@ function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/<
 </script>
 
 <script>
-document.getElementById('btnTeste').onclick=function(){
-  if(!evAtual){alert('TESTE: selecione um evento primeiro');return;}
-  alert('TESTE 1: vai postar...');
-  var body={evento_id:evAtual.id,categoria:'Artista',item:'TESTE BUTTON',quantidade:1,valor_unitario:1000,valor_total:1000};
-  fetch(SB+'/rest/v1/orcamentos',{
-    method:'POST',
-    headers:{apikey:KY,Authorization:'Bearer '+KY,'Content-Type':'application/json',Prefer:'return=representation'},
-    body:JSON.stringify(body)
-  }).then(function(r){
-    alert('TESTE 2: status='+r.status);
-    return r.text();
-  }).then(function(t){
-    alert('TESTE 3: resposta='+t.substring(0,200));
-  }).catch(function(e){
-    alert('TESTE ERRO: '+e.message);
-  });
-};
-
 fetch(SB+'/rest/v1/eventos?select=id,nome,data,horario,local&order=data.asc',{
   headers:{apikey:KY,Authorization:'Bearer '+KY}
 }).then(function(r){return r.json();}).then(function(d){
@@ -244,37 +224,27 @@ function render(){
 
 <script>
 function addIt(cat,cid){
-  if(!evAtual){alert('A. sem evento');return;}
+  if(!evAtual)return;
   var s=document.getElementById('si'+cid);
+  if(!s)return;
   var ni=document.getElementById('sn'+cid);
-  if(!s){alert('B. select '+cid+' nao existe');return;}
   var nome=s.value==='_outro_'?(ni?ni.value.trim():''):s.value;
   var qtdEl=document.getElementById('sq'+cid);
   var valEl=document.getElementById('sv'+cid);
-  if(!qtdEl||!valEl){alert('C. inputs sq/sv nao existem');return;}
+  if(!qtdEl||!valEl)return;
   var qtd=parseFloat(qtdEl.value)||1;
   var val=parseFloat(valEl.value)||0;
-  alert('D. nome='+nome+' qtd='+qtd+' val='+val);
-  if(!nome){alert('E. nome vazio');return;}
-  if(!val||val<=0){alert('F. valor invalido: '+val);return;}
-  alert('G. vai postar pro supabase...');
+  if(!nome){alert('Preencha o item');return;}
+  if(!val||val<=0){alert('Digite o valor');return;}
   var body={evento_id:evAtual.id,categoria:cat,item:nome,quantidade:qtd,valor_unitario:val,valor_total:qtd*val};
   fetch(SB+'/rest/v1/orcamentos',{
     method:'POST',
     headers:{apikey:KY,Authorization:'Bearer '+KY,'Content-Type':'application/json',Prefer:'return=representation'},
     body:JSON.stringify(body)
-  }).then(function(r){
-    alert('H. resposta status='+r.status);
-    return r.json().then(function(d){return {status:r.status,data:d};});
-  }).then(function(o){
-    alert('I. parse OK status='+o.status+' data='+JSON.stringify(o.data).substring(0,150));
-    if(o.status>=200&&o.status<300){
-      if(Array.isArray(o.data)&&o.data[0])itens.push(o.data[0]);
-      render();
-    }else{
-      alert('J. erro Supabase: '+JSON.stringify(o.data));
-    }
-  }).catch(function(e){alert('K. catch: '+e.message);});
+  }).then(function(r){return r.json();}).then(function(d){
+    if(Array.isArray(d)&&d[0])itens.push(d[0]);
+    render();
+  }).catch(function(e){alert('Erro: '+e.message);});
 }
 
 function delIt(id){
