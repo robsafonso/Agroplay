@@ -272,8 +272,8 @@ line-height: 1.7;
   </div>
   <div id="al-cod"></div>
   <div class="fl">
-    <label>Código de acesso</label>
-    <input id="f-cod" placeholder="ABCD1234" maxlength="8" autocapitalize="off" autocomplete="off">
+    <label>Código de acesso (8 dígitos)</label>
+    <input id="f-cod" placeholder="00000000" maxlength="8" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
   </div>
   <button class="btn" id="btn-cod">Continuar</button>
 </div>
@@ -460,7 +460,8 @@ function mTel(el) {
 
 q('f-cpf').oninput = function() { mCPF(this); };
 q('f-tel').oninput = function() { mTel(this); };
-q('f-cod').oninput = function() { this.value = this.value.toUpperCase(); };
+// Aceita só números
+q('f-cod').oninput = function() { this.value = this.value.replace(/\D/g, ''); };
 
 function ir(t) {
   document.querySelectorAll('.tl').forEach(x => x.classList.remove('on'));
@@ -509,16 +510,16 @@ async function carregarInfoTopo() {
 // ETAPA 1: CODIGO
 // ========================
 if (COD_PRE) {
-  q('f-cod').value = COD_PRE.toUpperCase();
+  q('f-cod').value = COD_PRE.replace(/\D/g, '').substring(0, 8);
 }
 
 q('btn-cod').onclick = async function() {
-  const cod = q('f-cod').value.trim().toUpperCase();
+  const cod = q('f-cod').value.trim();
   const al = q('al-cod');
   al.innerHTML = '';
 
-  if (!cod || cod.length < 6) {
-    al.innerHTML = '<div class="ea">Digite o código completo.</div>';
+  if (!/^\d{8}$/.test(cod)) {
+    al.innerHTML = '<div class="ea">O código deve ter 8 dígitos numéricos.</div>';
     return;
   }
 
