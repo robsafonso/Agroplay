@@ -219,7 +219,7 @@ function render(){
   for(var d2=0;d2<dels.length;d2++){
     dels[d2].onclick=function(){delIt(this.getAttribute('data-del'));};
   }
-  document.getElementById('btnPDF').onclick=gerarPDF;
+  document.getElementById('btnPDF').onclick=function(){gerarPDF();};
 }
 </script>
 
