@@ -154,10 +154,17 @@ function carregarItens(){
   document.getElementById('conteudo').innerHTML='<div class="emp">Carregando...</div>';
   fetch(SB+'/rest/v1/orcamentos?evento_id=eq.'+evAtual.id+'&order=categoria.asc,item.asc',{
     headers:{apikey:KY,Authorization:'Bearer '+KY}
-  }).then(function(r){return r.json();}).then(function(d){
+  }).then(function(r){
+    if(!r.ok){
+      return r.text().then(function(t){throw new Error('HTTP '+r.status+': '+t);});
+    }
+    return r.json();
+  }).then(function(d){
     itens=Array.isArray(d)?d:[];
     render();
-  }).catch(function(){document.getElementById('conteudo').innerHTML='<div class="emp">Erro</div>';});
+  }).catch(function(e){
+    document.getElementById('conteudo').innerHTML='<div class="emp" style="color:#c0392b">Erro: '+e.message+'</div>';
+  });
 }
 </script>
 
