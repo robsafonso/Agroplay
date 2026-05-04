@@ -175,7 +175,7 @@ function render(){
     }else{
       for(var y=0;y<its.length;y++){
         var it=its[y];
-        h+='<div class="it"><div class="it-i"><div class="it-n">'+esc(it.item)+'</div><div class="it-d">'+it.quantidade+'x '+fmt(it.valor_unitario)+'</div></div><div class="it-v">'+fmt(it.valor_total)+'</div><button class="it-x" onclick="delIt(\''+it.id+'\')">x</button></div>';
+        h+='<div class="it"><div class="it-i"><div class="it-n">'+esc(it.item)+'</div><div class="it-d">'+it.quantidade+'x '+fmt(it.valor_unitario)+'</div></div><div class="it-v">'+fmt(it.valor_total)+'</div><button class="it-x" data-del="'+it.id+'">x</button></div>';
       }
     }
     h+='</div>';
@@ -188,13 +188,13 @@ function render(){
     h+='</select>';
     h+='<input type="number" id="sq'+cid+'" value="1" step="0.5" class="qtd">';
     h+='<input type="number" id="sv'+cid+'" placeholder="R$" step="0.01" class="vlr">';
-    h+='<button class="add-b" onclick="addIt(\''+esc(cat)+'\',\''+cid+'\')">+</button>';
+    h+='<button class="add-b" data-cat="'+esc(cat)+'" data-cid="'+cid+'">+</button>';
     h+='</div>';
     h+='<input type="text" id="sn'+cid+'" placeholder="Nome do item (Outro)" style="display:none;background:#030503;padding:9px;font-size:12px;width:100%;border:1px solid #1a2a1a;border-radius:8px;color:#eee;margin-top:6px">';
     h+='</div></div>';
   }
   
-  h+='<button class="pdf" onclick="gerarPDF()">Gerar PDF</button>';
+  h+='<button class="pdf">Gerar PDF</button>';
   document.getElementById('conteudo').innerHTML=h;
   
   for(var ci2=0;ci2<cats.length;ci2++){
@@ -206,14 +206,25 @@ function render(){
       };
     })('c'+ci2);
   }
+  
+  // Event delegation pros botoes + e x
+  var cont=document.getElementById('conteudo');
+  cont.onclick=function(e){
+    var t=e.target;
+    if(t.tagName!=='BUTTON')return;
+    var addCat=t.getAttribute('data-cat');
+    var addCid=t.getAttribute('data-cid');
+    var delId=t.getAttribute('data-del');
+    if(addCat&&addCid){addIt(addCat,addCid);return;}
+    if(delId){delIt(delId);return;}
+    if(t.className==='pdf'){gerarPDF();return;}
+  };
 }
 </script>
 
 <script>
 function addIt(cat,cid){
-  alert('1. addIt chamado: cat='+cat+' cid='+cid);
   if(!evAtual){alert('Selecione um evento');return;}
-  alert('2. evAtual OK: '+evAtual.nome);
   var s=document.getElementById('si'+cid);
   var ni=document.getElementById('sn'+cid);
   var nome=s.value==='_outro_'?(ni?ni.value.trim():''):s.value;
@@ -221,7 +232,6 @@ function addIt(cat,cid){
   var val=parseFloat(document.getElementById('sv'+cid).value)||0;
   if(!nome){alert('Preencha o item');return;}
   if(!val||val<=0){alert('Digite o valor');return;}
-  alert('3. vai fazer fetch: nome='+nome+' qtd='+qtd+' val='+val);
   fetch(SB+'/rest/v1/orcamentos',{
     method:'POST',
     headers:{apikey:KY,Authorization:'Bearer '+KY,'Content-Type':'application/json',Prefer:'return=representation'},
