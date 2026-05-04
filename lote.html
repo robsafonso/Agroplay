@@ -295,9 +295,15 @@ async function carregarPainel() {
     eventoLote = ev;
   }
 
-  // Busca os cadastros que se inscreveram pelos convites desse lote
-  const { data: cads } = await sb.from('cadastros').select('*').eq('lote_id', loteAtual.id);
-  cadastrosLote = cads || [];
+  // Busca cadastros do lote: por lote_id OU pelo lote_nome (compatibilidade com cadastros antigos)
+  const { data: cadsId } = await sb.from('cadastros').select('*').eq('lote_id', loteAtual.id);
+  const { data: cadsNome } = await sb.from('cadastros').select('*').eq('lote_nome', loteAtual.responsavel).is('lote_id', null);
+
+  // Junta os 2 sem duplicar
+  const idsVistos = new Set();
+  cadastrosLote = [];
+  (cadsId || []).forEach(c => { if (!idsVistos.has(c.id)) { idsVistos.add(c.id); cadastrosLote.push(c); } });
+  (cadsNome || []).forEach(c => { if (!idsVistos.has(c.id)) { idsVistos.add(c.id); cadastrosLote.push(c); } });
 
   renderStats();
   renderEventoInfo();
