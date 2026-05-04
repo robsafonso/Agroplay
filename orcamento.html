@@ -93,51 +93,36 @@ select:focus,input:focus{border-color:#2aab47}
 </div>
 
 <script>
+// Captura qualquer erro JS na tela
+window.onerror=function(msg,src,line,col,err){
+  var d=document.getElementById('debug');
+  if(d)d.innerHTML='ERRO LINHA '+line+': '+msg;
+  return false;
+};
+
 var SB="https://wexwcnezjadoutyzkbcj.supabase.co";
 var KY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ";
 
 var evAtual=null;
 var itens=[];
 
-// 9 categorias com emojis e itens pré-definidos
-var CATS={
-  "Artista":{
-    emoji:"🎤",
-    itens:["Cachê do artista","Passagem aérea artista","Passagem aérea banda","Hospedagem artista","Hospedagem banda","Translado aeroporto/hotel","Translado hotel/show","Alimentação camarim","Camareira","Hospitality rider"]
-  },
-  "Estrutura Técnica":{
-    emoji:"🎚️",
-    itens:["Sistema de som PA","Sistema monitor","Iluminação","Gerador","Palco montagem/desmontagem","Backline instrumentos","Telão LED","Praticáveis","Casas de força","Cabos extra"]
-  },
-  "Local":{
-    emoji:"📍",
-    itens:["Aluguel do espaço","Banheiro químico","Banheiro PCD","Energia elétrica","Limpeza pré-evento","Limpeza pós-evento","Estacionamento","Alvará bombeiros","Alvará prefeitura"]
-  },
-  "Segurança":{
-    emoji:"👮",
-    itens:["Segurança patrimonial","Segurança ostensiva","Brigadista","Ambulância","Médico plantonista","Bombeiro civil"]
-  },
-  "Equipe/Staff":{
-    emoji:"👥",
-    itens:["Produção local","Portaria/credenciamento","Garçom","Bartender","Copeiro","Fotógrafo","Videomaker","Operador de som","Iluminador","Roadie","Limpeza durante evento"]
-  },
-  "Bebidas":{
-    emoji:"🥃",
-    itens:["Whisky garrafa","Vodca garrafa","Gin garrafa","Licor garrafa","Energético cx","Cerveja cx 24un","Chope barril","Refrigerante cx","Água mineral cx 24un","Água de coco cx","Suco cx","Gelo saco 5kg","Copo descartável pct","Canudo pct"]
-  },
-  "Alimentação":{
-    emoji:"🍽️",
-    itens:["Buffet convidados","Jantar staff","Café da manhã equipe","Lanche fotógrafo","Frutas camarim","Marmita segurança"]
-  },
-  "Divulgação":{
-    emoji:"📣",
-    itens:["Tráfego pago Meta","Tráfego pago Google","Flyers impressão","Banner outdoor","Influenciador","Gráfica geral","Material identidade visual"]
-  },
-  "Administração":{
-    emoji:"💰",
-    itens:["ECAD","IRRF","Contador","Seguro evento","Transporte produção","Combustível","Material escritório","Taxa cartão"]
-  }
-};
+// 9 categorias - lista ordenada (sem chaves acentuadas pra evitar bugs)
+var CATS=[
+  {nome:"Artista",emoji:"🎤",itens:["Cachê do artista","Passagem aérea artista","Passagem aérea banda","Hospedagem artista","Hospedagem banda","Translado aeroporto/hotel","Translado hotel/show","Alimentação camarim","Camareira","Hospitality rider"]},
+  {nome:"Estrutura Tecnica",emoji:"🎚️",itens:["Sistema de som PA","Sistema monitor","Iluminação","Gerador","Palco montagem/desmontagem","Backline instrumentos","Telão LED","Praticáveis","Casas de força","Cabos extra"]},
+  {nome:"Local",emoji:"📍",itens:["Aluguel do espaço","Banheiro químico","Banheiro PCD","Energia elétrica","Limpeza pré-evento","Limpeza pós-evento","Estacionamento","Alvará bombeiros","Alvará prefeitura"]},
+  {nome:"Seguranca",emoji:"👮",itens:["Segurança patrimonial","Segurança ostensiva","Brigadista","Ambulância","Médico plantonista","Bombeiro civil"]},
+  {nome:"Equipe",emoji:"👥",itens:["Produção local","Portaria/credenciamento","Garçom","Bartender","Copeiro","Fotógrafo","Videomaker","Operador de som","Iluminador","Roadie","Limpeza durante evento"]},
+  {nome:"Bebidas",emoji:"🥃",itens:["Whisky garrafa","Vodca garrafa","Gin garrafa","Licor garrafa","Energético cx","Cerveja cx 24un","Chope barril","Refrigerante cx","Água mineral cx 24un","Água de coco cx","Suco cx","Gelo saco 5kg","Copo descartável pct","Canudo pct"]},
+  {nome:"Alimentacao",emoji:"🍽️",itens:["Buffet convidados","Jantar staff","Café da manhã equipe","Lanche fotógrafo","Frutas camarim","Marmita segurança"]},
+  {nome:"Divulgacao",emoji:"📣",itens:["Tráfego pago Meta","Tráfego pago Google","Flyers impressão","Banner outdoor","Influenciador","Gráfica geral","Material identidade visual"]},
+  {nome:"Administracao",emoji:"💰",itens:["ECAD","IRRF","Contador","Seguro evento","Transporte produção","Combustível","Material escritório","Taxa cartão"]}
+];
+
+function getCatObj(nome){
+  for(var i=0;i<CATS.length;i++){if(CATS[i].nome===nome)return CATS[i];}
+  return null;
+}
 
 function dbg(msg){
   var d=document.getElementById('debug');
@@ -243,7 +228,7 @@ function carregarItens(){
 // ---------- Render ----------
 function getCats(){
   // Lista todas as categorias (pré-definidas + as que aparecem nos itens)
-  var cats=Object.keys(CATS).slice();
+  var cats=CATS.map(function(c){return c.nome;});
   itens.forEach(function(it){if(cats.indexOf(it.categoria)<0)cats.push(it.categoria);});
   return cats;
 }
@@ -263,7 +248,8 @@ function renderizar(){
     var ci=itens.filter(function(it){return it.categoria===cat;});
     var ct=ci.reduce(function(s,it){return s+parseFloat(it.valor_total||0);},0);
     var cid="c"+cat.replace(/[^a-z0-9]/gi,"");
-    var emoji=(CATS[cat]&&CATS[cat].emoji)||"📦";
+    var co=getCatObj(cat);
+    var emoji=(co&&co.emoji)||"📦";
     
     h+="<div class='cat-card'>";
     h+="<div class='cat-head'>";
@@ -282,7 +268,7 @@ function renderizar(){
     h+="</div>";
     
     // Área pra adicionar item
-    var opts=(CATS[cat]&&CATS[cat].itens)||[];
+    var opts=(co&&co.itens)||[];
     h+="<div class='add-area'>";
     h+="<div class='add-row'>";
     h+="<select id='si_"+cid+"' onchange='toggleOutro(\""+cid+"\")'>";
@@ -403,8 +389,8 @@ function addCat(){
   if(!inp)return;
   var nome=inp.value.trim();
   if(!nome){alert("Digite o nome da categoria!");return;}
-  if(CATS[nome]){alert("Categoria já existe!");return;}
-  CATS[nome]={emoji:"📦",itens:[]};
+  if(getCatObj(nome)){alert("Categoria já existe!");return;}
+  CATS.push({nome:nome,emoji:"📦",itens:[]});
   inp.value="";
   renderizar();
 }
@@ -461,13 +447,14 @@ h+=”<h2>Orçamento · “+esc(evAtual.nome)+(evAtual.data?” · “+fd(evAtua
 h+=”<div class='totbox'><b>TOTAL ESTIMADO</b><div class='v'>”+fmt(tot)+”</div></div>”;
 
 // Ordenar categorias na mesma ordem do CATS
-var ordemCats=Object.keys(CATS);
+var ordemCats=CATS.map(function(c){return c.nome;});
 Object.keys(cats).forEach(function(c){if(ordemCats.indexOf(c)<0)ordemCats.push(c);});
 
 ordemCats.forEach(function(cat){
 if(!cats[cat]||cats[cat].length===0)return;
 var ct=cats[cat].reduce(function(s,it){return s+parseFloat(it.valor_total||0);},0);
-var emoji=(CATS[cat]&&CATS[cat].emoji)||””;
+var co=getCatObj(cat);
+var emoji=(co&&co.emoji)||””;
 h+=”<h3><span>”+emoji+” “+esc(cat)+”</span><span>”+fmt(ct)+”</span></h3>”;
 h+=”<table><tr><th>Item</th><th>Qtd</th><th>Unit.</th><th>Total</th></tr>”;
 cats[cat].forEach(function(it){
