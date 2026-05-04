@@ -149,6 +149,7 @@ tr:last-child td { border-bottom: none; }
     <button class="tab" data-aba="eventos">Eventos</button>
     <button class="tab" data-aba="codigos">Códigos</button>
     <button class="tab" data-aba="lotes">Lotes</button>
+    <button class="tab" data-aba="bilhetes">Bilhetes</button>
     <button class="tab" data-aba="lista">Lista</button>
   </div>
 
@@ -180,6 +181,13 @@ tr:last-child td { border-bottom: none; }
       <button class="btn" id="btnNovoLote">+ Criar lote</button>
     </div>
     <div id="listaLotes"></div>
+  </section>
+
+  <section id="aba-bilhetes" class="gone">
+    <div id="bilhetesVazio" class="empty">
+      Selecione um evento na aba <b style="color:#2aab47">Eventos</b> e toque em <b style="color:#2aab47">Bilhetes</b>.
+    </div>
+    <div id="bilhetesConteudo" class="gone"></div>
   </section>
 
   <section id="aba-lista" class="gone">
@@ -462,9 +470,10 @@ const estado = {
   cadastros: [], codigos: [], eventos: [], lotes: [],
   perfilAtual: null, eventoEditandoId: null,
   filtroEmpresa: 'Todos', fotoNovoCad: null,
-  listaEvento: null,        // qual evento ta sendo mostrado na aba Lista
-  listaExcluidos: [],       // ids excluidos da lista atual (so visual, nao banco)
-  listaSel: []              // ids selecionados (checkbox)
+  listaEvento: null,
+  listaExcluidos: [],
+  listaSel: [],
+  bilhetesEvento: null      // qual evento ta sendo mostrado na aba Bilhetes
 };
 
 const CARGOS_ARTISTA = ['Artista / Cantor', 'Músico / Banda', 'Bailarino / Dançarino', 'Diretor de Palco', 'Produção', 'Técnico de Som', 'Técnico de Luz', 'Fotógrafo', 'Videomaker', 'Camarim', 'Maquiagem', 'Assessoria de Imprensa', 'Comercial / Agenciamento', 'Segurança', 'Motorista / Transfer', 'Road Manager', 'Outro'];
@@ -900,7 +909,23 @@ function renderListaEventos() {
     if (ev.local) h += '📍 ' + escaparHtml(ev.local) + '<br>';
     if (ev.atracao1) h += '🎵 ' + escaparHtml(ev.atracao1) + (ev.atracao2 ? ' + ' + escaparHtml(ev.atracao2) : '') + '<br>';
     if (cadVinc > 0) h += '👥 ' + cadVinc + ' cadastro(s) vinculado(s)<br>';
-    h += '</div><div class="ev-card-acoes"><button class="btn" onclick="verListaEvento(\'' + ev.id + '\')" style="font-size:11px;padding:8px 10px">Lista</button><button class="bty" onclick="editarEvento(\'' + ev.id + '\')">Editar</button><button class="btr" onclick="excluirEvento(\'' + ev.id + '\')">Excluir</button></div></div>';
+    // Calcula se ja pode abrir bilhetes (7 dias antes do evento ate o dia)
+    let podeBilhetes = false;
+    if (ev.data) {
+      const hoje = new Date();
+      hoje.setHours(0, 0, 0, 0);
+      const dataEv = new Date(ev.data + 'T00:00:00');
+      const diffDias = Math.floor((dataEv - hoje) / (1000 * 60 * 60 * 24));
+      podeBilhetes = diffDias <= 7 && diffDias >= -1; // -1 = aceita 1 dia depois (caso evento tenha rolado mas ainda querendo gerenciar)
+    }
+
+    let botoesAcoes = '<button class="btn" onclick="verListaEvento(\'' + ev.id + '\')" style="font-size:11px;padding:8px 10px">Lista</button>';
+    if (podeBilhetes) {
+      botoesAcoes += '<button class="btn" onclick="verBilhetesEvento(\'' + ev.id + '\')" style="font-size:11px;padding:8px 10px;background:#0891b2">Bilhetes</button>';
+    }
+    botoesAcoes += '<button class="bty" onclick="editarEvento(\'' + ev.id + '\')">Editar</button><button class="btr" onclick="excluirEvento(\'' + ev.id + '\')">Excluir</button>';
+
+    h += '</div><div class="ev-card-acoes">' + botoesAcoes + '</div></div>';
   });
   el.innerHTML = h;
 }
@@ -1399,6 +1424,147 @@ function exportarListaXls() {
   const bodyHtml = dadosListaExport().map(r => '<Row>' + r.map(v => '<Cell><Data ss:Type="String">' + String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</Data></Cell>').join('') + '</Row>').join('');
   const xml = '<?xml version="1.0"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"><Worksheet ss:Name="Lista"><Table>' + headHtml + bodyHtml + '</Table></Worksheet></Workbook>';
   baixar(xml, 'application/vnd.ms-excel', 'Lista_' + estado.listaEvento.nome.replace(/[^a-z0-9]/gi, '_') + '.xls');
+}
+
+// =================
+// BILHETES
+// =================
+function verBilhetesEvento(eventoId) {
+  const ev = estado.eventos.find(e => e.id === eventoId);
+  if (!ev) return;
+  estado.bilhetesEvento = ev;
+  trocarAba('bilhetes');
+  renderBilhetes();
+}
+
+function renderBilhetes() {
+  if (!estado.bilhetesEvento) {
+    document.getElementById('bilhetesVazio').classList.remove('gone');
+    document.getElementById('bilhetesConteudo').classList.add('gone');
+    return;
+  }
+  document.getElementById('bilhetesVazio').classList.add('gone');
+  document.getElementById('bilhetesConteudo').classList.remove('gone');
+
+  const ev = estado.bilhetesEvento;
+  const pessoas = estado.cadastros.filter(c => c.evento_id === ev.id);
+
+  const totalNenv = pessoas.filter(p => !p.bilhete_enviado_em).length;
+  const totalAguard = pessoas.filter(p => p.bilhete_enviado_em && !p.bilhete_confirmado_em).length;
+  const totalConf = pessoas.filter(p => p.bilhete_confirmado_em).length;
+
+  let h = '<div style="margin-bottom:14px">';
+  h += '<div style="font-size:16px;font-weight:700;color:#fff">' + escaparHtml(ev.nome) + '</div>';
+  h += '<div style="font-size:11px;color:#666;margin-top:3px">' + formatarData(ev.data) + ' · ' + escaparHtml(ev.local || '-') + '</div>';
+  h += '</div>';
+
+  // Stats coloridas
+  h += '<div style="display:flex;gap:8px;margin-bottom:14px">';
+  h += '<div style="flex:1;background:#0891b2;border-radius:8px;padding:10px;text-align:center">';
+  h += '<div style="font-size:20px;font-weight:800;color:#fff">' + totalNenv + '</div>';
+  h += '<div style="font-size:9px;color:#fff;text-transform:uppercase;letter-spacing:1px;opacity:0.9">N/Env</div>';
+  h += '</div>';
+  h += '<div style="flex:1;background:#c9973c;border-radius:8px;padding:10px;text-align:center">';
+  h += '<div style="font-size:20px;font-weight:800;color:#fff">' + totalAguard + '</div>';
+  h += '<div style="font-size:9px;color:#fff;text-transform:uppercase;letter-spacing:1px;opacity:0.9">Aguard</div>';
+  h += '</div>';
+  h += '<div style="flex:1;background:#1e7a35;border-radius:8px;padding:10px;text-align:center">';
+  h += '<div style="font-size:20px;font-weight:800;color:#fff">' + totalConf + '</div>';
+  h += '<div style="font-size:9px;color:#fff;text-transform:uppercase;letter-spacing:1px;opacity:0.9">Conf</div>';
+  h += '</div>';
+  h += '</div>';
+
+  // Legenda
+  h += '<div style="background:#0d150d;border:1px solid #1a2a1a;border-radius:8px;padding:8px 10px;margin-bottom:14px;font-size:10px;color:#888;line-height:1.7">';
+  h += '🔵 <b style="color:#0891b2">Azul</b> = Bilhete não enviado · ';
+  h += '🟡 <b style="color:#c9973c">Amarelo</b> = Aguardando confirmação · ';
+  h += '🟢 <b style="color:#1e7a35">Verde</b> = Confirmado pelo convidado';
+  h += '</div>';
+
+  if (!pessoas.length) {
+    h += '<div class="empty">Nenhum convidado vinculado a este evento.</div>';
+    document.getElementById('bilhetesConteudo').innerHTML = h;
+    return;
+  }
+
+  // Ordena: nao enviados primeiro, depois aguardando, depois confirmados
+  const ordenadas = [...pessoas].sort((a, b) => {
+    const ord = (p) => p.bilhete_confirmado_em ? 2 : (p.bilhete_enviado_em ? 1 : 0);
+    return ord(a) - ord(b);
+  });
+
+  ordenadas.forEach(p => {
+    let cor, statusTxt, btnTxt, btnAcao;
+
+    if (p.bilhete_confirmado_em) {
+      cor = '#1e7a35';
+      statusTxt = 'Confirmado';
+      btnTxt = '✓ Confirmado';
+      btnAcao = '';
+    } else if (p.bilhete_enviado_em) {
+      cor = '#c9973c';
+      const dataEnv = new Date(p.bilhete_enviado_em);
+      statusTxt = 'Enviado em ' + dataEnv.toLocaleDateString('pt-BR');
+      btnTxt = 'Reenviar';
+      btnAcao = 'enviarBilhete(\'' + p.id + '\', this)';
+    } else {
+      cor = '#0891b2';
+      statusTxt = 'Não enviado';
+      btnTxt = 'Enviar bilhete';
+      btnAcao = 'enviarBilhete(\'' + p.id + '\', this)';
+    }
+
+    h += '<div style="background:#090e09;border:1px solid #1a2a1a;border-left:4px solid ' + cor + ';border-radius:8px;padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">';
+    h += '<div style="flex:1;min-width:160px">';
+    h += '<div style="font-size:14px;font-weight:700;color:#fff">' + escaparHtml(p.nome) + '</div>';
+    h += '<div style="font-size:10px;color:#666;margin-top:2px">' + escaparHtml(p.empresa || p.setor || '-') + '</div>';
+    h += '<div style="font-size:9px;color:' + cor + ';margin-top:3px;font-weight:700;text-transform:uppercase;letter-spacing:1px">' + statusTxt + '</div>';
+    h += '</div>';
+    if (btnAcao) {
+      h += '<button class="btn" onclick="' + btnAcao + '" style="background:' + cor + ';font-size:11px;padding:8px 12px">' + btnTxt + '</button>';
+    } else {
+      h += '<div style="background:rgba(42,171,71,0.15);color:#2aab47;padding:8px 12px;border-radius:8px;font-size:11px;font-weight:700">' + btnTxt + '</div>';
+    }
+    h += '</div>';
+  });
+
+  document.getElementById('bilhetesConteudo').innerHTML = h;
+}
+
+async function enviarBilhete(cadastroId, btn) {
+  const cad = estado.cadastros.find(c => c.id === cadastroId);
+  if (!cad) return;
+  const ev = estado.bilhetesEvento;
+  if (!ev) return;
+
+  // Marca como enviado no banco
+  const agora = new Date().toISOString();
+  await sb.from('cadastros').update({ bilhete_enviado_em: agora }).eq('id', cadastroId);
+  cad.bilhete_enviado_em = agora;
+
+  // Monta mensagem
+  const linkBilhete = URL_BASE + 'bilhete.html?cad=' + cadastroId + '&ev=' + ev.id;
+  const dataFmt = formatarData(ev.data);
+  const horaIni = formatarHora(ev.horario);
+  const horaFim = formatarHora(ev.horario_fim);
+
+  let detalhes = '';
+  if (dataFmt) detalhes += '\n📅 ' + dataFmt + (horaIni ? ' às ' + horaIni + (horaFim ? ' - ' + horaFim : '') : '');
+  if (ev.local) detalhes += '\n📍 ' + ev.local;
+  if (ev.atracao1) detalhes += '\n🎵 ' + ev.atracao1 + (ev.atracao2 ? ' + ' + ev.atracao2 : '');
+
+  const msg = 'AGROPLAY Music 🎵\n\nOlá ' + cad.nome + '!\n\nSeu bilhete para ' + ev.nome + ' está disponível:' + detalhes + '\n\nAcesse seu bilhete digital com QR Code:\n' + linkBilhete + '\n\nApós receber, confirme o recebimento clicando no botão dentro do bilhete.\n\nAgroplay Music · Londrina PR';
+
+  // Copia pra área de transferência
+  await navigator.clipboard.writeText(msg);
+
+  if (btn) {
+    btn.textContent = '✓ Mensagem copiada!';
+    btn.disabled = true;
+    setTimeout(() => { renderBilhetes(); }, 1500);
+  } else {
+    renderBilhetes();
+  }
 }
 
 function trocarAba(nome) {
