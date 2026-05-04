@@ -1,77 +1,270 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Orcamento</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:#000;color:#fff;font-family:Arial;padding:14px}
-.x{padding:8px;margin:4px 0;background:#222;border-radius:4px;font-size:12px;font-family:monospace;word-break:break-all}
-.ok{background:#0a4;color:#fff}
-.err{background:#a00;color:#fff}
+body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:14px;max-width:480px;margin:0 auto}
+.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #2aab47}
+.logo{display:flex;border:1px solid #1a2a1a;border-radius:10px;overflow:hidden;cursor:pointer}
+.lt{background:#0d150d;padding:7px 12px;font-size:16px;font-weight:900;color:#fff}
+.lt span{color:#2aab47}
+.lv{background:#c9973c;padding:7px 10px;font-size:11px;font-weight:700;color:#000}
+.btn-sair{background:transparent;border:1px solid #c0392b;color:#c0392b;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer}
+h1{font-size:20px;color:#fff;margin-bottom:3px}
+.sub{font-size:12px;color:#888;margin-bottom:14px}
+select,input{width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:12px;color:#eee;font-size:13px;outline:none;margin-bottom:10px;font-family:inherit}
+.lbl{font-size:11px;color:#2aab47;font-weight:700;text-transform:uppercase;margin-bottom:6px;display:block}
+.box{background:#0a1f12;border:1px solid #1e7a35;border-radius:12px;padding:14px;margin:14px 0}
+.box b{color:#2aab47;display:block;font-size:15px;margin-bottom:4px}
+.box span{color:#999;font-size:12px}
+.tot{background:#0a2818;border:2px solid #2aab47;border-radius:14px;padding:18px;margin-bottom:16px;text-align:center}
+.tot-lbl{font-size:11px;color:#888;letter-spacing:2px;margin-bottom:6px}
+.tot-val{font-size:32px;font-weight:900;color:#2aab47}
+.cat{background:#090e09;border:1px solid #1a2a1a;border-radius:12px;margin-bottom:12px;overflow:hidden}
+.cat-h{background:#0d150d;padding:12px 14px;display:flex;justify-content:space-between;align-items:center}
+.cat-n{font-size:14px;font-weight:700;color:#eee}
+.cat-t{font-size:13px;font-weight:700;color:#2aab47}
+.it{padding:10px 14px;border-bottom:1px solid #0a0f0a;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.it-i{flex:1;min-width:0}
+.it-n{font-size:13px;color:#eee}
+.it-d{font-size:10px;color:#666}
+.it-v{font-size:13px;font-weight:700;color:#2aab47}
+.it-x{background:transparent;border:1px solid #c0392b;color:#c0392b;border-radius:6px;padding:4px 9px;font-size:11px;cursor:pointer}
+.add{padding:10px 12px;border-top:1px solid #1a2a1a;background:#070b07}
+.row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px}
+.row select,.row input{margin-bottom:0;background:#030503;padding:9px;font-size:12px}
+.row select{flex:1;min-width:120px}
+.row .qtd{flex:0 0 60px}
+.row .vlr{flex:0 0 90px}
+.add-b{background:#1e7a35;border:none;border-radius:8px;padding:9px 14px;color:#fff;font-size:14px;font-weight:700;cursor:pointer}
+.pdf{width:100%;background:#0891b2;border:none;border-radius:12px;padding:16px;font-size:15px;font-weight:700;color:#fff;cursor:pointer;margin:14px 0 20px}
+.emp{text-align:center;padding:20px 14px;color:#555;font-size:12px}
 </style>
 </head>
 <body>
 
-<h1>DIAGNOSTICO ORCAMENTO</h1>
+<div class="hdr">
+  <div class="logo" onclick="location.href='home.html'">
+    <div class="lt">AGRO<span>PLAY</span></div>
+    <div class="lv">v32</div>
+  </div>
+  <button class="btn-sair" onclick="sessionStorage.removeItem('ag_admin');location.href='index.html'">Sair</button>
+</div>
 
-<div id="p1" class="x">passo 1: HTML carregado (sem JS)</div>
-<div id="p2" class="x">passo 2: aguardando script tag...</div>
-<div id="p3" class="x">passo 3: aguardando vars...</div>
-<div id="p4" class="x">passo 4: aguardando CATS...</div>
-<div id="p5" class="x">passo 5: aguardando funcoes...</div>
-<div id="p6" class="x">passo 6: aguardando fetch...</div>
-<div id="p7" class="x">passo 7: aguardando resposta...</div>
-<div id="p8" class="x">passo 8: aguardando parse...</div>
+<h1>Orcamento</h1>
+<div class="sub">Custos de producao do evento</div>
 
-<script>
-document.getElementById('p2').innerHTML='passo 2: SCRIPT TAG OK';
-document.getElementById('p2').className='x ok';
-</script>
+<label class="lbl">Selecione o evento</label>
+<select id="esel"><option value="">Carregando…</option></select>
+
+<div id="einfo"></div>
+<div id="conteudo"></div>
 
 <script>
 var SB='https://wexwcnezjadoutyzkbcj.supabase.co';
 var KY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ';
-document.getElementById('p3').innerHTML='passo 3: VARS OK (KY len='+KY.length+')';
-document.getElementById('p3').className='x ok';
+var evAtual=null;
+var itens=[];
+var allEvs=[];
 </script>
 
 <script>
 var CATS=[
-['Artista',['Cache','Passagem','Hospedagem']],
-['Estrutura Tecnica',['Som','Luz','Palco']],
-['Local',['Aluguel','Banheiro','Energia']]
+['Artista',['Cache do artista','Passagem aerea','Hospedagem','Translado','Alimentacao camarim','Camareira']],
+['Estrutura Tecnica',['Som PA','Iluminacao','Gerador','Palco','Backline','Telao LED']],
+['Local',['Aluguel espaco','Banheiro quimico','Energia','Limpeza','Estacionamento','Alvara']],
+['Seguranca',['Seguranca patrimonial','Brigadista','Ambulancia','Medico','Bombeiro civil']],
+['Equipe',['Producao','Portaria','Garcom','Bartender','Fotografo','Videomaker','Operador som','Roadie']],
+['Bebidas',['Whisky','Vodca','Gin','Cerveja cx','Chope','Refrigerante','Agua mineral','Gelo','Copo descartavel']],
+['Alimentacao',['Buffet','Jantar staff','Cafe da manha','Lanches','Frutas camarim','Marmita']],
+['Divulgacao',['Trafego pago','Flyers','Banner','Influenciador','Grafica']],
+['Administracao',['ECAD','IRRF','Contador','Seguro','Combustivel','Taxa cartao']]
 ];
-document.getElementById('p4').innerHTML='passo 4: CATS OK ('+CATS.length+' cats)';
-document.getElementById('p4').className='x ok';
 </script>
 
 <script>
-function fmt(v){return 'R$ '+parseFloat(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2});}
+function fmt(v){return 'R$ '+parseFloat(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
 function fd(d){if(!d)return'';var x=d.split('-');return x[2]+'/'+x[1]+'/'+x[0];}
-function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-document.getElementById('p5').innerHTML='passo 5: FUNCOES OK (fmt(100)='+fmt(100)+')';
-document.getElementById('p5').className='x ok';
+function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 </script>
 
 <script>
-document.getElementById('p6').innerHTML='passo 6: chamando fetch...';
-document.getElementById('p6').className='x ok';
-fetch(SB+'/rest/v1/eventos?select=id,nome',{
+fetch(SB+'/rest/v1/eventos?select=id,nome,data,horario,local&order=data.asc',{
   headers:{apikey:KY,Authorization:'Bearer '+KY}
-}).then(function(r){
-  document.getElementById('p7').innerHTML='passo 7: resposta status='+r.status;
-  document.getElementById('p7').className='x ok';
-  return r.json();
-}).then(function(d){
-  document.getElementById('p8').innerHTML='passo 8: PARSE OK - '+(Array.isArray(d)?d.length+' eventos':'erro')+' :: '+JSON.stringify(d).substring(0,150);
-  document.getElementById('p8').className='x ok';
-}).catch(function(e){
-  document.getElementById('p7').innerHTML='passo 7: ERRO - '+e.message;
-  document.getElementById('p7').className='x err';
-});
+}).then(function(r){return r.json();}).then(function(d){
+  if(!Array.isArray(d)){document.getElementById('esel').innerHTML='<option>Erro</option>';return;}
+  allEvs=d;
+  var sel=document.getElementById('esel');
+  var h='<option value="">Selecione...</option>';
+  for(var i=0;i<d.length;i++){
+    h+='<option value="'+d[i].id+'">'+esc(d[i].nome)+' ('+fd(d[i].data)+')</option>';
+  }
+  sel.innerHTML=h;
+  sel.onchange=selEv;
+}).catch(function(){document.getElementById('esel').innerHTML='<option>Erro de conexao</option>';});
+</script>
+
+<script>
+function selEv(){
+  var id=document.getElementById('esel').value;
+  document.getElementById('einfo').innerHTML='';
+  document.getElementById('conteudo').innerHTML='';
+  evAtual=null;
+  if(!id)return;
+  for(var i=0;i<allEvs.length;i++){
+    if(allEvs[i].id===id){evAtual=allEvs[i];break;}
+  }
+  if(!evAtual)return;
+  var info='<div class="box"><b>'+esc(evAtual.nome)+'</b><span>'+fd(evAtual.data);
+  if(evAtual.horario)info+=' as '+evAtual.horario.substring(0,5);
+  if(evAtual.local)info+=' - '+esc(evAtual.local);
+  info+='</span></div>';
+  document.getElementById('einfo').innerHTML=info;
+  carregarItens();
+}
+
+function carregarItens(){
+  if(!evAtual)return;
+  document.getElementById('conteudo').innerHTML='<div class="emp">Carregando...</div>';
+  fetch(SB+'/rest/v1/orcamentos?evento_id=eq.'+evAtual.id+'&order=categoria.asc,item.asc',{
+    headers:{apikey:KY,Authorization:'Bearer '+KY}
+  }).then(function(r){return r.json();}).then(function(d){
+    itens=Array.isArray(d)?d:[];
+    render();
+  }).catch(function(){document.getElementById('conteudo').innerHTML='<div class="emp">Erro</div>';});
+}
+</script>
+
+<script>
+function render(){
+  var tot=0;
+  for(var k=0;k<itens.length;k++)tot+=parseFloat(itens[k].valor_total||0);
+  var h='<div class="tot"><div class="tot-lbl">TOTAL ESTIMADO</div><div class="tot-val">'+fmt(tot)+'</div></div>';
+  
+  var cats=[];
+  for(var i=0;i<CATS.length;i++)cats.push(CATS[i][0]);
+  for(var j=0;j<itens.length;j++){
+    if(cats.indexOf(itens[j].categoria)<0)cats.push(itens[j].categoria);
+  }
+  
+  for(var ci=0;ci<cats.length;ci++){
+    var cat=cats[ci];
+    var cid='c'+ci;
+    var its=[];
+    var ct=0;
+    for(var x=0;x<itens.length;x++){
+      if(itens[x].categoria===cat){
+        its.push(itens[x]);
+        ct+=parseFloat(itens[x].valor_total||0);
+      }
+    }
+    var opts=null;
+    for(var z=0;z<CATS.length;z++){
+      if(CATS[z][0]===cat){opts=CATS[z][1];break;}
+    }
+    
+    h+='<div class="cat">';
+    h+='<div class="cat-h"><div class="cat-n">'+esc(cat)+'</div><div class="cat-t">'+fmt(ct)+'</div></div>';
+    h+='<div>';
+    if(its.length===0){
+      h+='<div class="emp">Nenhum item</div>';
+    }else{
+      for(var y=0;y<its.length;y++){
+        var it=its[y];
+        h+='<div class="it"><div class="it-i"><div class="it-n">'+esc(it.item)+'</div><div class="it-d">'+it.quantidade+'x '+fmt(it.valor_unitario)+'</div></div><div class="it-v">'+fmt(it.valor_total)+'</div><button class="it-x" onclick="delIt(\''+it.id+'\')">x</button></div>';
+      }
+    }
+    h+='</div>';
+    h+='<div class="add"><div class="row">';
+    h+='<select id="si'+cid+'">';
+    if(opts){
+      for(var w=0;w<opts.length;w++)h+='<option>'+esc(opts[w])+'</option>';
+    }
+    h+='<option value="_outro_">Outro...</option>';
+    h+='</select>';
+    h+='<input type="number" id="sq'+cid+'" value="1" step="0.5" class="qtd">';
+    h+='<input type="number" id="sv'+cid+'" placeholder="R$" step="0.01" class="vlr">';
+    h+='<button class="add-b" onclick="addIt(\''+esc(cat)+'\',\''+cid+'\')">+</button>';
+    h+='</div>';
+    h+='<input type="text" id="sn'+cid+'" placeholder="Nome do item (Outro)" style="display:none;background:#030503;padding:9px;font-size:12px;width:100%;border:1px solid #1a2a1a;border-radius:8px;color:#eee;margin-top:6px">';
+    h+='</div></div>';
+  }
+  
+  h+='<button class="pdf" onclick="gerarPDF()">Gerar PDF</button>';
+  document.getElementById('conteudo').innerHTML=h;
+  
+  for(var ci2=0;ci2<cats.length;ci2++){
+    (function(cid){
+      var s=document.getElementById('si'+cid);
+      if(s)s.onchange=function(){
+        var ni=document.getElementById('sn'+cid);
+        if(ni)ni.style.display=s.value==='_outro_'?'block':'none';
+      };
+    })('c'+ci2);
+  }
+}
+</script>
+
+<script>
+function addIt(cat,cid){
+  if(!evAtual){alert('Selecione um evento');return;}
+  var s=document.getElementById('si'+cid);
+  var ni=document.getElementById('sn'+cid);
+  var nome=s.value==='_outro_'?(ni?ni.value.trim():''):s.value;
+  var qtd=parseFloat(document.getElementById('sq'+cid).value)||1;
+  var val=parseFloat(document.getElementById('sv'+cid).value)||0;
+  if(!nome){alert('Preencha o item');return;}
+  if(!val||val<=0){alert('Digite o valor');return;}
+  fetch(SB+'/rest/v1/orcamentos',{
+    method:'POST',
+    headers:{apikey:KY,Authorization:'Bearer '+KY,'Content-Type':'application/json',Prefer:'return=representation'},
+    body:JSON.stringify({evento_id:evAtual.id,categoria:cat,item:nome,quantidade:qtd,valor_unitario:val,valor_total:qtd*val})
+  }).then(function(r){return r.json();}).then(function(d){
+    if(Array.isArray(d)&&d[0])itens.push(d[0]);
+    render();
+  }).catch(function(){alert('Erro ao adicionar');});
+}
+
+function delIt(id){
+  if(!confirm('Excluir?'))return;
+  fetch(SB+'/rest/v1/orcamentos?id=eq.'+id,{
+    method:'DELETE',headers:{apikey:KY,Authorization:'Bearer '+KY}
+  }).then(function(){
+    var n=[];for(var i=0;i<itens.length;i++)if(itens[i].id!==id)n.push(itens[i]);
+    itens=n;render();
+  }).catch(function(){alert('Erro');});
+}
+
+function gerarPDF(){
+  if(!evAtual||!itens.length){alert('Sem itens');return;}
+  var tot=0;for(var i=0;i<itens.length;i++)tot+=parseFloat(itens[i].valor_total||0);
+  var grp={};
+  for(var j=0;j<itens.length;j++){var c=itens[j].categoria;if(!grp[c])grp[c]=[];grp[c].push(itens[j]);}
+  var w=window.open('','_blank');
+  var h='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Orcamento</title><style>body{font-family:Arial;max-width:700px;margin:0 auto;padding:24px}h1{color:#1e7a35}h2{color:#666;border-bottom:2px solid #1e7a35;padding-bottom:8px;margin-bottom:20px}.tb{background:#f0fff0;border:2px solid #1e7a35;border-radius:10px;padding:16px;margin:20px 0;display:flex;justify-content:space-between;align-items:center}.tb .v{font-size:24px;color:#1e7a35;font-weight:900}h3{background:#1e7a35;color:#fff;padding:10px 14px;margin-top:20px;border-radius:6px;display:flex;justify-content:space-between}table{width:100%;border-collapse:collapse;margin-top:8px;font-size:12px}th{background:#f5f5f5;padding:8px;text-align:left;font-size:11px;border-bottom:2px solid #ddd}td{padding:8px;border-bottom:1px solid #eee}td:last-child,th:last-child{text-align:right;font-weight:700;color:#1e7a35}.btn{width:100%;background:#1e7a35;color:#fff;border:none;padding:14px;font-weight:700;border-radius:8px;margin-top:24px;cursor:pointer}@media print{.btn{display:none}}</style></head><body>';
+
+h+=’<h1>AGROPLAY MUSIC</h1><h2>Orcamento - ‘+esc(evAtual.nome)+(evAtual.data?’ - ‘+fd(evAtual.data):’’)+’</h2>’;
+h+=’<div class="tb"><b>TOTAL ESTIMADO</b><div class="v">’+fmt(tot)+’</div></div>’;
+var ord=[];for(var k=0;k<CATS.length;k++)ord.push(CATS[k][0]);
+for(var c2 in grp)if(ord.indexOf(c2)<0)ord.push(c2);
+for(var x=0;x<ord.length;x++){
+var cat=ord[x];if(!grp[cat])continue;
+var ct=0;for(var y=0;y<grp[cat].length;y++)ct+=parseFloat(grp[cat][y].valor_total||0);
+h+=’<h3><span>’+esc(cat)+’</span><span>’+fmt(ct)+’</span></h3>’;
+h+=’<table><tr><th>Item</th><th>Qtd</th><th>Unit.</th><th>Total</th></tr>’;
+for(var z2=0;z2<grp[cat].length;z2++){
+var it=grp[cat][z2];
+h+=’<tr><td>’+esc(it.item)+’</td><td>’+it.quantidade+’</td><td>’+fmt(it.valor_unitario)+’</td><td>’+fmt(it.valor_total)+’</td></tr>’;
+}
+h+=’</table>’;
+}
+h+=’<button class="btn" onclick="window.print()">Imprimir / PDF</button></body></html>’;
+w.document.write(h);w.document.close();
+}
 </script>
 
 </body>
