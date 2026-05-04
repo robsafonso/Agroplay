@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -7,212 +8,213 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  body {
-    font-family: Arial, sans-serif;
-    background: #060a06;
-    color: #eee;
-    min-height: 100vh;
-  }
+body {
+font-family: Arial, sans-serif;
+background: #060a06;
+color: #eee;
+min-height: 100vh;
+}
 
-  header {
-    background: #060a06;
-    border-bottom: 2px solid #1e7a35;
-    padding: 12px 16px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-  }
+header {
+background: #060a06;
+border-bottom: 2px solid #1e7a35;
+padding: 12px 16px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+position: sticky;
+top: 0;
+z-index: 10;
+}
 
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    border: 1px solid #1a2a1a;
-    border-radius: 10px;
-    overflow: hidden;
-  }
+.logo {
+display: flex;
+align-items: center;
+gap: 0;
+border: 1px solid #1a2a1a;
+border-radius: 10px;
+overflow: hidden;
+}
 
-  .logo .a {
-    background: #0d150d;
-    padding: 7px 12px;
-    font-size: 16px;
-    font-weight: 900;
-    color: #fff;
-    letter-spacing: 1px;
-  }
+.logo .a {
+background: #0d150d;
+padding: 7px 12px;
+font-size: 16px;
+font-weight: 900;
+color: #fff;
+letter-spacing: 1px;
+}
 
-  .logo .a span { color: #2aab47; }
+.logo .a span { color: #2aab47; }
 
-  .logo .v {
-    background: #c9973c;
-    padding: 7px 10px;
-    font-size: 11px;
-    font-weight: 700;
-    color: #fff;
-    letter-spacing: 1px;
-  }
+.logo .v {
+background: #c9973c;
+padding: 7px 10px;
+font-size: 11px;
+font-weight: 700;
+color: #fff;
+letter-spacing: 1px;
+}
 
-  .user-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+.user-info {
+display: flex;
+align-items: center;
+gap: 10px;
+}
 
-  .user-name {
-    font-size: 12px;
-    color: #888;
-  }
+.user-name {
+font-size: 12px;
+color: #888;
+}
 
-  .btn-sair {
-    background: transparent;
-    border: 1px solid #c0392b;
-    color: #c0392b;
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 11px;
-    cursor: pointer;
-  }
+.btn-sair {
+background: transparent;
+border: 1px solid #c0392b;
+color: #c0392b;
+padding: 6px 12px;
+border-radius: 8px;
+font-size: 11px;
+cursor: pointer;
+}
 
-  .btn-sair:hover {
-    background: rgba(192, 57, 43, 0.1);
-  }
+.btn-sair:hover {
+background: rgba(192, 57, 43, 0.1);
+}
 
-  main {
-    max-width: 700px;
-    margin: 0 auto;
-    padding: 24px 16px 40px;
-  }
+main {
+max-width: 700px;
+margin: 0 auto;
+padding: 24px 16px 40px;
+}
 
-  .saudacao {
-    margin-bottom: 22px;
-  }
+.saudacao {
+margin-bottom: 22px;
+}
 
-  .saudacao h1 {
-    font-size: 20px;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 3px;
-  }
+.saudacao h1 {
+font-size: 20px;
+font-weight: 700;
+color: #fff;
+margin-bottom: 3px;
+}
 
-  .saudacao p {
-    font-size: 12px;
-    color: #555;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
+.saudacao p {
+font-size: 12px;
+color: #555;
+text-transform: uppercase;
+letter-spacing: 1px;
+}
 
-  .secao-titulo {
-    font-size: 10px;
-    color: #2aab47;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin: 18px 0 10px;
-    font-weight: 700;
-  }
+.secao-titulo {
+font-size: 10px;
+color: #2aab47;
+text-transform: uppercase;
+letter-spacing: 1px;
+margin: 18px 0 10px;
+font-weight: 700;
+}
 
-  .grid-principal {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
+.grid-principal {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 10px;
+}
 
-  .card {
-    background: #090e09;
-    border: 1px solid #1a2a1a;
-    border-radius: 12px;
-    padding: 18px 14px;
-    cursor: pointer;
-    text-decoration: none;
-    color: inherit;
-    transition: border-color 0.15s, transform 0.1s;
-    text-align: center;
-  }
+.card {
+background: #090e09;
+border: 1px solid #1a2a1a;
+border-radius: 12px;
+padding: 18px 14px;
+cursor: pointer;
+text-decoration: none;
+color: inherit;
+transition: border-color 0.15s, transform 0.1s;
+text-align: center;
+}
 
-  .card:hover { border-color: #2aab47; }
-  .card:active { transform: scale(0.98); }
+.card:hover { border-color: #2aab47; }
+.card:active { transform: scale(0.98); }
 
-  .card .icone {
-    font-size: 28px;
-    margin-bottom: 8px;
-  }
+.card .icone {
+font-size: 28px;
+margin-bottom: 8px;
+}
 
-  .card .nome {
-    font-size: 13px;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 2px;
-  }
+.card .nome {
+font-size: 13px;
+font-weight: 700;
+color: #fff;
+margin-bottom: 2px;
+}
 
-  .card .desc {
-    font-size: 10px;
-    color: #555;
-  }
+.card .desc {
+font-size: 10px;
+color: #555;
+}
 
-  .card-destaque {
-    grid-column: 1 / -1;
-    background: linear-gradient(135deg, #0d1f0d 0%, #090e09 100%);
-    border-color: #2aab47;
-    padding: 22px 16px;
-  }
+.card-destaque {
+grid-column: 1 / -1;
+background: linear-gradient(135deg, #0d1f0d 0%, #090e09 100%);
+border-color: #2aab47;
+padding: 22px 16px;
+}
 
-  .card-destaque .icone {
-    font-size: 36px;
-  }
+.card-destaque .icone {
+font-size: 36px;
+}
 
-  .card-destaque .nome {
-    font-size: 16px;
-  }
+.card-destaque .nome {
+font-size: 16px;
+}
 
-  .lista-secundaria {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
+.lista-secundaria {
+display: flex;
+flex-direction: column;
+gap: 6px;
+}
 
-  .link-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: #090e09;
-    border: 1px solid #1a2a1a;
-    border-radius: 10px;
-    padding: 12px 14px;
-    text-decoration: none;
-    color: inherit;
-    transition: border-color 0.15s;
-  }
+.link-item {
+display: flex;
+align-items: center;
+gap: 12px;
+background: #090e09;
+border: 1px solid #1a2a1a;
+border-radius: 10px;
+padding: 12px 14px;
+text-decoration: none;
+color: inherit;
+transition: border-color 0.15s;
+}
 
-  .link-item:hover { border-color: #2aab47; }
+.link-item:hover { border-color: #2aab47; }
 
-  .link-item .icone-pequeno {
-    font-size: 18px;
-    width: 22px;
-    text-align: center;
-  }
+.link-item .icone-pequeno {
+font-size: 18px;
+width: 22px;
+text-align: center;
+}
 
-  .link-item .texto {
-    flex: 1;
-  }
+.link-item .texto {
+flex: 1;
+}
 
-  .link-item .nome {
-    font-size: 13px;
-    color: #fff;
-    font-weight: 600;
-  }
+.link-item .nome {
+font-size: 13px;
+color: #fff;
+font-weight: 600;
+}
 
-  .link-item .desc {
-    font-size: 10px;
-    color: #555;
-  }
+.link-item .desc {
+font-size: 10px;
+color: #555;
+}
 
-  .link-item .seta {
-    color: #333;
-    font-size: 18px;
-  }
+.link-item .seta {
+color: #333;
+font-size: 18px;
+}
 </style>
+
 </head>
 <body>
 
@@ -240,17 +242,26 @@
       <div class="desc">Cadastros, eventos, lotes, códigos</div>
     </a>
 
-    <a href="dashboard.html" class="card">
-      <div class="icone">📊</div>
-      <div class="nome">Dashboard</div>
-      <div class="desc">Visão geral</div>
-    </a>
+```
+<a href="admin.html" class="card">
+  <div class="icone">🎯</div>
+  <div class="nome">Admin do Evento</div>
+  <div class="desc">Controle ao vivo</div>
+</a>
 
-    <a href="checkin.html" class="card">
-      <div class="icone">📱</div>
-      <div class="nome">Scanner QR</div>
-      <div class="desc">Entrada do evento</div>
-    </a>
+<a href="dashboard.html" class="card">
+  <div class="icone">📊</div>
+  <div class="nome">Dashboard</div>
+  <div class="desc">Telão pra projetor</div>
+</a>
+
+<a href="checkin.html" class="card">
+  <div class="icone">📱</div>
+  <div class="nome">Scanner QR</div>
+  <div class="desc">Entrada do evento</div>
+</a>
+```
+
   </div>
 
   <div class="secao-titulo">Outros</div>
@@ -265,23 +276,26 @@
       <div class="seta">›</div>
     </a>
 
-    <a href="manual.html" class="link-item">
-      <div class="icone-pequeno">📚</div>
-      <div class="texto">
-        <div class="nome">Manual</div>
-        <div class="desc">Como usar o sistema</div>
-      </div>
-      <div class="seta">›</div>
-    </a>
+```
+<a href="manual.html" class="link-item">
+  <div class="icone-pequeno">📚</div>
+  <div class="texto">
+    <div class="nome">Manual</div>
+    <div class="desc">Como usar o sistema</div>
+  </div>
+  <div class="seta">›</div>
+</a>
 
-    <a href="mediakit.html" class="link-item">
-      <div class="icone-pequeno">📋</div>
-      <div class="texto">
-        <div class="nome">Media Kit</div>
-        <div class="desc">Material de divulgação</div>
-      </div>
-      <div class="seta">›</div>
-    </a>
+<a href="mediakit.html" class="link-item">
+  <div class="icone-pequeno">📋</div>
+  <div class="texto">
+    <div class="nome">Media Kit</div>
+    <div class="desc">Material de divulgação</div>
+  </div>
+  <div class="seta">›</div>
+</a>
+```
+
   </div>
 </main>
 
