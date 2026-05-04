@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agroplay — Painel de Convites</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; background: #060a06; color: #eee; min-height: 100vh; font-size: 14px; }
+
+header { background: #060a06; border-bottom: 2px solid #1e7a35; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
+.logo { display: flex; align-items: center; border: 1px solid #1a2a1a; border-radius: 10px; overflow: hidden; }
+.logo .a { background: #0d150d; padding: 7px 12px; font-size: 16px; font-weight: 900; color: #fff; letter-spacing: 1px; }
+.logo .a span { color: #2aab47; }
+.logo .v { background: #c9973c; padding: 7px 10px; font-size: 11px; font-weight: 700; color: #fff; letter-spacing: 1px; }
+
+.resp-info { font-size: 12px; color: #888; }
+.resp-info b { color: #2aab47; }
+
+main { max-width: 600px; margin: 0 auto; padding: 20px 16px 40px; }
+
+.login-card { background: #090e09; border: 1px solid #1a2a1a; border-radius: 16px; padding: 32px 24px; margin-top: 40px; }
+.login-card h1 { font-size: 17px; color: #fff; text-align: center; margin-bottom: 4px; }
+.login-card .subtitle { text-align: center; color: #555; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 24px; }
+
+.fl { margin-bottom: 12px; }
+.fl label { display: block; font-size: 10px; color: #2aab47; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; font-weight: 700; }
+
+input { width: 100%; padding: 11px 13px; background: #030503; border: 1px solid #1a2a1a; border-radius: 8px; color: #eee; font-size: 14px; outline: none; font-family: inherit; }
+input:focus { border-color: #2aab47; }
+
+.btn { width: 100%; padding: 13px; background: #1e7a35; color: #fff; border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; }
+.btn:hover { background: #2aab47; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.bto { background: transparent; color: #2aab47; border: 1px solid #2aab47; border-radius: 8px; padding: 8px 12px; font-size: 12px; cursor: pointer; }
+.bto:hover { background: rgba(42, 171, 71, 0.1); }
+
+.erro { color: #e74c3c; font-size: 13px; text-align: center; margin-top: 10px; min-height: 18px; }
+
+.stats-painel { display: flex; gap: 8px; margin-bottom: 18px; }
+.stat { background: #090e09; border: 1px solid #1a2a1a; border-radius: 10px; padding: 14px 8px; text-align: center; flex: 1; }
+.stat strong { font-size: 24px; color: #2aab47; display: block; }
+.stat small { font-size: 9px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
+
+.convite-card { background: #090e09; border: 1px solid #1a2a1a; border-radius: 10px; padding: 14px; margin-bottom: 10px; }
+.convite-cabec { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.convite-codigo { font-family: monospace; font-size: 16px; font-weight: 900; color: #fff; letter-spacing: 2px; }
+.convite-codigo.usado { color: #555; text-decoration: line-through; }
+
+.badge-status { padding: 3px 10px; border-radius: 20px; font-size: 9px; font-weight: 700; text-transform: uppercase; }
+.badge-disp { background: #1e7a35; color: #fff; }
+.badge-usado { background: #555; color: #fff; }
+
+.convite-acoes { display: flex; gap: 6px; }
+.convite-acoes button { flex: 1; font-size: 11px; padding: 8px; }
+
+.convite-info-usado { font-size: 11px; color: #555; margin-top: 4px; }
+.convite-info-usado b { color: #888; }
+
+.label-secao { font-size: 10px; color: #2aab47; text-transform: uppercase; letter-spacing: 1px; margin: 16px 0 8px; font-weight: 700; }
+
+.gone { display: none !important; }
+
+.empty { text-align: center; padding: 32px; color: #555; font-size: 13px; }
+
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #090e09; border: 1px solid #2aab47; color: #2aab47; padding: 10px 18px; border-radius: 8px; font-size: 13px; z-index: 200; opacity: 0; transition: opacity 0.2s; }
+.toast.aberto { opacity: 1; }
+
+.btn-sair { background: transparent; border: 1px solid #c0392b; color: #c0392b; padding: 6px 12px; border-radius: 8px; font-size: 11px; cursor: pointer; }
+</style>
+
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="a">AGRO<span>PLAY</span></div>
+    <div class="v">v32</div>
+  </div>
+  <div id="headerDireita"></div>
+</header>
+
+<main>
+  <div id="telaLogin">
+    <div class="login-card">
+      <h1>Painel de Convites</h1>
+      <p class="subtitle">Digite a senha que você recebeu</p>
+      <div class="fl">
+        <label>Senha do lote</label>
+        <input type="text" id="inputSenha" autocapitalize="none" placeholder="Ex: fofolete123">
+      </div>
+      <button class="btn" id="btnEntrar">Entrar</button>
+      <div class="erro" id="erroLogin"></div>
+    </div>
+  </div>
+
+  <div id="telaPainel" class="gone">
+    <div class="stats-painel" id="statsPainel"></div>
+    <div id="eventoBox"></div>
+    <div class="label-secao">Convites disponíveis</div>
+    <div id="listaDisponiveis"></div>
+    <div class="label-secao gone" id="labelUsados">Já usados</div>
+    <div id="listaUsados"></div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SB_URL = 'https://wexwcnezjadoutyzkbcj.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+const URL_BASE = window.location.origin + window.location.pathname.replace('lote.html', '');
+
+let loteAtual = null;
+let eventoLote = null;
+let codigosLote = [];
+
+function mostrarToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('aberto');
+  setTimeout(() => t.classList.remove('aberto'), 2000);
+}
+
+function copiar(texto, botao, label) {
+  const original = label || (botao ? botao.textContent : '');
+  navigator.clipboard.writeText(texto).then(() => {
+    if (botao) {
+      botao.textContent = 'Copiado!';
+      setTimeout(() => { botao.textContent = original; }, 1500);
+    }
+    mostrarToast('Copiado!');
+  }).catch(() => mostrarToast('Erro ao copiar'));
+}
+
+function escaparHtml(t) {
+  if (!t) return '';
+  return String(t).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;');
+}
+
+function formatarData(iso) {
+  if (!iso) return '';
+  const p = iso.split('-');
+  return p[2] + '/' + p[1] + '/' + p[0];
+}
+
+function formatarHora(t) {
+  if (!t) return '';
+  return t.substring(0, 5);
+}
+
+async function entrar() {
+  const senha = document.getElementById('inputSenha').value.trim();
+  const erro = document.getElementById('erroLogin');
+  erro.textContent = '';
+
+  if (!senha) { erro.textContent = 'Digite a senha'; return; }
+
+  const btn = document.getElementById('btnEntrar');
+  btn.disabled = true;
+  btn.textContent = 'Entrando...';
+
+  const { data, error } = await sb.from('lotes').select('*').eq('senha', senha).maybeSingle();
+
+  btn.disabled = false;
+  btn.textContent = 'Entrar';
+
+  if (error || !data) { erro.textContent = 'Senha inválida'; return; }
+
+  loteAtual = data;
+  sessionStorage.setItem('ag_lote_id', data.id);
+  await carregarPainel();
+}
+
+async function carregarPainel() {
+  document.getElementById('telaLogin').classList.add('gone');
+  document.getElementById('telaPainel').classList.remove('gone');
+
+  document.getElementById('headerDireita').innerHTML =
+    '<div class="resp-info">Olá, <b>' + escaparHtml(loteAtual.responsavel) + '</b> ' +
+    '<button class="btn-sair" onclick="sair()" style="margin-left:8px">Sair</button></div>';
+
+  if (loteAtual.evento_id) {
+    const { data: ev } = await sb.from('eventos').select('*').eq('id', loteAtual.evento_id).maybeSingle();
+    eventoLote = ev;
+    renderEventoBox();
+  } else {
+    eventoLote = null;
+    document.getElementById('eventoBox').innerHTML = '';
+  }
+
+  const { data: codigos } = await sb
+    .from('codigos')
+    .select('*, cadastros(nome)')
+    .eq('lote_id', loteAtual.id)
+    .order('codigo');
+
+  codigosLote = codigos || [];
+  renderStats();
+  renderListas();
+}
+
+function renderEventoBox() {
+  if (!eventoLote) { document.getElementById('eventoBox').innerHTML = ''; return; }
+  const ev = eventoLote;
+  let h = '<div class="convite-card" style="border-color:#2aab47">';
+  h += '<div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:6px">🎵 ' + escaparHtml(ev.nome) + '</div>';
+  h += '<div style="font-size:12px;color:#888;line-height:1.6">';
+  if (ev.data) h += '📅 ' + formatarData(ev.data) + (ev.horario ? ' às ' + formatarHora(ev.horario) + (ev.horario_fim ? ' - ' + formatarHora(ev.horario_fim) : '') : '') + '<br>';
+  if (ev.local) h += '📍 ' + escaparHtml(ev.local) + '<br>';
+  if (ev.atracao1) h += '🎤 ' + escaparHtml(ev.atracao1) + (ev.atracao2 ? ' + ' + escaparHtml(ev.atracao2) : '');
+  h += '</div></div>';
+  document.getElementById('eventoBox').innerHTML = h;
+}
+
+function renderStats() {
+  const total = codigosLote.length;
+  const usados = codigosLote.filter(c => c.usado).length;
+  const disponiveis = total - usados;
+
+  document.getElementById('statsPainel').innerHTML =
+    '<div class="stat"><strong>' + total + '</strong><small>Total</small></div>' +
+    '<div class="stat"><strong>' + disponiveis + '</strong><small>Disponíveis</small></div>' +
+    '<div class="stat"><strong>' + usados + '</strong><small>Usados</small></div>';
+}
+
+function montarMensagem(codigo) {
+  const link = URL_BASE + 'cadastro.html?cod=' + codigo + '&lote=' + loteAtual.id + '&resp=' + encodeURIComponent(loteAtual.responsavel);
+
+  let msg = 'AGROPLAY Music 🎵\n\nOlá! Você foi convidado por ' + loteAtual.responsavel + ' para fazer parte do nosso sistema.\n\n';
+
+  if (eventoLote) {
+    msg += '🎤 ' + eventoLote.nome + '\n';
+    if (eventoLote.data) msg += '📅 ' + formatarData(eventoLote.data) + (eventoLote.horario ? ' às ' + formatarHora(eventoLote.horario) : '') + '\n';
+    if (eventoLote.local) msg += '📍 ' + eventoLote.local + '\n';
+    msg += '\n';
+  }
+
+  msg += 'Acesse o link abaixo e faça seu cadastro:\n' + link + '\n\nCódigo: ' + codigo + '\nCódigo intransferível e de uso único.';
+
+  return msg;
+}
+
+function renderListas() {
+  const disp = codigosLote.filter(c => !c.usado);
+  const usados = codigosLote.filter(c => c.usado);
+
+  const elDisp = document.getElementById('listaDisponiveis');
+  if (!disp.length) {
+    elDisp.innerHTML = '<div class="empty">Todos os convites já foram usados</div>';
+  } else {
+    let h = '';
+    disp.forEach(c => {
+      h += '<div class="convite-card">' +
+        '<div class="convite-cabec">' +
+          '<div class="convite-codigo">' + c.codigo + '</div>' +
+          '<span class="badge-status badge-disp">Disponível</span>' +
+        '</div>' +
+        '<div class="convite-acoes">' +
+          '<button class="bto" onclick="copiarMsg(\'' + c.codigo + '\', this)">Copiar mensagem</button>' +
+        '</div>' +
+      '</div>';
+    });
+    elDisp.innerHTML = h;
+  }
+
+  const elUsados = document.getElementById('listaUsados');
+  const labelUsados = document.getElementById('labelUsados');
+
+  if (!usados.length) {
+    labelUsados.classList.add('gone');
+    elUsados.innerHTML = '';
+  } else {
+    labelUsados.classList.remove('gone');
+    let h = '';
+    usados.forEach(c => {
+      const nome = c.cadastros && c.cadastros.nome ? c.cadastros.nome : 'Pessoa não identificada';
+      const dt = c.usado_em ? new Date(c.usado_em).toLocaleString('pt-BR') : '';
+      h += '<div class="convite-card">' +
+        '<div class="convite-cabec">' +
+          '<div class="convite-codigo usado">' + c.codigo + '</div>' +
+          '<span class="badge-status badge-usado">Usado</span>' +
+        '</div>' +
+        '<div class="convite-info-usado">Por <b>' + escaparHtml(nome) + '</b>' + (dt ? ' · ' + dt : '') + '</div>' +
+      '</div>';
+    });
+    elUsados.innerHTML = h;
+  }
+}
+
+function copiarMsg(codigo, botao) {
+  const msg = montarMensagem(codigo);
+  copiar(msg, botao, 'Copiar mensagem');
+}
+
+function sair() {
+  sessionStorage.removeItem('ag_lote_id');
+  loteAtual = null;
+  eventoLote = null;
+  codigosLote = [];
+  document.getElementById('headerDireita').innerHTML = '';
+  document.getElementById('telaPainel').classList.add('gone');
+  document.getElementById('telaLogin').classList.remove('gone');
+  document.getElementById('inputSenha').value = '';
+  document.getElementById('erroLogin').textContent = '';
+}
+
+document.getElementById('btnEntrar').addEventListener('click', entrar);
+document.getElementById('inputSenha').addEventListener('keydown', e => { if (e.key === 'Enter') entrar(); });
+
+async function autoLogin() {
+  const id = sessionStorage.getItem('ag_lote_id');
+  if (!id) return;
+  const { data } = await sb.from('lotes').select('*').eq('id', id).maybeSingle();
+  if (data) {
+    loteAtual = data;
+    await carregarPainel();
+  }
+}
+
+autoLogin();
+</script>
+
+</body>
+</html>
