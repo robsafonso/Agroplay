@@ -207,18 +207,20 @@ function render(){
     })('c'+ci2);
   }
   
-  // Event delegation pros botoes + e x
+  // Event delegation pros botoes + e x - com debug
   var cont=document.getElementById('conteudo');
   cont.onclick=function(e){
     var t=e.target;
+    alert('CLIQUE detectado em: '+t.tagName+' classe='+t.className);
     if(t.tagName!=='BUTTON')return;
     var addCat=t.getAttribute('data-cat');
     var addCid=t.getAttribute('data-cid');
     var delId=t.getAttribute('data-del');
-    if(addCat&&addCid){addIt(addCat,addCid);return;}
+    if(addCat&&addCid){alert('Vai chamar addIt('+addCat+','+addCid+')');addIt(addCat,addCid);return;}
     if(delId){delIt(delId);return;}
     if(t.className==='pdf'){gerarPDF();return;}
   };
+  alert('render finalizou OK - '+cats.length+' categorias');
 }
 </script>
 
