@@ -473,6 +473,9 @@ const estado = {
   listaEvento: null,
   listaExcluidos: [],
   listaSel: [],
+  listaFiltroSetor: 'Todos',
+  listaFiltroEmpresa: 'Todas',
+  listaFiltroBilhete: 'Todos',
   bilhetesEvento: null      // qual evento ta sendo mostrado na aba Bilhetes
 };
 
@@ -1273,6 +1276,9 @@ function verListaEvento(eventoId) {
   estado.listaEvento = ev;
   estado.listaExcluidos = [];
   estado.listaSel = [];
+  estado.listaFiltroSetor = 'Todos';
+  estado.listaFiltroEmpresa = 'Todas';
+  estado.listaFiltroBilhete = 'Todos';
   trocarAba('lista');
   renderLista();
 }
@@ -1288,23 +1294,41 @@ function renderLista() {
 
   const ev = estado.listaEvento;
   const todasPessoas = estado.cadastros.filter(c => c.evento_id === ev.id);
-  const ativos = todasPessoas.filter(p => !estado.listaExcluidos.includes(p.id));
+  const naoExcluidos = todasPessoas.filter(p => !estado.listaExcluidos.includes(p.id));
   const excluidos = todasPessoas.filter(p => estado.listaExcluidos.includes(p.id));
+
+  // Aplica filtros nos ativos
+  const ativos = naoExcluidos.filter(p => {
+    if (estado.listaFiltroSetor !== 'Todos' && (p.setor || '') !== estado.listaFiltroSetor) return false;
+    if (estado.listaFiltroEmpresa !== 'Todas' && (p.empresa || '') !== estado.listaFiltroEmpresa) return false;
+    if (estado.listaFiltroBilhete === 'NaoEnviado' && p.bilhete_enviado_em) return false;
+    if (estado.listaFiltroBilhete === 'Aguardando' && (!p.bilhete_enviado_em || p.bilhete_confirmado_em)) return false;
+    if (estado.listaFiltroBilhete === 'Confirmado' && !p.bilhete_confirmado_em) return false;
+    return true;
+  });
+
+  // Stats de bilhete (sobre todos não-excluídos, não filtrados)
+  const totBilNenv = naoExcluidos.filter(p => !p.bilhete_enviado_em).length;
+  const totBilAguard = naoExcluidos.filter(p => p.bilhete_enviado_em && !p.bilhete_confirmado_em).length;
+  const totBilConf = naoExcluidos.filter(p => p.bilhete_confirmado_em).length;
+
+  // Listas únicas pra filtros
+  const setoresUnicos = [...new Set(naoExcluidos.map(p => p.setor || '').filter(s => s))].sort();
+  const empresasUnicas = [...new Set(naoExcluidos.map(p => p.empresa || '').filter(e => e))].sort();
 
   const dataFmt = formatarData(ev.data);
   const horaIni = formatarHora(ev.horario);
   const horaFim = formatarHora(ev.horario_fim);
 
-  // Cabecalho
-  let h = '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;flex-wrap:wrap;gap:8px">';
+  // Cabeçalho
+  let h = '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;flex-wrap:wrap;gap:8px">';
   h += '<div style="flex:1;min-width:180px"><div style="font-size:16px;font-weight:700;color:#fff">' + escaparHtml(ev.nome) + '</div>';
   h += '<div style="font-size:11px;color:#666;margin-top:3px">';
   if (dataFmt) h += dataFmt + (horaIni ? ' às ' + horaIni + (horaFim ? ' - ' + horaFim : '') : '');
   if (ev.local) h += ' · ' + escaparHtml(ev.local);
-  h += '<br>' + ativos.length + ' confirmado(s)' + (excluidos.length ? ' · ' + excluidos.length + ' excluído(s)' : '');
+  h += '<br>' + naoExcluidos.length + ' confirmado(s)' + (excluidos.length ? ' · ' + excluidos.length + ' excluído(s)' : '');
   h += '</div></div>';
 
-  // Botoes acao
   h += '<div style="display:flex;gap:6px;flex-wrap:wrap">';
   h += '<button class="bto" onclick="exportarListaCsv()" style="font-size:11px;padding:7px 10px">CSV</button>';
   h += '<button class="bto" onclick="exportarListaXls()" style="font-size:11px;padding:7px 10px">Excel</button>';
@@ -1313,29 +1337,74 @@ function renderLista() {
   }
   h += '</div></div>';
 
+  // Stats coloridas dos bilhetes
+  h += '<div style="display:flex;gap:6px;margin-bottom:12px">';
+  h += '<div onclick="filtrarListaBilhete(\'NaoEnviado\')" style="cursor:pointer;flex:1;background:' + (estado.listaFiltroBilhete === 'NaoEnviado' ? '#0891b2' : '#0d150d') + ';border:1px solid #0891b2;border-radius:8px;padding:8px;text-align:center">';
+  h += '<div style="font-size:18px;font-weight:800;color:#fff">' + totBilNenv + '</div>';
+  h += '<div style="font-size:8px;color:#fff;text-transform:uppercase;letter-spacing:1px;opacity:0.85">N/Env</div>';
+  h += '</div>';
+  h += '<div onclick="filtrarListaBilhete(\'Aguardando\')" style="cursor:pointer;flex:1;background:' + (estado.listaFiltroBilhete === 'Aguardando' ? '#c9973c' : '#0d150d') + ';border:1px solid #c9973c;border-radius:8px;padding:8px;text-align:center">';
+  h += '<div style="font-size:18px;font-weight:800;color:#fff">' + totBilAguard + '</div>';
+  h += '<div style="font-size:8px;color:#fff;text-transform:uppercase;letter-spacing:1px;opacity:0.85">Aguard</div>';
+  h += '</div>';
+  h += '<div onclick="filtrarListaBilhete(\'Confirmado\')" style="cursor:pointer;flex:1;background:' + (estado.listaFiltroBilhete === 'Confirmado' ? '#1e7a35' : '#0d150d') + ';border:1px solid #1e7a35;border-radius:8px;padding:8px;text-align:center">';
+  h += '<div style="font-size:18px;font-weight:800;color:#fff">' + totBilConf + '</div>';
+  h += '<div style="font-size:8px;color:#fff;text-transform:uppercase;letter-spacing:1px;opacity:0.85">Conf</div>';
+  h += '</div>';
+  h += '<div onclick="filtrarListaBilhete(\'Todos\')" style="cursor:pointer;flex:1;background:' + (estado.listaFiltroBilhete === 'Todos' ? '#1e7a35' : '#0d150d') + ';border:1px solid #2aab47;border-radius:8px;padding:8px;text-align:center">';
+  h += '<div style="font-size:18px;font-weight:800;color:#fff">' + naoExcluidos.length + '</div>';
+  h += '<div style="font-size:8px;color:#fff;text-transform:uppercase;letter-spacing:1px;opacity:0.85">Todos</div>';
+  h += '</div>';
+  h += '</div>';
+
+  // Filtros (selects)
+  h += '<div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">';
+  h += '<select onchange="filtrarListaSetor(this.value)" style="flex:1;min-width:120px;font-size:12px;padding:8px">';
+  h += '<option value="Todos"' + (estado.listaFiltroSetor === 'Todos' ? ' selected' : '') + '>Todos os setores</option>';
+  setoresUnicos.forEach(s => {
+    h += '<option value="' + escaparHtml(s) + '"' + (estado.listaFiltroSetor === s ? ' selected' : '') + '>' + escaparHtml(s) + '</option>';
+  });
+  h += '</select>';
+  h += '<select onchange="filtrarListaEmpresa(this.value)" style="flex:1;min-width:120px;font-size:12px;padding:8px">';
+  h += '<option value="Todas"' + (estado.listaFiltroEmpresa === 'Todas' ? ' selected' : '') + '>Todas as empresas</option>';
+  empresasUnicas.forEach(e => {
+    h += '<option value="' + escaparHtml(e) + '"' + (estado.listaFiltroEmpresa === e ? ' selected' : '') + '>' + escaparHtml(e) + '</option>';
+  });
+  h += '</select>';
+  h += '</div>';
+
   // Tabela ativos
   if (!ativos.length) {
-    h += '<div class="empty">Nenhuma pessoa confirmada neste evento ainda.</div>';
+    h += '<div class="empty">Nenhuma pessoa com esses filtros.</div>';
   } else {
     const todosSel = ativos.every(p => estado.listaSel.includes(p.id));
-    h += '<div style="font-size:10px;color:#2aab47;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;font-weight:700">Confirmados (' + ativos.length + ')</div>';
+    h += '<div style="font-size:10px;color:#2aab47;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;font-weight:700">Mostrando (' + ativos.length + ' de ' + naoExcluidos.length + ')</div>';
     h += '<div class="tbl"><table><thead><tr>';
     h += '<th style="width:30px"><input type="checkbox" ' + (todosSel ? 'checked' : '') + ' onchange="toggleSelTodos(this.checked)"></th>';
-    h += '<th>Nome</th><th>Empresa</th><th>Status</th><th>Convidado por</th><th></th>';
+    h += '<th>Nome</th><th>Empresa</th><th>Status</th><th>Bilhete</th><th>Convidado por</th><th></th>';
     h += '</tr></thead><tbody>';
 
     ativos.forEach(p => {
       const checked = estado.listaSel.includes(p.id) ? 'checked' : '';
+
+      // Status do cadastro
       let statusBadge = '';
       if (p.status === 'aprovado') statusBadge = '<span class="badge ab">Aprov</span>';
       else if (p.status === 'reprovado') statusBadge = '<span class="badge rb">Reprov</span>';
       else statusBadge = '<span class="badge pb">Pend</span>';
+
+      // Status do bilhete (3 cores)
+      let bilheteBadge = '';
+      if (p.bilhete_confirmado_em) bilheteBadge = '<span class="badge" style="background:#1e7a35">Conf</span>';
+      else if (p.bilhete_enviado_em) bilheteBadge = '<span class="badge" style="background:#c9973c">Aguard</span>';
+      else bilheteBadge = '<span class="badge" style="background:#0891b2">N/Env</span>';
 
       h += '<tr>' +
         '<td><input type="checkbox" ' + checked + ' onchange="toggleSelLinha(\'' + p.id + '\', this.checked)"></td>' +
         '<td><span class="nlink" onclick="verPerfil(\'' + p.id + '\')">' + escaparHtml(p.nome) + '</span></td>' +
         '<td style="color:#888;font-size:11px">' + escaparHtml(p.empresa || '-') + '</td>' +
         '<td>' + statusBadge + '</td>' +
+        '<td>' + bilheteBadge + '</td>' +
         '<td style="color:#0891b2;font-size:11px">' + escaparHtml(p.lote_nome || '-') + '</td>' +
         '<td><button class="btr" onclick="excluirDaLista(\'' + p.id + '\')" style="font-size:10px;padding:3px 8px">X</button></td>' +
         '</tr>';
@@ -1360,6 +1429,21 @@ function renderLista() {
   }
 
   document.getElementById('listaConteudo').innerHTML = h;
+}
+
+function filtrarListaSetor(v) {
+  estado.listaFiltroSetor = v;
+  renderLista();
+}
+
+function filtrarListaEmpresa(v) {
+  estado.listaFiltroEmpresa = v;
+  renderLista();
+}
+
+function filtrarListaBilhete(v) {
+  estado.listaFiltroBilhete = v;
+  renderLista();
 }
 
 function toggleSelLinha(id, checked) {
@@ -1401,25 +1485,39 @@ function excluirSelecionados() {
 
 function dadosListaExport() {
   if (!estado.listaEvento) return [];
-  const ativos = estado.cadastros.filter(c => c.evento_id === estado.listaEvento.id && !estado.listaExcluidos.includes(c.id));
-  return ativos.map(c => [
-    c.nome || '', c.cpf || '', c.rg || '', c.email || '',
-    c.telefone || '', formatarData(c.nascimento),
-    c.setor || '', c.empresa || '', c.cargo || '',
-    c.status || '', c.lote_nome || ''
-  ]);
+  const ativos = estado.cadastros.filter(p => {
+    if (p.evento_id !== estado.listaEvento.id) return false;
+    if (estado.listaExcluidos.includes(p.id)) return false;
+    if (estado.listaFiltroSetor !== 'Todos' && (p.setor || '') !== estado.listaFiltroSetor) return false;
+    if (estado.listaFiltroEmpresa !== 'Todas' && (p.empresa || '') !== estado.listaFiltroEmpresa) return false;
+    if (estado.listaFiltroBilhete === 'NaoEnviado' && p.bilhete_enviado_em) return false;
+    if (estado.listaFiltroBilhete === 'Aguardando' && (!p.bilhete_enviado_em || p.bilhete_confirmado_em)) return false;
+    if (estado.listaFiltroBilhete === 'Confirmado' && !p.bilhete_confirmado_em) return false;
+    return true;
+  });
+  return ativos.map(c => {
+    let bilheteSt = 'Não enviado';
+    if (c.bilhete_confirmado_em) bilheteSt = 'Confirmado';
+    else if (c.bilhete_enviado_em) bilheteSt = 'Aguardando';
+    return [
+      c.nome || '', c.cpf || '', c.rg || '', c.email || '',
+      c.telefone || '', formatarData(c.nascimento),
+      c.setor || '', c.empresa || '', c.cargo || '',
+      c.status || '', bilheteSt, c.lote_nome || ''
+    ];
+  });
 }
 
 function exportarListaCsv() {
   if (!estado.listaEvento) return;
-  const cab = 'Nome,CPF,RG,Email,Telefone,Nascimento,Setor,Empresa,Cargo,Status,Convidado por\n';
+  const cab = 'Nome,CPF,RG,Email,Telefone,Nascimento,Setor,Empresa,Cargo,Status,Bilhete,Convidado por\n';
   const rows = dadosListaExport().map(r => r.map(v => '"' + v + '"').join(',')).join('\n');
   baixar(cab + rows, 'text/csv', 'Lista_' + estado.listaEvento.nome.replace(/[^a-z0-9]/gi, '_') + '.csv');
 }
 
 function exportarListaXls() {
   if (!estado.listaEvento) return;
-  const head = ['Nome', 'CPF', 'RG', 'Email', 'Telefone', 'Nascimento', 'Setor', 'Empresa', 'Cargo', 'Status', 'Convidado por'];
+  const head = ['Nome', 'CPF', 'RG', 'Email', 'Telefone', 'Nascimento', 'Setor', 'Empresa', 'Cargo', 'Status', 'Bilhete', 'Convidado por'];
   const headHtml = '<Row>' + head.map(h => '<Cell><Data ss:Type="String">' + h + '</Data></Cell>').join('') + '</Row>';
   const bodyHtml = dadosListaExport().map(r => '<Row>' + r.map(v => '<Cell><Data ss:Type="String">' + String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</Data></Cell>').join('') + '</Row>').join('');
   const xml = '<?xml version="1.0"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"><Worksheet ss:Name="Lista"><Table>' + headHtml + bodyHtml + '</Table></Worksheet></Workbook>';
