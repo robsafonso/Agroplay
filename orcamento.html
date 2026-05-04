@@ -211,7 +211,9 @@ function render(){
 
 <script>
 function addIt(cat,cid){
+  alert('1. addIt chamado: cat='+cat+' cid='+cid);
   if(!evAtual){alert('Selecione um evento');return;}
+  alert('2. evAtual OK: '+evAtual.nome);
   var s=document.getElementById('si'+cid);
   var ni=document.getElementById('sn'+cid);
   var nome=s.value==='_outro_'?(ni?ni.value.trim():''):s.value;
@@ -219,6 +221,7 @@ function addIt(cat,cid){
   var val=parseFloat(document.getElementById('sv'+cid).value)||0;
   if(!nome){alert('Preencha o item');return;}
   if(!val||val<=0){alert('Digite o valor');return;}
+  alert('3. vai fazer fetch: nome='+nome+' qtd='+qtd+' val='+val);
   fetch(SB+'/rest/v1/orcamentos',{
     method:'POST',
     headers:{apikey:KY,Authorization:'Bearer '+KY,'Content-Type':'application/json',Prefer:'return=representation'},
