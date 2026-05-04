@@ -83,6 +83,8 @@ select:focus,input:focus{border-color:#2aab47}
   <div id="loginMsg" style="color:#c0392b;font-size:12px;margin-top:8px;text-align:center"></div>
 </div>
 
+<div id="debug" style="background:#1a1a1a;border:1px solid #333;border-radius:8px;padding:10px;margin:10px 0;font-size:11px;color:#888;font-family:monospace;word-break:break-all">DEBUG: aguardando JS...</div>
+
 <div id="painel" style="display:none">
   <label class="lbl">Selecione o evento</label>
   <select id="ev-sel" onchange="selecionarEvento()"><option value="">Carregando...</option></select>
@@ -137,16 +139,25 @@ var CATS={
   }
 };
 
+function dbg(msg){
+  var d=document.getElementById('debug');
+  if(d)d.innerHTML+='<br>'+msg;
+}
+
 // ---------- Init / Login ----------
 function init(){
+  dbg('init() chamado');
   var logado=sessionStorage.getItem('ag_admin')==='1';
+  dbg('logado: '+logado);
   if(logado){
     document.getElementById('login-area').style.display='none';
     document.getElementById('painel').style.display='block';
+    dbg('painel display=block');
     carregarEventos();
   }else{
     document.getElementById('login-area').style.display='block';
     document.getElementById('painel').style.display='none';
+    dbg('mostrando login');
   }
 }
 
@@ -182,7 +193,9 @@ function post(path,meth,body){return fetch(SB+"/rest/v1/"+path,{method:meth,head
 
 // ---------- Eventos ----------
 function carregarEventos(){
+  dbg('carregarEventos() chamado');
   get("eventos?select=id,nome,data,horario,local,atracao1,atracao2&order=data.asc").then(function(evs){
+    dbg('eventos retornados: '+JSON.stringify(evs).substring(0,200));
     var sel=q("ev-sel");
     if(!Array.isArray(evs)){
       sel.innerHTML="<option value=''>Erro: "+JSON.stringify(evs).substring(0,80)+"</option>";
@@ -197,7 +210,11 @@ function carregarEventos(){
       sel.innerHTML+="<option value='"+ev.id+"'>"+esc(ev.nome)+" ("+fd(ev.data)+")</option>";
     });
     window._evs=evs;
-  }).catch(function(e){q("ev-sel").innerHTML="<option value=''>Erro de conexão</option>";});
+    dbg(evs.length+' eventos carregados no select');
+  }).catch(function(e){
+    dbg('ERRO fetch: '+e.message);
+    q("ev-sel").innerHTML="<option value=''>Erro de conexão</option>";
+  });
 }
 
 function selecionarEvento(){
@@ -468,7 +485,12 @@ win.document.close();
 }
 
 // Init
+try{
 init();
+}catch(err){
+var d=document.getElementById(‘debug’);
+if(d)d.innerHTML=’ERRO INIT: ’+err.message;
+}
 </script>
 
 </body>
