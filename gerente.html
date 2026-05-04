@@ -183,7 +183,10 @@ tr:last-child td { border-bottom: none; }
   </section>
 
   <section id="aba-lista" class="gone">
-    <div class="construcao"><div class="icone-grande">🚧</div><div>Em construção</div></div>
+    <div id="listaVazia" class="empty">
+      Selecione um evento na aba <b style="color:#2aab47">Eventos</b> e toque em <b style="color:#2aab47">Lista</b> para ver os convidados.
+    </div>
+    <div id="listaConteudo" class="gone"></div>
   </section>
 </main>
 
@@ -458,7 +461,10 @@ const admin = JSON.parse(adminData || '{}');
 const estado = {
   cadastros: [], codigos: [], eventos: [], lotes: [],
   perfilAtual: null, eventoEditandoId: null,
-  filtroEmpresa: 'Todos', fotoNovoCad: null
+  filtroEmpresa: 'Todos', fotoNovoCad: null,
+  listaEvento: null,        // qual evento ta sendo mostrado na aba Lista
+  listaExcluidos: [],       // ids excluidos da lista atual (so visual, nao banco)
+  listaSel: []              // ids selecionados (checkbox)
 };
 
 const CARGOS_ARTISTA = ['Artista / Cantor', 'Músico / Banda', 'Bailarino / Dançarino', 'Diretor de Palco', 'Produção', 'Técnico de Som', 'Técnico de Luz', 'Fotógrafo', 'Videomaker', 'Camarim', 'Maquiagem', 'Assessoria de Imprensa', 'Comercial / Agenciamento', 'Segurança', 'Motorista / Transfer', 'Road Manager', 'Outro'];
@@ -894,7 +900,7 @@ function renderListaEventos() {
     if (ev.local) h += '📍 ' + escaparHtml(ev.local) + '<br>';
     if (ev.atracao1) h += '🎵 ' + escaparHtml(ev.atracao1) + (ev.atracao2 ? ' + ' + escaparHtml(ev.atracao2) : '') + '<br>';
     if (cadVinc > 0) h += '👥 ' + cadVinc + ' cadastro(s) vinculado(s)<br>';
-    h += '</div><div class="ev-card-acoes"><button class="bty" onclick="editarEvento(\'' + ev.id + '\')">Editar</button><button class="btr" onclick="excluirEvento(\'' + ev.id + '\')">Excluir</button></div></div>';
+    h += '</div><div class="ev-card-acoes"><button class="btn" onclick="verListaEvento(\'' + ev.id + '\')" style="font-size:11px;padding:8px 10px">Lista</button><button class="bty" onclick="editarEvento(\'' + ev.id + '\')">Editar</button><button class="btr" onclick="excluirEvento(\'' + ev.id + '\')">Excluir</button></div></div>';
   });
   el.innerHTML = h;
 }
@@ -1231,6 +1237,168 @@ async function excluirLote(loteId) {
   if (error) { alert('Erro: ' + error.message); return; }
 
   await carregarTudo();
+}
+
+// =================
+// LISTA DO EVENTO
+// =================
+function verListaEvento(eventoId) {
+  const ev = estado.eventos.find(e => e.id === eventoId);
+  if (!ev) return;
+  estado.listaEvento = ev;
+  estado.listaExcluidos = [];
+  estado.listaSel = [];
+  trocarAba('lista');
+  renderLista();
+}
+
+function renderLista() {
+  if (!estado.listaEvento) {
+    document.getElementById('listaVazia').classList.remove('gone');
+    document.getElementById('listaConteudo').classList.add('gone');
+    return;
+  }
+  document.getElementById('listaVazia').classList.add('gone');
+  document.getElementById('listaConteudo').classList.remove('gone');
+
+  const ev = estado.listaEvento;
+  const todasPessoas = estado.cadastros.filter(c => c.evento_id === ev.id);
+  const ativos = todasPessoas.filter(p => !estado.listaExcluidos.includes(p.id));
+  const excluidos = todasPessoas.filter(p => estado.listaExcluidos.includes(p.id));
+
+  const dataFmt = formatarData(ev.data);
+  const horaIni = formatarHora(ev.horario);
+  const horaFim = formatarHora(ev.horario_fim);
+
+  // Cabecalho
+  let h = '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;flex-wrap:wrap;gap:8px">';
+  h += '<div style="flex:1;min-width:180px"><div style="font-size:16px;font-weight:700;color:#fff">' + escaparHtml(ev.nome) + '</div>';
+  h += '<div style="font-size:11px;color:#666;margin-top:3px">';
+  if (dataFmt) h += dataFmt + (horaIni ? ' às ' + horaIni + (horaFim ? ' - ' + horaFim : '') : '');
+  if (ev.local) h += ' · ' + escaparHtml(ev.local);
+  h += '<br>' + ativos.length + ' confirmado(s)' + (excluidos.length ? ' · ' + excluidos.length + ' excluído(s)' : '');
+  h += '</div></div>';
+
+  // Botoes acao
+  h += '<div style="display:flex;gap:6px;flex-wrap:wrap">';
+  h += '<button class="bto" onclick="exportarListaCsv()" style="font-size:11px;padding:7px 10px">CSV</button>';
+  h += '<button class="bto" onclick="exportarListaXls()" style="font-size:11px;padding:7px 10px">Excel</button>';
+  if (estado.listaSel.length > 0) {
+    h += '<button class="btr" onclick="excluirSelecionados()" style="font-size:11px;padding:7px 10px">Excluir (' + estado.listaSel.length + ')</button>';
+  }
+  h += '</div></div>';
+
+  // Tabela ativos
+  if (!ativos.length) {
+    h += '<div class="empty">Nenhuma pessoa confirmada neste evento ainda.</div>';
+  } else {
+    const todosSel = ativos.every(p => estado.listaSel.includes(p.id));
+    h += '<div style="font-size:10px;color:#2aab47;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;font-weight:700">Confirmados (' + ativos.length + ')</div>';
+    h += '<div class="tbl"><table><thead><tr>';
+    h += '<th style="width:30px"><input type="checkbox" ' + (todosSel ? 'checked' : '') + ' onchange="toggleSelTodos(this.checked)"></th>';
+    h += '<th>Nome</th><th>Empresa</th><th>Status</th><th>Convidado por</th><th></th>';
+    h += '</tr></thead><tbody>';
+
+    ativos.forEach(p => {
+      const checked = estado.listaSel.includes(p.id) ? 'checked' : '';
+      let statusBadge = '';
+      if (p.status === 'aprovado') statusBadge = '<span class="badge ab">Aprov</span>';
+      else if (p.status === 'reprovado') statusBadge = '<span class="badge rb">Reprov</span>';
+      else statusBadge = '<span class="badge pb">Pend</span>';
+
+      h += '<tr>' +
+        '<td><input type="checkbox" ' + checked + ' onchange="toggleSelLinha(\'' + p.id + '\', this.checked)"></td>' +
+        '<td><span class="nlink" onclick="verPerfil(\'' + p.id + '\')">' + escaparHtml(p.nome) + '</span></td>' +
+        '<td style="color:#888;font-size:11px">' + escaparHtml(p.empresa || '-') + '</td>' +
+        '<td>' + statusBadge + '</td>' +
+        '<td style="color:#0891b2;font-size:11px">' + escaparHtml(p.lote_nome || '-') + '</td>' +
+        '<td><button class="btr" onclick="excluirDaLista(\'' + p.id + '\')" style="font-size:10px;padding:3px 8px">X</button></td>' +
+        '</tr>';
+    });
+
+    h += '</tbody></table></div>';
+  }
+
+  // Tabela excluidos
+  if (excluidos.length) {
+    h += '<div style="font-size:10px;color:#e74c3c;text-transform:uppercase;letter-spacing:1px;margin:18px 0 6px;font-weight:700">Excluídos (' + excluidos.length + ')</div>';
+    h += '<div class="tbl"><table><thead><tr><th>Nome</th><th>Empresa</th><th>Convidado por</th><th></th></tr></thead><tbody>';
+    excluidos.forEach(p => {
+      h += '<tr>' +
+        '<td style="color:#666">' + escaparHtml(p.nome) + '</td>' +
+        '<td style="color:#555;font-size:11px">' + escaparHtml(p.empresa || '-') + '</td>' +
+        '<td style="color:#555;font-size:11px">' + escaparHtml(p.lote_nome || '-') + '</td>' +
+        '<td><button class="bto" onclick="restaurarNaLista(\'' + p.id + '\')" style="font-size:10px;padding:3px 8px">Restaurar</button></td>' +
+        '</tr>';
+    });
+    h += '</tbody></table></div>';
+  }
+
+  document.getElementById('listaConteudo').innerHTML = h;
+}
+
+function toggleSelLinha(id, checked) {
+  if (checked) {
+    if (!estado.listaSel.includes(id)) estado.listaSel.push(id);
+  } else {
+    estado.listaSel = estado.listaSel.filter(x => x !== id);
+  }
+  renderLista();
+}
+
+function toggleSelTodos(checked) {
+  if (!estado.listaEvento) return;
+  const ativos = estado.cadastros
+    .filter(c => c.evento_id === estado.listaEvento.id && !estado.listaExcluidos.includes(c.id))
+    .map(c => c.id);
+  estado.listaSel = checked ? ativos : [];
+  renderLista();
+}
+
+function excluirDaLista(id) {
+  if (!estado.listaExcluidos.includes(id)) estado.listaExcluidos.push(id);
+  estado.listaSel = estado.listaSel.filter(x => x !== id);
+  renderLista();
+}
+
+function restaurarNaLista(id) {
+  estado.listaExcluidos = estado.listaExcluidos.filter(x => x !== id);
+  renderLista();
+}
+
+function excluirSelecionados() {
+  estado.listaSel.forEach(id => {
+    if (!estado.listaExcluidos.includes(id)) estado.listaExcluidos.push(id);
+  });
+  estado.listaSel = [];
+  renderLista();
+}
+
+function dadosListaExport() {
+  if (!estado.listaEvento) return [];
+  const ativos = estado.cadastros.filter(c => c.evento_id === estado.listaEvento.id && !estado.listaExcluidos.includes(c.id));
+  return ativos.map(c => [
+    c.nome || '', c.cpf || '', c.rg || '', c.email || '',
+    c.telefone || '', formatarData(c.nascimento),
+    c.setor || '', c.empresa || '', c.cargo || '',
+    c.status || '', c.lote_nome || ''
+  ]);
+}
+
+function exportarListaCsv() {
+  if (!estado.listaEvento) return;
+  const cab = 'Nome,CPF,RG,Email,Telefone,Nascimento,Setor,Empresa,Cargo,Status,Convidado por\n';
+  const rows = dadosListaExport().map(r => r.map(v => '"' + v + '"').join(',')).join('\n');
+  baixar(cab + rows, 'text/csv', 'Lista_' + estado.listaEvento.nome.replace(/[^a-z0-9]/gi, '_') + '.csv');
+}
+
+function exportarListaXls() {
+  if (!estado.listaEvento) return;
+  const head = ['Nome', 'CPF', 'RG', 'Email', 'Telefone', 'Nascimento', 'Setor', 'Empresa', 'Cargo', 'Status', 'Convidado por'];
+  const headHtml = '<Row>' + head.map(h => '<Cell><Data ss:Type="String">' + h + '</Data></Cell>').join('') + '</Row>';
+  const bodyHtml = dadosListaExport().map(r => '<Row>' + r.map(v => '<Cell><Data ss:Type="String">' + String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</Data></Cell>').join('') + '</Row>').join('');
+  const xml = '<?xml version="1.0"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"><Worksheet ss:Name="Lista"><Table>' + headHtml + bodyHtml + '</Table></Worksheet></Workbook>';
+  baixar(xml, 'application/vnd.ms-excel', 'Lista_' + estado.listaEvento.nome.replace(/[^a-z0-9]/gi, '_') + '.xls');
 }
 
 function trocarAba(nome) {
