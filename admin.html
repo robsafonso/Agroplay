@@ -64,6 +64,7 @@ input:focus, select:focus { border-color: #2aab47; }
 .pessoa-info { flex: 1; min-width: 0; }
 .pessoa-nome { font-size: 13px; font-weight: 700; color: #fff; }
 .pessoa-empresa { font-size: 10px; color: #888; margin-top: 2px; }
+.pessoa-contato { font-size: 10px; color: #666; margin-top: 2px; font-family: monospace; }
 .pessoa-status { font-size: 9px; margin-top: 3px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
 .pessoa-status.entrou { color: #2aab47; }
 .pessoa-status.aguardando { color: #c9973c; }
@@ -116,7 +117,7 @@ input:focus, select:focus { border-color: #2aab47; }
 
 <div id="appPainel" style="display:none">
   <header>
-    <div class="logo">
+    <div class="logo" onclick="window.location.href='home.html'" style="cursor:pointer">
       <div class="a">AGRO<span>PLAY</span></div>
       <div class="v">v32</div>
     </div>
@@ -194,6 +195,18 @@ let filtroAtual = 'todos';
 function escaparHtml(t) { if (!t) return ''; return String(t).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;'); }
 function formatarData(iso) { if (!iso) return ''; const p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
 function q(id) { return document.getElementById(id); }
+
+function tempoDentro(entradaEm) {
+  if (!entradaEm) return '';
+  const ms = Date.now() - new Date(entradaEm).getTime();
+  if (ms < 0) return '';
+  const min = Math.floor(ms / 60000);
+  if (min < 1) return 'agora';
+  if (min < 60) return 'há ' + min + ' min';
+  const horas = Math.floor(min / 60);
+  const minRestantes = min % 60;
+  return 'há ' + horas + 'h' + (minRestantes ? ' ' + minRestantes + 'min' : '');
+}
 
 // =====================
 // LOGIN
@@ -374,7 +387,8 @@ function renderLista() {
       classe = 'entrou';
       const dt = new Date(c.entrada_em);
       const hora = dt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-      stTxt = '✓ Entrou às ' + hora + (c.validador_nome ? ' (' + c.validador_nome + ')' : '');
+      const tempo = tempoDentro(c.entrada_em);
+      stTxt = '✓ Entrou às ' + hora + ' · ' + tempo + (c.validador_nome ? ' · por ' + c.validador_nome : '');
       stClasse = 'entrou';
     }
 
@@ -382,11 +396,17 @@ function renderLista() {
     if (c.foto_url) foto = '<img src="' + escaparHtml(c.foto_url) + '" class="pessoa-foto">';
     else foto = '<div class="pessoa-foto-vazio">' + (c.nome || '?').charAt(0).toUpperCase() + '</div>';
 
+    // Linha de contato (tel + cpf)
+    let contato = '';
+    if (c.telefone) contato += '📞 ' + escaparHtml(c.telefone);
+    if (c.cpf) contato += (contato ? ' · ' : '') + '🆔 ' + escaparHtml(c.cpf);
+
     h += '<div class="pessoa ' + classe + '">' +
       foto +
       '<div class="pessoa-info">' +
         '<div class="pessoa-nome">' + escaparHtml(c.nome) + '</div>' +
         '<div class="pessoa-empresa">' + escaparHtml(c.empresa || c.setor || '-') + (c.lote_nome ? ' · convidado por ' + escaparHtml(c.lote_nome) : '') + '</div>' +
+        (contato ? '<div class="pessoa-contato">' + contato + '</div>' : '') +
         '<div class="pessoa-status ' + stClasse + '">' + stTxt + '</div>' +
       '</div>' +
     '</div>';
@@ -433,10 +453,22 @@ function renderHistorico() {
   entradas.slice(0, 30).forEach(c => {
     const dt = new Date(c.entrada_em);
     const hora = dt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-    h += '<div class="hist-item"><div class="hist-nome">' + escaparHtml(c.nome) + '</div><div class="hist-meta">' + hora + (c.validador_nome ? ' · ' + escaparHtml(c.validador_nome) : '') + '</div></div>';
+    const tempo = tempoDentro(c.entrada_em);
+    h += '<div class="hist-item">' +
+      '<div class="hist-nome">' + escaparHtml(c.nome) + '</div>' +
+      '<div class="hist-meta">' + hora + ' · ' + tempo + (c.validador_nome ? ' · ' + escaparHtml(c.validador_nome) : '') + '</div>' +
+    '</div>';
   });
   el.innerHTML = h;
 }
+
+// Atualiza tempos a cada 30s pra mostrar "ha X min"
+setInterval(() => {
+  if (eventoAtual && cadastros.length) {
+    renderLista();
+    renderHistorico();
+  }
+}, 30000);
 
 function exportarCsv() {
   if (!cadastros.length) return;
