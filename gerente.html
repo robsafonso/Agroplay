@@ -1537,12 +1537,7 @@ async function enviarBilhete(cadastroId, btn) {
   const ev = estado.bilhetesEvento;
   if (!ev) return;
 
-  // Marca como enviado no banco
-  const agora = new Date().toISOString();
-  await sb.from('cadastros').update({ bilhete_enviado_em: agora }).eq('id', cadastroId);
-  cad.bilhete_enviado_em = agora;
-
-  // Monta mensagem
+  // Monta mensagem PRIMEIRO (antes de qualquer await pra clipboard funcionar no iOS Safari)
   const linkBilhete = URL_BASE + 'bilhete.html?cad=' + cadastroId + '&ev=' + ev.id;
   const dataFmt = formatarData(ev.data);
   const horaIni = formatarHora(ev.horario);
@@ -1555,13 +1550,46 @@ async function enviarBilhete(cadastroId, btn) {
 
   const msg = 'AGROPLAY Music 🎵\n\nOlá ' + cad.nome + '!\n\nSeu bilhete para ' + ev.nome + ' está disponível:' + detalhes + '\n\nAcesse seu bilhete digital com QR Code:\n' + linkBilhete + '\n\nApós receber, confirme o recebimento clicando no botão dentro do bilhete.\n\nAgroplay Music · Londrina PR';
 
-  // Copia pra área de transferência
-  await navigator.clipboard.writeText(msg);
+  // Copia IMEDIATAMENTE (mesmo tick do clique - exigido pelo Safari iOS)
+  let copiouOk = false;
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(msg);
+      copiouOk = true;
+    } else {
+      // Fallback antigo
+      const ta = document.createElement('textarea');
+      ta.value = msg;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      copiouOk = document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+  } catch (e) {
+    copiouOk = false;
+  }
+
+  // AGORA marca como enviado no banco
+  const agora = new Date().toISOString();
+  await sb.from('cadastros').update({ bilhete_enviado_em: agora }).eq('id', cadastroId);
+  cad.bilhete_enviado_em = agora;
 
   if (btn) {
-    btn.textContent = '✓ Mensagem copiada!';
+    btn.textContent = copiouOk ? '✓ Mensagem copiada!' : '⚠️ Copia manual abaixo';
     btn.disabled = true;
-    setTimeout(() => { renderBilhetes(); }, 1500);
+
+    if (!copiouOk) {
+      // Mostra a mensagem em um prompt pra usuario copiar manualmente
+      setTimeout(() => {
+        prompt('Copie a mensagem abaixo:', msg);
+        renderBilhetes();
+      }, 300);
+    } else {
+      setTimeout(() => { renderBilhetes(); }, 1500);
+    }
   } else {
     renderBilhetes();
   }
