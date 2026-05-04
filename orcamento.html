@@ -223,10 +223,16 @@ function addIt(cat,cid){
     method:'POST',
     headers:{apikey:KY,Authorization:'Bearer '+KY,'Content-Type':'application/json',Prefer:'return=representation'},
     body:JSON.stringify({evento_id:evAtual.id,categoria:cat,item:nome,quantidade:qtd,valor_unitario:val,valor_total:qtd*val})
-  }).then(function(r){return r.json();}).then(function(d){
-    if(Array.isArray(d)&&d[0])itens.push(d[0]);
-    render();
-  }).catch(function(){alert('Erro ao adicionar');});
+  }).then(function(r){
+    return r.json().then(function(d){return {status:r.status,data:d};});
+  }).then(function(o){
+    if(o.status>=200&&o.status<300){
+      if(Array.isArray(o.data)&&o.data[0])itens.push(o.data[0]);
+      render();
+    }else{
+      alert('Erro Supabase ('+o.status+'): '+JSON.stringify(o.data).substring(0,200));
+    }
+  }).catch(function(e){alert('Erro: '+e.message);});
 }
 
 function delIt(id){
