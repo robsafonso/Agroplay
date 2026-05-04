@@ -1661,7 +1661,7 @@ function renderBilhetes() {
     h += '<div style="background:#090e09;border:1px solid #1a2a1a;border-left:4px solid ' + cor + ';border-radius:8px;padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">';
     h += '<div style="flex:1;min-width:160px">';
     h += '<div style="font-size:14px;font-weight:700;color:#fff">' + escaparHtml(p.nome) + '</div>';
-    h += '<div style="font-size:10px;color:#666;margin-top:2px">' + escaparHtml(p.empresa || p.setor || '-') + '</div>';
+    h += '<div style="font-size:10px;color:#666;margin-top:2px">' + escaparHtml(p.empresa || p.setor || '-') + (p.lote_nome ? ' · convidado por <span style="color:#0891b2">' + escaparHtml(p.lote_nome) + '</span>' : '') + '</div>';
     h += '<div style="font-size:9px;color:' + cor + ';margin-top:3px;font-weight:700;text-transform:uppercase;letter-spacing:1px">' + statusTxt + '</div>';
     h += '</div>';
     if (btnAcao) {
