@@ -173,7 +173,11 @@ tr:last-child td { border-bottom: none; }
   </section>
 
   <section id="aba-codigos" class="gone">
-    <div class="construcao"><div class="icone-grande">🚧</div><div>Em construção</div></div>
+    <div class="topo-acoes">
+      <h2>Códigos de Convite</h2>
+      <button class="btn" id="btnPegarCodigo">+ Pegar 1 código</button>
+    </div>
+    <div id="conteudoCodigos"></div>
   </section>
 
   <section id="aba-lotes" class="gone">
@@ -501,7 +505,9 @@ const estado = {
   listaFiltroSetor: 'Todos',
   listaFiltroEmpresa: 'Todas',
   listaFiltroBilhete: 'Todos',
-  bilhetesEvento: null
+  bilhetesEvento: null,
+  codigosFiltro: 'disponiveis',
+  codigosBusca: ''
 };
 
 const CARGOS_ARTISTA = ['Artista / Cantor', 'Músico / Banda', 'Bailarino / Dançarino', 'Diretor de Palco', 'Produção', 'Técnico de Som', 'Técnico de Luz', 'Fotógrafo', 'Videomaker', 'Camarim', 'Maquiagem', 'Assessoria de Imprensa', 'Comercial / Agenciamento', 'Segurança', 'Motorista / Transfer', 'Road Manager', 'Outro'];
@@ -1823,6 +1829,193 @@ function trocarAba(nome) {
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.aba === nome));
   document.querySelectorAll('main > section').forEach(s => s.classList.add('gone'));
   document.getElementById('aba-' + nome).classList.remove('gone');
+  if (nome === 'codigos') renderCodigos();
+  if (nome === 'validadores') renderListaValidadores();
+}
+
+// =================
+// CODIGOS
+// =================
+function statusCodigo(c) {
+  if (c.queimado) return { txt: 'Queimado', cor: '#c0392b', emoji: '🔴', chave: 'queimados' };
+  if (c.usado) return { txt: 'Usado', cor: '#2aab47', emoji: '🟢', chave: 'usados' };
+  if (c.enviado) return { txt: 'Enviado', cor: '#c9973c', emoji: '🟡', chave: 'enviados' };
+  return { txt: 'Disponível', cor: '#0891b2', emoji: '🔵', chave: 'disponiveis' };
+}
+
+function renderCodigos() {
+  const el = document.getElementById('conteudoCodigos');
+  const todos = estado.codigos;
+
+  // Stats
+  const stats = { disponiveis: 0, enviados: 0, usados: 0, queimados: 0 };
+  todos.forEach(c => { stats[statusCodigo(c).chave]++; });
+
+  let h = '<div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">';
+  const cards = [
+    { chave: 'todos', label: 'Todos', cor: '#fff', valor: todos.length },
+    { chave: 'disponiveis', label: 'Disponíveis', cor: '#0891b2', valor: stats.disponiveis },
+    { chave: 'enviados', label: 'Enviados', cor: '#c9973c', valor: stats.enviados },
+    { chave: 'usados', label: 'Usados', cor: '#2aab47', valor: stats.usados },
+    { chave: 'queimados', label: 'Queimados', cor: '#c0392b', valor: stats.queimados }
+  ];
+  cards.forEach(card => {
+    const ativo = estado.codigosFiltro === card.chave;
+    h += '<div onclick="filtrarCodigos(\'' + card.chave + '\')" style="cursor:pointer;flex:1;min-width:90px;background:' + (ativo ? card.cor : '#0d150d') + ';border:1px solid ' + card.cor + ';border-radius:8px;padding:10px 6px;text-align:center;transition:all 0.2s">' +
+      '<div style="font-size:18px;font-weight:800;color:' + (ativo ? '#fff' : card.cor) + '">' + card.valor + '</div>' +
+      '<div style="font-size:8px;color:' + (ativo ? '#fff' : '#888') + ';text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-top:2px">' + card.label + '</div>' +
+    '</div>';
+  });
+  h += '</div>';
+
+  // Busca
+  h += '<input type="text" id="buscaCodigo" placeholder="Buscar por código (8 dígitos)..." value="' + escaparHtml(estado.codigosBusca) + '" oninput="buscarCodigo(this.value)" style="margin-bottom:12px">';
+
+  // Aplica filtros
+  let filtrados = todos;
+  if (estado.codigosFiltro !== 'todos') {
+    filtrados = filtrados.filter(c => statusCodigo(c).chave === estado.codigosFiltro);
+  }
+  if (estado.codigosBusca) {
+    filtrados = filtrados.filter(c => c.codigo.includes(estado.codigosBusca));
+  }
+
+  if (!filtrados.length) {
+    h += '<div class="empty">Nenhum código com esses filtros.</div>';
+    el.innerHTML = h;
+    return;
+  }
+
+  // Lista limitada (mostra 50, paginação se necessária)
+  const limite = 100;
+  const visiveis = filtrados.slice(0, limite);
+
+  h += '<div style="font-size:10px;color:#666;margin-bottom:8px">Mostrando ' + visiveis.length + ' de ' + filtrados.length + (filtrados.length > limite ? ' (limitado a ' + limite + ')' : '') + '</div>';
+
+  visiveis.forEach(c => {
+    const st = statusCodigo(c);
+    let lote = '';
+    if (c.lote_id) {
+      const l = estado.lotes.find(x => x.id === c.lote_id);
+      if (l) lote = ' · 📦 ' + escaparHtml(l.responsavel);
+    }
+    let cad = '';
+    if (c.cadastro_id) {
+      const cd = estado.cadastros.find(x => x.id === c.cadastro_id);
+      if (cd) cad = ' · 👤 ' + escaparHtml(cd.nome);
+    }
+
+    let btns = '';
+    // Pode copiar mensagem de qualquer codigo nao usado (gera link de cadastro)
+    if (!c.usado && !c.queimado) {
+      btns += '<button class="bto" onclick="copiarMsgCodigo(\'' + c.id + '\', this)" style="font-size:10px;padding:5px 8px">Copiar msg</button>';
+    }
+    // Pode queimar codigo nao usado e nao queimado
+    if (!c.usado && !c.queimado) {
+      btns += '<button class="btr" onclick="queimarCodigo(\'' + c.id + '\')" style="font-size:10px;padding:5px 8px">Queimar</button>';
+    }
+
+    h += '<div style="background:#090e09;border:1px solid #1a2a1a;border-left:3px solid ' + st.cor + ';border-radius:8px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">' +
+      '<div style="flex:1;min-width:180px">' +
+        '<div style="font-family:monospace;font-size:15px;font-weight:800;color:' + st.cor + ';letter-spacing:2px">' + escaparHtml(c.codigo) + '</div>' +
+        '<div style="font-size:9px;color:#888;margin-top:2px">' + st.emoji + ' ' + st.txt + lote + cad + '</div>' +
+      '</div>' +
+      (btns ? '<div style="display:flex;gap:6px;flex-wrap:wrap">' + btns + '</div>' : '') +
+    '</div>';
+  });
+
+  el.innerHTML = h;
+}
+
+function filtrarCodigos(chave) {
+  estado.codigosFiltro = chave;
+  renderCodigos();
+}
+
+function buscarCodigo(termo) {
+  estado.codigosBusca = (termo || '').replace(/\D/g, '').slice(0, 8);
+  // Re-renderiza preservando o foco
+  const inp = document.getElementById('buscaCodigo');
+  const sel = inp ? inp.selectionStart : null;
+  renderCodigos();
+  const inpNovo = document.getElementById('buscaCodigo');
+  if (inpNovo) {
+    inpNovo.focus();
+    if (sel !== null) inpNovo.setSelectionRange(sel, sel);
+  }
+}
+
+async function pegarUmCodigo() {
+  // Pega o primeiro disponível (não usado, não queimado, sem lote, não enviado)
+  const disponivel = estado.codigos.find(c => !c.usado && !c.queimado && !c.enviado && !c.lote_id);
+  if (!disponivel) {
+    alert('Sem códigos disponíveis no pool. Todos foram alocados em lotes ou já estão em uso.');
+    return;
+  }
+  await copiarMsgCodigoDireto(disponivel.id);
+}
+
+async function copiarMsgCodigo(codigoId, btn) {
+  await copiarMsgCodigoDireto(codigoId, btn);
+}
+
+async function copiarMsgCodigoDireto(codigoId, btn) {
+  const c = estado.codigos.find(x => x.id === codigoId);
+  if (!c) return;
+
+  const link = URL_BASE + 'cadastro.html?cod=' + c.codigo;
+  const msg = 'AGROPLAY Music 🎵\n\nVocê recebeu um convite!\n\nFaça seu cadastro pelo link abaixo:\n' + link + '\n\nCódigo: ' + c.codigo + '\n\nLink intransferível e de uso único.\n\nAgroplay Music · Londrina PR';
+
+  // Copia no mesmo tick
+  let copiouOk = false;
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(msg);
+      copiouOk = true;
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = msg;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.focus(); ta.select();
+      copiouOk = document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+  } catch (e) { copiouOk = false; }
+
+  // Marca como enviado se ainda não estava
+  if (!c.enviado) {
+    await sb.from('codigos').update({ enviado: true, enviado_em: new Date().toISOString() }).eq('id', codigoId);
+    c.enviado = true;
+    c.enviado_em = new Date().toISOString();
+  }
+
+  if (btn) {
+    btn.textContent = copiouOk ? '✓ Copiado!' : '⚠️ Copia manual';
+    setTimeout(() => { renderCodigos(); }, 1200);
+  }
+  if (!copiouOk) {
+    setTimeout(() => prompt('Copie a mensagem abaixo:', msg), 200);
+  }
+  if (!btn) {
+    alert(copiouOk ? '✓ Mensagem copiada!\n\nCódigo: ' + c.codigo + '\nCole no WhatsApp da pessoa.' : 'Erro ao copiar. Veja o prompt.');
+    if (!copiouOk) prompt('Copie a mensagem abaixo:', msg);
+    renderCodigos();
+  }
+}
+
+async function queimarCodigo(codigoId) {
+  const c = estado.codigos.find(x => x.id === codigoId);
+  if (!c) return;
+  if (!confirm('Queimar o código ' + c.codigo + '?\n\nEle não poderá mais ser usado para cadastro. Esta ação NÃO pode ser desfeita.')) return;
+
+  const { error } = await sb.from('codigos').update({ queimado: true, queimado_em: new Date().toISOString() }).eq('id', codigoId);
+  if (error) { alert('Erro: ' + error.message); return; }
+
+  c.queimado = true;
+  c.queimado_em = new Date().toISOString();
+  renderCodigos();
 }
 
 document.querySelectorAll('.tab').forEach(t => { t.addEventListener('click', () => trocarAba(t.dataset.aba)); });
@@ -1853,6 +2046,7 @@ document.getElementById('btnNovoLote').addEventListener('click', abrirNovoLote);
 document.getElementById('btnSalvarLote').addEventListener('click', salvarLote);
 document.getElementById('btnNovoValidador').addEventListener('click', abrirNovoValidador);
 document.getElementById('btnSalvarValidador').addEventListener('click', salvarValidador);
+document.getElementById('btnPegarCodigo').addEventListener('click', pegarUmCodigo);
 document.getElementById('btnCopiarTodosConvites').addEventListener('click', copiarTodosConvites);
 
 carregarTudo();
