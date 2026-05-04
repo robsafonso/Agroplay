@@ -8,37 +8,11 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-body {
-font-family: Arial, sans-serif;
-background: #060a06;
-color: #eee;
-font-size: 14px;
-padding-bottom: 40px;
-}
+body { font-family: Arial, sans-serif; background: #060a06; color: #eee; font-size: 14px; padding-bottom: 40px; }
 
-header {
-background: #060a06;
-border-bottom: 2px solid #1e7a35;
-padding: 12px 16px;
-display: flex;
-justify-content: space-between;
-align-items: center;
-position: sticky;
-top: 0;
-z-index: 10;
-gap: 8px;
-}
+header { background: #060a06; border-bottom: 2px solid #1e7a35; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; gap: 8px; }
 
-.logo {
-display: flex;
-align-items: center;
-border: 1px solid #1a2a1a;
-border-radius: 10px;
-overflow: hidden;
-cursor: pointer;
-flex-shrink: 0;
-}
-
+.logo { display: flex; align-items: center; border: 1px solid #1a2a1a; border-radius: 10px; overflow: hidden; cursor: pointer; flex-shrink: 0; }
 .logo .a { background: #0d150d; padding: 7px 12px; font-size: 16px; font-weight: 900; color: #fff; letter-spacing: 1px; }
 .logo .a span { color: #2aab47; }
 .logo .v { background: #c9973c; padding: 7px 10px; font-size: 11px; font-weight: 700; color: #fff; letter-spacing: 1px; }
@@ -134,13 +108,22 @@ tr:last-child td { border-bottom: none; }
 .construcao { text-align: center; padding: 60px 20px; color: #555; }
 .construcao .icone-grande { font-size: 40px; margin-bottom: 12px; }
 
-.ev-card { background: #090e09; border: 1px solid #1a2a1a; border-radius: 12px; padding: 14px; margin-bottom: 10px; }
-.ev-card-nome { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 6px; }
-.ev-card-info { font-size: 12px; color: #888; line-height: 1.6; margin-bottom: 10px; }
-.ev-card-acoes { display: flex; gap: 6px; flex-wrap: wrap; }
+.ev-card, .lt-card { background: #090e09; border: 1px solid #1a2a1a; border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+.ev-card-nome, .lt-card-nome { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.ev-card-info, .lt-card-info { font-size: 12px; color: #888; line-height: 1.6; margin-bottom: 10px; }
+.ev-card-acoes, .lt-card-acoes { display: flex; gap: 6px; flex-wrap: wrap; }
 
 .topo-acoes { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px; }
 .topo-acoes h2 { font-size: 16px; color: #fff; }
+
+.lt-info-block { background: #030503; border: 1px solid #1a2a1a; border-radius: 8px; padding: 10px; margin-bottom: 10px; font-size: 12px; }
+.lt-info-block .titulo { font-size: 9px; color: #555; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
+.lt-info-block .valor { color: #2aab47; font-weight: 700; word-break: break-all; font-family: monospace; }
+
+.progresso { background: #1a2a1a; border-radius: 4px; height: 6px; overflow: hidden; margin: 8px 0; }
+.progresso-bar { background: #2aab47; height: 100%; transition: width 0.3s; }
+
+.convite-mini { background: #030503; border: 1px solid #1a2a1a; border-radius: 8px; padding: 10px; margin-bottom: 8px; }
 </style>
 
 </head>
@@ -192,13 +175,19 @@ tr:last-child td { border-bottom: none; }
   </section>
 
   <section id="aba-lotes" class="gone">
-    <div class="construcao"><div class="icone-grande">🚧</div><div>Em construção</div></div>
+    <div class="topo-acoes">
+      <h2>Lotes</h2>
+      <button class="btn" id="btnNovoLote">+ Criar lote</button>
+    </div>
+    <div id="listaLotes"></div>
   </section>
 
   <section id="aba-lista" class="gone">
     <div class="construcao"><div class="icone-grande">🚧</div><div>Em construção</div></div>
   </section>
 </main>
+
+<!-- MODAL: NOVO CADASTRO -->
 
 <div class="ov" id="modalNovoCad">
   <div class="mod">
@@ -276,6 +265,8 @@ tr:last-child td { border-bottom: none; }
   </div>
 </div>
 
+<!-- MODAL: LINK CADASTRO -->
+
 <div class="ov ovc" id="modalLinkCad">
   <div class="mod">
     <div class="mod-titulo">
@@ -297,6 +288,8 @@ tr:last-child td { border-bottom: none; }
     </div>
   </div>
 </div>
+
+<!-- MODAL: PERFIL -->
 
 <div class="ov" id="modalPerfil">
   <div class="mod">
@@ -368,12 +361,16 @@ tr:last-child td { border-bottom: none; }
   </div>
 </div>
 
+<!-- MODAL: FOTO GRANDE -->
+
 <div class="ov ovc" id="modalFotoGrande">
   <div style="max-width:90vw;max-height:90vh;text-align:center">
     <img id="fotoGrande" style="max-width:90vw;max-height:80vh;border-radius:12px"/>
     <button class="bto" style="margin-top:12px" onclick="fecharModal('modalFotoGrande')">Fechar</button>
   </div>
 </div>
+
+<!-- MODAL: EVENTO -->
 
 <div class="ov" id="modalEvento">
   <div class="mod">
@@ -410,6 +407,42 @@ tr:last-child td { border-bottom: none; }
   </div>
 </div>
 
+<!-- MODAL: NOVO LOTE -->
+
+<div class="ov ovc" id="modalLote">
+  <div class="mod">
+    <div class="mod-titulo">
+      <h3>Novo Lote de Convites</h3>
+      <button class="mod-fechar" onclick="fecharModal('modalLote')">X</button>
+    </div>
+    <div id="alertaLote"></div>
+    <div class="fl"><label>Nome do responsável *</label><input id="ltResp" placeholder="Ex: Albertone"></div>
+    <div class="fl"><label>Quantidade de convites</label><input id="ltQtd" type="number" value="10" min="1" max="200"></div>
+    <div class="fl">
+      <label>Evento (opcional)</label>
+      <select id="ltEvento"><option value="">Nenhum evento</option></select>
+    </div>
+    <button class="btn" id="btnSalvarLote" style="width:100%">Criar lote</button>
+    <button class="bto" onclick="fecharModal('modalLote')" style="width:100%;margin-top:8px">Cancelar</button>
+  </div>
+</div>
+
+<!-- MODAL: VER CONVITES DO LOTE -->
+
+<div class="ov" id="modalConvitesLote">
+  <div class="mod">
+    <div class="mod-titulo">
+      <h3 id="modalConvitesTitulo">Convites do lote</h3>
+      <button class="mod-fechar" onclick="fecharModal('modalConvitesLote')">X</button>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+      <div style="font-size:12px;color:#888">Copie 1 a 1 ou todos de uma vez</div>
+      <button class="btn" id="btnCopiarTodosConvites" style="font-size:11px;padding:8px 12px">Copiar todos</button>
+    </div>
+    <div id="listaConvitesLote"></div>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
@@ -443,15 +476,20 @@ function fecharModal(id) { document.getElementById(id).classList.remove('on'); p
 function copiar(texto, botao, label) {
   const original = label || (botao ? botao.textContent : '');
   navigator.clipboard.writeText(texto).then(() => {
-    if (botao) { botao.textContent = 'Copiado!'; setTimeout(() => { botao.textContent = original; }, 1800); }
+    if (botao) { botao.textContent = '✓ Copiado!'; setTimeout(() => { botao.textContent = original; }, 1800); }
   });
 }
 
 function baixar(conteudo, mime, nome) {
   const blob = new Blob([conteudo], { type: mime });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = nome; a.click();
+  const a = document.createElement('a'); a.href = url; a.download = nome; a.click();
+}
+
+function gerarSenhaLote(responsavel) {
+  const base = (responsavel || 'lote').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const num = Math.floor(Math.random() * 900 + 100);
+  return base + num;
 }
 
 let streamNovoCad = null;
@@ -481,12 +519,13 @@ async function carregarTudo() {
   renderFiltroEmpresa();
   renderTabelaCadastros();
   renderListaEventos();
+  renderListaLotes();
 }
 
 function renderEstatisticas() {
   const totalCadastros = estado.cadastros.length;
   const totalEventos = estado.eventos.length;
-  const codigosLivres = estado.codigos.filter(c => !c.usado).length;
+  const codigosLivres = estado.codigos.filter(c => !c.usado && !c.lote_id).length;
   const pendentes = estado.cadastros.filter(c => c.status === 'pendente' && c.evento_id).length;
 
   document.getElementById('stats').innerHTML =
@@ -548,8 +587,7 @@ function verPerfil(id) {
   if (c.foto_url) cabec = '<img src="' + c.foto_url + '" class="perfil-foto" onclick="abrirFotoGrande(\'' + c.id + '\')">';
   else cabec = '<div class="perfil-inicial" style="background:' + cor + '">' + (c.nome || '?').charAt(0).toUpperCase() + '</div>';
 
-  cabec += '<div class="perfil-nome">' + escaparHtml(c.nome) + '</div>' +
-    '<span class="badge" style="background:' + cor + ';margin-top:6px">' + (c.setor || '-') + '</span>';
+  cabec += '<div class="perfil-nome">' + escaparHtml(c.nome) + '</div><span class="badge" style="background:' + cor + ';margin-top:6px">' + (c.setor || '-') + '</span>';
   if (c.lote_nome) cabec += '<div class="perfil-lote">Convidado por <b>' + escaparHtml(c.lote_nome) + '</b></div>';
 
   let rows = [['CPF', c.cpf], ['RG', c.rg], ['Email', c.email], ['Telefone', c.telefone], ['Nascimento', formatarData(c.nascimento)]];
@@ -615,7 +653,6 @@ function toggleEditarCargo() {
   const box = document.getElementById('editarCargoBox');
   const btn = document.getElementById('btnEditarCargo');
   const c = estado.perfilAtual; if (!c) return;
-
   if (box.classList.contains('gone')) {
     box.classList.remove('gone');
     btn.textContent = 'Fechar edição';
@@ -786,10 +823,8 @@ async function salvarCadastro() {
   };
 
   const { error } = await sb.from('cadastros').insert(dados);
-
   btn.textContent = 'Salvar cadastro'; btn.disabled = false;
   if (error) { al.innerHTML = '<div class="ea">Erro ao salvar: ' + error.message + '</div>'; return; }
-
   al.innerHTML = '<div class="ok">Cadastro salvo!</div>';
   await carregarTudo();
   setTimeout(() => fecharModal('modalNovoCad'), 1200);
@@ -806,25 +841,19 @@ async function gerarLinkCadastro() {
   const btn = document.getElementById('btnGerarLink');
   btn.textContent = 'Gerando...'; btn.disabled = true;
   document.getElementById('alertaLinkCad').innerHTML = '';
-
   const { data: codigos } = await sb.from('codigos').select('id, codigo').eq('usado', false).is('lote_id', null).limit(1);
-
   if (!codigos || !codigos.length) {
     document.getElementById('alertaLinkCad').innerHTML = '<div class="ea">Nenhum código disponível!</div>';
     btn.textContent = 'Gerar convite de cadastro'; btn.disabled = false; return;
   }
-
   const cod = codigos[0];
   await sb.from('codigos').update({ usado: true, usado_em: new Date().toISOString() }).eq('id', cod.id);
-
   const link = URL_BASE + 'cadastro.html?cod=' + cod.codigo + '&resp=' + encodeURIComponent(admin.nome || 'Robson');
   const msg = 'AGROPLAY Music 🎵\n\nOlá! Você foi convidado por ' + (admin.nome || 'Robson') + ' para fazer parte do nosso sistema.\n\nAcesse o link abaixo e faça seu cadastro:\n' + link + '\n\nCódigo: ' + cod.codigo + '\nCódigo intransferível e de uso único.';
-
   document.getElementById('lcCodigo').textContent = cod.codigo;
   document.getElementById('lcMensagem').textContent = msg;
   document.getElementById('lcForm').classList.add('gone');
   document.getElementById('lcResult').classList.remove('gone');
-
   btn.textContent = 'Gerar convite de cadastro'; btn.disabled = false;
   carregarTudo();
 }
@@ -853,7 +882,6 @@ function renderListaEventos() {
     el.innerHTML = '<div class="empty">Nenhum evento criado. Toque em + Criar evento.</div>';
     return;
   }
-
   let h = '';
   estado.eventos.forEach(ev => {
     const data = formatarData(ev.data);
@@ -861,24 +889,13 @@ function renderListaEventos() {
     const horaFim = formatarHora(ev.horario_fim);
     const cadVinc = estado.cadastros.filter(c => c.evento_id === ev.id).length;
     const tipoBadge = ev.tipo === 'interno' ? '<span class="badge" style="background:#0891b2;font-size:9px;margin-left:6px">INT</span>' : '<span class="badge" style="background:#1f2937;font-size:9px;margin-left:6px">EXT</span>';
-
-    h += '<div class="ev-card">' +
-      '<div class="ev-card-nome">' + escaparHtml(ev.nome) + tipoBadge + '</div>' +
-      '<div class="ev-card-info">';
-
+    h += '<div class="ev-card"><div class="ev-card-nome">' + escaparHtml(ev.nome) + tipoBadge + '</div><div class="ev-card-info">';
     if (data) h += '📅 ' + data + (horaIni ? ' às ' + horaIni + (horaFim ? ' - ' + horaFim : '') : '') + '<br>';
     if (ev.local) h += '📍 ' + escaparHtml(ev.local) + '<br>';
     if (ev.atracao1) h += '🎵 ' + escaparHtml(ev.atracao1) + (ev.atracao2 ? ' + ' + escaparHtml(ev.atracao2) : '') + '<br>';
     if (cadVinc > 0) h += '👥 ' + cadVinc + ' cadastro(s) vinculado(s)<br>';
-
-    h += '</div>' +
-      '<div class="ev-card-acoes">' +
-        '<button class="bty" onclick="editarEvento(\'' + ev.id + '\')">Editar</button>' +
-        '<button class="btr" onclick="excluirEvento(\'' + ev.id + '\')">Excluir</button>' +
-      '</div>' +
-    '</div>';
+    h += '</div><div class="ev-card-acoes"><button class="bty" onclick="editarEvento(\'' + ev.id + '\')">Editar</button><button class="btr" onclick="excluirEvento(\'' + ev.id + '\')">Excluir</button></div></div>';
   });
-
   el.innerHTML = h;
 }
 
@@ -919,10 +936,8 @@ async function salvarEvento() {
   const al = document.getElementById('alertaEvento');
   al.innerHTML = '';
   if (!nome) { al.innerHTML = '<div class="ea">Nome obrigatório</div>'; return; }
-
   const btn = document.getElementById('btnSalvarEvento');
   btn.textContent = 'Salvando...'; btn.disabled = true;
-
   const dados = {
     nome,
     data: document.getElementById('evData').value || null,
@@ -939,14 +954,11 @@ async function salvarEvento() {
     foto_url: document.getElementById('evFoto').value.trim() || null,
     descricao: document.getElementById('evDescricao').value.trim() || null
   };
-
   let resposta;
   if (estado.eventoEditandoId) resposta = await sb.from('eventos').update(dados).eq('id', estado.eventoEditandoId);
   else resposta = await sb.from('eventos').insert(dados);
-
   btn.textContent = 'Salvar'; btn.disabled = false;
   if (resposta.error) { al.innerHTML = '<div class="ea">Erro ao salvar: ' + resposta.error.message + '</div>'; return; }
-
   al.innerHTML = '<div class="ok">Evento salvo!</div>';
   await carregarTudo();
   setTimeout(() => fecharModal('modalEvento'), 1000);
@@ -961,6 +973,264 @@ async function excluirEvento(id) {
   estado.eventos = estado.eventos.filter(e => e.id !== id);
   estado.cadastros.forEach(c => { if (c.evento_id === id) { c.evento_id = null; c.lote_id = null; c.lote_nome = null; c.validador_id = null; c.validador_nome = null; } });
   renderListaEventos(); renderEstatisticas(); renderTabelaCadastros();
+}
+
+// =================
+// LOTES
+// =================
+function renderListaLotes() {
+  const el = document.getElementById('listaLotes');
+  if (!estado.lotes.length) {
+    el.innerHTML = '<div class="empty">Nenhum lote criado. Toque em + Criar lote.</div>';
+    return;
+  }
+  let h = '';
+  estado.lotes.forEach(lt => {
+    const codigosDoLote = estado.codigos.filter(c => c.lote_id === lt.id);
+    const usados = codigosDoLote.filter(c => c.usado).length;
+    const total = codigosDoLote.length;
+    const pct = total > 0 ? (usados / total) * 100 : 0;
+
+    let evNome = '';
+    if (lt.evento_id) {
+      const ev = estado.eventos.find(e => e.id === lt.evento_id);
+      if (ev) evNome = ev.nome;
+    }
+
+    const linkPainel = URL_BASE + 'lote.html';
+
+    h += '<div class="lt-card">' +
+      '<div class="lt-card-nome">' + escaparHtml(lt.responsavel) + '</div>' +
+      '<div class="lt-card-info">' +
+        (evNome ? '🎵 Evento: ' + escaparHtml(evNome) + '<br>' : '') +
+        '📊 ' + usados + ' usados de ' + total + ' convites' +
+      '</div>' +
+      '<div class="progresso"><div class="progresso-bar" style="width:' + pct + '%"></div></div>' +
+      '<div class="lt-info-block">' +
+        '<div class="titulo">Senha de acesso</div>' +
+        '<div class="valor">' + escaparHtml(lt.senha || '-') + '</div>' +
+      '</div>' +
+      '<div class="lt-info-block">' +
+        '<div class="titulo">Link do painel</div>' +
+        '<div class="valor">' + linkPainel + '</div>' +
+      '</div>' +
+      '<div class="lt-card-acoes">' +
+        '<button class="btn" onclick="verConvitesLote(\'' + lt.id + '\')" style="font-size:11px;padding:8px 10px">Ver convites</button>' +
+        '<button class="bto" onclick="copiarLinkResp(\'' + lt.id + '\', this)" style="font-size:11px;padding:8px 10px">Copiar link</button>' +
+        '<button class="bto" onclick="adicionarConvitesLote(\'' + lt.id + '\')" style="font-size:11px;padding:8px 10px">+ Convites</button>' +
+        '<button class="btr" onclick="excluirLote(\'' + lt.id + '\')" style="font-size:11px;padding:8px 10px">Excluir</button>' +
+      '</div>' +
+    '</div>';
+  });
+  el.innerHTML = h;
+}
+
+function abrirNovoLote() {
+  document.getElementById('alertaLote').innerHTML = '';
+  document.getElementById('ltResp').value = '';
+  document.getElementById('ltQtd').value = '10';
+  const sel = document.getElementById('ltEvento');
+  sel.innerHTML = '<option value="">Nenhum evento</option>';
+  estado.eventos.forEach(ev => {
+    sel.innerHTML += '<option value="' + ev.id + '">' + escaparHtml(ev.nome) + '</option>';
+  });
+  abrirModal('modalLote');
+}
+
+async function salvarLote() {
+  const resp = document.getElementById('ltResp').value.trim();
+  const al = document.getElementById('alertaLote');
+  al.innerHTML = '';
+  if (!resp) { al.innerHTML = '<div class="ea">Nome do responsável é obrigatório</div>'; return; }
+
+  let qtd = parseInt(document.getElementById('ltQtd').value) || 10;
+  if (qtd > 200) qtd = 200;
+  if (qtd < 1) qtd = 1;
+
+  const evId = document.getElementById('ltEvento').value || null;
+  const senha = gerarSenhaLote(resp);
+
+  const btn = document.getElementById('btnSalvarLote');
+  btn.textContent = 'Criando lote...'; btn.disabled = true;
+
+  // 1. Cria o lote
+  const loteDados = { nome: 'Lote ' + resp, responsavel: resp, quantidade: qtd, senha: senha };
+  if (evId) loteDados.evento_id = evId;
+
+  const { data: novoLote, error: errLote } = await sb.from('lotes').insert(loteDados).select().single();
+
+  if (errLote || !novoLote) {
+    btn.textContent = 'Criar lote'; btn.disabled = false;
+    al.innerHTML = '<div class="ea">Erro ao criar lote: ' + (errLote?.message || '') + '</div>';
+    return;
+  }
+
+  // 2. Pega N codigos disponiveis
+  const { data: codigosDisp, error: errCods } = await sb
+    .from('codigos')
+    .select('id, codigo')
+    .eq('usado', false)
+    .is('lote_id', null)
+    .limit(qtd);
+
+  if (errCods || !codigosDisp || codigosDisp.length < qtd) {
+    btn.textContent = 'Criar lote'; btn.disabled = false;
+    al.innerHTML = '<div class="ea">Apenas ' + (codigosDisp?.length || 0) + ' códigos disponíveis no banco. Lote criado vazio.</div>';
+    await carregarTudo();
+    return;
+  }
+
+  // 3. Atualiza esses codigos vinculando ao lote
+  const codigosIds = codigosDisp.map(c => c.id);
+  const updateData = { lote_id: novoLote.id };
+  if (evId) updateData.evento_id = evId;
+
+  await sb.from('codigos').update(updateData).in('id', codigosIds);
+
+  btn.textContent = 'Criar lote'; btn.disabled = false;
+  al.innerHTML = '<div class="ok">Lote criado com ' + qtd + ' convites! Senha: ' + senha + '</div>';
+
+  await carregarTudo();
+  setTimeout(() => fecharModal('modalLote'), 1500);
+}
+
+async function adicionarConvitesLote(loteId) {
+  const lt = estado.lotes.find(l => l.id === loteId);
+  if (!lt) return;
+  const qtStr = prompt('Quantos convites adicionar ao lote do ' + lt.responsavel + '?', '5');
+  if (!qtStr) return;
+  const qtd = parseInt(qtStr);
+  if (!qtd || qtd < 1) return;
+
+  const { data: codigosDisp } = await sb
+    .from('codigos')
+    .select('id, codigo')
+    .eq('usado', false)
+    .is('lote_id', null)
+    .limit(qtd);
+
+  if (!codigosDisp || codigosDisp.length < qtd) {
+    alert('Apenas ' + (codigosDisp?.length || 0) + ' códigos disponíveis');
+    return;
+  }
+
+  const codigosIds = codigosDisp.map(c => c.id);
+  const updateData = { lote_id: loteId };
+  if (lt.evento_id) updateData.evento_id = lt.evento_id;
+
+  await sb.from('codigos').update(updateData).in('id', codigosIds);
+
+  // Atualiza quantidade do lote
+  const novoTotal = (lt.quantidade || 0) + qtd;
+  await sb.from('lotes').update({ quantidade: novoTotal }).eq('id', loteId);
+
+  await carregarTudo();
+  alert(qtd + ' convites adicionados!');
+}
+
+function copiarLinkResp(loteId, btn) {
+  const lt = estado.lotes.find(l => l.id === loteId);
+  if (!lt) return;
+  const linkPainel = URL_BASE + 'lote.html';
+
+  let evBlock = '';
+  if (lt.evento_id) {
+    const ev = estado.eventos.find(e => e.id === lt.evento_id);
+    if (ev) {
+      const data = formatarData(ev.data);
+      const horario = ev.horario ? ev.horario.substring(0, 5) : '';
+      const horarioFim = ev.horario_fim ? ev.horario_fim.substring(0, 5) : '';
+      evBlock = '\n\n🎵 ' + ev.nome;
+      if (data) evBlock += '\n📅 ' + data + (horario ? ' às ' + horario + (horarioFim ? ' - ' + horarioFim : '') : '');
+      if (ev.local) evBlock += '\n📍 ' + ev.local;
+      if (ev.atracao1) evBlock += '\n🎤 ' + ev.atracao1 + (ev.atracao2 ? ' + ' + ev.atracao2 : '');
+    }
+  }
+
+  const msg = 'AGROPLAY Music 🎵\n\nOlá ' + lt.responsavel + '!\n\nVocê foi selecionado para distribuir convites' + (evBlock ? ' para:' + evBlock : '.') + '\n\nAcesse seu painel de convites:\n' + linkPainel + '\n\nSua senha: ' + lt.senha + '\n\n(No primeiro acesso, você precisará trocar a senha por segurança.)\n\nAgroplay Music · Londrina PR';
+
+  copiar(msg, btn, 'Copiar link');
+}
+
+function verConvitesLote(loteId) {
+  const lt = estado.lotes.find(l => l.id === loteId);
+  if (!lt) return;
+  const codigos = estado.codigos.filter(c => c.lote_id === loteId);
+  if (!codigos.length) {
+    alert('Esse lote não tem convites');
+    return;
+  }
+
+  document.getElementById('modalConvitesTitulo').textContent = 'Convites de ' + lt.responsavel + ' (' + codigos.length + ')';
+
+  let evBlock = '';
+  if (lt.evento_id) {
+    const ev = estado.eventos.find(e => e.id === lt.evento_id);
+    if (ev) {
+      const data = formatarData(ev.data);
+      const horario = ev.horario ? ev.horario.substring(0, 5) : '';
+      const horarioFim = ev.horario_fim ? ev.horario_fim.substring(0, 5) : '';
+      evBlock = '\n\n🎤 ' + ev.nome;
+      if (data) evBlock += '\n📅 ' + data + (horario ? ' às ' + horario + (horarioFim ? ' - ' + horarioFim : '') : '');
+      if (ev.local) evBlock += '\n📍 ' + ev.local;
+      if (ev.atracao1) evBlock += '\n🎵 ' + ev.atracao1 + (ev.atracao2 ? ' + ' + ev.atracao2 : '');
+    }
+  }
+
+  let h = '';
+  codigos.forEach((c, i) => {
+    const link = URL_BASE + 'cadastro.html?cod=' + c.codigo + '&resp=' + encodeURIComponent(lt.responsavel) + (lt.evento_id ? '&ev=' + lt.evento_id : '');
+    const msg = 'AGROPLAY Music 🎵\n\nOlá! Você foi convidado por ' + lt.responsavel + ' para fazer parte do nosso sistema.' + evBlock + '\n\nAcesse o link abaixo e faça seu cadastro:\n' + link + '\n\nCódigo: ' + c.codigo + '\nCódigo intransferível e de uso único.';
+
+    h += '<div class="convite-mini">' +
+      '<div style="font-size:9px;color:#555;margin-bottom:4px;text-transform:uppercase">Convite ' + (i + 1) + (c.usado ? ' (USADO)' : '') + '</div>' +
+      '<div style="font-family:monospace;font-size:13px;color:' + (c.usado ? '#555' : '#2aab47') + ';margin-bottom:8px;font-weight:700">' + c.codigo + '</div>' +
+      '<button class="btn" data-msg="' + escaparHtml(msg) + '" onclick="copiarMsgConvite(this)" style="font-size:11px;padding:7px;width:100%">Copiar mensagem ' + (i + 1) + '</button>' +
+    '</div>';
+  });
+
+  document.getElementById('listaConvitesLote').innerHTML = h;
+  abrirModal('modalConvitesLote');
+}
+
+function copiarMsgConvite(btn) {
+  const msg = btn.dataset.msg.replaceAll('&amp;', '&').replaceAll('&lt;', '<').replaceAll('&gt;', '>').replaceAll('&quot;', '"');
+  copiar(msg, btn, btn.textContent);
+}
+
+function copiarTodosConvites() {
+  const btns = document.querySelectorAll('#listaConvitesLote button[data-msg]');
+  if (!btns.length) return;
+  const msgs = [];
+  btns.forEach(b => {
+    const m = b.dataset.msg.replaceAll('&amp;', '&').replaceAll('&lt;', '<').replaceAll('&gt;', '>').replaceAll('&quot;', '"');
+    msgs.push(m);
+  });
+  const all = msgs.join('\n\n---\n\n');
+  copiar(all, document.getElementById('btnCopiarTodosConvites'), 'Copiar todos');
+}
+
+async function excluirLote(loteId) {
+  const lt = estado.lotes.find(l => l.id === loteId);
+  if (!lt) return;
+  if (!confirm('Excluir o lote de "' + lt.responsavel + '"?\n\nOs códigos não usados voltam para o pool.\nCadastros das pessoas serão mantidos.')) return;
+
+  // 1. Devolve códigos não usados pro pool (lote_id = null, evento_id = null)
+  await sb.from('codigos')
+    .update({ lote_id: null, evento_id: null })
+    .eq('lote_id', loteId)
+    .eq('usado', false);
+
+  // 2. Marca codigos usados como sem lote (mas mantém usado=true e cadastro_id)
+  await sb.from('codigos')
+    .update({ lote_id: null })
+    .eq('lote_id', loteId);
+
+  // 3. Apaga o lote
+  const { error } = await sb.from('lotes').delete().eq('id', loteId);
+  if (error) { alert('Erro: ' + error.message); return; }
+
+  await carregarTudo();
 }
 
 function trocarAba(nome) {
@@ -993,6 +1263,9 @@ document.getElementById('btnExpCsv').addEventListener('click', exportarCsv);
 document.getElementById('btnExpXls').addEventListener('click', exportarXls);
 document.getElementById('btnNovoEvento').addEventListener('click', abrirNovoEvento);
 document.getElementById('btnSalvarEvento').addEventListener('click', salvarEvento);
+document.getElementById('btnNovoLote').addEventListener('click', abrirNovoLote);
+document.getElementById('btnSalvarLote').addEventListener('click', salvarLote);
+document.getElementById('btnCopiarTodosConvites').addEventListener('click', copiarTodosConvites);
 
 carregarTudo();
 </script>
