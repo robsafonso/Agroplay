@@ -182,14 +182,22 @@ function post(path,meth,body){return fetch(SB+"/rest/v1/"+path,{method:meth,head
 
 // ---------- Eventos ----------
 function carregarEventos(){
-  get("eventos?select=id,nome,data,hora_inicio,local,atracoes&order=data.asc").then(function(evs){
+  get("eventos?select=id,nome,data,horario,local,atracao1,atracao2&order=data.asc").then(function(evs){
     var sel=q("ev-sel");
+    if(!Array.isArray(evs)){
+      sel.innerHTML="<option value=''>Erro: "+JSON.stringify(evs).substring(0,80)+"</option>";
+      return;
+    }
     sel.innerHTML="<option value=''>Selecione um evento...</option>";
-    (evs||[]).forEach(function(ev){
+    if(evs.length===0){
+      sel.innerHTML="<option value=''>Nenhum evento cadastrado</option>";
+      return;
+    }
+    evs.forEach(function(ev){
       sel.innerHTML+="<option value='"+ev.id+"'>"+esc(ev.nome)+" ("+fd(ev.data)+")</option>";
     });
-    window._evs=evs||[];
-  }).catch(function(){q("ev-sel").innerHTML="<option value=''>Erro - recarregue</option>";});
+    window._evs=evs;
+  }).catch(function(e){q("ev-sel").innerHTML="<option value=''>Erro de conexão</option>";});
 }
 
 function selecionarEvento(){
@@ -200,7 +208,7 @@ function selecionarEvento(){
   var evs=window._evs||[];
   for(var i=0;i<evs.length;i++){if(evs[i].id==evId){evAtual=evs[i];break;}}
   if(!evAtual)return;
-  q("ev-info").innerHTML="<div class='ev-info'><b>"+esc(evAtual.nome)+"</b><span>📅 "+fd(evAtual.data)+(evAtual.hora_inicio?" às "+evAtual.hora_inicio.substring(0,5):"")+(evAtual.local?" · 📍 "+esc(evAtual.local):"")+"</span></div>";
+  q("ev-info").innerHTML="<div class='ev-info'><b>"+esc(evAtual.nome)+"</b><span>📅 "+fd(evAtual.data)+(evAtual.horario?" às "+evAtual.horario.substring(0,5):"")+(evAtual.local?" · 📍 "+esc(evAtual.local):"")+"</span></div>";
   carregarItens();
 }
 
