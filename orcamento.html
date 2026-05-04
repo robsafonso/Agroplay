@@ -224,9 +224,11 @@ function render(){
 
 <script>
 function addIt(cat,cid){
-  if(!evAtual)return;
+  alert('addIt: cat='+cat+' cid='+cid+' evAtual='+(evAtual?evAtual.nome:'NULL'));
+  if(!evAtual){alert('STOP: evAtual nulo');return;}
   var s=document.getElementById('si'+cid);
-  if(!s)return;
+  if(!s){alert('STOP: select si'+cid+' nao existe');return;}
+  alert('select OK, vai pegar valores. select.value='+s.value);
   var ni=document.getElementById('sn'+cid);
   var nome=s.value==='_outro_'?(ni?ni.value.trim():''):s.value;
   var qtdEl=document.getElementById('sq'+cid);
