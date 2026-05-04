@@ -1181,7 +1181,7 @@ function copiarLinkResp(loteId, btn) {
     }
   }
 
-  const msg = 'AGROPLAY - Painel de Convites\n\nOlá ' + lt.responsavel + '!\n\nVocê tem convites disponíveis para distribuir.' + evBlock + '\n\nAcesse seu painel:\n' + linkPainel + '\n\nSua senha: ' + lt.senha + '\n\nAgroplay Music · Londrina PR';
+  const msg = 'AGROPLAY Music 🎵\n\nOlá ' + lt.responsavel + '!\n\nVocê foi selecionado para distribuir convites' + (evBlock ? ' para:' + evBlock : '.') + '\n\nAcesse seu painel:\n' + linkPainel + '\n\n👤 Nome: ' + lt.responsavel + '\n🔑 Senha: ' + lt.senha + '\n\n(No primeiro acesso, você precisará trocar a senha por segurança.)\n\nAgroplay Music · Londrina PR';
 
   copiar(msg, btn, 'Copiar link');
 }
