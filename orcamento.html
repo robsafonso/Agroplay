@@ -139,10 +139,14 @@ var CATS={
 
 // ---------- Init / Login ----------
 function init(){
-  if(sessionStorage.getItem('ag_admin')==='1'){
-    abrirPainel();
+  var logado=sessionStorage.getItem('ag_admin')==='1';
+  if(logado){
+    document.getElementById('login-area').style.display='none';
+    document.getElementById('painel').style.display='block';
+    carregarEventos();
   }else{
     document.getElementById('login-area').style.display='block';
+    document.getElementById('painel').style.display='none';
   }
 }
 
@@ -156,8 +160,7 @@ function logar(){
   }).then(function(r){return r.json();}).then(function(d){
     if(Array.isArray(d)&&d.length>0){
       sessionStorage.setItem('ag_admin','1');
-      document.getElementById('login-area').style.display='none';
-      abrirPainel();
+      init();
     }else{
       msg.textContent='Usuário ou senha inválidos';
     }
@@ -167,11 +170,6 @@ function logar(){
 function sair(){
   sessionStorage.removeItem('ag_admin');
   location.reload();
-}
-
-function abrirPainel(){
-  document.getElementById('painel').style.display='block';
-  carregarEventos();
 }
 
 // ---------- Helpers ----------
