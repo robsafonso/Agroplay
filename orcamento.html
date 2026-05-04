@@ -88,20 +88,24 @@ function fmt(v){return 'R$ '+parseFloat(v||0).toLocaleString('pt-BR',{minimumFra
 function fd(d){if(!d)return'';var x=d.split('-');return x[2]+'/'+x[1]+'/'+x[0];}
 function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
-// Carregar eventos
+// Carregar eventos - DEBUG
+document.getElementById('esel').innerHTML='<option>JS rodou, fazendo fetch...</option>';
 fetch(SB+'/rest/v1/eventos?select=id,nome,data,horario,local&order=data.asc',{
   headers:{apikey:KY,Authorization:'Bearer '+KY}
-}).then(function(r){return r.json();}).then(function(d){
-  if(!Array.isArray(d)){document.getElementById('esel').innerHTML='<option>Erro</option>';return;}
+}).then(function(r){
+  document.getElementById('esel').innerHTML='<option>Recebeu resposta status '+r.status+'</option>';
+  return r.json();
+}).then(function(d){
+  if(!Array.isArray(d)){document.getElementById('esel').innerHTML='<option>Resp nao eh array: '+JSON.stringify(d).substring(0,80)+'</option>';return;}
   allEvs=d;
   var sel=document.getElementById('esel');
-  var h='<option value="">Selecione...</option>';
+  var h='<option value="">Selecione... ('+d.length+')</option>';
   for(var i=0;i<d.length;i++){
     h+='<option value="'+d[i].id+'">'+esc(d[i].nome)+' ('+fd(d[i].data)+')</option>';
   }
   sel.innerHTML=h;
   sel.onchange=selEv;
-}).catch(function(){document.getElementById('esel').innerHTML='<option>Erro de conexao</option>';});
+}).catch(function(e){document.getElementById('esel').innerHTML='<option>FETCH ERROR: '+e.message+'</option>';});
 
 function selEv(){
   var id=document.getElementById('esel').value;
