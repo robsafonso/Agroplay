@@ -470,6 +470,11 @@ async function processarCodigo(codigo) {
     return;
   }
 
+  if (cod.queimado) {
+    mostrarResultado('error', 'Código cancelado', 'Esse código foi cancelado pelo organizador.', null);
+    return;
+  }
+
   if (!cod.cadastro_id) {
     mostrarResultado('error', 'Sem cadastro', 'Esse código não foi usado por ninguém.', null);
     return;
