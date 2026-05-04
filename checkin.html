@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agroplay — Check-in</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; background: #060a06; color: #eee; min-height: 100vh; }
+
+header { background: #060a06; border-bottom: 2px solid #1e7a35; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
+.logo { display: flex; align-items: center; border: 1px solid #1a2a1a; border-radius: 10px; overflow: hidden; }
+.logo .a { background: #0d150d; padding: 7px 12px; font-size: 16px; font-weight: 900; color: #fff; letter-spacing: 1px; }
+.logo .a span { color: #2aab47; }
+.logo .v { background: #c9973c; padding: 7px 10px; font-size: 11px; font-weight: 700; color: #fff; letter-spacing: 1px; }
+.btn-sair { background: transparent; border: 1px solid #c0392b; color: #c0392b; padding: 6px 12px; border-radius: 8px; font-size: 11px; cursor: pointer; }
+
+main { max-width: 600px; margin: 0 auto; padding: 16px; }
+
+/* LOGIN */
+.login-card { background: #090e09; border: 1px solid #1a2a1a; border-radius: 16px; padding: 36px 26px; max-width: 380px; margin: 60px auto; }
+.login-card h1 { font-size: 16px; font-weight: 700; text-align: center; margin-bottom: 4px; color: #fff; }
+.login-card .subtitle { text-align: center; color: #555; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 24px; }
+
+.fl { margin-bottom: 12px; }
+.fl label { display: block; font-size: 10px; color: #2aab47; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; font-weight: 700; }
+
+input, select { width: 100%; padding: 11px 13px; background: #030503; border: 1px solid #1a2a1a; border-radius: 8px; color: #eee; font-size: 14px; outline: none; font-family: inherit; }
+input:focus, select:focus { border-color: #2aab47; }
+
+.btn { background: #1e7a35; color: #fff; border: none; border-radius: 8px; padding: 13px; font-size: 14px; font-weight: 700; cursor: pointer; width: 100%; }
+.btn:hover { background: #2aab47; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.bto { background: transparent; border: 1px solid #2aab47; color: #2aab47; border-radius: 8px; padding: 11px; font-size: 13px; cursor: pointer; width: 100%; font-weight: 600; }
+.btr { background: #c0392b; border: none; color: #fff; border-radius: 8px; padding: 13px; font-size: 14px; cursor: pointer; width: 100%; font-weight: 700; }
+
+.erro { color: #e74c3c; font-size: 12px; text-align: center; margin-top: 12px; min-height: 16px; }
+
+/* SCANNER */
+.scanner-wrap { background: #090e09; border: 1px solid #1a2a1a; border-radius: 16px; padding: 14px; margin-bottom: 14px; }
+
+.video-wrap { width: 100%; aspect-ratio: 1; background: #000; border-radius: 12px; overflow: hidden; position: relative; }
+#qrVideo { width: 100%; height: 100%; object-fit: cover; }
+
+.video-overlay {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 70%;
+aspect-ratio: 1;
+border: 3px solid rgba(42, 171, 71, 0.7);
+border-radius: 16px;
+pointer-events: none;
+}
+
+.video-msg { position: absolute; top: 8px; left: 8px; right: 8px; background: rgba(0,0,0,0.7); padding: 6px 10px; border-radius: 6px; color: #2aab47; font-size: 11px; font-weight: 700; text-align: center; }
+
+.controls { display: flex; gap: 8px; margin-top: 10px; }
+.controls button { flex: 1; padding: 10px; font-size: 12px; }
+
+/* STATS */
+.stats { display: flex; gap: 8px; margin-bottom: 14px; }
+.stat { background: #090e09; border: 1px solid #1a2a1a; border-radius: 10px; padding: 10px 6px; text-align: center; flex: 1; }
+.stat strong { font-size: 20px; display: block; }
+.stat small { font-size: 9px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
+
+/* EVENTO INFO */
+.ev-info { background: #090e09; border: 1px solid #1a2a1a; border-radius: 10px; padding: 12px; margin-bottom: 14px; }
+.ev-info-titulo { font-size: 13px; color: #2aab47; font-weight: 700; margin-bottom: 4px; }
+.ev-info-det { font-size: 11px; color: #888; }
+
+/* RESULT MODAL */
+.ov { position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 100; display: none; align-items: center; justify-content: center; padding: 16px; }
+.ov.on { display: flex; }
+.mod { background: #090e09; border: 1px solid #1a2a1a; border-radius: 16px; padding: 22px; width: 100%; max-width: 380px; text-align: center; }
+
+.res-icone { font-size: 60px; margin-bottom: 10px; }
+.res-titulo { font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 6px; }
+.res-foto { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #2aab47; margin: 8px auto; display: block; }
+.res-foto-vazio { width: 100px; height: 100px; border-radius: 50%; background: #1e7a35; color: #fff; font-size: 36px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin: 8px auto; }
+.res-nome { font-size: 18px; font-weight: 700; color: #fff; margin-top: 6px; }
+.res-empresa { font-size: 12px; color: #888; margin-top: 4px; }
+.res-info { font-size: 12px; color: #aaa; margin-top: 14px; padding: 10px; background: #030503; border-radius: 8px; line-height: 1.6; }
+
+.ok-bg { background: rgba(42, 171, 71, 0.15); border: 1px solid #2aab47; }
+.err-bg { background: rgba(192, 57, 43, 0.18); border: 1px solid #c0392b; }
+.warn-bg { background: rgba(201, 151, 60, 0.18); border: 1px solid #c9973c; }
+
+/* BUSCA MANUAL */
+.busca-card { background: #090e09; border: 1px solid #1a2a1a; border-radius: 12px; padding: 14px; margin-bottom: 14px; }
+.res-busca { background: #030503; border: 1px solid #1a2a1a; border-radius: 8px; padding: 10px; margin-top: 8px; cursor: pointer; }
+.res-busca:hover { border-color: #2aab47; }
+.res-busca .nome { font-size: 13px; font-weight: 700; color: #fff; }
+.res-busca .det { font-size: 10px; color: #666; margin-top: 2px; }
+.res-busca.entrou { opacity: 0.5; }
+.res-busca .entrada-st { font-size: 9px; margin-top: 3px; font-weight: 700; }
+.res-busca .entrada-st.in { color: #2aab47; }
+.res-busca .entrada-st.out { color: #c9973c; }
+
+.gone { display: none !important; }
+
+.saudacao { margin-bottom: 14px; text-align: center; }
+.saudacao h1 { font-size: 18px; color: #fff; margin-bottom: 4px; }
+.saudacao p { font-size: 11px; color: #888; }
+
+.trocar-senha { background: rgba(201, 151, 60, 0.15); border: 1px solid #c9973c; border-radius: 10px; padding: 14px; }
+.trocar-senha h3 { color: #c9973c; font-size: 14px; margin-bottom: 4px; }
+.trocar-senha p { font-size: 12px; color: #aaa; margin-bottom: 10px; }
+</style>
+
+</head>
+<body>
+
+<!-- LOGIN -->
+
+<div id="appLogin">
+  <div class="login-card">
+    <div style="text-align:center;margin-bottom:24px">
+      <div class="logo" style="display:inline-flex">
+        <div class="a">AGRO<span>PLAY</span></div>
+        <div class="v">v32</div>
+      </div>
+    </div>
+    <h1>Check-in da Portaria</h1>
+    <p class="subtitle">Acesso de validador</p>
+    <div class="fl"><label>Seu nome</label><input type="text" id="inputNome" autocomplete="username" placeholder="Como foi cadastrado"></div>
+    <div class="fl"><label>Senha</label><input type="password" id="inputSenha" autocomplete="current-password"></div>
+    <button class="btn" id="btnEntrar">Entrar</button>
+    <div class="erro" id="erroLogin"></div>
+  </div>
+</div>
+
+<!-- APP -->
+
+<div id="appPainel" style="display:none">
+  <header>
+    <div class="logo">
+      <div class="a">AGRO<span>PLAY</span></div>
+      <div class="v">v32</div>
+    </div>
+    <button class="btn-sair" id="btnSair">Sair</button>
+  </header>
+
+  <main>
+    <div class="trocar-senha gone" id="trocarSenhaWrap">
+      <h3>Defina sua senha pessoal</h3>
+      <p>É seu primeiro acesso. Escolha uma senha (mínimo 4 caracteres).</p>
+      <div class="fl"><label>Nova senha</label><input type="password" id="novaSenha" autocomplete="new-password"></div>
+      <button class="btn" id="btnTrocarSenha">Salvar nova senha</button>
+      <div class="erro" id="erroTrocarSenha"></div>
+    </div>
+
+```
+<div id="painelConteudo" class="gone">
+  <div class="saudacao">
+    <h1 id="saudacao">Olá</h1>
+    <p>Selecione um evento e faça os check-ins.</p>
+  </div>
+
+  <div class="fl">
+    <label>Evento ativo</label>
+    <select id="selectEvento" onchange="trocarEvento(this.value)"></select>
+  </div>
+
+  <div id="conteudoEvento" class="gone">
+    <div id="evInfo"></div>
+
+    <div class="stats" id="statsCheckin"></div>
+
+    <div class="scanner-wrap">
+      <div class="video-wrap">
+        <video id="qrVideo" autoplay playsinline muted></video>
+        <div class="video-overlay"></div>
+        <div class="video-msg" id="videoMsg">Aponte para o QR Code</div>
+      </div>
+      <div class="controls">
+        <button class="bto" id="btnLanterna">🔦 Lanterna</button>
+        <button class="bto" id="btnTrocarCamera">🔄 Trocar câmera</button>
+      </div>
+    </div>
+
+    <div class="busca-card">
+      <label style="font-size:10px;color:#2aab47;letter-spacing:1px;margin-bottom:5px;display:block;text-transform:uppercase;font-weight:700">Busca manual</label>
+      <input type="text" id="inputBusca" placeholder="Nome ou código de 8 dígitos" oninput="buscarManual()">
+      <div id="resultadosBusca"></div>
+    </div>
+  </div>
+</div>
+```
+
+  </main>
+</div>
+
+<!-- MODAL DE RESULTADO -->
+
+<div class="ov" id="modalResultado">
+  <div class="mod" id="modResultadoContent"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+
+<script>
+const SB_URL = 'https://wexwcnezjadoutyzkbcj.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+let validador = null;
+let eventos = [];
+let eventoAtual = null;
+let cadastrosEvento = [];
+
+// Camera
+let videoStream = null;
+let scanInterval = null;
+let usarCameraTraseira = true;
+let lanternaOn = false;
+let videoTrack = null;
+let processandoQr = false;
+
+function escaparHtml(t) { if (!t) return ''; return String(t).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;'); }
+function formatarData(iso) { if (!iso) return ''; const p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
+function q(id) { return document.getElementById(id); }
+
+// =====================
+// LOGIN
+// =====================
+async function entrar() {
+  const nome = q('inputNome').value.trim();
+  const senha = q('inputSenha').value.trim();
+  const erro = q('erroLogin');
+  erro.textContent = '';
+  if (!nome) { erro.textContent = 'Digite seu nome'; return; }
+  if (!senha) { erro.textContent = 'Digite a senha'; return; }
+
+  const btn = q('btnEntrar');
+  btn.disabled = true; btn.textContent = 'Entrando...';
+
+  const { data, error } = await sb.from('validadores').select('*').eq('nome', nome).eq('senha', senha).maybeSingle();
+
+  btn.disabled = false; btn.textContent = 'Entrar';
+  if (error) { erro.textContent = 'Erro ao conectar'; return; }
+  if (!data) { erro.textContent = 'Nome ou senha inválidos'; return; }
+
+  validador = data;
+  if (!data.primeiro_acesso) {
+    sessionStorage.setItem('ag_validador', JSON.stringify({ id: data.id, senha: data.senha }));
+  }
+  abrirPainel();
+}
+
+async function abrirPainel() {
+  q('appLogin').style.display = 'none';
+  q('appPainel').style.display = 'block';
+
+  if (validador.primeiro_acesso) {
+    q('trocarSenhaWrap').classList.remove('gone');
+    q('painelConteudo').classList.add('gone');
+  } else {
+    q('trocarSenhaWrap').classList.add('gone');
+    q('painelConteudo').classList.remove('gone');
+    await carregarEventos();
+  }
+}
+
+async function trocarSenha() {
+  const nova = q('novaSenha').value.trim();
+  const erro = q('erroTrocarSenha');
+  erro.textContent = '';
+  if (!nova || nova.length < 4) { erro.textContent = 'Mínimo 4 caracteres'; return; }
+  if (nova === validador.senha) { erro.textContent = 'Escolha senha diferente'; return; }
+
+  const btn = q('btnTrocarSenha');
+  btn.disabled = true; btn.textContent = 'Salvando...';
+
+  const { error } = await sb.from('validadores').update({ senha: nova, primeiro_acesso: false }).eq('id', validador.id);
+  btn.disabled = false; btn.textContent = 'Salvar nova senha';
+  if (error) { erro.textContent = 'Erro ao salvar'; return; }
+
+  validador.senha = nova;
+  validador.primeiro_acesso = false;
+  sessionStorage.setItem('ag_validador', JSON.stringify({ id: validador.id, senha: nova }));
+
+  q('trocarSenhaWrap').classList.add('gone');
+  q('painelConteudo').classList.remove('gone');
+  q('novaSenha').value = '';
+  await carregarEventos();
+}
+
+// =====================
+// EVENTOS
+// =====================
+async function carregarEventos() {
+  q('saudacao').textContent = 'Olá, ' + validador.nome;
+
+  // Busca eventos do dia (proximos 1 dia + hoje)
+  const { data } = await sb.from('eventos').select('*').order('data', { ascending: true });
+  eventos = data || [];
+
+  // Filtra eventos próximos ou em andamento (até 1 dia depois)
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  const ontem = new Date(hoje);
+  ontem.setDate(ontem.getDate() - 1);
+
+  const eventosAtivos = eventos.filter(ev => {
+    if (!ev.data) return false;
+    const dataEv = new Date(ev.data + 'T00:00:00');
+    return dataEv >= ontem;
+  });
+
+  const sel = q('selectEvento');
+  sel.innerHTML = '<option value="">Selecione um evento...</option>';
+
+  if (!eventosAtivos.length) {
+    sel.innerHTML = '<option value="">Nenhum evento ativo hoje</option>';
+    return;
+  }
+
+  eventosAtivos.forEach(ev => {
+    sel.innerHTML += '<option value="' + ev.id + '">' + escaparHtml(ev.nome) + ' · ' + formatarData(ev.data) + '</option>';
+  });
+
+  // Tenta restaurar evento da sessao
+  const savedEv = sessionStorage.getItem('ag_validador_ev');
+  if (savedEv && eventosAtivos.find(e => e.id === savedEv)) {
+    sel.value = savedEv;
+    trocarEvento(savedEv);
+  }
+}
+
+async function trocarEvento(eventoId) {
+  if (!eventoId) {
+    q('conteudoEvento').classList.add('gone');
+    pararCamera();
+    return;
+  }
+
+  eventoAtual = eventos.find(e => e.id === eventoId);
+  if (!eventoAtual) return;
+  sessionStorage.setItem('ag_validador_ev', eventoId);
+
+  q('conteudoEvento').classList.remove('gone');
+  await carregarCadastrosEvento();
+  renderEvInfo();
+  renderStats();
+  iniciarCamera();
+}
+
+async function carregarCadastrosEvento() {
+  const { data } = await sb.from('cadastros').select('*').eq('evento_id', eventoAtual.id);
+  cadastrosEvento = data || [];
+}
+
+function renderEvInfo() {
+  const ev = eventoAtual;
+  let h = '<div class="ev-info"><div class="ev-info-titulo">🎵 ' + escaparHtml(ev.nome) + '</div>';
+  h += '<div class="ev-info-det">📅 ' + formatarData(ev.data);
+  if (ev.local) h += ' · 📍 ' + escaparHtml(ev.local);
+  h += '</div></div>';
+  q('evInfo').innerHTML = h;
+}
+
+function renderStats() {
+  const total = cadastrosEvento.length;
+  const entraram = cadastrosEvento.filter(c => c.entrada_em).length;
+  const faltam = total - entraram;
+  q('statsCheckin').innerHTML =
+    '<div class="stat"><strong style="color:#fff">' + total + '</strong><small>Total</small></div>' +
+    '<div class="stat"><strong style="color:#2aab47">' + entraram + '</strong><small>Entraram</small></div>' +
+    '<div class="stat"><strong style="color:#c9973c">' + faltam + '</strong><small>Faltam</small></div>';
+}
+
+// =====================
+// CAMERA / SCANNER
+// =====================
+async function iniciarCamera() {
+  pararCamera();
+  try {
+    const constraints = {
+      video: { facingMode: usarCameraTraseira ? 'environment' : 'user' },
+      audio: false
+    };
+    videoStream = await navigator.mediaDevices.getUserMedia(constraints);
+    videoTrack = videoStream.getVideoTracks()[0];
+    q('qrVideo').srcObject = videoStream;
+    q('videoMsg').textContent = 'Aponte para o QR Code';
+
+    // Inicia loop de leitura
+    iniciarLoopQr();
+  } catch (e) {
+    q('videoMsg').textContent = '⚠️ Câmera indisponível';
+    q('videoMsg').style.color = '#e74c3c';
+  }
+}
+
+function pararCamera() {
+  if (scanInterval) { clearInterval(scanInterval); scanInterval = null; }
+  if (videoStream) {
+    videoStream.getTracks().forEach(t => t.stop());
+    videoStream = null;
+    videoTrack = null;
+  }
+  lanternaOn = false;
+}
+
+function iniciarLoopQr() {
+  const video = q('qrVideo');
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+  scanInterval = setInterval(() => {
+    if (processandoQr) return;
+    if (!video.videoWidth) return;
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+    const code = jsQR(imageData.data, imageData.width, imageData.height, { inversionAttempts: 'dontInvert' });
+    if (code && code.data) {
+      processandoQr = true;
+      processarCodigo(code.data.trim());
+    }
+  }, 300);
+}
+
+async function alternarLanterna() {
+  if (!videoTrack) return;
+  try {
+    const caps = videoTrack.getCapabilities ? videoTrack.getCapabilities() : {};
+    if (!caps.torch) {
+      alert('Lanterna não disponível neste dispositivo');
+      return;
+    }
+    lanternaOn = !lanternaOn;
+    await videoTrack.applyConstraints({ advanced: [{ torch: lanternaOn }] });
+    q('btnLanterna').textContent = lanternaOn ? '💡 Apagar' : '🔦 Lanterna';
+  } catch (e) {
+    alert('Erro ao acessar lanterna');
+  }
+}
+
+async function trocarCamera() {
+  usarCameraTraseira = !usarCameraTraseira;
+  await iniciarCamera();
+}
+
+// =====================
+// PROCESSAR CODIGO (QR ou busca manual)
+// =====================
+async function processarCodigo(codigo) {
+  // Pausa o scanner
+  if (scanInterval) { clearInterval(scanInterval); scanInterval = null; }
+
+  // Vibra (se suportar)
+  if (navigator.vibrate) navigator.vibrate(100);
+
+  // Busca cadastro pelo codigo
+  // 1. Acha codigo
+  const { data: cod } = await sb.from('codigos').select('*').eq('codigo', codigo).maybeSingle();
+
+  if (!cod) {
+    mostrarResultado('error', 'Código inválido', 'Esse código não existe no sistema.', null);
+    return;
+  }
+
+  if (!cod.cadastro_id) {
+    mostrarResultado('error', 'Sem cadastro', 'Esse código não foi usado por ninguém.', null);
+    return;
+  }
+
+  // 2. Acha cadastro
+  const { data: cad } = await sb.from('cadastros').select('*').eq('id', cod.cadastro_id).maybeSingle();
+  if (!cad) {
+    mostrarResultado('error', 'Cadastro removido', 'O cadastro foi excluído do sistema.', null);
+    return;
+  }
+
+  // 3. Verifica se é do evento atual
+  if (cad.evento_id !== eventoAtual.id) {
+    let nomeEvOutro = '(outro evento)';
+    if (cad.evento_id) {
+      const ev = eventos.find(e => e.id === cad.evento_id);
+      if (ev) nomeEvOutro = ev.nome;
+    } else {
+      nomeEvOutro = 'sem evento vinculado';
+    }
+    mostrarResultado('error', 'Evento errado', cad.nome + ' não está nesse evento.\n(' + nomeEvOutro + ')', cad);
+    return;
+  }
+
+  // 4. Status check
+  if (cad.status === 'reprovado') {
+    mostrarResultado('error', 'Reprovado', cad.nome + ' não está autorizado.', cad);
+    return;
+  }
+
+  // 5. Ja entrou?
+  if (cad.entrada_em) {
+    const dt = new Date(cad.entrada_em);
+    const hora = dt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    mostrarResultado('warn', 'Já entrou', cad.nome + ' entrou às ' + hora + (cad.validador_nome ? ' (validado por ' + cad.validador_nome + ')' : ''), cad);
+    return;
+  }
+
+  // 6. Pode entrar - mostra com botao confirmar
+  mostrarResultado('ok', 'Liberado', null, cad, true);
+}
+
+function mostrarResultado(tipo, titulo, msg, cad, podeConfirmar) {
+  let bg = 'ok-bg';
+  let icone = '✅';
+  if (tipo === 'error') { bg = 'err-bg'; icone = '⛔'; }
+  else if (tipo === 'warn') { bg = 'warn-bg'; icone = '⚠️'; }
+
+  const mod = q('modResultadoContent');
+  mod.className = 'mod ' + bg;
+
+  let h = '<div class="res-icone">' + icone + '</div>';
+  h += '<div class="res-titulo">' + titulo + '</div>';
+
+  if (cad) {
+    if (cad.foto_url) h += '<img src="' + cad.foto_url + '" class="res-foto">';
+    else h += '<div class="res-foto-vazio">' + (cad.nome || '?').charAt(0).toUpperCase() + '</div>';
+    h += '<div class="res-nome">' + escaparHtml(cad.nome) + '</div>';
+    if (cad.empresa) h += '<div class="res-empresa">' + escaparHtml(cad.empresa) + (cad.cargo ? ' · ' + escaparHtml(cad.cargo) : '') + '</div>';
+    if (cad.lote_nome) h += '<div class="res-empresa">Convidado por ' + escaparHtml(cad.lote_nome) + '</div>';
+  }
+
+  if (msg) h += '<div class="res-info">' + escaparHtml(msg) + '</div>';
+
+  if (podeConfirmar && cad) {
+    h += '<button class="btn" onclick="confirmarEntrada(\'' + cad.id + '\')" style="margin-top:14px">✓ Confirmar entrada</button>';
+  }
+  h += '<button class="bto" onclick="fecharResultado()" style="margin-top:8px">Fechar</button>';
+
+  mod.innerHTML = h;
+  q('modalResultado').classList.add('on');
+}
+
+function fecharResultado() {
+  q('modalResultado').classList.remove('on');
+  processandoQr = false;
+  // Reinicia scanner se camera ainda ta ativa
+  if (videoStream) iniciarLoopQr();
+}
+
+async function confirmarEntrada(cadId) {
+  const agora = new Date().toISOString();
+  await sb.from('cadastros').update({
+    entrada_em: agora,
+    validador_id: validador.id,
+    validador_nome: validador.nome
+  }).eq('id', cadId);
+
+  // Atualiza local
+  const cad = cadastrosEvento.find(c => c.id === cadId);
+  if (cad) {
+    cad.entrada_em = agora;
+    cad.validador_id = validador.id;
+    cad.validador_nome = validador.nome;
+  }
+  renderStats();
+
+  // Mostra OK rapido e fecha
+  const mod = q('modResultadoContent');
+  mod.innerHTML = '<div class="res-icone">✅</div><div class="res-titulo">Entrada confirmada!</div>';
+  setTimeout(() => fecharResultado(), 1200);
+}
+
+// =====================
+// BUSCA MANUAL
+// =====================
+let buscaTimeout = null;
+function buscarManual() {
+  clearTimeout(buscaTimeout);
+  buscaTimeout = setTimeout(executarBusca, 250);
+}
+
+function executarBusca() {
+  const termo = q('inputBusca').value.trim().toLowerCase();
+  const el = q('resultadosBusca');
+  if (!termo) { el.innerHTML = ''; return; }
+
+  // Se for 8 digitos, busca por codigo
+  if (/^\d{8}$/.test(termo)) {
+    el.innerHTML = '<div class="res-busca" onclick="processarCodigoManual(\'' + termo + '\')"><div class="nome">Validar código: ' + termo + '</div></div>';
+    return;
+  }
+
+  // Busca por nome
+  const filtrados = cadastrosEvento.filter(c => (c.nome || '').toLowerCase().includes(termo)).slice(0, 8);
+  if (!filtrados.length) {
+    el.innerHTML = '<div style="font-size:11px;color:#666;padding:8px;text-align:center">Nenhum encontrado</div>';
+    return;
+  }
+
+  let h = '';
+  filtrados.forEach(c => {
+    const entrou = !!c.entrada_em;
+    let stTxt = entrou ? '✓ Já entrou' : '○ Aguardando';
+    let stClasse = entrou ? 'in' : 'out';
+    h += '<div class="res-busca ' + (entrou ? 'entrou' : '') + '" onclick="abrirPerfilManual(\'' + c.id + '\')">' +
+      '<div class="nome">' + escaparHtml(c.nome) + '</div>' +
+      '<div class="det">' + escaparHtml(c.empresa || c.setor || '-') + '</div>' +
+      '<div class="entrada-st ' + stClasse + '">' + stTxt + '</div>' +
+    '</div>';
+  });
+  el.innerHTML = h;
+}
+
+async function processarCodigoManual(codigo) {
+  q('inputBusca').value = '';
+  q('resultadosBusca').innerHTML = '';
+  processandoQr = true;
+  if (scanInterval) { clearInterval(scanInterval); scanInterval = null; }
+  await processarCodigo(codigo);
+}
+
+function abrirPerfilManual(cadId) {
+  const cad = cadastrosEvento.find(c => c.id === cadId);
+  if (!cad) return;
+  q('inputBusca').value = '';
+  q('resultadosBusca').innerHTML = '';
+
+  if (cad.entrada_em) {
+    const dt = new Date(cad.entrada_em);
+    const hora = dt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    mostrarResultado('warn', 'Já entrou', cad.nome + ' entrou às ' + hora + (cad.validador_nome ? ' (validado por ' + cad.validador_nome + ')' : ''), cad);
+  } else if (cad.status === 'reprovado') {
+    mostrarResultado('error', 'Reprovado', cad.nome + ' não está autorizado.', cad);
+  } else {
+    mostrarResultado('ok', 'Liberado', null, cad, true);
+  }
+}
+
+// =====================
+// SAIR
+// =====================
+function sair() {
+  pararCamera();
+  sessionStorage.removeItem('ag_validador');
+  sessionStorage.removeItem('ag_validador_ev');
+  window.location.reload();
+}
+
+// =====================
+// LISTENERS
+// =====================
+q('btnEntrar').addEventListener('click', entrar);
+q('inputNome').addEventListener('keydown', (e) => { if (e.key === 'Enter') q('inputSenha').focus(); });
+q('inputSenha').addEventListener('keydown', (e) => { if (e.key === 'Enter') entrar(); });
+q('btnTrocarSenha').addEventListener('click', trocarSenha);
+q('btnSair').addEventListener('click', sair);
+q('btnLanterna').addEventListener('click', alternarLanterna);
+q('btnTrocarCamera').addEventListener('click', trocarCamera);
+
+// Auto-login
+const sess = sessionStorage.getItem('ag_validador');
+if (sess) {
+  try {
+    const dados = JSON.parse(sess);
+    sb.from('validadores').select('*').eq('id', dados.id).eq('senha', dados.senha).maybeSingle()
+      .then(({ data }) => {
+        if (data && !data.primeiro_acesso) { validador = data; abrirPainel(); }
+        else { sessionStorage.removeItem('ag_validador'); }
+      });
+  } catch (e) {
+    sessionStorage.removeItem('ag_validador');
+  }
+}
+</script>
+
+</body>
+</html>
