@@ -63,6 +63,8 @@ select:focus,input:focus{border-color:#2aab47}
 <h1>Orcamento</h1>
 <div class="sub">Custos de producao do evento</div>
 
+<div style="background:#c9973c;color:#000;padding:6px 10px;border-radius:6px;font-size:11px;font-weight:700;margin-bottom:10px;text-align:center">VERSAO 7 - SE VOCE VE ESTE TEXTO O ARQUIVO FOI ATUALIZADO</div>
+
 <div id="debug">DEBUG</div>
 
 <div id="login" style="display:none">
@@ -134,26 +136,26 @@ function esc(s){
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-function $(id){return document.getElementById(id);}
+function el(id){return document.getElementById(id);}
 
 function init(){
   dbg('init ok');
   if(sessionStorage.getItem('ag_admin')==='1'){
     dbg('admin logado');
-    $('login').style.display='none';
-    $('painel').style.display='block';
+    el('login').style.display='none';
+    el('painel').style.display='block';
     carregarEventos();
   }else{
     dbg('mostrando login');
-    $('login').style.display='block';
-    $('painel').style.display='none';
+    el('login').style.display='block';
+    el('painel').style.display='none';
   }
 }
 
 function logar(){
-  var u=$('admU').value.trim();
-  var p=$('admP').value.trim();
-  var m=$('lmsg');
+  var u=el('admU').value.trim();
+  var p=el('admP').value.trim();
+  var m=el('lmsg');
   if(!u||!p){m.textContent='Preencha';return;}
   m.textContent='...';
   fetch(SB+'/rest/v1/admins?usuario=eq.'+encodeURIComponent(u)+'&senha=eq.'+encodeURIComponent(p)+'&select=id',{
@@ -179,7 +181,7 @@ function carregarEventos(){
     headers:{apikey:KY,Authorization:'Bearer '+KY}
   }).then(function(r){return r.json();}).then(function(d){
     dbg('resp: '+(Array.isArray(d)?d.length+' eventos':JSON.stringify(d).substring(0,80)));
-    var sel=$('esel');
+    var sel=el('esel');
     if(!Array.isArray(d)){
       sel.innerHTML='<option>Erro</option>';
       return;
@@ -193,14 +195,14 @@ function carregarEventos(){
     dbg('select preenchido com '+d.length+' opcoes');
   }).catch(function(e){
     dbg('erro fetch: '+e.message);
-    $('esel').innerHTML='<option>Erro de conexao</option>';
+    el('esel').innerHTML='<option>Erro de conexao</option>';
   });
 }
 
 function selEv(){
-  var id=$('esel').value;
-  $('einfo').innerHTML='';
-  $('conteudo').innerHTML='';
+  var id=el('esel').value;
+  el('einfo').innerHTML='';
+  el('conteudo').innerHTML='';
   evAtual=null;
   if(!id)return;
   for(var i=0;i<allEvs.length;i++){
@@ -211,20 +213,20 @@ function selEv(){
   if(evAtual.horario)info+=' as '+evAtual.horario.substring(0,5);
   if(evAtual.local)info+=' - '+esc(evAtual.local);
   info+='</span></div>';
-  $('einfo').innerHTML=info;
+  el('einfo').innerHTML=info;
   carregarItens();
 }
 
 function carregarItens(){
   if(!evAtual)return;
-  $('conteudo').innerHTML='<div class="empty">Carregando...</div>';
+  el('conteudo').innerHTML='<div class="empty">Carregando...</div>';
   fetch(SB+'/rest/v1/orcamentos?evento_id=eq.'+evAtual.id+'&order=categoria.asc,item.asc',{
     headers:{apikey:KY,Authorization:'Bearer '+KY}
   }).then(function(r){return r.json();}).then(function(d){
     itens=Array.isArray(d)?d:[];
     render();
   }).catch(function(){
-    $('conteudo').innerHTML='<div class="empty">Erro</div>';
+    el('conteudo').innerHTML='<div class="empty">Erro</div>';
   });
 }
 
@@ -287,7 +289,7 @@ function render(){
   
   h+='<button class="btn-pdf" onclick="gerarPDF()">Gerar PDF do Orcamento</button>';
   
-  $('conteudo').innerHTML=h;
+  el('conteudo').innerHTML=h;
 }
 
 function renderIt(it){
@@ -295,8 +297,8 @@ function renderIt(it){
 }
 
 function togO(cid){
-  var s=$('si_'+cid);
-  var i=$('sn_'+cid);
+  var s=el('si_'+cid);
+  var i=el('sn_'+cid);
   if(s&&i){
     i.style.display=s.value==='_outro_'?'block':'none';
   }
@@ -304,16 +306,16 @@ function togO(cid){
 
 function addIt(cat,cid){
   if(!evAtual){alert('Selecione um evento');return;}
-  var s=$('si_'+cid);
-  var ni=$('sn_'+cid);
+  var s=el('si_'+cid);
+  var ni=el('sn_'+cid);
   var nome;
   if(s.value==='_outro_'){
     nome=ni?ni.value.trim():'';
   }else{
     nome=s.value;
   }
-  var qtd=parseFloat($('sq_'+cid).value)||1;
-  var val=parseFloat($('sv_'+cid).value)||0;
+  var qtd=parseFloat(el('sq_'+cid).value)||1;
+  var val=parseFloat(el('sv_'+cid).value)||0;
   if(!nome){alert('Preencha o item');return;}
   if(!val||val<=0){alert('Digite o valor');return;}
   
