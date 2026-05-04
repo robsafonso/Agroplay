@@ -127,6 +127,13 @@ fetch(SB+'/rest/v1/eventos?select=id,nome,data,horario,local&order=data.asc',{
   }
   sel.innerHTML=h;
   sel.onchange=selEv;
+  // Restaurar evento selecionado se tiver no sessionStorage
+  var salvo=sessionStorage.getItem('orc_ev');
+  if(salvo){
+    for(var j=0;j<d.length;j++){
+      if(d[j].id===salvo){sel.value=salvo;selEv();break;}
+    }
+  }
 }).catch(function(){document.getElementById('esel').innerHTML='<option>Erro de conexao</option>';});
 </script>
 
@@ -136,7 +143,8 @@ function selEv(){
   document.getElementById('einfo').innerHTML='';
   document.getElementById('conteudo').innerHTML='';
   evAtual=null;
-  if(!id)return;
+  if(!id){sessionStorage.removeItem('orc_ev');return;}
+  sessionStorage.setItem('orc_ev',id);
   for(var i=0;i<allEvs.length;i++){
     if(allEvs[i].id===id){evAtual=allEvs[i];break;}
   }
@@ -303,8 +311,6 @@ function gerarPDF(){
   var tot=0;for(var i=0;i<itens.length;i++)tot+=parseFloat(itens[i].valor_total||0);
   var grp={};
   for(var j=0;j<itens.length;j++){var c=itens[j].categoria;if(!grp[c])grp[c]=[];grp[c].push(itens[j]);}
-  var w=window.open('','_blank');
-  if(!w){alert('Popup bloqueado. Permita popups e tente de novo.');return;}
   var h='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Orcamento</title><style>body{font-family:Arial;max-width:700px;margin:0 auto;padding:24px}h1{color:#1e7a35}h2{color:#666;border-bottom:2px solid #1e7a35;padding-bottom:8px;margin-bottom:20px}.tb{background:#f0fff0;border:2px solid #1e7a35;border-radius:10px;padding:16px;margin:20px 0;display:flex;justify-content:space-between;align-items:center}.tb .v{font-size:24px;color:#1e7a35;font-weight:900}h3{background:#1e7a35;color:#fff;padding:10px 14px;margin-top:20px;border-radius:6px;display:flex;justify-content:space-between}table{width:100%;border-collapse:collapse;margin-top:8px;font-size:12px}th{background:#f5f5f5;padding:8px;text-align:left;font-size:11px;border-bottom:2px solid #ddd}td{padding:8px;border-bottom:1px solid #eee}td:last-child,th:last-child{text-align:right;font-weight:700;color:#1e7a35}.btn{width:100%;background:#1e7a35;color:#fff;border:none;padding:14px;font-weight:700;border-radius:8px;margin-top:24px;cursor:pointer}@media print{.btn{display:none}}</style></head><body>';
 
 h+=’<h1>AGROPLAY MUSIC</h1><h2>Orcamento - ‘+esc(evAtual.nome)+(evAtual.data?’ - ‘+fd(evAtual.data):’’)+’</h2>’;
@@ -322,8 +328,18 @@ h+=’<tr><td>’+esc(it.item)+’</td><td>’+it.quantidade+’</td><td>’+fmt
 }
 h+=’</table>’;
 }
-h+=’<button class="btn" onclick="window.print()">Imprimir / Salvar PDF</button></body></html>’;
-w.document.write(h);w.document.close();
+h+=’<div style="display:flex;gap:8px;margin-top:24px"><button class="btn" onclick="window.print()" style="flex:1">Imprimir / Salvar PDF</button><button class="btn" onclick="history.back()" style="flex:1;background:#666">Voltar</button></div></body></html>’;
+// Usar data URL pra abrir em nova janela (funciona no iOS)
+var blob=new Blob([h],{type:‘text/html’});
+var url=URL.createObjectURL(blob);
+var a=document.createElement(‘a’);
+a.href=url;
+a.target=’_blank’;
+a.rel=‘noopener’;
+document.body.appendChild(a);
+a.click();
+document.body.removeChild(a);
+setTimeout(function(){URL.revokeObjectURL(url);},1000);
 }
 </script>
 
