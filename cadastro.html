@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadastro — Agroplay</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+background: #060a06;
+color: #eee;
+font-family: Arial, sans-serif;
+padding: 20px;
+max-width: 480px;
+margin: 0 auto;
+min-height: 100vh;
+}
+
+.logo-top {
+text-align: center;
+padding: 16px 0 20px;
+}
+
+.logo {
+display: inline-flex;
+align-items: center;
+border: 1px solid #1a2a1a;
+border-radius: 10px;
+overflow: hidden;
+}
+
+.logo .a { background: #0d150d; padding: 8px 14px; font-size: 18px; font-weight: 900; color: #fff; letter-spacing: 1px; }
+.logo .a span { color: #2aab47; }
+.logo .v { background: #c9973c; padding: 8px 12px; font-size: 12px; font-weight: 700; color: #fff; letter-spacing: 1px; }
+
+.conv-banner {
+background: #090e09;
+border: 1px solid rgba(42, 171, 71, 0.3);
+border-radius: 10px;
+padding: 11px 14px;
+margin-bottom: 14px;
+font-size: 12px;
+color: #2aab47;
+text-align: center;
+}
+.conv-banner b { color: #fff; }
+
+.ev-info-card {
+background: #090e09;
+border: 1px solid #1a2a1a;
+border-radius: 12px;
+padding: 12px 14px;
+margin-bottom: 14px;
+font-size: 12px;
+line-height: 1.7;
+color: #888;
+}
+.ev-info-card .ev-titulo {
+font-size: 14px;
+color: #2aab47;
+font-weight: 700;
+margin-bottom: 4px;
+}
+
+.card {
+background: #090e09;
+border: 1px solid #1a2a1a;
+border-radius: 14px;
+padding: 22px;
+margin-bottom: 14px;
+}
+
+.ttl {
+font-size: 18px;
+font-weight: 900;
+color: #fff;
+margin-bottom: 4px;
+}
+
+.sub {
+font-size: 12px;
+color: #666;
+margin-bottom: 16px;
+line-height: 1.5;
+}
+
+.steps {
+display: flex;
+gap: 5px;
+margin-bottom: 16px;
+justify-content: center;
+}
+.step {
+width: 8px;
+height: 8px;
+border-radius: 50%;
+background: rgba(255, 255, 255, 0.1);
+transition: all 0.3s;
+}
+.step.on {
+background: #2aab47;
+width: 22px;
+border-radius: 4px;
+}
+
+.fl { margin-bottom: 12px; }
+label {
+display: block;
+font-size: 10px;
+color: #2aab47;
+letter-spacing: 1px;
+margin-bottom: 4px;
+text-transform: uppercase;
+font-weight: 700;
+}
+
+input, select {
+width: 100%;
+background: #030503;
+border: 1px solid #1a2a1a;
+border-radius: 8px;
+padding: 11px 14px;
+color: #eee;
+font-size: 14px;
+outline: none;
+font-family: inherit;
+}
+input:focus, select:focus { border-color: #2aab47; }
+
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.btn {
+background: linear-gradient(135deg, #1e7a35, #2aab47);
+color: #fff;
+border: none;
+border-radius: 10px;
+padding: 13px;
+font-size: 14px;
+font-weight: 700;
+cursor: pointer;
+width: 100%;
+margin-top: 8px;
+font-family: inherit;
+}
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.bto {
+background: transparent;
+color: #2aab47;
+border: 1px solid #2aab47;
+border-radius: 10px;
+padding: 11px;
+font-size: 13px;
+cursor: pointer;
+width: 100%;
+margin-top: 8px;
+font-family: inherit;
+}
+
+.ea {
+background: rgba(192, 57, 43, 0.15);
+border: 1px solid #c0392b;
+color: #e74c3c;
+padding: 10px;
+border-radius: 8px;
+margin-bottom: 10px;
+font-size: 13px;
+}
+
+.em {
+font-size: 11px;
+color: #e74c3c;
+margin-top: 3px;
+display: block;
+min-height: 14px;
+}
+
+.gone { display: none; }
+.tl { display: none; }
+.tl.on { display: block; }
+
+.foto-wrap { text-align: center; padding: 8px 0; }
+
+#foto-status {
+font-size: 12px;
+color: #2aab47;
+margin-bottom: 12px;
+text-align: center;
+}
+
+#video-wrap {
+position: relative;
+width: 200px;
+height: 200px;
+margin: 0 auto 14px;
+border-radius: 50%;
+overflow: hidden;
+border: 3px solid #2aab47;
+}
+#video {
+width: 100%;
+height: 100%;
+object-fit: cover;
+}
+#foto-prev {
+width: 200px;
+height: 200px;
+border-radius: 50%;
+object-fit: cover;
+border: 3px solid #2aab47;
+display: none;
+margin: 0 auto 14px;
+}
+
+.sucesso-wrap {
+text-align: center;
+padding: 20px 0 12px;
+}
+.sucesso-icon {
+width: 70px;
+height: 70px;
+background: rgba(30, 122, 53, 0.15);
+border: 2px solid #2aab47;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+margin: 0 auto 18px;
+font-size: 32px;
+color: #2aab47;
+}
+.sucesso-titulo {
+font-size: 22px;
+font-weight: 900;
+color: #fff;
+margin-bottom: 10px;
+}
+.sucesso-texto {
+color: #888;
+font-size: 13px;
+line-height: 1.7;
+}
+.sucesso-texto b { color: #2aab47; }
+</style>
+
+</head>
+<body>
+
+<div class="logo-top">
+  <div class="logo">
+    <div class="a">AGRO<span>PLAY</span></div>
+    <div class="v">v32</div>
+  </div>
+</div>
+
+<div id="conv-banner" class="conv-banner gone">Convidado por <b id="conv-nome"></b></div>
+
+<div id="ev-info" class="gone"></div>
+
+<!-- ETAPA 1: CÓDIGO -->
+
+<div id="t-cod" class="card tl on">
+  <div class="ttl">Bem-vindo!</div>
+  <div class="sub">Digite o código de acesso que você recebeu.</div>
+  <div class="steps">
+    <div class="step on"></div>
+    <div class="step"></div>
+    <div class="step"></div>
+    <div class="step"></div>
+  </div>
+  <div id="al-cod"></div>
+  <div class="fl">
+    <label>Código de acesso</label>
+    <input id="f-cod" placeholder="ABCD1234" maxlength="8" autocapitalize="off" autocomplete="off">
+  </div>
+  <button class="btn" id="btn-cod">Continuar</button>
+</div>
+
+<!-- ETAPA 2: DADOS PESSOAIS -->
+
+<div id="t-dados" class="card tl">
+  <div class="ttl">Seus Dados</div>
+  <div class="sub">Preencha suas informações pessoais.</div>
+  <div class="steps">
+    <div class="step"></div>
+    <div class="step on"></div>
+    <div class="step"></div>
+    <div class="step"></div>
+  </div>
+  <div id="al-dados"></div>
+  <div class="fl">
+    <label>Nome completo</label>
+    <input id="f-nome" placeholder="Seu nome completo" autocapitalize="words">
+    <span class="em" id="e-nome"></span>
+  </div>
+  <div class="g2">
+    <div class="fl">
+      <label>CPF</label>
+      <input id="f-cpf" placeholder="000.000.000-00" inputmode="numeric">
+      <span class="em" id="e-cpf"></span>
+    </div>
+    <div class="fl">
+      <label>RG</label>
+      <input id="f-rg" placeholder="RG">
+      <span class="em" id="e-rg"></span>
+    </div>
+  </div>
+  <div class="fl">
+    <label>E-mail</label>
+    <input id="f-email" type="email" placeholder="email@email.com" autocapitalize="off">
+    <span class="em" id="e-email"></span>
+  </div>
+  <div class="g2">
+    <div class="fl">
+      <label>Telefone</label>
+      <input id="f-tel" placeholder="(00) 00000-0000" inputmode="numeric">
+      <span class="em" id="e-tel"></span>
+    </div>
+    <div class="fl">
+      <label>Nascimento</label>
+      <input id="f-nasc" type="date">
+      <span class="em" id="e-nasc"></span>
+    </div>
+  </div>
+  <button class="btn" id="btn-dados">Próximo</button>
+  <button class="bto" onclick="ir('t-cod')">Voltar</button>
+</div>
+
+<!-- ETAPA 3: EMPRESA -->
+
+<div id="t-emp" class="card tl">
+  <div class="ttl">Empresa e Função</div>
+  <div class="sub">Informe sua atuação profissional.</div>
+  <div class="steps">
+    <div class="step"></div>
+    <div class="step"></div>
+    <div class="step on"></div>
+    <div class="step"></div>
+  </div>
+  <div id="al-emp"></div>
+  <div class="fl">
+    <label>Empresa</label>
+    <select id="f-emp" onchange="mudarEmp(this.value)">
+      <option value="">Selecione a empresa...</option>
+      <optgroup label="Grupo Agroplay">
+        <option value="Ana Castela">Ana Castela</option>
+        <option value="Leo e Raphael">Leo e Raphael</option>
+        <option value="Country Beat">Country Beat</option>
+        <option value="Muierada">Muierada</option>
+        <option value="Francisco">Francisco</option>
+        <option value="Julia e Rafaela">Julia e Rafaela</option>
+        <option value="Julya e Maryana">Julya e Maryana</option>
+        <option value="Duda Bertelli">Duda Bertelli</option>
+        <option value="Kamila e Kavic">Kamila e Kavic</option>
+        <option value="Escritorio Agroplay">Escritório Agroplay</option>
+      </optgroup>
+      <option value="outra">Outra empresa</option>
+    </select>
+    <span class="em" id="e-emp"></span>
+  </div>
+  <div class="fl gone" id="emp-outra-wrap">
+    <label>Nome da empresa</label>
+    <input id="f-emp-outra" placeholder="Digite o nome da empresa">
+  </div>
+  <div class="fl">
+    <label>Função</label>
+    <select id="f-car">
+      <option value="">Selecione a empresa primeiro...</option>
+    </select>
+    <span class="em" id="e-car"></span>
+  </div>
+  <div class="fl gone" id="cargo-outro-wrap">
+    <label>Qual função?</label>
+    <input id="f-car-outro" placeholder="Digite sua função">
+  </div>
+  <button class="btn" id="btn-emp">Próximo</button>
+  <button class="bto" onclick="ir('t-dados')">Voltar</button>
+</div>
+
+<!-- ETAPA 4: FOTO -->
+
+<div id="t-foto" class="card tl">
+  <div class="ttl">Foto de Verificação</div>
+  <div class="sub">Tire uma selfie para confirmar sua identidade.</div>
+  <div class="steps">
+    <div class="step"></div>
+    <div class="step"></div>
+    <div class="step"></div>
+    <div class="step on"></div>
+  </div>
+  <div id="al-foto"></div>
+  <div class="foto-wrap">
+    <div id="foto-status">Iniciando câmera...</div>
+    <div id="video-wrap">
+      <video id="video" autoplay playsinline muted></video>
+    </div>
+    <canvas id="canvas" style="display:none"></canvas>
+    <img id="foto-prev" alt="">
+    <button class="btn" id="btn-tirar" style="display:none">Tirar foto</button>
+    <button class="bto" id="btn-novafoto" style="display:none">Nova foto</button>
+    <button class="btn" id="btn-salvar" style="display:none">Confirmar e finalizar</button>
+  </div>
+  <button class="bto" onclick="voltarFoto()">Voltar</button>
+</div>
+
+<!-- TELA DE SUCESSO -->
+
+<div id="t-ok" class="card tl">
+  <div class="sucesso-wrap">
+    <div class="sucesso-icon">✓</div>
+    <div class="sucesso-titulo">Cadastro realizado!</div>
+    <div class="sucesso-texto">
+      Seus dados foram registrados com sucesso.<br>
+      A equipe <b>Agroplay</b> entrará em contato em breve.<br><br>
+      Obrigado!
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SB_URL = 'https://wexwcnezjadoutyzkbcj.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+const params = new URLSearchParams(window.location.search);
+const COD_PRE = params.get('cod') || null;
+const RESP = params.get('resp') || null;
+const LOTE_ID = params.get('lote') || null;
+const EV_ID = params.get('ev') || null;
+
+let codigoValido = null;
+let codigoIdValido = null;
+let fotoData = null;
+let stream = null;
+let respNome = RESP;
+let eventoInfo = null;
+
+const CARGOS_ARTISTA = ['Artista / Cantor', 'Músico / Banda', 'Bailarino / Dançarino', 'Diretor de Palco', 'Produção', 'Técnico de Som', 'Técnico de Luz', 'Fotógrafo', 'Videomaker', 'Camarim', 'Maquiagem', 'Assessoria de Imprensa', 'Comercial / Agenciamento', 'Segurança', 'Motorista / Transfer', 'Road Manager', 'Outro'];
+const CARGOS_ESCRITORIO = ['Sócio / Fundador', 'CEO / Presidente', 'CMO / Diretor de Marketing', 'CFO / Diretor Financeiro', 'Diretor Comercial', 'Diretor de Eventos', 'Gerente de Marketing', 'Marketing Digital', 'Publicidade', 'Licenciamento', 'Assessoria de Imprensa', 'Produção de Eventos', 'RH / Recursos Humanos', 'Financeiro / Contabilidade', 'Jurídico', 'Administrativo', 'Secretaria', 'Segurança', 'Outro'];
+const CARGOS_OUTRA = ['Presidente / CEO', 'Vice-Presidente', 'Diretor Executivo', 'Diretor Comercial', 'Diretor de Marketing', 'Diretor Financeiro', 'Gerente Geral', 'Gerente Comercial', 'Coordenador', 'Supervisor', 'Analista', 'Consultor', 'Relações Públicas', 'Marketing', 'Comercial / Vendas', 'Financeiro', 'Jurídico', 'RH', 'Administrativo', 'Secretaria', 'Outro'];
+
+function q(id) { return document.getElementById(id); }
+function escaparHtml(t) { if (!t) return ''; return String(t).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;'); }
+function formatarData(iso) { if (!iso) return ''; const p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
+
+function mCPF(el) {
+  let v = el.value.replace(/\D/g, '').slice(0, 11);
+  v = v.replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+  el.value = v;
+}
+function mTel(el) {
+  let v = el.value.replace(/\D/g, '').slice(0, 11);
+  v = v.replace(/(\d{2})(\d)/, '($1) $2').replace(/(\d{5})(\d)/, '$1-$2');
+  el.value = v;
+}
+
+q('f-cpf').oninput = function() { mCPF(this); };
+q('f-tel').oninput = function() { mTel(this); };
+q('f-cod').oninput = function() { this.value = this.value.toUpperCase(); };
+
+function ir(t) {
+  document.querySelectorAll('.tl').forEach(x => x.classList.remove('on'));
+  q(t).classList.add('on');
+  window.scrollTo(0, 0);
+}
+
+// ========================
+// CARREGAR INFO DO LOTE/EVENTO no banner do topo
+// ========================
+async function carregarInfoTopo() {
+  // Banner do responsavel
+  if (respNome) {
+    q('conv-nome').textContent = respNome;
+    q('conv-banner').classList.remove('gone');
+  } else if (LOTE_ID) {
+    const { data } = await sb.from('lotes').select('responsavel').eq('id', LOTE_ID).maybeSingle();
+    if (data) {
+      respNome = data.responsavel;
+      q('conv-nome').textContent = data.responsavel;
+      q('conv-banner').classList.remove('gone');
+    }
+  }
+
+  // Card do evento
+  if (EV_ID) {
+    const { data } = await sb.from('eventos').select('*').eq('id', EV_ID).maybeSingle();
+    if (data) {
+      eventoInfo = data;
+      const dataFmt = formatarData(data.data);
+      const horario = data.horario ? data.horario.substring(0, 5) : '';
+      const horarioFim = data.horario_fim ? data.horario_fim.substring(0, 5) : '';
+      let h = '<div class="ev-info-card">';
+      h += '<div class="ev-titulo">🎵 ' + escaparHtml(data.nome) + '</div>';
+      if (dataFmt) h += '📅 ' + dataFmt + (horario ? ' às ' + horario + (horarioFim ? ' - ' + horarioFim : '') : '') + '<br>';
+      if (data.local) h += '📍 ' + escaparHtml(data.local) + '<br>';
+      if (data.atracao1) h += '🎤 ' + escaparHtml(data.atracao1) + (data.atracao2 ? ' + ' + escaparHtml(data.atracao2) : '');
+      h += '</div>';
+      q('ev-info').innerHTML = h;
+      q('ev-info').classList.remove('gone');
+    }
+  }
+}
+
+// ========================
+// ETAPA 1: CODIGO
+// ========================
+if (COD_PRE) {
+  q('f-cod').value = COD_PRE.toUpperCase();
+}
+
+q('btn-cod').onclick = async function() {
+  const cod = q('f-cod').value.trim().toUpperCase();
+  const al = q('al-cod');
+  al.innerHTML = '';
+
+  if (!cod || cod.length < 6) {
+    al.innerHTML = '<div class="ea">Digite o código completo.</div>';
+    return;
+  }
+
+  const btn = this;
+  btn.textContent = 'Verificando...';
+  btn.disabled = true;
+
+  const { data, error } = await sb.from('codigos').select('id, codigo, usado, cadastro_id').eq('codigo', cod).maybeSingle();
+
+  btn.textContent = 'Continuar';
+  btn.disabled = false;
+
+  if (error) { al.innerHTML = '<div class="ea">Erro ao verificar. Tente novamente.</div>'; return; }
+  if (!data) { al.innerHTML = '<div class="ea">Código inválido.</div>'; return; }
+  if (data.cadastro_id) { al.innerHTML = '<div class="ea">Este código já foi usado.</div>'; return; }
+
+  codigoValido = data.codigo;
+  codigoIdValido = data.id;
+  ir('t-dados');
+};
+
+// ========================
+// ETAPA 2: DADOS PESSOAIS
+// ========================
+q('btn-dados').onclick = async function() {
+  let ok = true;
+  function se(id, msg) {
+    q(id).textContent = msg;
+    if (msg) ok = false;
+  }
+
+  se('e-nome', q('f-nome').value.trim() ? '' : 'Nome obrigatório');
+  se('e-cpf', q('f-cpf').value.replace(/\D/g, '').length === 11 ? '' : 'CPF inválido (11 dígitos)');
+  se('e-rg', q('f-rg').value.trim() ? '' : 'RG obrigatório');
+  se('e-email', /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(q('f-email').value.trim()) ? '' : 'Email inválido');
+  se('e-tel', q('f-tel').value.replace(/\D/g, '').length >= 10 ? '' : 'Telefone inválido');
+  se('e-nasc', q('f-nasc').value ? '' : 'Data obrigatória');
+
+  if (!ok) return;
+
+  // Verifica CPF duplicado
+  const cpf = q('f-cpf').value;
+  const cpfEl = q('e-cpf');
+  cpfEl.textContent = 'Verificando CPF...';
+  cpfEl.style.color = '#888';
+
+  const { data } = await sb.from('cadastros').select('id').eq('cpf', cpf).limit(1);
+
+  cpfEl.style.color = '#e74c3c';
+
+  if (data && data.length) {
+    cpfEl.textContent = 'Este CPF já está cadastrado!';
+    return;
+  }
+
+  cpfEl.textContent = '';
+  ir('t-emp');
+};
+
+// ========================
+// ETAPA 3: EMPRESA
+// ========================
+function mudarEmp(v) {
+  q('emp-outra-wrap').classList.toggle('gone', v !== 'outra');
+  const sel = q('f-car');
+  sel.innerHTML = '<option value="">Selecione sua função...</option>';
+  const lista = v === 'Escritorio Agroplay' ? CARGOS_ESCRITORIO : v === 'outra' ? CARGOS_OUTRA : v ? CARGOS_ARTISTA : [];
+  lista.forEach(c => {
+    sel.innerHTML += '<option value="' + (c === 'Outro' ? 'outro' : c) + '">' + c + '</option>';
+  });
+  q('cargo-outro-wrap').classList.add('gone');
+  sel.onchange = function() {
+    q('cargo-outro-wrap').classList.toggle('gone', this.value !== 'outro');
+  };
+}
+
+q('btn-emp').onclick = function() {
+  let ok = true;
+  function se(id, msg) {
+    q(id).textContent = msg;
+    if (msg) ok = false;
+  }
+
+  const empSel = q('f-emp').value;
+  const empResolvida = empSel === 'outra' ? q('f-emp-outra').value.trim() : empSel;
+  se('e-emp', empResolvida ? '' : 'Empresa obrigatória');
+
+  const carSel = q('f-car').value;
+  const carResolvida = carSel === 'outro' ? q('f-car-outro').value.trim() : carSel;
+  se('e-car', carResolvida ? '' : 'Função obrigatória');
+
+  if (!ok) return;
+  ir('t-foto');
+  iniciarCamera();
+};
+
+// ========================
+// ETAPA 4: FOTO
+// ========================
+function iniciarCamera() {
+  q('foto-status').textContent = 'Iniciando câmera...';
+  q('video-wrap').style.display = 'block';
+  q('foto-prev').style.display = 'none';
+  q('btn-tirar').style.display = 'none';
+  q('btn-novafoto').style.display = 'none';
+  q('btn-salvar').style.display = 'none';
+
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false })
+    .then(s => {
+      stream = s;
+      const v = q('video');
+      v.srcObject = s;
+      v.onloadedmetadata = function() {
+        v.play();
+        q('foto-status').textContent = 'Olhe para a câmera e sorria!';
+        q('btn-tirar').style.display = 'block';
+      };
+    })
+    .catch(() => {
+      q('foto-status').textContent = 'Câmera indisponível.';
+      // Permite finalizar sem foto
+      q('btn-salvar').style.display = 'block';
+      q('btn-tirar').style.display = 'none';
+    });
+}
+
+q('btn-tirar').onclick = function() {
+  // Flash branco
+  const fl = document.createElement('div');
+  fl.style.cssText = 'position:fixed;inset:0;background:#fff;z-index:9999;opacity:0.9;pointer-events:none;transition:opacity 0.2s';
+  document.body.appendChild(fl);
+  setTimeout(() => {
+    fl.style.opacity = '0';
+    setTimeout(() => { if (fl.parentNode) fl.parentNode.removeChild(fl); }, 200);
+  }, 100);
+
+  const v = q('video');
+  const cv = q('canvas');
+  cv.width = 200;
+  cv.height = 200;
+  const ctx = cv.getContext('2d');
+  const size = Math.min(v.videoWidth || 200, v.videoHeight || 200);
+  ctx.drawImage(v, (v.videoWidth - size) / 2, (v.videoHeight - size) / 2, size, size, 0, 0, 200, 200);
+  fotoData = cv.toDataURL('image/jpeg', 0.5);
+
+  q('foto-prev').src = fotoData;
+  q('foto-prev').style.display = 'block';
+  q('video-wrap').style.display = 'none';
+  q('btn-tirar').style.display = 'none';
+  q('btn-novafoto').style.display = 'block';
+  q('btn-salvar').style.display = 'block';
+  q('foto-status').textContent = 'Foto capturada! Confirme ou tire outra.';
+
+  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+};
+
+q('btn-novafoto').onclick = function() {
+  fotoData = null;
+  iniciarCamera();
+};
+
+function voltarFoto() {
+  if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+  ir('t-emp');
+}
+
+q('btn-salvar').onclick = async function() {
+  const btn = this;
+  btn.textContent = 'Salvando...';
+  btn.disabled = true;
+  q('al-foto').innerHTML = '';
+
+  // Resolve empresa e cargo
+  const empSel = q('f-emp').value;
+  const empresa = empSel === 'outra' ? q('f-emp-outra').value.trim() : empSel;
+  const carSel = q('f-car').value;
+  const cargo = carSel === 'outro' ? q('f-car-outro').value.trim() : carSel;
+
+  // Verifica CPF duplicado novamente (segurança)
+  const cpfRaw = q('f-cpf').value.replace(/\D/g, '');
+  if (cpfRaw.length === 11) {
+    const { data: existente } = await sb.from('cadastros').select('id').eq('cpf', q('f-cpf').value).limit(1);
+    if (existente && existente.length) {
+      q('al-foto').innerHTML = '<div class="ea">Este CPF já está cadastrado no sistema!</div>';
+      btn.textContent = 'Confirmar e finalizar';
+      btn.disabled = false;
+      return;
+    }
+  }
+
+  // Monta payload
+  const dados = {
+    nome: q('f-nome').value.trim(),
+    cpf: q('f-cpf').value,
+    rg: q('f-rg').value.trim(),
+    email: q('f-email').value.trim(),
+    telefone: q('f-tel').value,
+    nascimento: q('f-nasc').value,
+    setor: 'Convidado',
+    empresa: empresa || null,
+    cargo: cargo || null,
+    status: 'pendente',
+    foto_url: fotoData,
+    lote_nome: respNome || null
+  };
+  if (LOTE_ID) dados.lote_id = LOTE_ID;
+  if (EV_ID) dados.evento_id = EV_ID;
+
+  // 1. Cria cadastro
+  const { data: cadastro, error: errCad } = await sb.from('cadastros').insert(dados).select().single();
+  if (errCad || !cadastro) {
+    q('al-foto').innerHTML = '<div class="ea">Erro ao salvar: ' + (errCad?.message || '') + '</div>';
+    btn.textContent = 'Confirmar e finalizar';
+    btn.disabled = false;
+    return;
+  }
+
+  // 2. Vincula código ao cadastro + marca como usado (VIRA VERDE no painel do lote)
+  await sb.from('codigos').update({
+    cadastro_id: cadastro.id,
+    usado: true,
+    usado_em: new Date().toISOString(),
+    enviado: true  // garante que continue marcado como enviado
+  }).eq('id', codigoIdValido);
+
+  ir('t-ok');
+};
+
+// ========================
+// INICIALIZAÇÃO
+// ========================
+carregarInfoTopo();
+</script>
+
+</body>
+</html>
