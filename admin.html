@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agroplay — Admin</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Arial, sans-serif; background: #060a06; color: #eee; min-height: 100vh; }
+
+header { background: #060a06; border-bottom: 2px solid #1e7a35; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
+.logo { display: flex; align-items: center; border: 1px solid #1a2a1a; border-radius: 10px; overflow: hidden; }
+.logo .a { background: #0d150d; padding: 7px 12px; font-size: 16px; font-weight: 900; color: #fff; letter-spacing: 1px; }
+.logo .a span { color: #2aab47; }
+.logo .v { background: #c9973c; padding: 7px 10px; font-size: 11px; font-weight: 700; color: #fff; letter-spacing: 1px; }
+.header-acoes { display: flex; gap: 8px; align-items: center; }
+.live-dot { display: inline-block; width: 8px; height: 8px; background: #2aab47; border-radius: 50%; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1 } 50% { opacity: 0.3 } }
+.live-txt { font-size: 9px; color: #2aab47; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+.btn-sair { background: transparent; border: 1px solid #c0392b; color: #c0392b; padding: 6px 12px; border-radius: 8px; font-size: 11px; cursor: pointer; }
+
+main { max-width: 800px; margin: 0 auto; padding: 16px; }
+
+.fl { margin-bottom: 12px; }
+.fl label { display: block; font-size: 10px; color: #2aab47; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; font-weight: 700; }
+input, select { width: 100%; padding: 11px 13px; background: #030503; border: 1px solid #1a2a1a; border-radius: 8px; color: #eee; font-size: 14px; outline: none; font-family: inherit; }
+input:focus, select:focus { border-color: #2aab47; }
+.btn { background: #1e7a35; color: #fff; border: none; border-radius: 8px; padding: 13px; font-size: 14px; font-weight: 700; cursor: pointer; width: 100%; }
+.btn:hover { background: #2aab47; }
+.btn:disabled { opacity: 0.5; }
+.bto { background: transparent; border: 1px solid #2aab47; color: #2aab47; border-radius: 8px; padding: 8px 12px; font-size: 11px; cursor: pointer; font-weight: 600; }
+
+.erro { color: #e74c3c; font-size: 12px; text-align: center; margin-top: 12px; min-height: 16px; }
+
+.login-card { background: #090e09; border: 1px solid #1a2a1a; border-radius: 16px; padding: 36px 26px; max-width: 380px; margin: 60px auto; }
+.login-card h1 { font-size: 16px; font-weight: 700; text-align: center; margin-bottom: 4px; color: #fff; }
+.login-card .subtitle { text-align: center; color: #555; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 24px; }
+
+.ev-info { background: #090e09; border: 1px solid #1a2a1a; border-radius: 10px; padding: 14px; margin-bottom: 14px; }
+.ev-info-titulo { font-size: 14px; color: #2aab47; font-weight: 700; margin-bottom: 4px; }
+.ev-info-det { font-size: 11px; color: #888; line-height: 1.6; }
+
+.stats { display: flex; gap: 8px; margin-bottom: 14px; }
+.stat { background: #090e09; border: 1px solid #1a2a1a; border-radius: 10px; padding: 14px 8px; text-align: center; flex: 1; cursor: pointer; transition: all 0.2s; }
+.stat:hover { border-color: #2aab47; }
+.stat strong { font-size: 28px; display: block; font-weight: 800; }
+.stat small { font-size: 9px; color: #555; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+.stat.on { border-color: #2aab47; background: rgba(42,171,71,0.08); }
+
+.barra { height: 6px; background: #1a2a1a; border-radius: 3px; overflow: hidden; margin-bottom: 14px; }
+.barra-fill { height: 100%; background: linear-gradient(90deg, #1e7a35, #2aab47); transition: width 0.5s; }
+
+.tabs { display: flex; gap: 6px; margin-bottom: 14px; overflow-x: auto; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { background: transparent; border: 1px solid #333; color: #555; border-radius: 8px; padding: 9px 14px; font-size: 12px; cursor: pointer; white-space: nowrap; font-weight: 600; flex: 1; }
+.tab.on { border-color: #2aab47; color: #2aab47; background: rgba(42,171,71,0.1); }
+
+.pessoa { background: #090e09; border: 1px solid #1a2a1a; border-left: 4px solid #c9973c; border-radius: 10px; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; }
+.pessoa.entrou { border-left-color: #2aab47; background: rgba(42,171,71,0.05); }
+.pessoa.reprovado { border-left-color: #c0392b; opacity: 0.6; }
+.pessoa-foto { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.pessoa-foto-vazio { width: 40px; height: 40px; border-radius: 50%; background: #1e7a35; color: #fff; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.pessoa-info { flex: 1; min-width: 0; }
+.pessoa-nome { font-size: 13px; font-weight: 700; color: #fff; }
+.pessoa-empresa { font-size: 10px; color: #888; margin-top: 2px; }
+.pessoa-status { font-size: 9px; margin-top: 3px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+.pessoa-status.entrou { color: #2aab47; }
+.pessoa-status.aguardando { color: #c9973c; }
+.pessoa-status.reprovado { color: #c0392b; }
+
+.secao-titulo { font-size: 11px; color: #2aab47; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; margin: 18px 0 10px; }
+
+.val-card { background: #090e09; border: 1px solid #1a2a1a; border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+.val-nome { font-size: 12px; color: #fff; font-weight: 600; }
+.val-num { font-size: 13px; color: #2aab47; font-weight: 800; }
+
+.empty { text-align: center; padding: 30px 16px; color: #555; font-size: 12px; }
+.gone { display: none !important; }
+
+.saudacao { margin-bottom: 14px; }
+.saudacao h1 { font-size: 18px; color: #fff; margin-bottom: 4px; }
+.saudacao p { font-size: 11px; color: #888; }
+
+.acoes-lista { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+.acoes-lista button { font-size: 11px; padding: 7px 10px; }
+
+.hist-item { background: #030503; border: 1px solid #1a2a1a; border-radius: 6px; padding: 8px 10px; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
+.hist-nome { color: #fff; font-weight: 600; }
+.hist-meta { color: #666; font-size: 10px; }
+</style>
+
+</head>
+<body>
+
+<!-- LOGIN -->
+
+<div id="appLogin">
+  <div class="login-card">
+    <div style="text-align:center;margin-bottom:24px">
+      <div class="logo" style="display:inline-flex">
+        <div class="a">AGRO<span>PLAY</span></div>
+        <div class="v">v32</div>
+      </div>
+    </div>
+    <h1>Painel Admin</h1>
+    <p class="subtitle">Controle do evento ao vivo</p>
+    <div class="fl"><label>Usuário</label><input type="text" id="inputUser" autocomplete="username"></div>
+    <div class="fl"><label>Senha</label><input type="password" id="inputSenha" autocomplete="current-password"></div>
+    <button class="btn" id="btnEntrar">Entrar</button>
+    <div class="erro" id="erroLogin"></div>
+  </div>
+</div>
+
+<!-- APP -->
+
+<div id="appPainel" style="display:none">
+  <header>
+    <div class="logo">
+      <div class="a">AGRO<span>PLAY</span></div>
+      <div class="v">v32</div>
+    </div>
+    <div class="header-acoes">
+      <span class="live-dot"></span>
+      <span class="live-txt">Live</span>
+      <button class="btn-sair" id="btnSair">Sair</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="saudacao">
+      <h1>Painel Admin</h1>
+      <p>Acompanhe o evento em tempo real</p>
+    </div>
+
+```
+<div class="fl">
+  <label>Selecionar evento</label>
+  <select id="selectEvento" onchange="trocarEvento(this.value)"></select>
+</div>
+
+<div id="conteudo" class="gone">
+  <div id="evInfo"></div>
+
+  <div class="stats">
+    <div class="stat" id="statTodos" onclick="filtrar('todos')">
+      <strong style="color:#fff" id="numTotal">0</strong>
+      <small>Total</small>
+    </div>
+    <div class="stat" id="statEntraram" onclick="filtrar('entraram')">
+      <strong style="color:#2aab47" id="numEntraram">0</strong>
+      <small>Entraram</small>
+    </div>
+    <div class="stat" id="statFaltam" onclick="filtrar('faltam')">
+      <strong style="color:#c9973c" id="numFaltam">0</strong>
+      <small>Faltam</small>
+    </div>
+  </div>
+
+  <div class="barra"><div class="barra-fill" id="barraFill" style="width:0%"></div></div>
+
+  <div class="acoes-lista">
+    <input type="text" id="inputBusca" placeholder="Buscar por nome..." oninput="renderLista()" style="flex:1;min-width:140px">
+    <button class="bto" onclick="exportarCsv()">Exportar CSV</button>
+  </div>
+
+  <div id="lista"></div>
+
+  <div class="secao-titulo">Validadores ativos</div>
+  <div id="listaValidadores"></div>
+
+  <div class="secao-titulo">Histórico de check-ins (mais recentes)</div>
+  <div id="historico"></div>
+</div>
+```
+
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SB_URL = 'https://wexwcnezjadoutyzkbcj.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+let eventos = [];
+let eventoAtual = null;
+let cadastros = [];
+let validadores = [];
+let canalRealtime = null;
+let filtroAtual = 'todos';
+
+function escaparHtml(t) { if (!t) return ''; return String(t).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;'); }
+function formatarData(iso) { if (!iso) return ''; const p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
+function q(id) { return document.getElementById(id); }
+
+// =====================
+// LOGIN
+// =====================
+async function entrar() {
+  const user = q('inputUser').value.trim();
+  const senha = q('inputSenha').value.trim();
+  const erro = q('erroLogin');
+  erro.textContent = '';
+  if (!user || !senha) { erro.textContent = 'Preencha tudo'; return; }
+
+  const btn = q('btnEntrar');
+  btn.disabled = true; btn.textContent = 'Entrando...';
+
+  const { data } = await sb.from('admins').select('*').eq('nome', user).eq('senha', senha).maybeSingle();
+
+  btn.disabled = false; btn.textContent = 'Entrar';
+  if (!data) { erro.textContent = 'Usuário ou senha inválidos'; return; }
+
+  sessionStorage.setItem('ag_admin', JSON.stringify({ id: data.id, nome: data.nome }));
+  abrirPainel();
+}
+
+async function abrirPainel() {
+  q('appLogin').style.display = 'none';
+  q('appPainel').style.display = 'block';
+  await carregarEventos();
+}
+
+// =====================
+// EVENTOS
+// =====================
+async function carregarEventos() {
+  const { data } = await sb.from('eventos').select('*').order('data', { ascending: false });
+  eventos = data || [];
+
+  const sel = q('selectEvento');
+  sel.innerHTML = '<option value="">Selecione um evento...</option>';
+  eventos.forEach(ev => {
+    sel.innerHTML += '<option value="' + ev.id + '">' + escaparHtml(ev.nome) + ' · ' + formatarData(ev.data) + '</option>';
+  });
+
+  // Restaura sessao
+  const savedEv = sessionStorage.getItem('ag_admin_ev');
+  if (savedEv && eventos.find(e => e.id === savedEv)) {
+    sel.value = savedEv;
+    trocarEvento(savedEv);
+  }
+}
+
+async function trocarEvento(eventoId) {
+  // Cancela canal anterior se houver
+  if (canalRealtime) {
+    sb.removeChannel(canalRealtime);
+    canalRealtime = null;
+  }
+
+  if (!eventoId) {
+    q('conteudo').classList.add('gone');
+    return;
+  }
+
+  eventoAtual = eventos.find(e => e.id === eventoId);
+  if (!eventoAtual) return;
+  sessionStorage.setItem('ag_admin_ev', eventoId);
+
+  q('conteudo').classList.remove('gone');
+  await Promise.all([carregarCadastros(), carregarValidadores()]);
+  renderEvInfo();
+  renderTudo();
+  iniciarRealtime();
+}
+
+async function carregarCadastros() {
+  const { data } = await sb.from('cadastros').select('*').eq('evento_id', eventoAtual.id).order('nome', { ascending: true });
+  cadastros = data || [];
+}
+
+async function carregarValidadores() {
+  const { data } = await sb.from('validadores').select('*');
+  validadores = data || [];
+}
+
+// =====================
+// REALTIME
+// =====================
+function iniciarRealtime() {
+  canalRealtime = sb.channel('admin-evento-' + eventoAtual.id)
+    .on('postgres_changes', {
+      event: '*',
+      schema: 'public',
+      table: 'cadastros',
+      filter: 'evento_id=eq.' + eventoAtual.id
+    }, async (payload) => {
+      // Recarrega tudo quando algo muda
+      await carregarCadastros();
+      renderTudo();
+    })
+    .subscribe();
+}
+
+// =====================
+// RENDER
+// =====================
+function renderEvInfo() {
+  const ev = eventoAtual;
+  let h = '<div class="ev-info"><div class="ev-info-titulo">🎵 ' + escaparHtml(ev.nome) + '</div><div class="ev-info-det">';
+  h += '📅 ' + formatarData(ev.data);
+  if (ev.horario) h += ' às ' + ev.horario.substring(0, 5);
+  if (ev.local) h += '<br>📍 ' + escaparHtml(ev.local);
+  if (ev.atracao1) h += '<br>🎤 ' + escaparHtml(ev.atracao1) + (ev.atracao2 ? ' + ' + escaparHtml(ev.atracao2) : '');
+  h += '</div></div>';
+  q('evInfo').innerHTML = h;
+}
+
+function renderTudo() {
+  renderStats();
+  renderLista();
+  renderValidadores();
+  renderHistorico();
+}
+
+function renderStats() {
+  const total = cadastros.length;
+  const entraram = cadastros.filter(c => c.entrada_em).length;
+  const faltam = total - entraram;
+  q('numTotal').textContent = total;
+  q('numEntraram').textContent = entraram;
+  q('numFaltam').textContent = faltam;
+
+  const pct = total ? Math.round((entraram / total) * 100) : 0;
+  q('barraFill').style.width = pct + '%';
+
+  // Estado ativo do filtro
+  q('statTodos').classList.toggle('on', filtroAtual === 'todos');
+  q('statEntraram').classList.toggle('on', filtroAtual === 'entraram');
+  q('statFaltam').classList.toggle('on', filtroAtual === 'faltam');
+}
+
+function filtrar(f) {
+  filtroAtual = f;
+  renderStats();
+  renderLista();
+}
+
+function renderLista() {
+  const termo = (q('inputBusca').value || '').trim().toLowerCase();
+
+  let lista = cadastros;
+  if (filtroAtual === 'entraram') lista = lista.filter(c => c.entrada_em);
+  else if (filtroAtual === 'faltam') lista = lista.filter(c => !c.entrada_em);
+  if (termo) lista = lista.filter(c => (c.nome || '').toLowerCase().includes(termo));
+
+  // Ordena: nao entrou primeiro (alfabetico), depois entrou (mais recente primeiro)
+  lista = [...lista].sort((a, b) => {
+    if (!a.entrada_em && b.entrada_em) return -1;
+    if (a.entrada_em && !b.entrada_em) return 1;
+    if (a.entrada_em && b.entrada_em) return b.entrada_em.localeCompare(a.entrada_em);
+    return (a.nome || '').localeCompare(b.nome || '');
+  });
+
+  const el = q('lista');
+  if (!lista.length) {
+    el.innerHTML = '<div class="empty">Ninguém aqui.</div>';
+    return;
+  }
+
+  let h = '';
+  lista.forEach(c => {
+    let classe = '';
+    let stTxt = '○ Aguardando';
+    let stClasse = 'aguardando';
+    if (c.status === 'reprovado') {
+      classe = 'reprovado';
+      stTxt = '⛔ Reprovado';
+      stClasse = 'reprovado';
+    } else if (c.entrada_em) {
+      classe = 'entrou';
+      const dt = new Date(c.entrada_em);
+      const hora = dt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      stTxt = '✓ Entrou às ' + hora + (c.validador_nome ? ' (' + c.validador_nome + ')' : '');
+      stClasse = 'entrou';
+    }
+
+    let foto;
+    if (c.foto_url) foto = '<img src="' + escaparHtml(c.foto_url) + '" class="pessoa-foto">';
+    else foto = '<div class="pessoa-foto-vazio">' + (c.nome || '?').charAt(0).toUpperCase() + '</div>';
+
+    h += '<div class="pessoa ' + classe + '">' +
+      foto +
+      '<div class="pessoa-info">' +
+        '<div class="pessoa-nome">' + escaparHtml(c.nome) + '</div>' +
+        '<div class="pessoa-empresa">' + escaparHtml(c.empresa || c.setor || '-') + (c.lote_nome ? ' · convidado por ' + escaparHtml(c.lote_nome) : '') + '</div>' +
+        '<div class="pessoa-status ' + stClasse + '">' + stTxt + '</div>' +
+      '</div>' +
+    '</div>';
+  });
+  el.innerHTML = h;
+}
+
+function renderValidadores() {
+  const el = q('listaValidadores');
+  if (!validadores.length) {
+    el.innerHTML = '<div class="empty">Nenhum validador cadastrado.</div>';
+    return;
+  }
+
+  // Conta validacoes por validador (nesse evento)
+  const contagem = {};
+  cadastros.forEach(c => {
+    if (c.validador_id) {
+      contagem[c.validador_id] = (contagem[c.validador_id] || 0) + 1;
+    }
+  });
+
+  // Ordena: mais validacoes primeiro
+  const ordenados = [...validadores].sort((a, b) => (contagem[b.id] || 0) - (contagem[a.id] || 0));
+
+  let h = '';
+  ordenados.forEach(v => {
+    const num = contagem[v.id] || 0;
+    h += '<div class="val-card"><div class="val-nome">👮 ' + escaparHtml(v.nome) + '</div><div class="val-num">' + num + ' check-in' + (num !== 1 ? 's' : '') + '</div></div>';
+  });
+  el.innerHTML = h;
+}
+
+function renderHistorico() {
+  const entradas = cadastros.filter(c => c.entrada_em).sort((a, b) => b.entrada_em.localeCompare(a.entrada_em));
+
+  const el = q('historico');
+  if (!entradas.length) {
+    el.innerHTML = '<div class="empty">Nenhum check-in ainda.</div>';
+    return;
+  }
+
+  let h = '';
+  entradas.slice(0, 30).forEach(c => {
+    const dt = new Date(c.entrada_em);
+    const hora = dt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    h += '<div class="hist-item"><div class="hist-nome">' + escaparHtml(c.nome) + '</div><div class="hist-meta">' + hora + (c.validador_nome ? ' · ' + escaparHtml(c.validador_nome) : '') + '</div></div>';
+  });
+  el.innerHTML = h;
+}
+
+function exportarCsv() {
+  if (!cadastros.length) return;
+  const cab = 'Nome,CPF,Email,Telefone,Empresa,Cargo,Status,Entrada,Validador,Convidado por\n';
+  const linhas = cadastros.map(c => {
+    const entrada = c.entrada_em ? new Date(c.entrada_em).toLocaleString('pt-BR') : '';
+    const cells = [
+      c.nome || '', c.cpf || '', c.email || '', c.telefone || '',
+      c.empresa || '', c.cargo || '', c.status || '',
+      entrada, c.validador_nome || '', c.lote_nome || ''
+    ];
+    return cells.map(v => '"' + String(v).replaceAll('"', '""') + '"').join(',');
+  }).join('\n');
+
+  const blob = new Blob([cab + linhas], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Admin_' + eventoAtual.nome.replace(/[^a-z0-9]/gi, '_') + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function sair() {
+  if (canalRealtime) sb.removeChannel(canalRealtime);
+  sessionStorage.removeItem('ag_admin');
+  sessionStorage.removeItem('ag_admin_ev');
+  window.location.href = 'index.html';
+}
+
+// =====================
+// LISTENERS
+// =====================
+q('btnEntrar').addEventListener('click', entrar);
+q('inputUser').addEventListener('keydown', (e) => { if (e.key === 'Enter') q('inputSenha').focus(); });
+q('inputSenha').addEventListener('keydown', (e) => { if (e.key === 'Enter') entrar(); });
+q('btnSair').addEventListener('click', sair);
+
+// Auto-login
+const sess = sessionStorage.getItem('ag_admin');
+if (sess) {
+  abrirPainel();
+}
+</script>
+
+</body>
+</html>
