@@ -34,16 +34,20 @@ select,input{width:100%;background:#090e09;border:1px solid #1a2a1a;border-radiu
 .it-d{font-size:10px;color:#666}
 .it-v{font-size:13px;font-weight:700;color:#2aab47}
 .it-x{background:transparent;border:1px solid #c0392b;color:#c0392b;border-radius:6px;padding:4px 9px;font-size:11px;cursor:pointer}
-.add{padding:10px 12px;border-top:1px solid #1a2a1a;background:#070b07}
-.row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px}
-.row select,.row input{margin-bottom:0;background:#030503;padding:9px;font-size:12px}
-.row select{flex:1;min-width:120px}
-.row .qtd{flex:0 0 60px}
-.row .vlr{flex:0 0 90px}
-.add-b{background:#1e7a35;border:none;border-radius:8px;padding:9px 14px;color:#fff;font-size:14px;font-weight:700;cursor:pointer}
-.pdf{width:100%;background:#0891b2;border:none;border-radius:12px;padding:16px;font-size:15px;font-weight:700;color:#fff;cursor:pointer;margin:14px 0 20px}
+.btn-add{background:#1e7a35;border:none;color:#fff;padding:12px 14px;font-size:13px;font-weight:700;cursor:pointer;width:100%;border-top:1px solid #1a2a1a}
+.btn-pdf{width:100%;background:#0891b2;border:none;border-radius:12px;padding:16px;font-size:15px;font-weight:700;color:#fff;cursor:pointer;margin:14px 0 20px}
 .emp{text-align:center;padding:20px 14px;color:#555;font-size:12px}
+
+/* Modal */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:100;align-items:center;justify-content:center;padding:14px}
+.modal-bg.on{display:flex}
+.modal{background:#0d150d;border:1px solid #2aab47;border-radius:12px;padding:18px;max-width:420px;width:100%;max-height:90vh;overflow-y:auto}
+.modal h3{color:#2aab47;font-size:16px;margin-bottom:14px}
+.modal .row-btn{display:flex;gap:8px;margin-top:14px}
+.modal .btn-cancel{flex:1;background:transparent;border:1px solid #c0392b;color:#c0392b;border-radius:8px;padding:12px;font-size:13px;font-weight:700;cursor:pointer}
+.modal .btn-ok{flex:1;background:#1e7a35;border:none;color:#fff;border-radius:8px;padding:12px;font-size:13px;font-weight:700;cursor:pointer}
 </style>
+
 </head>
 <body>
 
@@ -64,15 +68,33 @@ select,input{width:100%;background:#090e09;border:1px solid #1a2a1a;border-radiu
 <div id="einfo"></div>
 <div id="conteudo"></div>
 
+<!-- Modal de adicionar item -->
+
+<div id="modalBg" class="modal-bg">
+  <div class="modal">
+    <h3 id="modalTitle">Adicionar item</h3>
+    <label class="lbl">Item</label>
+    <select id="mItem"></select>
+    <input type="text" id="mItemCustom" placeholder="Nome do item personalizado" style="display:none">
+    <label class="lbl">Quantidade</label>
+    <input type="number" id="mQtd" value="1" step="0.5" min="0">
+    <label class="lbl">Valor unitario (R$)</label>
+    <input type="number" id="mVal" placeholder="0,00" step="0.01" min="0">
+    <div class="row-btn">
+      <button class="btn-cancel" onclick="fecharModal()">Cancelar</button>
+      <button class="btn-ok" onclick="salvarItem()">Adicionar</button>
+    </div>
+  </div>
+</div>
+
 <script>
 var SB='https://wexwcnezjadoutyzkbcj.supabase.co';
 var KY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ';
 var evAtual=null;
 var itens=[];
 var allEvs=[];
-</script>
+var catModal=null;
 
-<script>
 var CATS=[
 ['Artista',['Cache do artista','Passagem aerea','Hospedagem','Translado','Alimentacao camarim','Camareira']],
 ['Estrutura Tecnica',['Som PA','Iluminacao','Gerador','Palco','Backline','Telao LED']],
@@ -153,7 +175,6 @@ function render(){
   
   for(var ci=0;ci<cats.length;ci++){
     var cat=cats[ci];
-    var cid='c'+ci;
     var its=[];
     var ct=0;
     for(var x=0;x<itens.length;x++){
@@ -161,10 +182,6 @@ function render(){
         its.push(itens[x]);
         ct+=parseFloat(itens[x].valor_total||0);
       }
-    }
-    var opts=null;
-    for(var z=0;z<CATS.length;z++){
-      if(CATS[z][0]===cat){opts=CATS[z][1];break;}
     }
     
     h+='<div class="cat">';
@@ -179,92 +196,108 @@ function render(){
       }
     }
     h+='</div>';
-    h+='<div class="add"><div class="row">';
-    h+='<select id="si'+cid+'">';
-    if(opts){
-      for(var w=0;w<opts.length;w++)h+='<option>'+esc(opts[w])+'</option>';
-    }
-    h+='<option value="_outro_">Outro...</option>';
-    h+='</select>';
-    h+='<input type="number" id="sq'+cid+'" value="1" step="0.5" class="qtd">';
-    h+='<input type="number" id="sv'+cid+'" placeholder="R$" step="0.01" class="vlr">';
-    h+='<button class="add-b" data-cat="'+esc(cat)+'" data-cid="'+cid+'">+</button>';
+    h+='<button class="btn-add" data-cat="'+esc(cat)+'">+ Adicionar item</button>';
     h+='</div>';
-    h+='<input type="text" id="sn'+cid+'" placeholder="Nome do item (Outro)" style="display:none;background:#030503;padding:9px;font-size:12px;width:100%;border:1px solid #1a2a1a;border-radius:8px;color:#eee;margin-top:6px">';
-    h+='</div></div>';
   }
   
-  h+='<button class="pdf">Gerar PDF</button>';
+  h+='<button class="btn-pdf" id="btnPDF">Gerar PDF</button>';
   document.getElementById('conteudo').innerHTML=h;
   
-  for(var ci2=0;ci2<cats.length;ci2++){
-    (function(cid){
-      var s=document.getElementById('si'+cid);
-      if(s)s.onchange=function(){
-        var ni=document.getElementById('sn'+cid);
-        if(ni)ni.style.display=s.value==='_outro_'?'block':'none';
-      };
-    })('c'+ci2);
+  // Listeners
+  var btns=document.querySelectorAll('.btn-add');
+  for(var b=0;b<btns.length;b++){
+    btns[b].onclick=function(){abrirModal(this.getAttribute('data-cat'));};
   }
-  
-  // Event delegation pros botoes + e x - com debug
-  var cont=document.getElementById('conteudo');
-  cont.onclick=function(e){
-    var t=e.target;
-    if(t.tagName!=='BUTTON')return;
-    var addCat=t.getAttribute('data-cat');
-    var addCid=t.getAttribute('data-cid');
-    var delId=t.getAttribute('data-del');
-    if(addCat&&addCid){addIt(addCat,addCid);return;}
-    if(delId){delIt(delId);return;}
-    if(t.className==='pdf'){gerarPDF();return;}
-  };
+  var dels=document.querySelectorAll('.it-x');
+  for(var d2=0;d2<dels.length;d2++){
+    dels[d2].onclick=function(){delIt(this.getAttribute('data-del'));};
+  }
+  document.getElementById('btnPDF').onclick=gerarPDF;
 }
 </script>
 
 <script>
-function addIt(cat,cid){
-  alert('addIt: cat='+cat+' cid='+cid+' evAtual='+(evAtual?evAtual.nome:'NULL'));
-  if(!evAtual){alert('STOP: evAtual nulo');return;}
-  var s=document.getElementById('si'+cid);
-  if(!s){alert('STOP: select si'+cid+' nao existe');return;}
-  alert('select OK, vai pegar valores. select.value='+s.value);
-  var ni=document.getElementById('sn'+cid);
-  var nome=s.value==='_outro_'?(ni?ni.value.trim():''):s.value;
-  var qtdEl=document.getElementById('sq'+cid);
-  var valEl=document.getElementById('sv'+cid);
-  if(!qtdEl||!valEl)return;
-  var qtd=parseFloat(qtdEl.value)||1;
-  var val=parseFloat(valEl.value)||0;
-  if(!nome){alert('Preencha o item');return;}
+function abrirModal(cat){
+  if(!evAtual){alert('Selecione um evento');return;}
+  catModal=cat;
+  document.getElementById('modalTitle').innerHTML='Adicionar - '+esc(cat);
+  
+  // Popular select de itens
+  var opts=null;
+  for(var i=0;i<CATS.length;i++){
+    if(CATS[i][0]===cat){opts=CATS[i][1];break;}
+  }
+  var html='';
+  if(opts){
+    for(var j=0;j<opts.length;j++){
+      html+='<option value="'+esc(opts[j])+'">'+esc(opts[j])+'</option>';
+    }
+  }
+  html+='<option value="_outro_">Outro item personalizado...</option>';
+  var sel=document.getElementById('mItem');
+  sel.innerHTML=html;
+  sel.onchange=function(){
+    document.getElementById('mItemCustom').style.display=sel.value==='_outro_'?'block':'none';
+  };
+  
+  // Reset valores
+  document.getElementById('mItemCustom').value='';
+  document.getElementById('mItemCustom').style.display='none';
+  document.getElementById('mQtd').value='1';
+  document.getElementById('mVal').value='';
+  
+  document.getElementById('modalBg').classList.add('on');
+}
+
+function fecharModal(){
+  document.getElementById('modalBg').classList.remove('on');
+  catModal=null;
+}
+
+function salvarItem(){
+  if(!evAtual||!catModal){alert('Erro: sem evento ou categoria');return;}
+  var sel=document.getElementById('mItem');
+  var custom=document.getElementById('mItemCustom');
+  var nome=sel.value==='_outro_'?custom.value.trim():sel.value;
+  var qtd=parseFloat(document.getElementById('mQtd').value)||1;
+  var val=parseFloat(document.getElementById('mVal').value)||0;
+  if(!nome){alert('Preencha o nome do item');return;}
   if(!val||val<=0){alert('Digite o valor');return;}
-  var body={evento_id:evAtual.id,categoria:cat,item:nome,quantidade:qtd,valor_unitario:val,valor_total:qtd*val};
+  
+  var body={evento_id:evAtual.id,categoria:catModal,item:nome,quantidade:qtd,valor_unitario:val,valor_total:qtd*val};
   fetch(SB+'/rest/v1/orcamentos',{
     method:'POST',
     headers:{apikey:KY,Authorization:'Bearer '+KY,'Content-Type':'application/json',Prefer:'return=representation'},
     body:JSON.stringify(body)
-  }).then(function(r){return r.json();}).then(function(d){
+  }).then(function(r){
+    if(r.status>=200&&r.status<300)return r.json();
+    return r.json().then(function(d){throw new Error('Status '+r.status+': '+JSON.stringify(d));});
+  }).then(function(d){
     if(Array.isArray(d)&&d[0])itens.push(d[0]);
+    fecharModal();
     render();
   }).catch(function(e){alert('Erro: '+e.message);});
 }
 
 function delIt(id){
-  if(!confirm('Excluir?'))return;
+  if(!confirm('Excluir este item?'))return;
   fetch(SB+'/rest/v1/orcamentos?id=eq.'+id,{
     method:'DELETE',headers:{apikey:KY,Authorization:'Bearer '+KY}
   }).then(function(){
     var n=[];for(var i=0;i<itens.length;i++)if(itens[i].id!==id)n.push(itens[i]);
     itens=n;render();
-  }).catch(function(){alert('Erro');});
+  }).catch(function(){alert('Erro ao excluir');});
 }
+</script>
 
+<script>
 function gerarPDF(){
-  if(!evAtual||!itens.length){alert('Sem itens');return;}
+  if(!evAtual||!itens.length){alert('Adicione itens primeiro');return;}
   var tot=0;for(var i=0;i<itens.length;i++)tot+=parseFloat(itens[i].valor_total||0);
   var grp={};
   for(var j=0;j<itens.length;j++){var c=itens[j].categoria;if(!grp[c])grp[c]=[];grp[c].push(itens[j]);}
   var w=window.open('','_blank');
+  if(!w){alert('Popup bloqueado. Permita popups e tente de novo.');return;}
   var h='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Orcamento</title><style>body{font-family:Arial;max-width:700px;margin:0 auto;padding:24px}h1{color:#1e7a35}h2{color:#666;border-bottom:2px solid #1e7a35;padding-bottom:8px;margin-bottom:20px}.tb{background:#f0fff0;border:2px solid #1e7a35;border-radius:10px;padding:16px;margin:20px 0;display:flex;justify-content:space-between;align-items:center}.tb .v{font-size:24px;color:#1e7a35;font-weight:900}h3{background:#1e7a35;color:#fff;padding:10px 14px;margin-top:20px;border-radius:6px;display:flex;justify-content:space-between}table{width:100%;border-collapse:collapse;margin-top:8px;font-size:12px}th{background:#f5f5f5;padding:8px;text-align:left;font-size:11px;border-bottom:2px solid #ddd}td{padding:8px;border-bottom:1px solid #eee}td:last-child,th:last-child{text-align:right;font-weight:700;color:#1e7a35}.btn{width:100%;background:#1e7a35;color:#fff;border:none;padding:14px;font-weight:700;border-radius:8px;margin-top:24px;cursor:pointer}@media print{.btn{display:none}}</style></head><body>';
 
 h+=’<h1>AGROPLAY MUSIC</h1><h2>Orcamento - ‘+esc(evAtual.nome)+(evAtual.data?’ - ‘+fd(evAtual.data):’’)+’</h2>’;
@@ -282,7 +315,7 @@ h+=’<tr><td>’+esc(it.item)+’</td><td>’+it.quantidade+’</td><td>’+fmt
 }
 h+=’</table>’;
 }
-h+=’<button class="btn" onclick="window.print()">Imprimir / PDF</button></body></html>’;
+h+=’<button class="btn" onclick="window.print()">Imprimir / Salvar PDF</button></body></html>’;
 w.document.write(h);w.document.close();
 }
 </script>
