@@ -211,43 +211,50 @@ function render(){
   var cont=document.getElementById('conteudo');
   cont.onclick=function(e){
     var t=e.target;
-    alert('CLIQUE detectado em: '+t.tagName+' classe='+t.className);
     if(t.tagName!=='BUTTON')return;
     var addCat=t.getAttribute('data-cat');
     var addCid=t.getAttribute('data-cid');
     var delId=t.getAttribute('data-del');
-    if(addCat&&addCid){alert('Vai chamar addIt('+addCat+','+addCid+')');addIt(addCat,addCid);return;}
+    if(addCat&&addCid){addIt(addCat,addCid);return;}
     if(delId){delIt(delId);return;}
     if(t.className==='pdf'){gerarPDF();return;}
   };
-  alert('render finalizou OK - '+cats.length+' categorias');
 }
 </script>
 
 <script>
 function addIt(cat,cid){
-  if(!evAtual){alert('Selecione um evento');return;}
+  if(!evAtual){alert('A. sem evento');return;}
   var s=document.getElementById('si'+cid);
   var ni=document.getElementById('sn'+cid);
+  if(!s){alert('B. select '+cid+' nao existe');return;}
   var nome=s.value==='_outro_'?(ni?ni.value.trim():''):s.value;
-  var qtd=parseFloat(document.getElementById('sq'+cid).value)||1;
-  var val=parseFloat(document.getElementById('sv'+cid).value)||0;
-  if(!nome){alert('Preencha o item');return;}
-  if(!val||val<=0){alert('Digite o valor');return;}
+  var qtdEl=document.getElementById('sq'+cid);
+  var valEl=document.getElementById('sv'+cid);
+  if(!qtdEl||!valEl){alert('C. inputs sq/sv nao existem');return;}
+  var qtd=parseFloat(qtdEl.value)||1;
+  var val=parseFloat(valEl.value)||0;
+  alert('D. nome='+nome+' qtd='+qtd+' val='+val);
+  if(!nome){alert('E. nome vazio');return;}
+  if(!val||val<=0){alert('F. valor invalido: '+val);return;}
+  alert('G. vai postar pro supabase...');
+  var body={evento_id:evAtual.id,categoria:cat,item:nome,quantidade:qtd,valor_unitario:val,valor_total:qtd*val};
   fetch(SB+'/rest/v1/orcamentos',{
     method:'POST',
     headers:{apikey:KY,Authorization:'Bearer '+KY,'Content-Type':'application/json',Prefer:'return=representation'},
-    body:JSON.stringify({evento_id:evAtual.id,categoria:cat,item:nome,quantidade:qtd,valor_unitario:val,valor_total:qtd*val})
+    body:JSON.stringify(body)
   }).then(function(r){
+    alert('H. resposta status='+r.status);
     return r.json().then(function(d){return {status:r.status,data:d};});
   }).then(function(o){
+    alert('I. parse OK status='+o.status+' data='+JSON.stringify(o.data).substring(0,150));
     if(o.status>=200&&o.status<300){
       if(Array.isArray(o.data)&&o.data[0])itens.push(o.data[0]);
       render();
     }else{
-      alert('Erro Supabase ('+o.status+'): '+JSON.stringify(o.data).substring(0,200));
+      alert('J. erro Supabase: '+JSON.stringify(o.data));
     }
-  }).catch(function(e){alert('Erro: '+e.message);});
+  }).catch(function(e){alert('K. catch: '+e.message);});
 }
 
 function delIt(id){
