@@ -190,6 +190,34 @@ flex-shrink: 0;
 .ultimo-empresa { font-size: clamp(12px, 1.4vw, 16px); color: #888; margin-top: 4px; }
 .ultimo-hora { font-size: clamp(14px, 1.8vw, 22px); color: #c9973c; font-weight: 700; margin-top: 8px; }
 
+/* LISTA RAPIDA (ultimas entradas) */
+.lista-rapida { margin-top: 24px; margin-bottom: 24px; }
+.lista-rapida-titulo { font-size: clamp(12px, 1.4vw, 18px); color: #2aab47; text-transform: uppercase; letter-spacing: 3px; font-weight: 800; margin-bottom: 14px; }
+.lista-rapida-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
+.mini-card { background: #090e09; border: 1px solid #1a2a1a; border-left: 3px solid #2aab47; border-radius: 10px; padding: 10px 12px; display: flex; align-items: center; gap: 8px; }
+.mini-foto { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.mini-foto-vazio { width: 36px; height: 36px; border-radius: 50%; background: #1e7a35; color: #fff; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.mini-info { flex: 1; min-width: 0; overflow: hidden; }
+.mini-nome { font-size: 13px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mini-hora { font-size: 10px; color: #888; }
+
+/* TABELA COMPLETA */
+.tabela-wrap { background: #090e09; border: 1px solid #1a2a1a; border-radius: 14px; padding: 16px; margin-top: 18px; }
+.tabela-titulo { font-size: clamp(12px, 1.4vw, 18px); color: #c9973c; text-transform: uppercase; letter-spacing: 3px; font-weight: 800; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; }
+.tabela-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+.tabela-tab { background: transparent; border: 1px solid #333; color: #555; border-radius: 8px; padding: 6px 12px; font-size: 11px; cursor: pointer; font-weight: 600; }
+.tabela-tab.on { border-color: #2aab47; color: #2aab47; background: rgba(42,171,71,0.1); }
+.tabela-lista { max-height: 50vh; overflow-y: auto; }
+.tabela-linha { display: flex; align-items: center; gap: 10px; padding: 8px 4px; border-bottom: 1px solid #1a2a1a; font-size: 12px; }
+.tabela-linha:last-child { border-bottom: none; }
+.tab-foto { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.tab-foto-vazio { width: 32px; height: 32px; border-radius: 50%; background: #1e7a35; color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.tab-nome { flex: 1; color: #fff; font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tab-emp { flex: 1; color: #888; font-size: 11px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tab-hora { color: #2aab47; font-weight: 700; font-size: 12px; white-space: nowrap; }
+.tab-tempo { color: #c9973c; font-size: 10px; white-space: nowrap; }
+.tab-aguard { color: #c9973c; font-size: 11px; font-weight: 700; }
+
 .topo-acoes {
 text-align: right;
 margin-bottom: 20px;
@@ -285,6 +313,23 @@ margin-bottom: 20px;
     <div class="ultimo-hora" id="ultimoHora"></div>
   </div>
 </div>
+
+<div class="lista-rapida" id="listaRapida" style="display:none">
+  <div class="lista-rapida-titulo">⚡ Últimas entradas</div>
+  <div class="lista-rapida-grid" id="listaRapidaGrid"></div>
+</div>
+
+<div class="tabela-wrap">
+  <div class="tabela-titulo">
+    <span>📋 Lista do evento</span>
+  </div>
+  <div class="tabela-tabs">
+    <button class="tabela-tab on" id="tabAll" onclick="trocarTabela('todos')">Todos</button>
+    <button class="tabela-tab" id="tabIn" onclick="trocarTabela('entraram')">Entraram</button>
+    <button class="tabela-tab" id="tabOut" onclick="trocarTabela('faltam')">Faltam</button>
+  </div>
+  <div class="tabela-lista" id="tabelaLista"></div>
+</div>
 ```
 
   </div>
@@ -305,6 +350,28 @@ let canalRealtime = null;
 function escaparHtml(t) { if (!t) return ''; return String(t).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;'); }
 function formatarData(iso) { if (!iso) return ''; const p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
 function q(id) { return document.getElementById(id); }
+
+let filtroTabela = 'todos';
+
+function tempoDentro(entradaEm) {
+  if (!entradaEm) return '';
+  const ms = Date.now() - new Date(entradaEm).getTime();
+  if (ms < 0) return '';
+  const min = Math.floor(ms / 60000);
+  if (min < 1) return 'agora';
+  if (min < 60) return min + ' min';
+  const horas = Math.floor(min / 60);
+  const minRestantes = min % 60;
+  return horas + 'h' + (minRestantes ? ' ' + minRestantes + 'm' : '');
+}
+
+function trocarTabela(filtro) {
+  filtroTabela = filtro;
+  q('tabAll').classList.toggle('on', filtro === 'todos');
+  q('tabIn').classList.toggle('on', filtro === 'entraram');
+  q('tabOut').classList.toggle('on', filtro === 'faltam');
+  renderTabela();
+}
 
 async function entrar() {
   const user = q('inputUser').value.trim();
@@ -417,11 +484,87 @@ function renderTudo() {
     q('ultimoNome').textContent = u.nome;
     q('ultimoEmpresa').textContent = u.empresa || u.setor || '';
     const dt = new Date(u.entrada_em);
-    q('ultimoHora').textContent = '🕐 ' + dt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    q('ultimoHora').textContent = '🕐 ' + dt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + ' · há ' + tempoDentro(u.entrada_em);
   } else {
     q('ultimoBox').style.display = 'none';
   }
+
+  renderListaRapida(entradas);
+  renderTabela();
 }
+
+function renderListaRapida(entradas) {
+  const lista = entradas.slice(1, 9); // pula o primeiro (ja ta no card grande)
+  if (!lista.length) {
+    q('listaRapida').style.display = 'none';
+    return;
+  }
+  q('listaRapida').style.display = 'block';
+  let h = '';
+  lista.forEach(c => {
+    const dt = new Date(c.entrada_em);
+    const hora = dt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    let foto;
+    if (c.foto_url) foto = '<img src="' + escaparHtml(c.foto_url) + '" class="mini-foto">';
+    else foto = '<div class="mini-foto-vazio">' + (c.nome || '?').charAt(0).toUpperCase() + '</div>';
+    h += '<div class="mini-card">' + foto +
+      '<div class="mini-info">' +
+        '<div class="mini-nome">' + escaparHtml(c.nome) + '</div>' +
+        '<div class="mini-hora">🕐 ' + hora + '</div>' +
+      '</div></div>';
+  });
+  q('listaRapidaGrid').innerHTML = h;
+}
+
+function renderTabela() {
+  let lista = cadastros;
+  if (filtroTabela === 'entraram') lista = lista.filter(c => c.entrada_em);
+  else if (filtroTabela === 'faltam') lista = lista.filter(c => !c.entrada_em);
+
+  // Ordena: entraram (mais recentes primeiro) -> faltam (alfabetico)
+  lista = [...lista].sort((a, b) => {
+    if (a.entrada_em && b.entrada_em) return b.entrada_em.localeCompare(a.entrada_em);
+    if (a.entrada_em && !b.entrada_em) return -1;
+    if (!a.entrada_em && b.entrada_em) return 1;
+    return (a.nome || '').localeCompare(b.nome || '');
+  });
+
+  const el = q('tabelaLista');
+  if (!lista.length) {
+    el.innerHTML = '<div style="text-align:center;padding:30px;color:#555;font-size:12px">Nenhum registro</div>';
+    return;
+  }
+
+  let h = '';
+  lista.forEach(c => {
+    let foto;
+    if (c.foto_url) foto = '<img src="' + escaparHtml(c.foto_url) + '" class="tab-foto">';
+    else foto = '<div class="tab-foto-vazio">' + (c.nome || '?').charAt(0).toUpperCase() + '</div>';
+
+    let direita = '';
+    if (c.entrada_em) {
+      const dt = new Date(c.entrada_em);
+      const hora = dt.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      direita = '<div class="tab-hora">✓ ' + hora + '</div><div class="tab-tempo">há ' + tempoDentro(c.entrada_em) + '</div>';
+    } else {
+      direita = '<div class="tab-aguard">○ Aguardando</div>';
+    }
+
+    h += '<div class="tabela-linha">' + foto +
+      '<div class="tab-nome">' + escaparHtml(c.nome) + '</div>' +
+      '<div class="tab-emp">' + escaparHtml(c.empresa || c.setor || '-') + '</div>' +
+      '<div style="text-align:right">' + direita + '</div>' +
+    '</div>';
+  });
+  el.innerHTML = h;
+}
+
+// Atualiza tempos a cada 30s pra mostrar "ha X min"
+setInterval(() => {
+  if (eventoAtual && cadastros.length) {
+    renderTudo();
+  }
+}, 30000);
 
 function trocarEvento() {
   if (canalRealtime) { sb.removeChannel(canalRealtime); canalRealtime = null; }
