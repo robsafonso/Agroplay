@@ -529,13 +529,14 @@ q('btn-cod').onclick = async function() {
   btn.textContent = 'Verificando...';
   btn.disabled = true;
 
-  const { data, error } = await sb.from('codigos').select('id, codigo, usado, cadastro_id, lote_id, evento_id').eq('codigo', cod).maybeSingle();
+  const { data, error } = await sb.from('codigos').select('id, codigo, usado, cadastro_id, lote_id, evento_id, queimado').eq('codigo', cod).maybeSingle();
 
   btn.textContent = 'Continuar';
   btn.disabled = false;
 
   if (error) { al.innerHTML = '<div class="ea">Erro ao verificar. Tente novamente.</div>'; return; }
   if (!data) { al.innerHTML = '<div class="ea">Código inválido.</div>'; return; }
+  if (data.queimado) { al.innerHTML = '<div class="ea">Este código foi cancelado. Solicite um novo ao organizador.</div>'; return; }
   if (data.cadastro_id) { al.innerHTML = '<div class="ea">Este código já foi usado.</div>'; return; }
 
   codigoValido = data.codigo;
