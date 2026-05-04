@@ -89,6 +89,31 @@ border-color: #2aab47;
 .legenda { display: flex; gap: 12px; font-size: 10px; color: #888; margin-bottom: 12px; flex-wrap: wrap; }
 .legenda-item { display: flex; align-items: center; gap: 5px; }
 .leg-bola { width: 10px; height: 10px; border-radius: 50%; }
+
+/* Abas */
+.tabs-lote { display: flex; gap: 6px; margin-bottom: 14px; }
+.tab-lote { background: transparent; border: 1px solid #333; border-radius: 8px; padding: 10px 14px; color: #555; cursor: pointer; font-size: 12px; font-weight: 600; flex: 1; text-align: center; }
+.tab-lote.on { border-color: #2aab47; color: #2aab47; background: rgba(42, 171, 71, 0.1); }
+.tab-lote.bloqueado { border-color: #2a1a1a; color: #444; cursor: not-allowed; }
+.tab-lote .badge-mini { display: inline-block; background: #c9973c; color: #fff; font-size: 9px; padding: 2px 6px; border-radius: 8px; margin-left: 4px; font-weight: 700; }
+.gone { display: none !important; }
+
+.aviso-bloqueado { background: rgba(8, 145, 178, 0.08); border: 1px solid #0891b2; padding: 18px; border-radius: 10px; text-align: center; margin-top: 8px; }
+.aviso-bloqueado .titulo { font-weight: 700; margin-bottom: 8px; color: #0891b2; font-size: 14px; }
+.aviso-bloqueado .desc { font-size: 12px; color: #aaa; line-height: 1.6; }
+
+/* Cards bilhetes */
+.bil-card { background: #090e09; border: 1px solid #1a2a1a; border-left: 4px solid #0891b2; border-radius: 10px; padding: 12px; margin-bottom: 8px; }
+.bil-card.aguardando { border-left-color: #c9973c; background: rgba(201, 151, 60, 0.06); }
+.bil-card.confirmado { border-left-color: #2aab47; background: rgba(42, 171, 71, 0.08); }
+.bil-cabec { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+.bil-info { flex: 1; min-width: 140px; }
+.bil-nome { font-size: 14px; font-weight: 700; color: #fff; }
+.bil-det { font-size: 10px; color: #666; margin-top: 2px; }
+.bil-stat { font-size: 9px; margin-top: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+.bil-stat.nenv { color: #0891b2; }
+.bil-stat.aguard { color: #c9973c; }
+.bil-stat.conf { color: #2aab47; }
 </style>
 
 </head>
@@ -103,8 +128,9 @@ border-color: #2aab47;
       </div>
     </div>
     <h1>Painel de Convites</h1>
-    <p class="subtitle">Entre com sua senha</p>
-    <div class="fl"><label>Senha do lote</label><input type="password" id="inputSenha" autocomplete="current-password"></div>
+    <p class="subtitle">Entre com seus dados</p>
+    <div class="fl"><label>Seu nome</label><input type="text" id="inputNome" autocomplete="username" placeholder="Como foi cadastrado"></div>
+    <div class="fl"><label>Senha</label><input type="password" id="inputSenha" autocomplete="current-password"></div>
     <button class="btn" id="btnEntrar">Entrar</button>
     <div class="erro" id="erroLogin"></div>
   </div>
@@ -139,13 +165,23 @@ border-color: #2aab47;
 
   <div id="eventoInfo"></div>
 
-  <div class="legenda">
-    <div class="legenda-item"><span class="leg-bola" style="background:#888"></span> Disponível</div>
-    <div class="legenda-item"><span class="leg-bola" style="background:#c9973c"></span> Enviado</div>
-    <div class="legenda-item"><span class="leg-bola" style="background:#2aab47"></span> Confirmado</div>
+  <div class="tabs-lote">
+    <button class="tab-lote on" data-aba="convites" onclick="trocarAbaLote('convites')">Convites</button>
+    <button class="tab-lote" id="tabBilhetes" data-aba="bilhetes" onclick="trocarAbaLote('bilhetes')">Bilhetes</button>
   </div>
 
-  <div id="listaConvites"></div>
+  <section id="abaConvites">
+    <div class="legenda">
+      <div class="legenda-item"><span class="leg-bola" style="background:#888"></span> Disponível</div>
+      <div class="legenda-item"><span class="leg-bola" style="background:#c9973c"></span> Enviado</div>
+      <div class="legenda-item"><span class="leg-bola" style="background:#2aab47"></span> Confirmado</div>
+    </div>
+    <div id="listaConvites"></div>
+  </section>
+
+  <section id="abaBilhetes" class="gone">
+    <div id="bilhetesConteudoLote"></div>
+  </section>
 </div>
 ```
 
@@ -163,6 +199,7 @@ const URL_BASE = window.location.origin + window.location.pathname.replace('lote
 let loteAtual = null;
 let codigosLote = [];
 let eventoLote = null;
+let cadastrosLote = [];
 
 function escaparHtml(t) { if (!t) return ''; return String(t).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;'); }
 function formatarData(iso) { if (!iso) return ''; const p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
@@ -176,22 +213,29 @@ function copiar(texto, botao, label, callback) {
 }
 
 async function entrar() {
+  const nome = document.getElementById('inputNome').value.trim();
   const senha = document.getElementById('inputSenha').value.trim();
   const erro = document.getElementById('erroLogin');
   erro.textContent = '';
+
+  if (!nome) { erro.textContent = 'Digite seu nome'; return; }
   if (!senha) { erro.textContent = 'Digite a senha'; return; }
 
   const btn = document.getElementById('btnEntrar');
   btn.disabled = true; btn.textContent = 'Entrando...';
 
-  const { data, error } = await sb.from('lotes').select('*').eq('senha', senha).maybeSingle();
+  // Busca pelo NOME exato (case-sensitive) E senha
+  const { data, error } = await sb.from('lotes')
+    .select('*')
+    .eq('responsavel', nome)
+    .eq('senha', senha)
+    .maybeSingle();
 
   btn.disabled = false; btn.textContent = 'Entrar';
   if (error) { erro.textContent = 'Erro ao conectar'; return; }
-  if (!data) { erro.textContent = 'Senha inválida'; return; }
+  if (!data) { erro.textContent = 'Nome ou senha inválidos'; return; }
 
   loteAtual = data;
-  // So salva sessao se NAO for senha padrao
   if (!data.senha_padrao) {
     sessionStorage.setItem('ag_lote', JSON.stringify({ id: data.id, senha: data.senha }));
   }
@@ -251,9 +295,218 @@ async function carregarPainel() {
     eventoLote = ev;
   }
 
+  // Busca os cadastros que se inscreveram pelos convites desse lote
+  const { data: cads } = await sb.from('cadastros').select('*').eq('lote_id', loteAtual.id);
+  cadastrosLote = cads || [];
+
   renderStats();
   renderEventoInfo();
+  configurarAbas();
   renderConvites();
+  renderBilhetesLote();
+}
+
+// Calcula se faltam ≤7 dias pro evento
+function podeAbrirBilhetes() {
+  if (!eventoLote || !eventoLote.data) return false;
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  const dataEv = new Date(eventoLote.data + 'T00:00:00');
+  const diffDias = Math.floor((dataEv - hoje) / (1000 * 60 * 60 * 24));
+  return diffDias <= 7 && diffDias >= -1;
+}
+
+function diasParaEvento() {
+  if (!eventoLote || !eventoLote.data) return null;
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+  const dataEv = new Date(eventoLote.data + 'T00:00:00');
+  return Math.floor((dataEv - hoje) / (1000 * 60 * 60 * 24));
+}
+
+function configurarAbas() {
+  const tab = document.getElementById('tabBilhetes');
+  const podeBil = podeAbrirBilhetes();
+
+  // Conta bilhetes nao enviados ainda pra mostrar badge
+  const naoEnv = cadastrosLote.filter(c => !c.bilhete_enviado_em).length;
+
+  if (podeBil) {
+    tab.classList.remove('bloqueado');
+    if (naoEnv > 0) {
+      tab.innerHTML = 'Bilhetes <span class="badge-mini">' + naoEnv + '</span>';
+    } else {
+      tab.innerHTML = 'Bilhetes';
+    }
+  } else {
+    tab.classList.add('bloqueado');
+    tab.innerHTML = 'Bilhetes 🔒';
+  }
+}
+
+function trocarAbaLote(aba) {
+  // Bloqueia bilhetes se ainda não pode
+  if (aba === 'bilhetes' && !podeAbrirBilhetes()) {
+    document.querySelectorAll('.tab-lote').forEach(t => t.classList.remove('on'));
+    document.querySelector('[data-aba="bilhetes"]').classList.add('on');
+    document.getElementById('abaConvites').classList.add('gone');
+    document.getElementById('abaBilhetes').classList.remove('gone');
+    renderBilhetesLote(); // mostra só o aviso
+    return;
+  }
+
+  document.querySelectorAll('.tab-lote').forEach(t => t.classList.remove('on'));
+  document.querySelector('[data-aba="' + aba + '"]').classList.add('on');
+
+  if (aba === 'convites') {
+    document.getElementById('abaConvites').classList.remove('gone');
+    document.getElementById('abaBilhetes').classList.add('gone');
+  } else {
+    document.getElementById('abaConvites').classList.add('gone');
+    document.getElementById('abaBilhetes').classList.remove('gone');
+    renderBilhetesLote();
+  }
+}
+
+function renderBilhetesLote() {
+  const el = document.getElementById('bilhetesConteudoLote');
+
+  // Se ainda nao pode abrir bilhetes
+  if (!podeAbrirBilhetes()) {
+    const dias = diasParaEvento();
+    let msg = '';
+    if (dias === null) msg = 'Este lote ainda não tem evento vinculado.';
+    else if (dias > 7) msg = 'Faltam <b style="color:#fff">' + dias + ' dias</b> para o evento.<br>Os bilhetes ficam disponíveis 7 dias antes.';
+    else msg = 'O evento já passou.';
+
+    el.innerHTML = '<div class="aviso-bloqueado">' +
+      '<div class="titulo">🔒 Bilhetes ainda não disponíveis</div>' +
+      '<div class="desc">' + msg + '</div>' +
+    '</div>';
+    return;
+  }
+
+  if (!cadastrosLote.length) {
+    el.innerHTML = '<div class="aviso-bloqueado"><div class="titulo">Nenhum cadastrado ainda</div><div class="desc">Aguarde seus convidados fazerem o cadastro pelo link enviado.</div></div>';
+    return;
+  }
+
+  // Stats
+  const totNenv = cadastrosLote.filter(c => !c.bilhete_enviado_em).length;
+  const totAguard = cadastrosLote.filter(c => c.bilhete_enviado_em && !c.bilhete_confirmado_em).length;
+  const totConf = cadastrosLote.filter(c => c.bilhete_confirmado_em).length;
+
+  let h = '<div style="display:flex;gap:6px;margin-bottom:14px">';
+  h += '<div style="flex:1;background:#0891b2;border-radius:8px;padding:10px;text-align:center"><div style="font-size:18px;font-weight:800;color:#fff">' + totNenv + '</div><div style="font-size:9px;color:#fff;text-transform:uppercase;letter-spacing:1px;opacity:0.9">N/Env</div></div>';
+  h += '<div style="flex:1;background:#c9973c;border-radius:8px;padding:10px;text-align:center"><div style="font-size:18px;font-weight:800;color:#fff">' + totAguard + '</div><div style="font-size:9px;color:#fff;text-transform:uppercase;letter-spacing:1px;opacity:0.9">Aguard</div></div>';
+  h += '<div style="flex:1;background:#1e7a35;border-radius:8px;padding:10px;text-align:center"><div style="font-size:18px;font-weight:800;color:#fff">' + totConf + '</div><div style="font-size:9px;color:#fff;text-transform:uppercase;letter-spacing:1px;opacity:0.9">Conf</div></div>';
+  h += '</div>';
+
+  h += '<div class="legenda" style="margin-bottom:14px">';
+  h += '<div class="legenda-item"><span class="leg-bola" style="background:#0891b2"></span> Não enviado</div>';
+  h += '<div class="legenda-item"><span class="leg-bola" style="background:#c9973c"></span> Aguardando</div>';
+  h += '<div class="legenda-item"><span class="leg-bola" style="background:#2aab47"></span> Confirmado</div>';
+  h += '</div>';
+
+  // Ordena: nao enviados primeiro, depois aguardando, depois confirmados
+  const ordenadas = [...cadastrosLote].sort((a, b) => {
+    const ord = (p) => p.bilhete_confirmado_em ? 2 : (p.bilhete_enviado_em ? 1 : 0);
+    return ord(a) - ord(b);
+  });
+
+  ordenadas.forEach(p => {
+    let classe = '';
+    let statTxt = '';
+    let statClasse = '';
+    let btnTxt = 'Enviar bilhete';
+
+    if (p.bilhete_confirmado_em) {
+      classe = 'confirmado';
+      statTxt = '✓ Confirmado pelo convidado';
+      statClasse = 'conf';
+      btnTxt = 'Reenviar bilhete';
+    } else if (p.bilhete_enviado_em) {
+      classe = 'aguardando';
+      const dt = new Date(p.bilhete_enviado_em);
+      statTxt = '✉ Enviado em ' + dt.toLocaleDateString('pt-BR');
+      statClasse = 'aguard';
+      btnTxt = 'Reenviar bilhete';
+    } else {
+      statTxt = '○ Não enviado';
+      statClasse = 'nenv';
+    }
+
+    h += '<div class="bil-card ' + classe + '" id="bil-' + p.id + '">' +
+      '<div class="bil-cabec">' +
+        '<div class="bil-info">' +
+          '<div class="bil-nome">' + escaparHtml(p.nome) + '</div>' +
+          '<div class="bil-det">' + escaparHtml(p.empresa || p.setor || '-') + '</div>' +
+          '<div class="bil-stat ' + statClasse + '">' + statTxt + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<button class="btn" data-cad-id="' + p.id + '" onclick="copiarBilheteLote(this)" style="font-size:12px;padding:9px;width:100%">' + btnTxt + '</button>' +
+    '</div>';
+  });
+
+  el.innerHTML = h;
+}
+
+async function copiarBilheteLote(btn) {
+  const cadId = btn.dataset.cadId;
+  const cad = cadastrosLote.find(c => c.id === cadId);
+  if (!cad || !eventoLote) return;
+
+  // Monta mensagem ANTES (clipboard exige no mesmo tick)
+  const linkBilhete = URL_BASE + 'bilhete.html?cad=' + cad.id + '&ev=' + eventoLote.id;
+  const dataFmt = formatarData(eventoLote.data);
+  const horaIni = eventoLote.horario ? eventoLote.horario.substring(0, 5) : '';
+  const horaFim = eventoLote.horario_fim ? eventoLote.horario_fim.substring(0, 5) : '';
+
+  let detalhes = '';
+  if (dataFmt) detalhes += '\n📅 ' + dataFmt + (horaIni ? ' às ' + horaIni + (horaFim ? ' - ' + horaFim : '') : '');
+  if (eventoLote.local) detalhes += '\n📍 ' + eventoLote.local;
+  if (eventoLote.atracao1) detalhes += '\n🎵 ' + eventoLote.atracao1 + (eventoLote.atracao2 ? ' + ' + eventoLote.atracao2 : '');
+
+  const msg = 'AGROPLAY Music 🎵\n\nOlá ' + cad.nome + '!\n\nSeu bilhete para ' + eventoLote.nome + ' está disponível:' + detalhes + '\n\nAcesse seu bilhete digital com QR Code:\n' + linkBilhete + '\n\nApós receber, confirme o recebimento clicando no botão dentro do bilhete.\n\nAgroplay Music · Londrina PR';
+
+  // Copia (com fallback)
+  let copiouOk = false;
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(msg);
+      copiouOk = true;
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = msg;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.focus(); ta.select();
+      copiouOk = document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+  } catch (e) { copiouOk = false; }
+
+  // Marca como enviado no banco (se ainda não foi)
+  if (!cad.bilhete_enviado_em) {
+    const agora = new Date().toISOString();
+    await sb.from('cadastros').update({ bilhete_enviado_em: agora }).eq('id', cadId);
+    cad.bilhete_enviado_em = agora;
+  }
+
+  if (copiouOk) {
+    btn.textContent = '✓ Mensagem copiada!';
+    btn.disabled = true;
+    setTimeout(() => { renderBilhetesLote(); configurarAbas(); }, 1500);
+  } else {
+    btn.textContent = '⚠️ Copia manual';
+    btn.disabled = true;
+    setTimeout(() => {
+      prompt('Copie a mensagem abaixo:', msg);
+      renderBilhetesLote();
+      configurarAbas();
+    }, 200);
+  }
 }
 
 function renderStats() {
@@ -380,6 +633,7 @@ function sair() {
 }
 
 document.getElementById('btnEntrar').addEventListener('click', entrar);
+document.getElementById('inputNome').addEventListener('keydown', (e) => { if (e.key === 'Enter') document.getElementById('inputSenha').focus(); });
 document.getElementById('inputSenha').addEventListener('keydown', (e) => { if (e.key === 'Enter') entrar(); });
 document.getElementById('btnTrocarSenha').addEventListener('click', trocarSenha);
 document.getElementById('btnSair').addEventListener('click', sair);
