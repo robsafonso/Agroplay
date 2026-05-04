@@ -554,7 +554,7 @@ async function carregarTudo() {
 
   const [cadResp, codResp, evResp, lotResp, valResp] = await Promise.all([
     sb.from('cadastros').select('*').order('criado_em', { ascending: false }),
-    sb.from('codigos').select('*'),
+    sb.from('codigos').select('*').limit(20000),
     sb.from('eventos').select('*').order('data', { ascending: true }),
     sb.from('lotes').select('*').order('criado_em', { ascending: false }),
     sb.from('validadores').select('*').order('criado_em', { ascending: false })
