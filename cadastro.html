@@ -725,8 +725,17 @@ q('btn-salvar').onclick = async function() {
     foto_url: fotoData,
     lote_nome: respNome || null
   };
-  if (LOTE_ID) dados.lote_id = LOTE_ID;
-  if (EV_ID) dados.evento_id = EV_ID;
+
+  // Valida lote_id - se foi removido, ignora
+  if (LOTE_ID) {
+    const { data: loteCheck } = await sb.from('lotes').select('id').eq('id', LOTE_ID).maybeSingle();
+    if (loteCheck) dados.lote_id = LOTE_ID;
+  }
+  // Valida evento_id - se foi removido, ignora
+  if (EV_ID) {
+    const { data: evCheck } = await sb.from('eventos').select('id').eq('id', EV_ID).maybeSingle();
+    if (evCheck) dados.evento_id = EV_ID;
+  }
 
   // 1. Cria cadastro
   const { data: cadastro, error: errCad } = await sb.from('cadastros').insert(dados).select().single();
