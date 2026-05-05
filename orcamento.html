@@ -307,7 +307,9 @@ function delIt(id){
 
 <script>
 function gerarPDF(){
-  if(!evAtual||!itens.length){alert('Adicione itens primeiro');return;}
+  alert('Gerando PDF...');
+  if(!evAtual){alert('Selecione um evento');return;}
+  if(!itens.length){alert('Adicione itens primeiro');return;}
   var tot=0;for(var i=0;i<itens.length;i++)tot+=parseFloat(itens[i].valor_total||0);
   var grp={};
   for(var j=0;j<itens.length;j++){var c=itens[j].categoria;if(!grp[c])grp[c]=[];grp[c].push(itens[j]);}
@@ -328,11 +330,23 @@ h+=’<tr><td>’+esc(it.item)+’</td><td>’+it.quantidade+’</td><td>’+fmt
 }
 h+=’</table>’;
 }
-h+=’<div style="display:flex;gap:8px;margin-top:24px;flex-wrap:wrap"><button class="btn" onclick="window.print()" style="flex:1;min-width:140px">Imprimir / Salvar PDF</button><button class="btn" onclick="location.href=\'orcamento.html\'" style="flex:1;min-width:140px;background:#666">Voltar ao orcamento</button></div></body></html>’;
-// Substituir a pagina atual com o PDF (funciona em todos browsers)
-document.open();
-document.write(h);
-document.close();
+h+=’<div style="display:flex;gap:8px;margin-top:24px;flex-wrap:wrap"><button id="btnPrint" class="btn" style="flex:1;min-width:140px;background:#1e7a35;color:#fff;border:none;padding:14px;font-weight:700;border-radius:8px;cursor:pointer">Imprimir / Salvar PDF</button><button id="btnVoltar" class="btn" style="flex:1;min-width:140px;background:#666;color:#fff;border:none;padding:14px;font-weight:700;border-radius:8px;cursor:pointer">Voltar</button></div></body></html>’;
+
+// Criar overlay full-screen com o PDF dentro
+var overlay=document.createElement(‘div’);
+overlay.id=‘pdfOverlay’;
+overlay.style.cssText=‘position:fixed;inset:0;background:#fff;z-index:9999;overflow:auto;padding:14px’;
+overlay.innerHTML=h.replace(/<!DOCTYPE.*?<body>/,’’).replace(/</body>.*$/,’’);
+document.body.appendChild(overlay);
+
+// Listener dos botoes
+document.getElementById(‘btnPrint’).onclick=function(){window.print();};
+document.getElementById(‘btnVoltar’).onclick=function(){
+var ov=document.getElementById(‘pdfOverlay’);
+if(ov)ov.parentNode.removeChild(ov);
+};
+
+alert(‘PDF aberto! Toque em “Imprimir / Salvar PDF” pra salvar.’);
 }
 </script>
 
