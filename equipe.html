@@ -488,10 +488,27 @@ function gerarToken(){
   return t;
 }
 
+function getDadosLogado(){
+  // Retorna {id, nome, tipo} de quem ta logado
+  var ag=sessionStorage.getItem('ag_admin');
+  if(ag){
+    try{var p=JSON.parse(ag);return {id:p.id,nome:p.nome||'Admin',tipo:'master'};}catch(e){return {id:null,nome:'Admin Master',tipo:'master'};}
+  }
+  var sm=sessionStorage.getItem('eq_sm');
+  if(sm){
+    try{var s=JSON.parse(sm);return {id:s.id,nome:s.nome||'Staff Manager',tipo:'staffmgr'};}catch(e){return {id:null,nome:'Staff Manager',tipo:'staffmgr'};}
+  }
+  return null;
+}
+
 function copiarLinkCadastro(){
   if(!evAtual){alert('Selecione um evento');return;}
   var token=gerarToken();
+  var quem=getDadosLogado();
   var url=location.origin+location.pathname.replace(/equipe\.html.*/,'')+'cadastro_staff.html?ev='+evAtual.id+'&t='+token;
+  if(quem){
+    url+='&pid='+(quem.id||'')+'&pn='+encodeURIComponent(quem.nome)+'&pt='+quem.tipo;
+  }
   var msg='Ola! Voce foi convidado para trabalhar no evento '+evAtual.nome+' da Agroplay.\n\n';
   msg+='Cadastre-se aqui (link individual): '+url;
   if(navigator.clipboard&&navigator.clipboard.writeText){
@@ -844,7 +861,22 @@ function abrirDetStaff(id){
 function renderDetStaff(p,historico,mapaEvs){
   var corStatus=p.status==='aprovado'?'#2aab47':(p.status==='pendente'?'#c9973c':'#888');
   var labelStatus=p.status==='aprovado'?'Aprovado':(p.status==='pendente'?'Pendente':(p.status||'-'));
-  var origem='Cadastrado pelo link de staff';
+  
+  // Origem real - quem cadastrou
+  var origem;
+  if(p.cadastrado_por_nome){
+    if(p.cadastrado_por_tipo==='master'){
+      origem='Cadastrado pelo Admin Master: <b style="color:#fff">'+esc(p.cadastrado_por_nome)+'</b>';
+    }else if(p.cadastrado_por_tipo==='staffmgr'){
+      origem='Cadastrado pelo Staff Manager: <b style="color:#fff">'+esc(p.cadastrado_por_nome)+'</b>';
+    }else{
+      origem='Cadastrado por: <b style="color:#fff">'+esc(p.cadastrado_por_nome)+'</b>';
+    }
+  }else if(p.token){
+    origem='Cadastro via link individual (sem identificacao do operador)';
+  }else{
+    origem='Cadastro via link generico';
+  }
   
   // Total ja recebido em todos os eventos
   var totalRecebido=0;
