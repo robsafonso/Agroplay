@@ -227,7 +227,11 @@ function render(){
   for(var d2=0;d2<dels.length;d2++){
     dels[d2].onclick=function(){delIt(this.getAttribute('data-del'));};
   }
-  document.getElementById('btnPDF').onclick=function(){gerarPDF();};
+  var bp=document.getElementById('btnPDF');
+  if(bp){
+    bp.addEventListener('click',function(){gerarPDF();});
+    bp.addEventListener('touchend',function(e){e.preventDefault();gerarPDF();});
+  }
 }
 </script>
 
