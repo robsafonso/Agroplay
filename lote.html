@@ -124,7 +124,7 @@ border-color: #2aab47;
     <div style="text-align:center;margin-bottom:24px">
       <div class="logo" style="display:inline-flex">
         <div class="a">AGRO<span>PLAY</span></div>
-        <div class="v">v32</div>
+        <div class="v">v32.13</div>
       </div>
     </div>
     <h1>Painel de Convites</h1>
@@ -140,7 +140,7 @@ border-color: #2aab47;
   <header>
     <div class="logo" onclick="window.location.href='home.html'" style="cursor:pointer">
       <div class="a">AGRO<span>PLAY</span></div>
-      <div class="v">v32</div>
+      <div class="v">v32.13</div>
     </div>
     <button class="btn-sair" id="btnSair">Sair</button>
   </header>
@@ -296,8 +296,8 @@ async function carregarPainel() {
   }
 
   // Busca cadastros do lote: por lote_id OU pelo lote_nome (compatibilidade com cadastros antigos)
-  const { data: cadsId } = await sb.from('cadastros').select('*').eq('lote_id', loteAtual.id);
-  const { data: cadsNome } = await sb.from('cadastros').select('*').eq('lote_nome', loteAtual.responsavel).is('lote_id', null);
+  const { data: cadsId } = await sb.from('cadastros').select('*').eq('lote_id', loteAtual.id).neq('tipo', 'staff');
+  const { data: cadsNome } = await sb.from('cadastros').select('*').eq('lote_nome', loteAtual.responsavel).is('lote_id', null).neq('tipo', 'staff');
 
   // Junta os 2 sem duplicar
   const idsVistos = new Set();
