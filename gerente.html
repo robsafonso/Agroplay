@@ -6,50 +6,79 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Agroplay — Gerente</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  /* ================================================
+     AGROPLAY DESIGN SYSTEM v1.1
+     ================================================
+     Cores oficiais:
+     - Verde principal: #2aab47 (hover) / #1e7a35 (base)
+     - Azul info:       #0891b2
+     - Dourado atencao: #c9973c
+     - Vermelho erro:   #c0392b
+     - Cinza neutro:    #555 / #333
+     ================================================ */
+
+- { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
 body { font-family: Arial, sans-serif; background: #060a06; color: #eee; font-size: 14px; padding-bottom: 40px; }
 
-header { background: #060a06; border-bottom: 2px solid #1e7a35; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; gap: 8px; }
+/* HEADER */
+header { background: #060a06; border-bottom: 1px solid #1a2a1a; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; gap: 8px; }
 
 .logo { display: flex; align-items: center; border: 1px solid #1a2a1a; border-radius: 10px; overflow: hidden; cursor: pointer; flex-shrink: 0; }
-.logo .a { background: #0d150d; padding: 7px 12px; font-size: 16px; font-weight: 900; color: #fff; letter-spacing: 1px; }
+.logo .a { background: #0d150d; padding: 8px 12px; font-size: 16px; font-weight: 900; color: #fff; letter-spacing: 1px; }
 .logo .a span { color: #2aab47; }
-.logo .v { background: #c9973c; padding: 7px 10px; font-size: 11px; font-weight: 700; color: #fff; letter-spacing: 1px; }
+.logo .v { background: #2aab47; padding: 8px 10px; font-size: 10px; font-weight: 700; color: #000; letter-spacing: 1px; }
 
 .header-acoes { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: flex-end; }
 
-.btn { background: #1e7a35; color: #fff; border: none; border-radius: 8px; padding: 10px 16px; font-size: 13px; font-weight: 700; cursor: pointer; }
-.btn:hover { background: #2aab47; }
+/* ================================================
+BOTOES PADRONIZADOS
+================================================ */
+/* .btn = VERDE (acoes principais: Salvar, Confirmar, Aprovar) */
+.btn { background: #1e7a35; color: #fff; border: none; border-radius: 8px; padding: 10px 16px; font-size: 13px; font-weight: 700; cursor: pointer; transition: background 0.15s; }
+.btn:hover, .btn:active { background: #2aab47; }
 .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-.bto { background: transparent; color: #2aab47; border: 1px solid #2aab47; border-radius: 8px; padding: 8px 12px; font-size: 12px; cursor: pointer; }
-.bto:hover { background: rgba(42, 171, 71, 0.1); }
+/* .bto = OUTLINE VERDE (acoes secundarias: Cancelar modal, Voltar) */
+.bto { background: transparent; color: #2aab47; border: 1px solid #2aab47; border-radius: 8px; padding: 9px 13px; font-size: 12px; font-weight: 700; cursor: pointer; transition: background 0.15s; }
+.bto:hover, .bto:active { background: rgba(42, 171, 71, 0.1); }
 
-.btr { background: #c0392b; color: #fff; border: none; border-radius: 8px; padding: 8px 12px; font-size: 12px; cursor: pointer; }
-.btr:hover { background: #e74c3c; }
+/* .btr = VERMELHO (destrutivo: Excluir, Reprovar) */
+.btr { background: #c0392b; color: #fff; border: none; border-radius: 8px; padding: 9px 13px; font-size: 12px; font-weight: 700; cursor: pointer; transition: background 0.15s; }
+.btr:hover, .btr:active { background: #e74c3c; }
 
-.bty { background: #c9973c; color: #fff; border: none; border-radius: 8px; padding: 8px 12px; font-size: 12px; cursor: pointer; }
-.bty:hover { background: #e0aa4a; }
+/* .bty = DOURADO (atencao: Cancelar evento, Editar) */
+.bty { background: #c9973c; color: #fff; border: none; border-radius: 8px; padding: 9px 13px; font-size: 12px; font-weight: 700; cursor: pointer; transition: background 0.15s; }
+.bty:hover, .bty:active { background: #e0aa4a; }
+
+/* .bti = AZUL (info: Copiar, Ver, Editar dados) */
+.bti { background: #0891b2; color: #fff; border: none; border-radius: 8px; padding: 9px 13px; font-size: 12px; font-weight: 700; cursor: pointer; transition: background 0.15s; }
+.bti:hover, .bti:active { background: #14a8c9; }
+
+/* .btc = CINZA (neutro: Voltar, Fechar) */
+.btc { background: transparent; color: #888; border: 1px solid #333; border-radius: 8px; padding: 9px 13px; font-size: 12px; font-weight: 700; cursor: pointer; transition: background 0.15s; }
+.btc:hover, .btc:active { background: rgba(255,255,255,0.05); color: #ccc; }
 
 main { padding: 16px; max-width: 900px; margin: 0 auto; }
 
+/* ESTATISTICAS */
 .stats { display: flex; gap: 8px; margin-bottom: 16px; }
 .stat { background: #090e09; border: 1px solid #1a2a1a; border-radius: 10px; padding: 12px 8px; text-align: center; flex: 1; }
 .stat strong { font-size: 22px; color: #2aab47; display: block; }
 .stat small { font-size: 9px; color: #555; text-transform: uppercase; letter-spacing: 1px; }
 
+/* ABAS */
 .tabs { display: flex; gap: 5px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 4px; }
 .tabs::-webkit-scrollbar { display: none; }
 .tab { background: transparent; border: 1px solid #333; border-radius: 8px; padding: 8px 14px; color: #555; cursor: pointer; font-size: 12px; white-space: nowrap; font-weight: 600; }
 .tab.on { border-color: #2aab47; color: #2aab47; background: rgba(42, 171, 71, 0.1); }
 
 .gone { display: none !important; }
-
 .empty { text-align: center; padding: 32px; color: #555; font-size: 13px; }
 
 .busca-bar { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; align-items: center; }
 
+/* INPUTS */
 input, textarea, select { background: #030503; border: 1px solid #1a2a1a; border-radius: 8px; padding: 10px 12px; color: #eee; font-size: 13px; outline: none; width: 100%; font-family: inherit; }
 input:focus, textarea:focus, select:focus { border-color: #2aab47; }
 textarea { resize: vertical; min-height: 70px; }
@@ -59,19 +88,63 @@ textarea { resize: vertical; min-height: 70px; }
 
 .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
+/* TABELAS */
 .tbl { overflow-x: auto; border: 1px solid #1a2a1a; border-radius: 10px; }
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
 th { padding: 10px 8px; text-align: left; background: #060a06; color: #555; font-size: 9px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #1a2a1a; font-weight: 700; }
 td { padding: 10px 8px; border-bottom: 1px solid #111; color: #bbb; }
 tr:last-child td { border-bottom: none; }
 
-.badge { padding: 3px 8px; border-radius: 20px; font-size: 10px; color: #fff; font-weight: 700; display: inline-block; }
-.pb { background: #b8860b; }
-.ab { background: #1e7a35; }
-.rb { background: #c0392b; }
+/* ================================================
+BADGES E STATUS PADRONIZADOS
+================================================
+5 cores fixas pra status em TODO o sistema:
+.st-cinza  = nao enviado / disponivel / vazio
+.st-azul   = enviado / aguardando
+.st-amar   = cadastrado / pendente
+.st-verde  = confirmado / aprovado / ok
+.st-verm   = erro / rejeitado / cancelado
+================================================ */
+.badge { padding: 3px 10px; border-radius: 20px; font-size: 10px; color: #fff; font-weight: 700; display: inline-block; letter-spacing: 0.5px; }
+
+.st-cinza  { background: #333;    color: #888; }
+.st-azul   { background: #0891b2; color: #fff; }
+.st-amar   { background: #c9973c; color: #fff; }
+.st-verde  { background: #1e7a35; color: #fff; }
+.st-verm   { background: #c0392b; color: #fff; }
+
+/* legados - mantidos pra nao quebrar codigo antigo */
+.pb { background: #c9973c; color:#fff; }   /* pendente -> amar */
+.ab { background: #1e7a35; color:#fff; }   /* aprovado -> verde */
+.rb { background: #c0392b; color:#fff; }   /* reprovado -> verm */
+
+/* CARD DE STATUS COMPLETO (com borda + bg + label) */
+.card-status { border-radius: 10px; padding: 12px; margin-bottom: 8px; border: 1px solid; transition: all 0.15s; }
+.card-status.st-cinza  { background: #0d150d; border-color: #333; }
+.card-status.st-azul   { background: #0a1f24; border-color: #0891b2; }
+.card-status.st-amar   { background: #2a1f0a; border-color: #c9973c; }
+.card-status.st-verde  { background: #0a2818; border-color: #1e7a35; }
+.card-status.st-verm   { background: #2a0a0a; border-color: #c0392b; }
+
+/* RESUMO DE STATUS (4-5 caixinhas no topo de listas) */
+.resumo-status { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+.resumo-status .rs-item { flex: 1; min-width: 60px; text-align: center; border-radius: 8px; padding: 8px 6px; border: 1px solid; }
+.resumo-status .rs-item .num { font-size: 18px; font-weight: 900; line-height: 1; margin-bottom: 4px; display: block; }
+.resumo-status .rs-item .lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+.rs-cinza { background: #0d150d; border-color: #333; }
+.rs-cinza .num, .rs-cinza .lbl { color: #888; }
+.rs-azul { background: #0a1f24; border-color: #0891b2; }
+.rs-azul .num, .rs-azul .lbl { color: #0891b2; }
+.rs-amar { background: #2a1f0a; border-color: #c9973c; }
+.rs-amar .num, .rs-amar .lbl { color: #c9973c; }
+.rs-verde { background: #0a2818; border-color: #1e7a35; }
+.rs-verde .num, .rs-verde .lbl { color: #2aab47; }
+.rs-verm { background: #2a0a0a; border-color: #c0392b; }
+.rs-verm .num, .rs-verm .lbl { color: #c0392b; }
 
 .nlink { color: #fff; font-weight: 700; cursor: pointer; text-decoration: underline; text-decoration-color: #2aab47; }
 
+/* MODAIS */
 .ov { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); z-index: 100; display: none; align-items: flex-end; justify-content: center; }
 .ov.on { display: flex; }
 .ovc { align-items: center !important; }
@@ -81,8 +154,10 @@ tr:last-child td { border-bottom: none; }
 
 .mod-titulo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
 .mod-titulo h3 { font-size: 16px; font-weight: 700; color: #fff; }
-.mod-fechar { background: transparent; color: #2aab47; border: 1px solid #2aab47; border-radius: 8px; padding: 6px 12px; font-size: 12px; cursor: pointer; }
+.mod-fechar { background: transparent; color: #888; border: 1px solid #333; border-radius: 8px; padding: 6px 12px; font-size: 12px; cursor: pointer; font-weight: 700; }
+.mod-fechar:hover { color: #ccc; background: rgba(255,255,255,0.05); }
 
+/* PERFIL */
 .perfil-cabec { text-align: center; margin-bottom: 18px; }
 .perfil-foto { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid #2aab47; margin: 0 auto 10px; display: block; cursor: pointer; }
 .perfil-inicial { width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 28px; color: #fff; font-weight: 700; }
@@ -93,22 +168,29 @@ tr:last-child td { border-bottom: none; }
 .prow span:first-child { color: #555; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; }
 .prow span:last-child { color: #fff; font-weight: 600; text-align: right; max-width: 60%; word-break: break-word; }
 
+/* CAMERA */
 .foto-wrap { text-align: center; margin-bottom: 8px; }
 .video-circ { width: 120px; height: 120px; border-radius: 50%; overflow: hidden; border: 2px solid #1a2a1a; margin: 0 auto 8px; }
 .video-circ video { width: 100%; height: 100%; object-fit: cover; }
 .foto-prev { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 2px solid #2aab47; margin: 0 auto 8px; display: block; }
 
+/* TEXTOS */
 .codt { font-family: monospace; font-size: 24px; font-weight: 900; color: #fff; letter-spacing: 4px; margin: 8px 0 12px; text-align: center; }
 .msgt { font-size: 12px; color: #aaa; line-height: 1.7; background: #030503; border-radius: 8px; padding: 10px; margin-bottom: 10px; white-space: pre-wrap; word-break: break-word; border: 1px solid #1a2a1a; }
 .label-pq { font-size: 10px; color: #2aab47; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; font-weight: 700; }
 
+/* ALERTAS */
 .ea { background: rgba(192, 57, 43, 0.15); border: 1px solid #c0392b; color: #e74c3c; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 13px; }
 .ok { background: rgba(42, 171, 71, 0.15); border: 1px solid #2aab47; color: #2aab47; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 13px; }
+.ai { background: rgba(8, 145, 178, 0.15); border: 1px solid #0891b2; color: #14a8c9; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 13px; }
+.ay { background: rgba(201, 151, 60, 0.15); border: 1px solid #c9973c; color: #c9973c; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 13px; }
 
 .construcao { text-align: center; padding: 60px 20px; color: #555; }
 .construcao .icone-grande { font-size: 40px; margin-bottom: 12px; }
 
-.ev-card, .lt-card { background: #090e09; border: 1px solid #1a2a1a; border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+/* CARDS DE EVENTO E LOTE */
+.ev-card, .lt-card { background: #090e09; border: 1px solid #1a2a1a; border-radius: 12px; padding: 14px; margin-bottom: 10px; transition: border-color 0.15s; }
+.ev-card:hover, .lt-card:hover { border-color: #2aab47; }
 .ev-card-nome, .lt-card-nome { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 6px; }
 .ev-card-info, .lt-card-info { font-size: 12px; color: #888; line-height: 1.6; margin-bottom: 10px; }
 .ev-card-acoes, .lt-card-acoes { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -123,7 +205,12 @@ tr:last-child td { border-bottom: none; }
 .progresso { background: #1a2a1a; border-radius: 4px; height: 6px; overflow: hidden; margin: 8px 0; }
 .progresso-bar { background: #2aab47; height: 100%; transition: width 0.3s; }
 
-.convite-mini { background: #030503; border: 1px solid #1a2a1a; border-radius: 8px; padding: 10px; margin-bottom: 8px; }
+.convite-mini { background: #030503; border: 1px solid #1a2a1a; border-radius: 10px; padding: 12px; margin-bottom: 8px; transition: all 0.15s; }
+.convite-mini:hover { border-color: #2aab47; }
+
+/* ANIMACAO DE LOADING */
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid #555; border-top-color: #2aab47; border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-right: 6px; }
 </style>
 
 </head>
@@ -132,7 +219,7 @@ tr:last-child td { border-bottom: none; }
 <header>
   <div class="logo" onclick="window.location.href='home.html'">
     <div class="a">AGRO<span>PLAY</span></div>
-    <div class="v">v32.13</div>
+    <div class="v">v1.0</div>
   </div>
   <div class="header-acoes">
     <button class="bto" id="btnLinkCad" style="font-size:11px;padding:6px 10px">Link Cadastro</button>
