@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Administradores - Agroplay</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:14px;max-width:480px;margin:0 auto}
+.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #2aab47}
+.logo{display:flex;border:1px solid #1a2a1a;border-radius:10px;overflow:hidden;cursor:pointer}
+.lt{background:#0d150d;padding:7px 12px;font-size:16px;font-weight:900;color:#fff}
+.lt span{color:#2aab47}
+.lv{background:#c9973c;padding:7px 10px;font-size:11px;font-weight:700;color:#000}
+.btn-sair{background:transparent;border:1px solid #c0392b;color:#c0392b;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer}
+h1{font-size:20px;color:#fff;margin-bottom:3px}
+.sub{font-size:12px;color:#888;margin-bottom:14px}
+.aviso{background:#0a1f12;border:1px solid #1e7a35;border-radius:8px;padding:10px;margin-bottom:14px;font-size:11px;color:#888}
+.aviso b{color:#2aab47}
+.btn-novo{width:100%;background:#1e7a35;border:none;border-radius:10px;padding:14px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:14px}
+.adm{background:#070b07;border:1px solid #1a2a1a;border-radius:10px;margin-bottom:8px;overflow:hidden}
+.adm-head{padding:12px;display:flex;align-items:center;gap:10px}
+.adm-info{flex:1;min-width:0}
+.adm-nome{font-size:14px;font-weight:700;color:#fff}
+.adm-nivel{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:3px 8px;border-radius:8px;display:inline-block;margin-top:4px}
+.nv-master{background:#c0392b22;color:#c0392b}
+.nv-editor{background:#2aab4722;color:#2aab47}
+.nv-visu{background:#0891b222;color:#0891b2}
+.adm-acts{padding:0 12px 12px;display:flex;gap:6px;flex-wrap:wrap}
+.adm-acts button{flex:1;min-width:80px;border-radius:6px;padding:8px;font-size:11px;font-weight:700;cursor:pointer;border:none;font-family:inherit}
+.btn-edit{background:#0891b2;color:#fff}
+.btn-rst{background:#c9973c;color:#000}
+.btn-tgl{background:transparent;border:1px solid #888!important;color:#888}
+.btn-del{background:transparent;border:1px solid #c0392b!important;color:#c0392b}
+.empty{text-align:center;padding:30px 14px;color:#555;font-size:13px}
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:100;align-items:center;justify-content:center;padding:14px;overflow-y:auto}
+.modal-bg.on{display:flex}
+.modal{background:#0d150d;border:1px solid #2aab47;border-radius:12px;padding:14px;max-width:400px;width:100%}
+.modal h3{color:#2aab47;font-size:16px;margin-bottom:14px}
+.lbl{font-size:11px;color:#2aab47;font-weight:700;text-transform:uppercase;margin-bottom:6px;display:block;letter-spacing:1px}
+input,select{width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:12px;color:#eee;font-size:13px;outline:none;margin-bottom:10px;font-family:inherit}
+input:focus,select:focus{border-color:#2aab47}
+.btn-salv{width:100%;background:#1e7a35;border:none;border-radius:10px;padding:14px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:8px}
+.btn-cancel{width:100%;background:transparent;border:1px solid #888;color:#888;border-radius:10px;padding:12px;font-size:13px;font-weight:700;cursor:pointer}
+.msg{font-size:12px;text-align:center;margin:8px 0}
+.nivel-explica{font-size:10px;color:#666;margin-top:4px;line-height:1.4}
+.inativo{opacity:0.5}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="logo" onclick="location.href='home.html'">
+    <div class="lt">AGRO<span>PLAY</span></div>
+    <div class="lv">v32.13</div>
+  </div>
+  <button class="btn-sair" onclick="location.href='home.html'">Voltar</button>
+</div>
+
+<h1>Administradores</h1>
+<div class="sub">Quem pode acessar o sistema</div>
+
+<div class="aviso">
+  <b>3 niveis disponiveis:</b><br>
+  - <b style="color:#c0392b">Master:</b> Acesso total, pode criar/excluir admins<br>
+  - <b style="color:#2aab47">Editor:</b> Pode usar todas as telas, mas nao mexe em admins<br>
+  - <b style="color:#0891b2">Visualizador:</b> So consulta, nao pode alterar nada
+</div>
+
+<button class="btn-novo" onclick="abrirNovo()">+ Novo Administrador</button>
+
+<div id="lista">Carregando...</div>
+
+<!-- Modal Novo/Editar -->
+
+<div id="modalForm" class="modal-bg">
+  <div class="modal">
+    <h3 id="modalTit">Novo Administrador</h3>
+    <label class="lbl">Nome</label>
+    <input type="text" id="fNome" placeholder="Nome (login)" autocomplete="off">
+    <label class="lbl">Senha</label>
+    <input type="text" id="fSenha" placeholder="Senha de acesso">
+    <label class="lbl">Nivel</label>
+    <select id="fNivel">
+      <option value="editor">Editor</option>
+      <option value="visualizador">Visualizador</option>
+      <option value="master">Master</option>
+    </select>
+    <div class="nivel-explica" id="explicaNivel">Editor: pode usar todas as telas mas nao cria admins</div>
+    <div id="formMsg" class="msg"></div>
+    <button class="btn-salv" onclick="salvar()">Salvar</button>
+    <button class="btn-cancel" onclick="fechar()">Cancelar</button>
+  </div>
+</div>
+
+<script>
+var SB='https://wexwcnezjadoutyzkbcj.supabase.co';
+var KY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ';
+
+var lista=[];
+var editando=null;
+var quemSouEu=null;
+
+function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+// Verificar quem ta logado (precisa ser master)
+function init(){
+  var d=sessionStorage.getItem('ag_admin');
+  if(!d){location.href='index.html';return;}
+  try{quemSouEu=JSON.parse(d);}catch(e){location.href='index.html';return;}
+  if(quemSouEu.nivel!=='master'){
+    document.body.innerHTML='<div style="text-align:center;padding:60px 20px;color:#c0392b"><h2>Acesso negado</h2><p style="margin-top:10px;color:#888">So o Admin Master pode acessar essa tela.</p><button onclick="location.href=\'home.html\'" style="margin-top:20px;background:#1e7a35;color:#fff;border:none;border-radius:10px;padding:14px 30px;font-weight:700;cursor:pointer">Voltar</button></div>';
+    return;
+  }
+  carregar();
+}
+
+function carregar(){
+  document.getElementById('lista').innerHTML='<div class="empty">Carregando...</div>';
+  fetch(SB+'/rest/v1/admins?select=*&order=criado_em.desc',{
+    headers:{apikey:KY,Authorization:'Bearer '+KY}
+  }).then(function(r){return r.json();}).then(function(d){
+    if(!Array.isArray(d)){document.getElementById('lista').innerHTML='Erro';return;}
+    lista=d;
+    render();
+  });
+}
+
+function render(){
+  if(lista.length===0){
+    document.getElementById('lista').innerHTML='<div class="empty">Nenhum administrador. Toque em + Novo.</div>';
+    return;
+  }
+  var h='';
+  for(var i=0;i<lista.length;i++){
+    var a=lista[i];
+    var classNivel=a.nivel==='master'?'nv-master':(a.nivel==='visualizador'?'nv-visu':'nv-editor');
+    var labelNivel=a.nivel==='master'?'MASTER':(a.nivel==='visualizador'?'VISUALIZADOR':'EDITOR');
+    var classInativo=a.ativo===false?'inativo':'';
+    h+='<div class="adm '+classInativo+'">';
+    h+='<div class="adm-head">';
+    h+='<div class="adm-info">';
+    h+='<div class="adm-nome">'+esc(a.nome)+'</div>';
+    h+='<div style="font-size:11px;color:#888">Senha: '+esc(a.senha||'-')+'</div>';
+    h+='<span class="adm-nivel '+classNivel+'">'+labelNivel+'</span>';
+    if(a.ativo===false)h+=' <span class="adm-nivel" style="background:#33333366;color:#888">INATIVO</span>';
+    h+='</div>';
+    h+='</div>';
+    h+='<div class="adm-acts">';
+    h+='<button class="btn-edit" data-act="edit" data-id="'+a.id+'">Editar</button>';
+    h+='<button class="btn-rst" data-act="rst" data-id="'+a.id+'">Reset senha</button>';
+    h+='<button class="btn-tgl" data-act="tgl" data-id="'+a.id+'">'+(a.ativo===false?'Ativar':'Desativar')+'</button>';
+    if(a.id!==quemSouEu.id){
+      h+='<button class="btn-del" data-act="del" data-id="'+a.id+'">Excluir</button>';
+    }
+    h+='</div>';
+    h+='</div>';
+  }
+  document.getElementById('lista').innerHTML=h;
+  // Listeners
+  var btns=document.querySelectorAll('[data-act]');
+  for(var b=0;b<btns.length;b++){
+    btns[b].onclick=function(){
+      var act=this.getAttribute('data-act');
+      var id=this.getAttribute('data-id');
+      if(act==='edit')abrirEdit(id);
+      else if(act==='rst')resetSenha(id);
+      else if(act==='tgl')toggleAtivo(id);
+      else if(act==='del')excluir(id);
+    };
+  }
+}
+
+function abrirNovo(){
+  editando=null;
+  document.getElementById('modalTit').textContent='Novo Administrador';
+  document.getElementById('fNome').value='';
+  document.getElementById('fSenha').value=gerarSenha();
+  document.getElementById('fNivel').value='editor';
+  atualizaExplica();
+  document.getElementById('formMsg').textContent='';
+  document.getElementById('modalForm').classList.add('on');
+}
+
+function abrirEdit(id){
+  var a=null;for(var i=0;i<lista.length;i++)if(lista[i].id===id){a=lista[i];break;}
+  if(!a)return;
+  editando=a;
+  document.getElementById('modalTit').textContent='Editar: '+a.nome;
+  document.getElementById('fNome').value=a.nome;
+  document.getElementById('fSenha').value=a.senha;
+  document.getElementById('fNivel').value=a.nivel||'editor';
+  atualizaExplica();
+  document.getElementById('formMsg').textContent='';
+  document.getElementById('modalForm').classList.add('on');
+}
+
+function gerarSenha(){
+  var c='abcdefghijkmnpqrstuvwxyz23456789';
+  var s='';for(var i=0;i<6;i++)s+=c.charAt(Math.floor(Math.random()*c.length));
+  return s;
+}
+
+function atualizaExplica(){
+  var n=document.getElementById('fNivel').value;
+  var t={
+    master:'Master: pode tudo, inclusive criar/excluir admins. CUIDADO!',
+    editor:'Editor: pode usar todas as telas mas nao mexe em admins',
+    visualizador:'Visualizador: so le, nao pode editar nada'
+  };
+  document.getElementById('explicaNivel').textContent=t[n]||'';
+}
+document.getElementById('fNivel').onchange=atualizaExplica;
+
+function fechar(){
+  document.getElementById('modalForm').classList.remove('on');
+}
+
+function salvar(){
+  var nome=document.getElementById('fNome').value.trim();
+  var senha=document.getElementById('fSenha').value.trim();
+  var nivel=document.getElementById('fNivel').value;
+  var msg=document.getElementById('formMsg');
+  if(!nome||!senha){msg.style.color='#c0392b';msg.textContent='Preencha tudo';return;}
+  msg.style.color='#888';msg.textContent='Salvando...';
+  
+  if(editando){
+    fetch(SB+'/rest/v1/admins?id=eq.'+editando.id,{
+      method:'PATCH',
+      headers:{apikey:KY,Authorization:'Bearer '+KY,'Content-Type':'application/json',Prefer:'return=minimal'},
+      body:JSON.stringify({nome:nome,senha:senha,nivel:nivel})
+    }).then(function(r){
+      if(r.ok){msg.style.color='#2aab47';msg.textContent='Salvo!';setTimeout(function(){fechar();carregar();},700);}
+      else{return r.text().then(function(t){msg.style.color='#c0392b';msg.textContent=t.indexOf('duplic')>=0?'Nome ja existe':'Erro';});}
+    });
+  }else{
+    fetch(SB+'/rest/v1/admins',{
+      method:'POST',
+      headers:{apikey:KY,Authorization:'Bearer '+KY,'Content-Type':'application/json',Prefer:'return=minimal'},
+      body:JSON.stringify({nome:nome,senha:senha,nivel:nivel,ativo:true})
+    }).then(function(r){
+      if(r.ok){msg.style.color='#2aab47';msg.textContent='Criado!';setTimeout(function(){fechar();carregar();},700);}
+      else{return r.text().then(function(t){msg.style.color='#c0392b';msg.textContent=t.indexOf('duplic')>=0?'Nome ja existe':'Erro';});}
+    });
+  }
+}
+
+function resetSenha(id){
+  var a=null;for(var i=0;i<lista.length;i++)if(lista[i].id===id){a=lista[i];break;}
+  if(!a)return;
+  if(!confirm('Resetar a senha de '+a.nome+'?\n\nUma senha nova vai ser gerada.'))return;
+  var nova=gerarSenha();
+  fetch(SB+'/rest/v1/admins?id=eq.'+id,{
+    method:'PATCH',
+    headers:{apikey:KY,Authorization:'Bearer '+KY,'Content-Type':'application/json',Prefer:'return=minimal'},
+    body:JSON.stringify({senha:nova})
+  }).then(function(r){
+    if(r.ok){alert('Nova senha de '+a.nome+': '+nova);carregar();}
+    else{alert('Erro');}
+  });
+}
+
+function toggleAtivo(id){
+  var a=null;for(var i=0;i<lista.length;i++)if(lista[i].id===id){a=lista[i];break;}
+  if(!a)return;
+  if(a.id===quemSouEu.id){alert('Voce nao pode desativar a si mesmo');return;}
+  var novoStatus=!(a.ativo===true||a.ativo===null);
+  // Se estava true ou null (default true), vira false. Se false, vira true.
+  novoStatus=a.ativo===false;
+  fetch(SB+'/rest/v1/admins?id=eq.'+id,{
+    method:'PATCH',
+    headers:{apikey:KY,Authorization:'Bearer '+KY,'Content-Type':'application/json',Prefer:'return=minimal'},
+    body:JSON.stringify({ativo:novoStatus})
+  }).then(function(r){
+    if(r.ok)carregar();
+  });
+}
+
+function excluir(id){
+  var a=null;for(var i=0;i<lista.length;i++)if(lista[i].id===id){a=lista[i];break;}
+  if(!a)return;
+  if(a.id===quemSouEu.id){alert('Voce nao pode excluir a si mesmo');return;}
+  if(!confirm('Excluir o administrador '+a.nome+'?\n\nEle perde o acesso ao sistema.'))return;
+  fetch(SB+'/rest/v1/admins?id=eq.'+id,{
+    method:'DELETE',headers:{apikey:KY,Authorization:'Bearer '+KY}
+  }).then(function(){carregar();});
+}
+
+init();
+</script>
+
+</body>
+</html>
