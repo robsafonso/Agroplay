@@ -299,6 +299,19 @@ font-size: 18px;
 ```
 
   </div>
+
+  <!-- Seção Master (só admin master vê) -->
+
+  <div id="secaoMaster" style="display:none">
+    <div class="secao-titulo" style="color:#c0392b">Master</div>
+    <div class="grid-principal">
+      <a href="admins.html" class="card" style="border-color:#c0392b">
+        <div class="icone">🔐</div>
+        <div class="nome">Administradores</div>
+        <div class="desc">Criar e gerenciar admins</div>
+      </a>
+    </div>
+  </div>
 </main>
 
 <script>
@@ -311,7 +324,34 @@ font-size: 18px;
   const admin = JSON.parse(adminData || '{}');
 
   document.getElementById('userName').textContent = admin.nome || '';
-  document.getElementById('saudacao').textContent = 'Olá, ' + (admin.nome || 'admin');
+  
+  // Mostrar nivel ao lado do nome
+  if (admin.nivel) {
+    let labelNivel = admin.nivel === 'master' ? '👑 MASTER' : (admin.nivel === 'visualizador' ? '👁️ VISUALIZADOR' : '✏️ EDITOR');
+    let corNivel = admin.nivel === 'master' ? '#c0392b' : (admin.nivel === 'visualizador' ? '#0891b2' : '#2aab47');
+    document.getElementById('saudacao').innerHTML = 'Olá, ' + (admin.nome || 'admin') + ' <span style="font-size:11px;color:' + corNivel + ';font-weight:700;letter-spacing:1px">· ' + labelNivel + '</span>';
+  } else {
+    document.getElementById('saudacao').textContent = 'Olá, ' + (admin.nome || 'admin');
+  }
+  
+  // Seção Master só pra master
+  if (admin.nivel === 'master') {
+    document.getElementById('secaoMaster').style.display = 'block';
+  }
+  
+  // Visualizador NÃO pode acessar telas de edição direta - bloqueio simples
+  if (admin.nivel === 'visualizador') {
+    // Esconder cards de edição (Gerente / Credenciamento)
+    // Mantém Admin do Evento (visualização ao vivo) e Dashboard
+    const cardsBloqueados = ['gerente.html', 'equipe.html', 'orcamento.html'];
+    document.querySelectorAll('a.card').forEach(a => {
+      const href = a.getAttribute('href');
+      if (cardsBloqueados.includes(href)) {
+        a.style.opacity = '0.4';
+        a.style.pointerEvents = 'none';
+      }
+    });
+  }
 
   document.getElementById('btnSair').addEventListener('click', function () {
     sessionStorage.removeItem('ag_admin');
