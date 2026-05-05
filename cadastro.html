@@ -273,7 +273,7 @@ line-height: 1.7;
   <div id="al-cod"></div>
   <div class="fl">
     <label>Código de acesso (8 dígitos)</label>
-    <input id="f-cod" placeholder="00000000" maxlength="8" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+    <input id="f-cod" placeholder="ABCD1234" maxlength="8" autocomplete="off" autocapitalize="characters" style="text-transform:uppercase">
   </div>
   <button class="btn" id="btn-cod">Continuar</button>
 </div>
@@ -468,7 +468,7 @@ function mTel(el) {
 q('f-cpf').oninput = function() { mCPF(this); };
 q('f-tel').oninput = function() { mTel(this); };
 // Aceita só números
-q('f-cod').oninput = function() { this.value = this.value.replace(/\D/g, ''); };
+q('f-cod').oninput = function() { this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8); };
 
 function ir(t) {
   document.querySelectorAll('.tl').forEach(x => x.classList.remove('on'));
@@ -520,7 +520,7 @@ async function carregarInfoTopo() {
 // SUPORTE A TOKEN INDIVIDUAL (link direto sem precisar digitar codigo)
 // ========================
 if (COD_PRE) {
-  q('f-cod').value = COD_PRE.replace(/\D/g, '').substring(0, 8);
+  q('f-cod').value = COD_PRE.toUpperCase().replace(/[^A-Z0-9]/g, '').substring(0, 8);
 }
 
 // Se veio com token, valida e pula a etapa do codigo
@@ -544,12 +544,12 @@ if (TOKEN) {
 }
 
 q('btn-cod').onclick = async function() {
-  const cod = q('f-cod').value.trim();
+  const cod = q('f-cod').value.trim().toUpperCase();
   const al = q('al-cod');
   al.innerHTML = '';
 
-  if (!/^\d{8}$/.test(cod)) {
-    al.innerHTML = '<div class="ea">O código deve ter 8 dígitos numéricos.</div>';
+  if (!/^[A-Z0-9]{8}$/.test(cod)) {
+    al.innerHTML = '<div class="ea">O código deve ter 8 caracteres (letras e/ou números).</div>';
     return;
   }
 
