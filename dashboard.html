@@ -392,7 +392,7 @@ async function abrirSelect() {
   q('appDash').classList.add('gone');
   q('appSelect').style.display = 'block';
 
-  const { data } = await sb.from('eventos').select('*').order('data', { ascending: false });
+  const { data } = await sb.from('eventos').select('*').or('cancelado.is.null,cancelado.eq.false').order('data', { ascending: false });
   eventos = data || [];
 
   const sel = q('selectEvento');
