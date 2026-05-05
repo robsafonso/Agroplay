@@ -6,217 +6,131 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Agroplay — Início</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:Arial,sans-serif;background:#060a06;color:#eee;min-height:100vh}
 
-body {
-font-family: Arial, sans-serif;
-background: #060a06;
-color: #eee;
-min-height: 100vh;
+header{
+background:#060a06;
+border-bottom:1px solid #1a2a1a;
+padding:12px 16px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+position:sticky;
+top:0;
+z-index:10;
 }
 
-header {
-background: #060a06;
-border-bottom: 2px solid #1e7a35;
-padding: 12px 16px;
-display: flex;
-justify-content: space-between;
-align-items: center;
-position: sticky;
-top: 0;
-z-index: 10;
+.logo{display:flex;align-items:center;border:1px solid #1a2a1a;border-radius:10px;overflow:hidden;cursor:pointer}
+.logo .a{background:#0d150d;padding:8px 12px;font-size:16px;font-weight:900;color:#fff;letter-spacing:1px}
+.logo .a span{color:#2aab47}
+.logo .v{background:#2aab47;padding:8px 10px;font-size:10px;font-weight:700;color:#000;letter-spacing:1px}
+
+.btn-sair{
+background:transparent;
+border:1px solid #c0392b;
+color:#c0392b;
+padding:7px 14px;
+border-radius:8px;
+font-size:12px;
+font-weight:700;
+cursor:pointer
 }
 
-.logo {
-display: flex;
-align-items: center;
-gap: 0;
-border: 1px solid #1a2a1a;
-border-radius: 10px;
-overflow: hidden;
+main{max-width:560px;margin:0 auto;padding:20px 14px 40px}
+
+.saudacao{margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid #1a2a1a}
+.saudacao h1{font-size:22px;font-weight:700;color:#fff;margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.saudacao .badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px;letter-spacing:1px}
+.saudacao p{font-size:11px;color:#666;text-transform:uppercase;letter-spacing:2px}
+
+.secao-titulo{
+font-size:10px;
+color:#2aab47;
+text-transform:uppercase;
+letter-spacing:2px;
+margin:22px 0 10px;
+font-weight:700;
+display:flex;
+align-items:center;
+gap:8px;
+}
+.secao-titulo::after{
+content:’’;
+flex:1;
+height:1px;
+background:#1a2a1a;
 }
 
-.logo .a {
-background: #0d150d;
-padding: 7px 12px;
-font-size: 16px;
-font-weight: 900;
-color: #fff;
-letter-spacing: 1px;
+.secao-master .secao-titulo{color:#c0392b}
+
+.grid-cards{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px;
 }
 
-.logo .a span { color: #2aab47; }
-
-.logo .v {
-background: #c9973c;
-padding: 7px 10px;
-font-size: 11px;
-font-weight: 700;
-color: #fff;
-letter-spacing: 1px;
+.card{
+background:#0a0e0a;
+border:1px solid #1a2a1a;
+border-radius:14px;
+padding:18px 12px;
+cursor:pointer;
+text-decoration:none;
+color:inherit;
+transition:all 0.15s;
+text-align:center;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:flex-start;
+min-height:118px;
+position:relative;
+overflow:hidden;
 }
 
-.user-info {
-display: flex;
-align-items: center;
-gap: 10px;
+.card:active{transform:scale(0.97)}
+.card:hover{border-color:#2aab47;background:#0d150d}
+
+.card .icone{
+font-size:28px;
+margin-bottom:8px;
+line-height:1;
 }
 
-.user-name {
-font-size: 12px;
-color: #888;
+.card .nome{
+font-size:13px;
+font-weight:700;
+color:#fff;
+margin-bottom:3px;
+line-height:1.2;
 }
 
-.btn-sair {
-background: transparent;
-border: 1px solid #c0392b;
-color: #c0392b;
-padding: 6px 12px;
-border-radius: 8px;
-font-size: 11px;
-cursor: pointer;
+.card .desc{
+font-size:10px;
+color:#666;
+line-height:1.3;
 }
 
-.btn-sair:hover {
-background: rgba(192, 57, 43, 0.1);
+.card-master{
+border-color:#c0392b22;
+background:linear-gradient(135deg,#0d0808 0%,#0a0e0a 100%);
+}
+.card-master:hover{border-color:#c0392b}
+
+@media (min-width:480px){
+.grid-cards{
+grid-template-columns:1fr 1fr 1fr;
+gap:10px;
+}
+.card{min-height:130px;padding:20px 12px}
+.card .icone{font-size:32px}
 }
 
-main {
-max-width: 700px;
-margin: 0 auto;
-padding: 24px 16px 40px;
+@media (min-width:640px){
+.grid-cards{
+grid-template-columns:1fr 1fr 1fr 1fr;
 }
-
-.saudacao {
-margin-bottom: 22px;
-}
-
-.saudacao h1 {
-font-size: 20px;
-font-weight: 700;
-color: #fff;
-margin-bottom: 3px;
-}
-
-.saudacao p {
-font-size: 12px;
-color: #555;
-text-transform: uppercase;
-letter-spacing: 1px;
-}
-
-.secao-titulo {
-font-size: 10px;
-color: #2aab47;
-text-transform: uppercase;
-letter-spacing: 1px;
-margin: 18px 0 10px;
-font-weight: 700;
-}
-
-.grid-principal {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 10px;
-}
-
-.card {
-background: #090e09;
-border: 1px solid #1a2a1a;
-border-radius: 12px;
-padding: 18px 10px;
-cursor: pointer;
-text-decoration: none;
-color: inherit;
-transition: border-color 0.15s, transform 0.1s;
-text-align: center;
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-min-height: 120px;
-}
-
-.card:hover { border-color: #2aab47; }
-.card:active { transform: scale(0.98); }
-
-.card .icone {
-font-size: 28px;
-margin-bottom: 8px;
-}
-
-.card .nome {
-font-size: 13px;
-font-weight: 700;
-color: #fff;
-margin-bottom: 2px;
-}
-
-.card .desc {
-font-size: 10px;
-color: #555;
-}
-
-.card-destaque {
-grid-column: 1 / -1;
-background: linear-gradient(135deg, #0d1f0d 0%, #090e09 100%);
-border-color: #2aab47;
-padding: 22px 16px;
-}
-
-.card-destaque .icone {
-font-size: 36px;
-}
-
-.card-destaque .nome {
-font-size: 16px;
-}
-
-.lista-secundaria {
-display: flex;
-flex-direction: column;
-gap: 6px;
-}
-
-.link-item {
-display: flex;
-align-items: center;
-gap: 12px;
-background: #090e09;
-border: 1px solid #1a2a1a;
-border-radius: 10px;
-padding: 12px 14px;
-text-decoration: none;
-color: inherit;
-transition: border-color 0.15s;
-}
-
-.link-item:hover { border-color: #2aab47; }
-
-.link-item .icone-pequeno {
-font-size: 18px;
-width: 22px;
-text-align: center;
-}
-
-.link-item .texto {
-flex: 1;
-}
-
-.link-item .nome {
-font-size: 13px;
-color: #fff;
-font-weight: 600;
-}
-
-.link-item .desc {
-font-size: 10px;
-color: #555;
-}
-
-.link-item .seta {
-color: #333;
-font-size: 18px;
 }
 </style>
 
@@ -224,14 +138,11 @@ font-size: 18px;
 <body>
 
 <header>
-  <div class="logo">
+  <div class="logo" onclick="location.href='home.html'">
     <div class="a">AGRO<span>PLAY</span></div>
     <div class="v">v32.13</div>
   </div>
-  <div class="user-info">
-    <span class="user-name" id="userName"></span>
-    <button class="btn-sair" id="btnSair">Sair</button>
-  </div>
+  <button class="btn-sair" id="btnSair">Sair</button>
 </header>
 
 <main>
@@ -240,24 +151,25 @@ font-size: 18px;
     <p>O que você quer fazer?</p>
   </div>
 
-  <div class="grid-principal">
+  <div class="secao-titulo">Operação</div>
+  <div class="grid-cards">
     <a href="gerente.html" class="card">
       <div class="icone">⚡</div>
       <div class="nome">Gerente</div>
-      <div class="desc">Cadastros, eventos, lotes, códigos</div>
+      <div class="desc">Cadastros e eventos</div>
     </a>
 
 ```
 <a href="admin.html" class="card">
   <div class="icone">🎯</div>
-  <div class="nome">Admin do Evento</div>
-  <div class="desc">Controle ao vivo</div>
+  <div class="nome">Ao vivo</div>
+  <div class="desc">Controle do evento</div>
 </a>
 
 <a href="dashboard.html" class="card">
   <div class="icone">📊</div>
   <div class="nome">Dashboard</div>
-  <div class="desc">Telão pra projetor</div>
+  <div class="desc">Telão / projetor</div>
 </a>
 
 <a href="checkin.html" class="card">
@@ -270,31 +182,30 @@ font-size: 18px;
   </div>
 
   <div class="secao-titulo">Outros</div>
-
-  <div class="grid-principal">
+  <div class="grid-cards">
     <a href="orcamento.html" class="card">
       <div class="icone">💰</div>
       <div class="nome">Orçamento</div>
-      <div class="desc">Custos de produção</div>
+      <div class="desc">Custos do evento</div>
     </a>
 
 ```
 <a href="equipe.html" class="card">
   <div class="icone">👮</div>
   <div class="nome">Credenciamento</div>
-  <div class="desc">Cadastro e pagamento de staff</div>
+  <div class="desc">Cadastro de staff</div>
 </a>
 
 <a href="manual.html" class="card">
   <div class="icone">📚</div>
   <div class="nome">Manual</div>
-  <div class="desc">Como usar o sistema</div>
+  <div class="desc">Como usar</div>
 </a>
 
 <a href="mediakit.html" class="card">
   <div class="icone">📋</div>
   <div class="nome">Media Kit</div>
-  <div class="desc">Material de divulgação</div>
+  <div class="desc">Divulgação</div>
 </a>
 ```
 
@@ -302,13 +213,13 @@ font-size: 18px;
 
   <!-- Seção Master (só admin master vê) -->
 
-  <div id="secaoMaster" style="display:none">
-    <div class="secao-titulo" style="color:#c0392b">Master</div>
-    <div class="grid-principal">
-      <a href="admins.html" class="card" style="border-color:#c0392b">
+  <div id="secaoMaster" style="display:none" class="secao-master">
+    <div class="secao-titulo">Master</div>
+    <div class="grid-cards">
+      <a href="admins.html" class="card card-master">
         <div class="icone">🔐</div>
         <div class="nome">Administradores</div>
-        <div class="desc">Criar e gerenciar admins</div>
+        <div class="desc">Criar e gerenciar</div>
       </a>
     </div>
   </div>
@@ -323,34 +234,21 @@ font-size: 18px;
 
   const admin = JSON.parse(adminData || '{}');
 
-  document.getElementById('userName').textContent = admin.nome || '';
-  
-  // Mostrar nivel ao lado do nome
-  if (admin.nivel) {
-    let labelNivel = admin.nivel === 'master' ? '👑 MASTER' : (admin.nivel === 'visualizador' ? '👁️ VISUALIZADOR' : '✏️ EDITOR');
-    let corNivel = admin.nivel === 'master' ? '#c0392b' : (admin.nivel === 'visualizador' ? '#0891b2' : '#2aab47');
-    document.getElementById('saudacao').innerHTML = 'Olá, ' + (admin.nome || 'admin') + ' <span style="font-size:11px;color:' + corNivel + ';font-weight:700;letter-spacing:1px">· ' + labelNivel + '</span>';
+  // Saudação com nível colorido
+  let nomeUsuario = admin.nome || 'admin';
+  let nivelInfo = '';
+  if (admin.nivel === 'master') {
+    nivelInfo = ' <span class="badge" style="background:#c0392b22;color:#c0392b">👑 MASTER</span>';
+  } else if (admin.nivel === 'visualizador') {
+    nivelInfo = ' <span class="badge" style="background:#0891b222;color:#0891b2">👁️ VISUALIZADOR</span>';
   } else {
-    document.getElementById('saudacao').textContent = 'Olá, ' + (admin.nome || 'admin');
+    nivelInfo = ' <span class="badge" style="background:#2aab4722;color:#2aab47">✏️ EDITOR</span>';
   }
-  
+  document.getElementById('saudacao').innerHTML = 'Olá, ' + nomeUsuario + nivelInfo;
+
   // Seção Master só pra master
   if (admin.nivel === 'master') {
     document.getElementById('secaoMaster').style.display = 'block';
-  }
-  
-  // Visualizador NÃO pode acessar telas de edição direta - bloqueio simples
-  if (admin.nivel === 'visualizador') {
-    // Esconder cards de edição (Gerente / Credenciamento)
-    // Mantém Admin do Evento (visualização ao vivo) e Dashboard
-    const cardsBloqueados = ['gerente.html', 'equipe.html', 'orcamento.html'];
-    document.querySelectorAll('a.card').forEach(a => {
-      const href = a.getAttribute('href');
-      if (cardsBloqueados.includes(href)) {
-        a.style.opacity = '0.4';
-        a.style.pointerEvents = 'none';
-      }
-    });
   }
 
   document.getElementById('btnSair').addEventListener('click', function () {
