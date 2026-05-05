@@ -82,7 +82,10 @@ select,input{width:100%;background:#090e09;border:1px solid #1a2a1a;border-radiu
 <h1>Credenciamento</h1>
 <div class="sub">Cadastro e pagamento de staff</div>
 
-<button id="btnConfig" style="display:none;width:100%;background:transparent;border:1px dashed #888;color:#888;padding:10px;font-size:12px;font-weight:700;border-radius:8px;cursor:pointer;margin-bottom:14px">Configurar Staff Managers</button>
+<div id="botoesAdmin" style="display:none">
+  <button id="btnConfig" style="width:100%;background:transparent;border:1px dashed #888;color:#888;padding:10px;font-size:12px;font-weight:700;border-radius:8px;cursor:pointer;margin-bottom:8px">Configurar Staff Managers</button>
+  <button id="btnBancoStaff" style="width:100%;background:transparent;border:1px dashed #2aab47;color:#2aab47;padding:10px;font-size:12px;font-weight:700;border-radius:8px;cursor:pointer;margin-bottom:14px">Banco de Staff (todos cadastros)</button>
+</div>
 
 <div id="login" style="display:none">
   <label class="lbl">Login</label>
@@ -144,6 +147,22 @@ select,input{width:100%;background:#090e09;border:1px solid #1a2a1a;border-radiu
   </div>
 </div>
 
+<!-- Modal Banco de Staff (todos cadastros) -->
+
+<div id="modalBanco" class="modal-bg">
+  <div class="modal" style="max-width:480px">
+    <h3>Banco de Staff</h3>
+    <div style="display:flex;gap:6px;margin-bottom:10px">
+      <button data-fbs="todos" class="fbs-btn fbs-on" style="flex:1;background:#1e7a35;color:#fff;border:none;border-radius:6px;padding:8px;font-size:11px;font-weight:700;cursor:pointer">Todos</button>
+      <button data-fbs="aprovado" class="fbs-btn" style="flex:1;background:transparent;color:#2aab47;border:1px solid #2aab47;border-radius:6px;padding:8px;font-size:11px;font-weight:700;cursor:pointer">Aprovados</button>
+      <button data-fbs="pendente" class="fbs-btn" style="flex:1;background:transparent;color:#c9973c;border:1px solid #c9973c;border-radius:6px;padding:8px;font-size:11px;font-weight:700;cursor:pointer">Pendentes</button>
+    </div>
+    <input type="text" id="buscaBanco" placeholder="Buscar por nome..." style="margin-bottom:10px">
+    <div id="listaBanco" style="max-height:55vh;overflow-y:auto;margin-bottom:12px">Carregando...</div>
+    <button class="btn-cancel" onclick="fecharBanco()" style="width:100%">Fechar</button>
+  </div>
+</div>
+
 <script>
 var SB='https://wexwcnezjadoutyzkbcj.supabase.co';
 var KY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ';
@@ -177,8 +196,9 @@ function init(){
   document.getElementById('login').style.display='none';
   document.getElementById('painel').style.display='block';
   // Engrenagem so pra admin master
-  document.getElementById('btnConfig').style.display=(quem==='master')?'block':'none';
+  document.getElementById('botoesAdmin').style.display=(quem==='master')?'block':'none';
   document.getElementById('btnConfig').onclick=abrirConfig;
+  document.getElementById('btnBancoStaff').onclick=abrirBancoStaff;
   carregarEventos();
 }
 
@@ -686,6 +706,115 @@ function excluirSM(id){
   fetch(SB+'/rest/v1/staff_managers?id=eq.'+id,{
     method:'DELETE',headers:{apikey:KY,Authorization:'Bearer '+KY}
   }).then(function(){carregarSMs();});
+}
+
+// ============ Banco de Staff ============
+var bancoStaffTodos=[];
+var bancoFiltro='todos';
+
+function abrirBancoStaff(){
+  document.getElementById('modalBanco').classList.add('on');
+  document.getElementById('buscaBanco').value='';
+  bancoFiltro='todos';
+  // Atualizar visual dos filtros
+  var btns=document.querySelectorAll('.fbs-btn');
+  for(var i=0;i<btns.length;i++){
+    btns[i].onclick=function(){
+      bancoFiltro=this.getAttribute('data-fbs');
+      // Visual
+      var todos=document.querySelectorAll('.fbs-btn');
+      for(var j=0;j<todos.length;j++){
+        todos[j].classList.remove('fbs-on');
+        todos[j].style.background='transparent';
+        todos[j].style.color=todos[j].getAttribute('data-fbs')==='aprovado'?'#2aab47':(todos[j].getAttribute('data-fbs')==='pendente'?'#c9973c':'#888');
+      }
+      this.classList.add('fbs-on');
+      this.style.background='#1e7a35';
+      this.style.color='#fff';
+      renderBanco();
+    };
+  }
+  document.getElementById('buscaBanco').oninput=renderBanco;
+  carregarBancoStaff();
+}
+
+function fecharBanco(){
+  document.getElementById('modalBanco').classList.remove('on');
+}
+
+function carregarBancoStaff(){
+  document.getElementById('listaBanco').innerHTML='Carregando...';
+  fetch(SB+'/rest/v1/cadastros?tipo=eq.staff&select=*&order=criado_em.desc',{
+    headers:{apikey:KY,Authorization:'Bearer '+KY}
+  }).then(function(r){return r.json();}).then(function(d){
+    if(!Array.isArray(d)){document.getElementById('listaBanco').innerHTML='Erro';return;}
+    bancoStaffTodos=d;
+    renderBanco();
+  });
+}
+
+function renderBanco(){
+  var q=(document.getElementById('buscaBanco').value||'').toLowerCase().trim();
+  var lista=bancoStaffTodos.filter(function(p){
+    if(bancoFiltro!=='todos'&&p.status!==bancoFiltro)return false;
+    if(q&&(p.nome||'').toLowerCase().indexOf(q)<0)return false;
+    return true;
+  });
+  if(lista.length===0){
+    document.getElementById('listaBanco').innerHTML='<div class="empty" style="padding:20px">Nenhum staff encontrado</div>';
+    return;
+  }
+  var h='';
+  for(var i=0;i<lista.length;i++){
+    var p=lista[i];
+    var corStatus=p.status==='aprovado'?'#2aab47':(p.status==='pendente'?'#c9973c':'#888');
+    h+='<div style="background:#070b07;border:1px solid #1a2a1a;border-radius:8px;padding:10px;margin-bottom:8px">';
+    h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">';
+    if(p.foto_url){
+      h+='<img src="'+p.foto_url+'" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid '+corStatus+'">';
+    }else{
+      h+='<div style="width:40px;height:40px;border-radius:50%;background:#1a2a1a;display:flex;align-items:center;justify-content:center;color:'+corStatus+';font-weight:700;border:2px solid '+corStatus+'">?</div>';
+    }
+    h+='<div style="flex:1;min-width:0">';
+    h+='<div style="font-size:13px;font-weight:700;color:#fff">'+esc(p.nome||'(sem nome)')+'</div>';
+    h+='<div style="font-size:11px;color:'+corStatus+';font-weight:700">'+esc(p.cargo||p.setor||'-')+' · '+esc(p.status||'')+'</div>';
+    if(p.telefone)h+='<div style="font-size:10px;color:#666">'+esc(p.telefone)+'</div>';
+    if(p.cpf)h+='<div style="font-size:10px;color:#666">CPF: '+esc(p.cpf)+'</div>';
+    h+='</div>';
+    h+='</div>';
+    h+='<div style="display:flex;gap:6px">';
+    if(p.status==='pendente'){
+      h+='<button data-bsapr="'+p.id+'" style="flex:1;background:#1e7a35;color:#fff;border:none;border-radius:6px;padding:8px;font-size:11px;font-weight:700;cursor:pointer">Aprovar</button>';
+    }
+    h+='<button data-bsexc="'+p.id+'" style="flex:1;background:transparent;color:#c0392b;border:1px solid #c0392b;border-radius:6px;padding:8px;font-size:11px;font-weight:700;cursor:pointer">Excluir</button>';
+    h+='</div>';
+    h+='</div>';
+  }
+  document.getElementById('listaBanco').innerHTML=h;
+  // Listeners
+  var aprs=document.querySelectorAll('[data-bsapr]');
+  for(var a=0;a<aprs.length;a++){
+    aprs[a].onclick=function(){
+      var id=this.getAttribute('data-bsapr');
+      fetch(SB+'/rest/v1/cadastros?id=eq.'+id,{
+        method:'PATCH',
+        headers:{apikey:KY,Authorization:'Bearer '+KY,'Content-Type':'application/json',Prefer:'return=minimal'},
+        body:JSON.stringify({status:'aprovado'})
+      }).then(function(){carregarBancoStaff();});
+    };
+  }
+  var excs=document.querySelectorAll('[data-bsexc]');
+  for(var e=0;e<excs.length;e++){
+    excs[e].onclick=function(){
+      var id=this.getAttribute('data-bsexc');
+      var p=null;
+      for(var k=0;k<bancoStaffTodos.length;k++)if(bancoStaffTodos[k].id===id){p=bancoStaffTodos[k];break;}
+      if(!confirm('Excluir '+(p?p.nome:'este cadastro')+' do banco?\n\nIsso e permanente.'))return;
+      fetch(SB+'/rest/v1/cadastros?id=eq.'+id,{
+        method:'DELETE',headers:{apikey:KY,Authorization:'Bearer '+KY}
+      }).then(function(){carregarBancoStaff();});
+    };
+  }
 }
 
 init();
