@@ -215,7 +215,7 @@ function render(){
     h+='</div>';
   }
   
-  h+='<button class="btn-pdf" id="btnPDF">Gerar PDF</button>';
+  h+='<button class="btn-pdf" id="btnPDF" onclick="window.gerarPDF()">Gerar PDF</button>';
   document.getElementById('conteudo').innerHTML=h;
   
   // Listeners
@@ -227,11 +227,7 @@ function render(){
   for(var d2=0;d2<dels.length;d2++){
     dels[d2].onclick=function(){delIt(this.getAttribute('data-del'));};
   }
-  var bp=document.getElementById('btnPDF');
-  if(bp){
-    bp.addEventListener('click',function(){gerarPDF();});
-    bp.addEventListener('touchend',function(e){e.preventDefault();gerarPDF();});
-  }
+  // btnPDF usa onclick inline
 }
 </script>
 
@@ -310,8 +306,8 @@ function delIt(id){
 </script>
 
 <script>
-function gerarPDF(){
-  alert('Gerando PDF...');
+window.gerarPDF=function(){
+  alert('Iniciando geracao do PDF...');
   if(!evAtual){alert('Selecione um evento');return;}
   if(!itens.length){alert('Adicione itens primeiro');return;}
   var tot=0;for(var i=0;i<itens.length;i++)tot+=parseFloat(itens[i].valor_total||0);
@@ -351,7 +347,7 @@ if(ov)ov.parentNode.removeChild(ov);
 };
 
 alert(‘PDF aberto! Toque em “Imprimir / Salvar PDF” pra salvar.’);
-}
+};
 </script>
 
 </body>
