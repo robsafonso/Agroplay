@@ -1366,17 +1366,19 @@ function verConvitesLote(loteId) {
 async function copiarMsgConviteEMarcar(btn) {
   const msg = btn.dataset.msg.replaceAll('&amp;', '&').replaceAll('&lt;', '<').replaceAll('&gt;', '>').replaceAll('&quot;', '"');
   const codId = btn.dataset.codid;
-  // Marca enviado
-  if (codId) {
-    await sb.from('codigos').update({ enviado: true, enviado_em: new Date().toISOString() }).eq('id', codId);
-  }
+  
+  // 1. COPIAR PRIMEIRO (sem await antes - iOS exige sincrono)
   copiar(msg, btn, btn.textContent);
-  // Recarrega tudo pra atualizar visual
-  await carregarTudo();
-  // Reabre o modal com dados atualizados
-  const loteId = sessionStorage.getItem('ger_modal_lote');
-  if (loteId) {
-    setTimeout(() => verConvitesLote(loteId), 200);
+  
+  // 2. Depois marca como enviado e atualiza visual
+  if (codId) {
+    sb.from('codigos').update({ enviado: true, enviado_em: new Date().toISOString() }).eq('id', codId).then(async () => {
+      await carregarTudo();
+      const loteId = sessionStorage.getItem('ger_modal_lote');
+      if (loteId) {
+        setTimeout(() => verConvitesLote(loteId), 200);
+      }
+    });
   }
 }
 
