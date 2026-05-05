@@ -240,7 +240,7 @@ margin-bottom: 20px;
 
 <div id="appLogin">
   <div class="login-card">
-    <div class="logo-cima"><div class="logo"><div class="a">AGRO<span>PLAY</span></div><div class="v">v32</div></div></div>
+    <div class="logo-cima"><div class="logo"><div class="a">AGRO<span>PLAY</span></div><div class="v">v32.13</div></div></div>
     <h1>Dashboard</h1>
     <p class="subtitle">Telão do evento</p>
     <div class="fl"><label>Usuário</label><input type="text" id="inputUser" autocomplete="username"></div>
@@ -254,7 +254,7 @@ margin-bottom: 20px;
 
 <div id="appSelect" style="display:none">
   <div class="login-card">
-    <div class="logo-cima"><div class="logo"><div class="a">AGRO<span>PLAY</span></div><div class="v">v32</div></div></div>
+    <div class="logo-cima"><div class="logo"><div class="a">AGRO<span>PLAY</span></div><div class="v">v32.13</div></div></div>
     <h1>Escolha o evento</h1>
     <p class="subtitle">Para mostrar no telão</p>
     <div class="fl"><label>Evento</label><select id="selectEvento"></select></div>
@@ -429,7 +429,7 @@ async function abrirDash() {
 }
 
 async function carregarCadastros() {
-  const { data } = await sb.from('cadastros').select('*').eq('evento_id', eventoAtual.id);
+  const { data } = await sb.from('cadastros').select('*').eq('evento_id', eventoAtual.id).neq('tipo', 'staff');
   cadastros = data || [];
 }
 
