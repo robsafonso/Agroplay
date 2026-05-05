@@ -905,16 +905,26 @@ async function gerarLinkCadastro() {
   const btn = document.getElementById('btnGerarLink');
   btn.textContent = 'Gerando...'; btn.disabled = true;
   document.getElementById('alertaLinkCad').innerHTML = '';
-  const { data: codigos } = await sb.from('codigos').select('id, codigo').eq('usado', false).is('lote_id', null).limit(1);
-  if (!codigos || !codigos.length) {
-    document.getElementById('alertaLinkCad').innerHTML = '<div class="ea">Nenhum código disponível!</div>';
+  
+  // Gerar token novo
+  const token = gerarTokenConvite();
+  
+  // Salvar como código avulso (sem lote)
+  const { data: novo, error } = await sb.from('codigos').insert({
+    codigo: token,
+    usado: false,
+    enviado: false,
+    queimado: false
+  }).select().single();
+  
+  if (error || !novo) {
+    document.getElementById('alertaLinkCad').innerHTML = '<div class="ea">Erro: ' + (error?.message || 'falha') + '</div>';
     btn.textContent = 'Gerar convite de cadastro'; btn.disabled = false; return;
   }
-  const cod = codigos[0];
-  await sb.from('codigos').update({ usado: true, usado_em: new Date().toISOString() }).eq('id', cod.id);
-  const link = URL_BASE + 'cadastro.html?cod=' + cod.codigo + '&resp=' + encodeURIComponent(admin.nome || 'Robson');
-  const msg = 'AGROPLAY Music 🎵\n\nOlá! Você foi convidado por ' + (admin.nome || 'Robson') + ' para fazer parte do nosso sistema.\n\nAcesse o link abaixo e faça seu cadastro:\n' + link + '\n\nCódigo: ' + cod.codigo + '\nCódigo intransferível e de uso único.';
-  document.getElementById('lcCodigo').textContent = cod.codigo;
+  
+  const link = URL_BASE + 'cadastro.html?cod=' + token + '&resp=' + encodeURIComponent(admin.nome || 'Robson');
+  const msg = 'AGROPLAY Music 🎵\n\nOlá! Você foi convidado por ' + (admin.nome || 'Robson') + ' para fazer parte do nosso sistema.\n\nAcesse o link abaixo e faça seu cadastro:\n' + link + '\n\nCódigo: ' + token + '\nCódigo intransferível e de uso único.';
+  document.getElementById('lcCodigo').textContent = token;
   document.getElementById('lcMensagem').textContent = msg;
   document.getElementById('lcForm').classList.add('gone');
   document.getElementById('lcResult').classList.remove('gone');
@@ -1117,6 +1127,14 @@ function abrirNovoLote() {
   abrirModal('modalLote');
 }
 
+function gerarTokenConvite() {
+  // Token de 8 caracteres alfanumericos
+  const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let t = '';
+  for (let i = 0; i < 8; i++) t += c.charAt(Math.floor(Math.random() * c.length));
+  return t;
+}
+
 async function salvarLote() {
   const resp = document.getElementById('ltResp').value.trim();
   const al = document.getElementById('alertaLote');
@@ -1145,27 +1163,35 @@ async function salvarLote() {
     return;
   }
 
-  // 2. Pega N codigos disponiveis
-  const { data: codigosDisp, error: errCods } = await sb
-    .from('codigos')
-    .select('id, codigo')
-    .eq('usado', false)
-    .is('lote_id', null)
-    .limit(qtd);
-
-  if (errCods || !codigosDisp || codigosDisp.length < qtd) {
-    btn.textContent = 'Criar lote'; btn.disabled = false;
-    al.innerHTML = '<div class="ea">Apenas ' + (codigosDisp?.length || 0) + ' códigos disponíveis no banco. Lote criado vazio.</div>';
-    await carregarTudo();
-    return;
+  // 2. Gerar N tokens novos (em vez de pegar do pool de 10.000)
+  const novosCodigos = [];
+  const tokensJaUsados = new Set();
+  for (let i = 0; i < qtd; i++) {
+    let token;
+    do {
+      token = gerarTokenConvite();
+    } while (tokensJaUsados.has(token));
+    tokensJaUsados.add(token);
+    
+    const reg = {
+      codigo: token,
+      lote_id: novoLote.id,
+      usado: false,
+      enviado: false,
+      queimado: false
+    };
+    if (evId) reg.evento_id = evId;
+    novosCodigos.push(reg);
   }
 
-  // 3. Atualiza esses codigos vinculando ao lote
-  const codigosIds = codigosDisp.map(c => c.id);
-  const updateData = { lote_id: novoLote.id };
-  if (evId) updateData.evento_id = evId;
+  // 3. Inserir todos de uma vez
+  const { error: errInsert } = await sb.from('codigos').insert(novosCodigos);
 
-  await sb.from('codigos').update(updateData).in('id', codigosIds);
+  if (errInsert) {
+    btn.textContent = 'Criar lote'; btn.disabled = false;
+    al.innerHTML = '<div class="ea">Erro ao criar convites: ' + errInsert.message + '</div>';
+    return;
+  }
 
   btn.textContent = 'Criar lote'; btn.disabled = false;
   al.innerHTML = '<div class="ok">Lote criado com ' + qtd + ' convites! Senha: ' + senha + '</div>';
@@ -1189,16 +1215,32 @@ async function adicionarConvitesLote(loteId) {
     .is('lote_id', null)
     .limit(qtd);
 
-  if (!codigosDisp || codigosDisp.length < qtd) {
-    alert('Apenas ' + (codigosDisp?.length || 0) + ' códigos disponíveis');
-    return;
+  // GERAR TOKENS NOVOS (não usar mais pool)
+  const novosCodigos = [];
+  const tokensJaUsados = new Set();
+  for (let i = 0; i < qtd; i++) {
+    let token;
+    do {
+      token = gerarTokenConvite();
+    } while (tokensJaUsados.has(token));
+    tokensJaUsados.add(token);
+    
+    const reg = {
+      codigo: token,
+      lote_id: loteId,
+      usado: false,
+      enviado: false,
+      queimado: false
+    };
+    if (lt.evento_id) reg.evento_id = lt.evento_id;
+    novosCodigos.push(reg);
   }
 
-  const codigosIds = codigosDisp.map(c => c.id);
-  const updateData = { lote_id: loteId };
-  if (lt.evento_id) updateData.evento_id = lt.evento_id;
-
-  await sb.from('codigos').update(updateData).in('id', codigosIds);
+  const { error: errIns } = await sb.from('codigos').insert(novosCodigos);
+  if (errIns) {
+    alert('Erro ao adicionar convites: ' + errIns.message);
+    return;
+  }
 
   // Atualiza quantidade do lote
   const novoTotal = (lt.quantidade || 0) + qtd;
@@ -2030,13 +2072,24 @@ function buscarCodigo(termo) {
 }
 
 async function pegarUmCodigo() {
-  // Pega o primeiro disponível (não usado, não queimado, sem lote, não enviado)
-  const disponivel = estado.codigos.find(c => !c.usado && !c.queimado && !c.enviado && !c.lote_id);
-  if (!disponivel) {
-    alert('Sem códigos disponíveis no pool. Todos foram alocados em lotes ou já estão em uso.');
+  // Antes: pegava do pool. Agora: gera token novo
+  const token = gerarTokenConvite();
+  const { data: novo, error } = await sb.from('codigos').insert({
+    codigo: token,
+    usado: false,
+    enviado: false,
+    queimado: false
+  }).select().single();
+  
+  if (error || !novo) {
+    alert('Erro ao gerar convite: ' + (error?.message || ''));
     return;
   }
-  await copiarMsgCodigoDireto(disponivel.id);
+  
+  // Recarregar codigos pra ter o novo na lista local
+  estado.codigos.unshift(novo);
+  await copiarMsgCodigoDireto(novo.id);
+  await carregarTudo();
 }
 
 async function copiarMsgCodigo(codigoId, btn) {
