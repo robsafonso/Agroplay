@@ -45,7 +45,7 @@ input:focus,select:focus{border-color:#2aab47}
 <div class="hdr">
   <div class="logo">
     <div class="lt">AGRO<span>PLAY</span></div>
-    <div class="lv">v32</div>
+    <div class="lv">v32.13</div>
   </div>
 </div>
 
@@ -65,7 +65,7 @@ input:focus,select:focus{border-color:#2aab47}
   <label class="lbl">Email</label>
   <input type="email" id="email" placeholder="seu@email.com">
   <label class="lbl">Funcao no evento</label>
-  <select id="funcao">
+  <select id="funcao" onchange="onFuncaoChange()">
     <option value="">Selecione...</option>
     <option>Garcom</option>
     <option>Bartender</option>
@@ -81,6 +81,7 @@ input:focus,select:focus{border-color:#2aab47}
     <option>Motorista</option>
     <option>Outro</option>
   </select>
+  <input type="text" id="funcaoOutro" placeholder="Especifique a funcao" style="display:none;margin-top:-6px">
   <button class="btn-prox" onclick="irPasso2()">Proximo</button>
 </div>
 
@@ -122,9 +123,27 @@ var evento=null;
 var fotoBase64=null;
 var stream=null;
 
-// Pegar evento_id da URL (opcional)
+// Pegar evento_id e token da URL
 var params=new URLSearchParams(window.location.search);
 var evId=params.get('ev');
+var tokenURL=params.get('t');
+
+// Se tem token, checar se ja foi usado
+if(tokenURL){
+  fetch(SB+'/rest/v1/cadastros?token=eq.'+tokenURL+'&select=id,nome',{
+    headers:{apikey:KY,Authorization:'Bearer '+KY}
+  }).then(function(r){return r.json();}).then(function(d){
+    if(Array.isArray(d)&&d.length>0){
+      // Token ja usado!
+      document.body.innerHTML='<div style="max-width:480px;margin:60px auto;padding:30px;text-align:center;background:#0d150d;border:2px solid #c0392b;border-radius:12px"><div style="font-size:60px;margin-bottom:14px">X</div><h2 style="color:#c0392b;margin-bottom:8px">Link ja utilizado</h2><p style="color:#888;font-size:14px">Este convite ja foi usado por <b style="color:#fff">'+d[0].nome+'</b>.</p><p style="color:#888;font-size:13px;margin-top:14px">Peca um novo link ao organizador.</p></div>';
+    }
+  });
+}
+
+if(!tokenURL){
+  // Sem token = link generico (nao deveria ser usado)
+  document.getElementById('evtBox').innerHTML='<div style="background:#2a1f0a;border:1px solid #c9973c;border-radius:8px;padding:10px;color:#c9973c;font-size:11px;text-align:center;margin-bottom:14px">ATENCAO: Link generico sem codigo. Pode estar sendo reutilizado.</div>';
+}
 
 if(evId){
   fetch(SB+'/rest/v1/eventos?id=eq.'+evId+'&select=*',{
@@ -160,19 +179,57 @@ document.getElementById('tel').oninput=function(e){
   e.target.value=v;
 };
 
+function onFuncaoChange(){
+  var f=document.getElementById('funcao').value;
+  var inp=document.getElementById('funcaoOutro');
+  if(f==='Outro'){
+    inp.style.display='block';
+    inp.focus();
+  }else{
+    inp.style.display='none';
+    inp.value='';
+  }
+}
+
 function irPasso2(){
   var nome=document.getElementById('nome').value.trim();
   var cpf=document.getElementById('cpf').value.trim();
   var tel=document.getElementById('tel').value.trim();
   var funcao=document.getElementById('funcao').value;
-  if(!nome){alert('Preencha o nome');return;}
-  if(cpf.replace(/\D/g,'').length!==11){alert('CPF invalido');return;}
-  if(!tel){alert('Preencha o telefone');return;}
-  if(!funcao){alert('Selecione a funcao');return;}
+  var funcaoOutro=document.getElementById('funcaoOutro').value.trim();
   
-  document.getElementById('passo1').style.display='none';
-  document.getElementById('passo2').style.display='block';
-  iniciarCamera();
+  // Validacao: nome completo (minimo 2 palavras)
+  if(!nome){alert('Preencha o nome');return;}
+  var partes=nome.split(/\s+/);
+  if(partes.length<2||partes[0].length<2||partes[1].length<2){
+    alert('Digite o nome completo (nome e sobrenome)');
+    return;
+  }
+  
+  // Validacao: CPF
+  if(cpf.replace(/\D/g,'').length!==11){alert('CPF invalido');return;}
+  
+  // Validacao: telefone
+  if(tel.replace(/\D/g,'').length<10){alert('Telefone invalido');return;}
+  
+  // Validacao: funcao
+  if(!funcao){alert('Selecione a funcao');return;}
+  if(funcao==='Outro'&&!funcaoOutro){alert('Especifique qual a funcao em "Outro"');return;}
+  
+  // Verificar CPF duplicado ANTES de ir pra foto
+  var btn=event&&event.target;
+  var cpfNumeros=cpf.replace(/\D/g,'');
+  fetch(SB+'/rest/v1/cadastros?cpf=eq.'+cpfNumeros+'&tipo=eq.staff&select=id,nome',{
+    headers:{apikey:KY,Authorization:'Bearer '+KY}
+  }).then(function(r){return r.json();}).then(function(existing){
+    if(Array.isArray(existing)&&existing.length>0){
+      alert('Ja existe um cadastro de staff com este CPF: '+existing[0].nome+'\n\nSe for voce, peca para o organizador adicionar voce ao evento direto.');
+      return;
+    }
+    document.getElementById('passo1').style.display='none';
+    document.getElementById('passo2').style.display='block';
+    iniciarCamera();
+  });
 }
 
 function iniciarCamera(){
@@ -239,6 +296,7 @@ function voltarPasso1(){
 }
 
 function irPasso3(){
+  if(!fotoBase64){alert('Tire a foto antes de continuar');return;}
   var resumo='<div style="text-align:center;margin-bottom:16px">';
   resumo+='<img src="'+fotoBase64+'" style="width:120px;height:120px;border-radius:50%;border:3px solid #2aab47;margin-bottom:10px">';
   resumo+='<div style="font-size:18px;font-weight:700;color:#fff">'+document.getElementById('nome').value+'</div>';
@@ -259,21 +317,47 @@ function voltarPasso2(){
 
 function salvar(){
   var btn=document.getElementById('btnSalvar');
+  btn.textContent='Verificando...';
+  btn.disabled=true;
+  
+  var cpfNumeros=document.getElementById('cpf').value.replace(/\D/g,'');
+  
+  // Antes de salvar, checar se ja existe um staff com este CPF
+  fetch(SB+'/rest/v1/cadastros?cpf=eq.'+cpfNumeros+'&tipo=eq.staff&select=id,nome',{
+    headers:{apikey:KY,Authorization:'Bearer '+KY}
+  }).then(function(r){return r.json();}).then(function(existing){
+    if(Array.isArray(existing)&&existing.length>0){
+      document.getElementById('msg').innerHTML='<div class="msg err">Ja existe um cadastro de staff com este CPF: <b>'+existing[0].nome+'</b><br><br>Se for voce, peca para o organizador adicionar voce ao evento direto. Nao precisa cadastrar de novo.</div>';
+      btn.textContent='Confirmar cadastro';
+      btn.disabled=false;
+      return;
+    }
+    salvarReal();
+  }).catch(function(){salvarReal();});
+}
+
+function salvarReal(){
+  var btn=document.getElementById('btnSalvar');
   btn.textContent='Salvando...';
   btn.disabled=true;
+  
+  var funcSel=document.getElementById('funcao').value;
+  var funcOutro=document.getElementById('funcaoOutro').value.trim();
+  var funcFinal=(funcSel==='Outro'&&funcOutro)?funcOutro:funcSel;
   
   var body={
     nome:document.getElementById('nome').value.trim(),
     cpf:document.getElementById('cpf').value.replace(/\D/g,''),
     telefone:document.getElementById('tel').value,
     email:document.getElementById('email').value.trim()||null,
-    setor:document.getElementById('funcao').value,
+    setor:funcFinal,
     foto_url:fotoBase64,
     tipo:'staff',
     status:'pendente',
     evento_id:evento?evento.id:null,
     empresa:'STAFF',
-    cargo:document.getElementById('funcao').value
+    cargo:funcFinal,
+    token:tokenURL||null
   };
   
   fetch(SB+'/rest/v1/cadastros',{
