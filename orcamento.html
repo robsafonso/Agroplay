@@ -215,7 +215,7 @@ function render(){
     h+='</div>';
   }
   
-  h+='<button class="btn-pdf" id="btnPDF">Gerar PDF</button>';
+  h+='<button class="btn-pdf" id="btnPDF">Copiar Orcamento</button>';
   document.getElementById('conteudo').innerHTML=h;
   
   // PDF button - listener direto e robusto
@@ -320,7 +320,6 @@ function executarPDF(){
   var tot=0;
   for(var i=0;i<itens.length;i++)tot+=parseFloat(itens[i].valor_total||0);
   
-  // Agrupar por categoria
   var grp={};
   for(var j=0;j<itens.length;j++){
     var c=itens[j].categoria;
@@ -328,57 +327,59 @@ function executarPDF(){
     grp[c].push(itens[j]);
   }
   
-  // Montar HTML do PDF
-  var h='<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Orcamento</title>';
-  h+='<style>';
-  h+='body{font-family:Arial;max-width:700px;margin:0 auto;padding:20px;color:#222}';
-  h+='h1{color:#1e7a35;font-size:24px}';
-  h+='h2{color:#666;font-size:14px;font-weight:normal;border-bottom:2px solid #1e7a35;padding-bottom:8px;margin-bottom:16px}';
-  h+='.tb{background:#f0fff0;border:2px solid #1e7a35;border-radius:8px;padding:14px;margin:16px 0;display:flex;justify-content:space-between;align-items:center}';
-  h+='.tb b{font-size:13px}';
-  h+='.tb .v{font-size:20px;color:#1e7a35;font-weight:900}';
-  h+='h3{background:#1e7a35;color:#fff;padding:10px;margin-top:16px;border-radius:6px;font-size:14px;display:flex;justify-content:space-between}';
-  h+='table{width:100%;border-collapse:collapse;margin-top:6px;font-size:12px}';
-  h+='th{background:#f5f5f5;padding:8px;text-align:left;font-size:11px;border-bottom:2px solid #ddd}';
-  h+='td{padding:8px;border-bottom:1px solid #eee}';
-  h+='td:last-child,th:last-child{text-align:right;font-weight:700;color:#1e7a35}';
-  h+='.btn{display:block;width:100%;background:#1e7a35;color:#fff;border:none;padding:14px;font-weight:700;border-radius:8px;margin-top:20px;cursor:pointer;font-size:14px}';
-  h+='.btn-back{background:#666;margin-top:8px}';
-  h+='@media print{.btn,.btn-back{display:none}}';
-  h+='</style></head><body>';
-
-h+=’<h1>AGROPLAY MUSIC</h1>’;
-h+=’<h2>Orcamento - ‘+esc(evAtual.nome);
-if(evAtual.data)h+=’ - ‘+fd(evAtual.data);
-h+=’</h2>’;
-h+=’<div class="tb"><b>TOTAL ESTIMADO</b><div class="v">’+fmt(tot)+’</div></div>’;
-
-var ord=[];
-for(var k=0;k<CATS.length;k++)ord.push(CATS[k][0]);
-for(var c2 in grp)if(ord.indexOf(c2)<0)ord.push(c2);
-
-for(var x=0;x<ord.length;x++){
-var cat=ord[x];
-if(!grp[cat])continue;
-var ct=0;
-for(var y=0;y<grp[cat].length;y++)ct+=parseFloat(grp[cat][y].valor_total||0);
-h+=’<h3><span>’+esc(cat)+’</span><span>’+fmt(ct)+’</span></h3>’;
-h+=’<table><tr><th>Item</th><th>Qtd</th><th>Unit.</th><th>Total</th></tr>’;
-for(var z2=0;z2<grp[cat].length;z2++){
-var it=grp[cat][z2];
-h+=’<tr><td>’+esc(it.item)+’</td><td>’+it.quantidade+’</td><td>’+fmt(it.valor_unitario)+’</td><td>’+fmt(it.valor_total)+’</td></tr>’;
-}
-h+=’</table>’;
+  // Montar TEXTO simples do orcamento (nao HTML)
+  var t='*ORCAMENTO AGROPLAY MUSIC*\n';
+  t+=evAtual.nome;
+  if(evAtual.data)t+=' - '+fd(evAtual.data);
+  t+='\n\n*TOTAL ESTIMADO: '+fmt(tot)+'*\n\n';
+  
+  var ord=[];
+  for(var k=0;k<CATS.length;k++)ord.push(CATS[k][0]);
+  for(var c2 in grp)if(ord.indexOf(c2)<0)ord.push(c2);
+  
+  for(var x=0;x<ord.length;x++){
+    var cat=ord[x];
+    if(!grp[cat])continue;
+    var ct=0;
+    for(var y=0;y<grp[cat].length;y++)ct+=parseFloat(grp[cat][y].valor_total||0);
+    t+='*'+cat+' - '+fmt(ct)+'*\n';
+    for(var z2=0;z2<grp[cat].length;z2++){
+      var it=grp[cat][z2];
+      t+='- '+it.item+': '+it.quantidade+'x '+fmt(it.valor_unitario)+' = '+fmt(it.valor_total)+'\n';
+    }
+    t+='\n';
+  }
+  
+  // Copiar pra area de transferencia
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(function(){
+      alert('Orcamento copiado! Cole no WhatsApp, Notas ou onde quiser.');
+    }).catch(function(){
+      mostrarTextoFallback(t);
+    });
+  }else{
+    mostrarTextoFallback(t);
+  }
 }
 
-h+=’<button class="btn" onclick="window.print()">Imprimir / Salvar PDF</button>’;
-h+=’<button class="btn btn-back" onclick="history.back()">Voltar ao orcamento</button>’;
-h+=’</body></html>’;
-
-// Abrir o HTML codificado como data URL na propria janela
-// O iOS Safari aceita data:text/html (com encoding correto)
-var dataUrl=‘data:text/html;charset=utf-8,’+encodeURIComponent(h);
-window.location.href=dataUrl;
+function mostrarTextoFallback(t){
+  // Fallback: mostrar texto numa textarea pra usuario copiar manualmente
+  var bg=document.createElement('div');
+  bg.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;display:flex;align-items:center;justify-content:center;padding:14px';
+  var box=document.createElement('div');
+  box.style.cssText='background:#fff;border-radius:8px;padding:14px;max-width:420px;width:100%';
+  var ta=document.createElement('textarea');
+  ta.value=t;
+  ta.style.cssText='width:100%;height:300px;font-family:monospace;font-size:11px;padding:8px;border:1px solid #ccc;border-radius:4px';
+  var btn=document.createElement('button');
+  btn.textContent='Fechar';
+  btn.style.cssText='width:100%;background:#1e7a35;color:#fff;border:none;padding:12px;font-weight:700;border-radius:8px;margin-top:8px;cursor:pointer';
+  btn.onclick=function(){bg.parentNode.removeChild(bg);};
+  box.appendChild(ta);
+  box.appendChild(btn);
+  bg.appendChild(box);
+  document.body.appendChild(bg);
+  ta.select();
 }
 </script>
 
