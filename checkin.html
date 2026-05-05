@@ -121,7 +121,7 @@ pointer-events: none;
     <div style="text-align:center;margin-bottom:24px">
       <div class="logo" style="display:inline-flex">
         <div class="a">AGRO<span>PLAY</span></div>
-        <div class="v">v32</div>
+        <div class="v">v32.13</div>
       </div>
     </div>
     <h1>Check-in da Portaria</h1>
@@ -139,7 +139,7 @@ pointer-events: none;
   <header>
     <div class="logo" onclick="window.location.href='home.html'" style="cursor:pointer">
       <div class="a">AGRO<span>PLAY</span></div>
-      <div class="v">v32</div>
+      <div class="v">v32.13</div>
     </div>
     <button class="btn-sair" id="btnSair">Sair</button>
   </header>
@@ -352,7 +352,7 @@ async function trocarEvento(eventoId) {
 }
 
 async function carregarCadastrosEvento() {
-  const { data } = await sb.from('cadastros').select('*').eq('evento_id', eventoAtual.id);
+  const { data } = await sb.from('cadastros').select('*').eq('evento_id', eventoAtual.id).neq('tipo', 'staff');
   cadastrosEvento = data || [];
 }
 
@@ -484,6 +484,12 @@ async function processarCodigo(codigo) {
   const { data: cad } = await sb.from('cadastros').select('*').eq('id', cod.cadastro_id).maybeSingle();
   if (!cad) {
     mostrarResultado('error', 'Cadastro removido', 'O cadastro foi excluído do sistema.', null);
+    return;
+  }
+
+  // 2.5. Bloquear se for staff (staff usa credenciamento separado, não Scanner QR)
+  if (cad.tipo === 'staff') {
+    mostrarResultado('error', 'Staff não usa este scanner', cad.nome + ' é da equipe (staff).\nUse a tela de Credenciamento.', cad);
     return;
   }
 
