@@ -314,22 +314,54 @@ function delIt(id){
 
 <script>
 function executarPDF(){
-  // Geracao do PDF
-  
   if(!evAtual){alert('Selecione um evento');return;}
   if(!itens.length){alert('Adicione itens primeiro');return;}
-  var tot=0;for(var i=0;i<itens.length;i++)tot+=parseFloat(itens[i].valor_total||0);
+  
+  var tot=0;
+  for(var i=0;i<itens.length;i++)tot+=parseFloat(itens[i].valor_total||0);
+  
+  // Agrupar por categoria
   var grp={};
-  for(var j=0;j<itens.length;j++){var c=itens[j].categoria;if(!grp[c])grp[c]=[];grp[c].push(itens[j]);}
-  var h='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Orcamento</title><style>body{font-family:Arial;max-width:700px;margin:0 auto;padding:24px}h1{color:#1e7a35}h2{color:#666;border-bottom:2px solid #1e7a35;padding-bottom:8px;margin-bottom:20px}.tb{background:#f0fff0;border:2px solid #1e7a35;border-radius:10px;padding:16px;margin:20px 0;display:flex;justify-content:space-between;align-items:center}.tb .v{font-size:24px;color:#1e7a35;font-weight:900}h3{background:#1e7a35;color:#fff;padding:10px 14px;margin-top:20px;border-radius:6px;display:flex;justify-content:space-between}table{width:100%;border-collapse:collapse;margin-top:8px;font-size:12px}th{background:#f5f5f5;padding:8px;text-align:left;font-size:11px;border-bottom:2px solid #ddd}td{padding:8px;border-bottom:1px solid #eee}td:last-child,th:last-child{text-align:right;font-weight:700;color:#1e7a35}.btn{width:100%;background:#1e7a35;color:#fff;border:none;padding:14px;font-weight:700;border-radius:8px;margin-top:24px;cursor:pointer}@media print{.btn{display:none}}</style></head><body>';
+  for(var j=0;j<itens.length;j++){
+    var c=itens[j].categoria;
+    if(!grp[c])grp[c]=[];
+    grp[c].push(itens[j]);
+  }
+  
+  // Montar HTML do PDF
+  var h='<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Orcamento</title>';
+  h+='<style>';
+  h+='body{font-family:Arial;max-width:700px;margin:0 auto;padding:20px;color:#222}';
+  h+='h1{color:#1e7a35;font-size:24px}';
+  h+='h2{color:#666;font-size:14px;font-weight:normal;border-bottom:2px solid #1e7a35;padding-bottom:8px;margin-bottom:16px}';
+  h+='.tb{background:#f0fff0;border:2px solid #1e7a35;border-radius:8px;padding:14px;margin:16px 0;display:flex;justify-content:space-between;align-items:center}';
+  h+='.tb b{font-size:13px}';
+  h+='.tb .v{font-size:20px;color:#1e7a35;font-weight:900}';
+  h+='h3{background:#1e7a35;color:#fff;padding:10px;margin-top:16px;border-radius:6px;font-size:14px;display:flex;justify-content:space-between}';
+  h+='table{width:100%;border-collapse:collapse;margin-top:6px;font-size:12px}';
+  h+='th{background:#f5f5f5;padding:8px;text-align:left;font-size:11px;border-bottom:2px solid #ddd}';
+  h+='td{padding:8px;border-bottom:1px solid #eee}';
+  h+='td:last-child,th:last-child{text-align:right;font-weight:700;color:#1e7a35}';
+  h+='.btn{display:block;width:100%;background:#1e7a35;color:#fff;border:none;padding:14px;font-weight:700;border-radius:8px;margin-top:20px;cursor:pointer;font-size:14px}';
+  h+='.btn-back{background:#666;margin-top:8px}';
+  h+='@media print{.btn,.btn-back{display:none}}';
+  h+='</style></head><body>';
 
-h+=’<h1>AGROPLAY MUSIC</h1><h2>Orcamento - ‘+esc(evAtual.nome)+(evAtual.data?’ - ‘+fd(evAtual.data):’’)+’</h2>’;
+h+=’<h1>AGROPLAY MUSIC</h1>’;
+h+=’<h2>Orcamento - ‘+esc(evAtual.nome);
+if(evAtual.data)h+=’ - ‘+fd(evAtual.data);
+h+=’</h2>’;
 h+=’<div class="tb"><b>TOTAL ESTIMADO</b><div class="v">’+fmt(tot)+’</div></div>’;
-var ord=[];for(var k=0;k<CATS.length;k++)ord.push(CATS[k][0]);
+
+var ord=[];
+for(var k=0;k<CATS.length;k++)ord.push(CATS[k][0]);
 for(var c2 in grp)if(ord.indexOf(c2)<0)ord.push(c2);
+
 for(var x=0;x<ord.length;x++){
-var cat=ord[x];if(!grp[cat])continue;
-var ct=0;for(var y=0;y<grp[cat].length;y++)ct+=parseFloat(grp[cat][y].valor_total||0);
+var cat=ord[x];
+if(!grp[cat])continue;
+var ct=0;
+for(var y=0;y<grp[cat].length;y++)ct+=parseFloat(grp[cat][y].valor_total||0);
 h+=’<h3><span>’+esc(cat)+’</span><span>’+fmt(ct)+’</span></h3>’;
 h+=’<table><tr><th>Item</th><th>Qtd</th><th>Unit.</th><th>Total</th></tr>’;
 for(var z2=0;z2<grp[cat].length;z2++){
@@ -338,23 +370,15 @@ h+=’<tr><td>’+esc(it.item)+’</td><td>’+it.quantidade+’</td><td>’+fmt
 }
 h+=’</table>’;
 }
-h+=’<div style="display:flex;gap:8px;margin-top:24px;flex-wrap:wrap"><button id="btnPrint" class="btn" style="flex:1;min-width:140px;background:#1e7a35;color:#fff;border:none;padding:14px;font-weight:700;border-radius:8px;cursor:pointer">Imprimir / Salvar PDF</button><button id="btnVoltar" class="btn" style="flex:1;min-width:140px;background:#666;color:#fff;border:none;padding:14px;font-weight:700;border-radius:8px;cursor:pointer">Voltar</button></div></body></html>’;
 
-// Criar overlay full-screen com o PDF dentro
-var overlay=document.createElement(‘div’);
-overlay.id=‘pdfOverlay’;
-overlay.style.cssText=‘position:fixed;inset:0;background:#fff;z-index:9999;overflow:auto;padding:14px’;
-overlay.innerHTML=h.replace(/<!DOCTYPE.*?<body>/,’’).replace(/</body>.*$/,’’);
-document.body.appendChild(overlay);
+h+=’<button class="btn" onclick="window.print()">Imprimir / Salvar PDF</button>’;
+h+=’<button class="btn btn-back" onclick="history.back()">Voltar ao orcamento</button>’;
+h+=’</body></html>’;
 
-// Listener dos botoes
-document.getElementById(‘btnPrint’).onclick=function(){window.print();};
-document.getElementById(‘btnVoltar’).onclick=function(){
-var ov=document.getElementById(‘pdfOverlay’);
-if(ov)ov.parentNode.removeChild(ov);
-};
-
-alert(‘PDF aberto! Toque em “Imprimir / Salvar PDF” pra salvar.’);
+// Abrir o HTML codificado como data URL na propria janela
+// O iOS Safari aceita data:text/html (com encoding correto)
+var dataUrl=‘data:text/html;charset=utf-8,’+encodeURIComponent(h);
+window.location.href=dataUrl;
 }
 </script>
 
