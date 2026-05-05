@@ -83,8 +83,18 @@ select,input{width:100%;background:#090e09;border:1px solid #1a2a1a;border-radiu
 <div class="sub">Cadastro e pagamento de staff</div>
 
 <div id="botoesAdmin" style="display:none">
-  <button id="btnConfig" style="width:100%;background:transparent;border:1px dashed #888;color:#888;padding:10px;font-size:12px;font-weight:700;border-radius:8px;cursor:pointer;margin-bottom:8px">Configurar Staff Managers</button>
-  <button id="btnBancoStaff" style="width:100%;background:transparent;border:1px dashed #2aab47;color:#2aab47;padding:10px;font-size:12px;font-weight:700;border-radius:8px;cursor:pointer;margin-bottom:14px">Banco de Staff (todos cadastros)</button>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+    <button id="btnBancoStaff" style="background:#0a1f12;border:1px solid #2aab47;border-radius:10px;padding:14px 8px;cursor:pointer;color:#2aab47;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:inherit">
+      <div style="font-size:24px">[B]</div>
+      <div style="font-size:11px;font-weight:700;color:#fff">Banco de Staff</div>
+      <div style="font-size:9px;color:#888">Todos cadastros</div>
+    </button>
+    <button id="btnConfig" style="background:#0d150d;border:1px solid #1a2a1a;border-radius:10px;padding:14px 8px;cursor:pointer;color:#888;display:flex;flex-direction:column;align-items:center;gap:4px;font-family:inherit">
+      <div style="font-size:24px">[*]</div>
+      <div style="font-size:11px;font-weight:700;color:#fff">Staff Managers</div>
+      <div style="font-size:9px;color:#888">Quem opera a tela</div>
+    </button>
+  </div>
 </div>
 
 <div id="login" style="display:none">
@@ -150,7 +160,7 @@ select,input{width:100%;background:#090e09;border:1px solid #1a2a1a;border-radiu
 <!-- Modal Banco de Staff (todos cadastros) -->
 
 <div id="modalBanco" class="modal-bg">
-  <div class="modal" style="max-width:480px">
+  <div class="modal" style="max-width:500px">
     <h3>Banco de Staff</h3>
     <div style="display:flex;gap:6px;margin-bottom:10px">
       <button data-fbs="todos" class="fbs-btn fbs-on" style="flex:1;background:#1e7a35;color:#fff;border:none;border-radius:6px;padding:8px;font-size:11px;font-weight:700;cursor:pointer">Todos</button>
@@ -160,6 +170,15 @@ select,input{width:100%;background:#090e09;border:1px solid #1a2a1a;border-radiu
     <input type="text" id="buscaBanco" placeholder="Buscar por nome..." style="margin-bottom:10px">
     <div id="listaBanco" style="max-height:55vh;overflow-y:auto;margin-bottom:12px">Carregando...</div>
     <button class="btn-cancel" onclick="fecharBanco()" style="width:100%">Fechar</button>
+  </div>
+</div>
+
+<!-- Modal Detalhes do Staff -->
+
+<div id="modalDetStaff" class="modal-bg">
+  <div class="modal" style="max-width:480px">
+    <h3 id="dsTitulo">Detalhes</h3>
+    <div id="dsConteudo">Carregando...</div>
   </div>
 </div>
 
@@ -768,53 +787,200 @@ function renderBanco(){
   for(var i=0;i<lista.length;i++){
     var p=lista[i];
     var corStatus=p.status==='aprovado'?'#2aab47':(p.status==='pendente'?'#c9973c':'#888');
-    h+='<div style="background:#070b07;border:1px solid #1a2a1a;border-radius:8px;padding:10px;margin-bottom:8px">';
-    h+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">';
+    var labelStatus=p.status==='aprovado'?'Aprovado':(p.status==='pendente'?'Pendente':p.status);
+    h+='<div data-bsd="'+p.id+'" style="background:#070b07;border:1px solid #1a2a1a;border-radius:8px;padding:8px 10px;margin-bottom:6px;display:flex;align-items:center;gap:10px;cursor:pointer">';
     if(p.foto_url){
-      h+='<img src="'+p.foto_url+'" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid '+corStatus+'">';
+      h+='<img src="'+p.foto_url+'" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid '+corStatus+';flex-shrink:0">';
     }else{
-      h+='<div style="width:40px;height:40px;border-radius:50%;background:#1a2a1a;display:flex;align-items:center;justify-content:center;color:'+corStatus+';font-weight:700;border:2px solid '+corStatus+'">?</div>';
+      h+='<div style="width:36px;height:36px;border-radius:50%;background:#1a2a1a;display:flex;align-items:center;justify-content:center;color:'+corStatus+';font-weight:700;border:2px solid '+corStatus+';flex-shrink:0">?</div>';
     }
-    h+='<div style="flex:1;min-width:0">';
-    h+='<div style="font-size:13px;font-weight:700;color:#fff">'+esc(p.nome||'(sem nome)')+'</div>';
-    h+='<div style="font-size:11px;color:'+corStatus+';font-weight:700">'+esc(p.cargo||p.setor||'-')+' · '+esc(p.status||'')+'</div>';
-    if(p.telefone)h+='<div style="font-size:10px;color:#666">'+esc(p.telefone)+'</div>';
-    if(p.cpf)h+='<div style="font-size:10px;color:#666">CPF: '+esc(p.cpf)+'</div>';
+    h+='<div style="flex:1;min-width:0;overflow:hidden">';
+    h+='<div style="font-size:13px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(p.nome||'(sem nome)')+'</div>';
+    h+='<div style="font-size:11px;color:#999;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(p.cargo||p.setor||'-')+'</div>';
     h+='</div>';
-    h+='</div>';
-    h+='<div style="display:flex;gap:6px">';
-    if(p.status==='pendente'){
-      h+='<button data-bsapr="'+p.id+'" style="flex:1;background:#1e7a35;color:#fff;border:none;border-radius:6px;padding:8px;font-size:11px;font-weight:700;cursor:pointer">Aprovar</button>';
-    }
-    h+='<button data-bsexc="'+p.id+'" style="flex:1;background:transparent;color:#c0392b;border:1px solid #c0392b;border-radius:6px;padding:8px;font-size:11px;font-weight:700;cursor:pointer">Excluir</button>';
-    h+='</div>';
+    h+='<div style="background:'+corStatus+'22;color:'+corStatus+';font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:1px;flex-shrink:0">'+labelStatus+'</div>';
+    h+='<div style="color:#444;font-size:18px;flex-shrink:0">›</div>';
     h+='</div>';
   }
   document.getElementById('listaBanco').innerHTML=h;
-  // Listeners
-  var aprs=document.querySelectorAll('[data-bsapr]');
-  for(var a=0;a<aprs.length;a++){
-    aprs[a].onclick=function(){
-      var id=this.getAttribute('data-bsapr');
-      fetch(SB+'/rest/v1/cadastros?id=eq.'+id,{
-        method:'PATCH',
-        headers:{apikey:KY,Authorization:'Bearer '+KY,'Content-Type':'application/json',Prefer:'return=minimal'},
-        body:JSON.stringify({status:'aprovado'})
-      }).then(function(){carregarBancoStaff();});
+  // Listener pra abrir detalhe
+  var lns=document.querySelectorAll('[data-bsd]');
+  for(var j=0;j<lns.length;j++){
+    lns[j].onclick=function(){abrirDetStaff(this.getAttribute('data-bsd'));};
+  }
+}
+
+function abrirDetStaff(id){
+  var p=null;
+  for(var i=0;i<bancoStaffTodos.length;i++)if(bancoStaffTodos[i].id===id){p=bancoStaffTodos[i];break;}
+  if(!p)return;
+  
+  document.getElementById('dsTitulo').textContent=p.nome||'Staff';
+  document.getElementById('dsConteudo').innerHTML='<div style="text-align:center;padding:20px;color:#888">Carregando historico...</div>';
+  document.getElementById('modalDetStaff').classList.add('on');
+  
+  // Buscar historico de eventos
+  fetch(SB+'/rest/v1/equipe_evento?cadastro_id=eq.'+p.id+'&select=*&order=criado_em.desc',{
+    headers:{apikey:KY,Authorization:'Bearer '+KY}
+  }).then(function(r){return r.json();}).then(function(historico){
+    historico=Array.isArray(historico)?historico:[];
+    
+    // Buscar nomes dos eventos do historico
+    var evIds=[];
+    for(var k=0;k<historico.length;k++)if(historico[k].evento_id&&evIds.indexOf(historico[k].evento_id)<0)evIds.push(historico[k].evento_id);
+    
+    var promiseEvs=evIds.length>0
+      ? fetch(SB+'/rest/v1/eventos?id=in.('+evIds.join(',')+')&select=id,nome,data',{headers:{apikey:KY,Authorization:'Bearer '+KY}}).then(function(r){return r.json();})
+      : Promise.resolve([]);
+    
+    promiseEvs.then(function(evs){
+      var mapa={};
+      for(var m=0;m<evs.length;m++)mapa[evs[m].id]=evs[m];
+      renderDetStaff(p,historico,mapa);
+    });
+  });
+}
+
+function renderDetStaff(p,historico,mapaEvs){
+  var corStatus=p.status==='aprovado'?'#2aab47':(p.status==='pendente'?'#c9973c':'#888');
+  var labelStatus=p.status==='aprovado'?'Aprovado':(p.status==='pendente'?'Pendente':(p.status||'-'));
+  var origem='Cadastrado pelo link de staff';
+  
+  // Total ja recebido em todos os eventos
+  var totalRecebido=0;
+  for(var i=0;i<historico.length;i++)totalRecebido+=parseFloat(historico[i].total||0);
+  
+  var h='';
+  // Foto + status
+  h+='<div style="text-align:center;margin-bottom:14px">';
+  if(p.foto_url){
+    h+='<img src="'+p.foto_url+'" style="width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid '+corStatus+';margin-bottom:8px">';
+  }else{
+    h+='<div style="width:100px;height:100px;border-radius:50%;background:#1a2a1a;display:inline-flex;align-items:center;justify-content:center;color:'+corStatus+';font-weight:700;border:3px solid '+corStatus+';font-size:28px;margin-bottom:8px">?</div>';
+  }
+  h+='<div style="display:inline-block;background:'+corStatus+'22;color:'+corStatus+';font-size:10px;font-weight:700;padding:4px 12px;border-radius:12px;text-transform:uppercase;letter-spacing:1px">'+labelStatus+'</div>';
+  h+='</div>';
+  
+  // Campos editaveis
+  h+='<label class="lbl">Nome</label>';
+  h+='<input type="text" id="dsNome" value="'+esc(p.nome||'')+'">';
+  h+='<label class="lbl">Funcao</label>';
+  h+='<input type="text" id="dsFuncao" value="'+esc(p.cargo||p.setor||'')+'">';
+  h+='<label class="lbl">Telefone</label>';
+  h+='<input type="text" id="dsTel" value="'+esc(p.telefone||'')+'">';
+  h+='<label class="lbl">CPF</label>';
+  h+='<input type="text" id="dsCpf" value="'+esc(p.cpf||'')+'" disabled style="opacity:0.5">';
+  h+='<label class="lbl">Email</label>';
+  h+='<input type="text" id="dsEmail" value="'+esc(p.email||'')+'">';
+  
+  // Origem
+  h+='<div style="background:#0a1f12;border:1px solid #1e7a35;border-radius:8px;padding:8px 10px;margin:10px 0;font-size:11px;color:#888">';
+  h+='<b style="color:#2aab47">Origem:</b> '+origem;
+  if(p.criado_em){
+    var dt=new Date(p.criado_em);
+    h+='<br><b style="color:#2aab47">Cadastrado:</b> '+dt.toLocaleDateString('pt-BR')+' as '+dt.toLocaleTimeString('pt-BR').substring(0,5);
+  }
+  h+='</div>';
+  
+  // Historico de eventos
+  h+='<div class="lbl" style="margin-top:10px">Historico em eventos ('+historico.length+')</div>';
+  if(historico.length===0){
+    h+='<div style="background:#070b07;border:1px solid #1a2a1a;border-radius:8px;padding:14px;text-align:center;color:#666;font-size:11px">Ainda nao trabalhou em eventos</div>';
+  }else{
+    h+='<div style="background:#0d150d;border:1px solid #1a2a1a;border-radius:8px;padding:8px;margin-bottom:8px">';
+    h+='<div style="display:flex;justify-content:space-between;font-size:11px;color:#888;margin-bottom:6px">';
+    h+='<span>TOTAL JA RECEBIDO</span><b style="color:#2aab47">'+fmt(totalRecebido)+'</b>';
+    h+='</div>';
+    h+='</div>';
+    for(var j=0;j<Math.min(historico.length,5);j++){
+      var hi=historico[j];
+      var ev=mapaEvs[hi.evento_id];
+      h+='<div style="background:#070b07;border:1px solid #1a2a1a;border-radius:8px;padding:8px 10px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;font-size:11px">';
+      h+='<div><div style="color:#fff;font-weight:700">'+esc(ev?ev.nome:'(evento removido)')+'</div>';
+      if(ev&&ev.data)h+='<div style="color:#888;font-size:10px">'+fd(ev.data)+'</div>';
+      h+='</div>';
+      h+='<div style="color:#2aab47;font-weight:700">'+fmt(hi.total||0)+'</div>';
+      h+='</div>';
+    }
+    if(historico.length>5)h+='<div style="color:#666;font-size:10px;text-align:center">+ '+(historico.length-5)+' eventos antigos</div>';
+  }
+  
+  // Botoes
+  h+='<div style="display:flex;gap:6px;margin-top:14px;flex-wrap:wrap">';
+  if(p.status==='pendente'){
+    h+='<button data-dsact="aprovar" data-dsid="'+p.id+'" style="flex:1;min-width:100px;background:#1e7a35;color:#fff;border:none;border-radius:6px;padding:10px;font-size:12px;font-weight:700;cursor:pointer">Aprovar</button>';
+  }
+  h+='<button data-dsact="salvar" data-dsid="'+p.id+'" style="flex:1;min-width:100px;background:#0891b2;color:#fff;border:none;border-radius:6px;padding:10px;font-size:12px;font-weight:700;cursor:pointer">Salvar</button>';
+  h+='<button data-dsact="excluir" data-dsid="'+p.id+'" style="flex:1;min-width:100px;background:transparent;color:#c0392b;border:1px solid #c0392b;border-radius:6px;padding:10px;font-size:12px;font-weight:700;cursor:pointer">Excluir</button>';
+  h+='</div>';
+  h+='<button data-dsact="fechar" style="width:100%;margin-top:8px;background:transparent;color:#888;border:1px solid #1a2a1a;border-radius:6px;padding:10px;font-size:12px;cursor:pointer">Fechar</button>';
+  
+  document.getElementById('dsConteudo').innerHTML=h;
+  
+  // Wire up listeners
+  var btns=document.querySelectorAll('[data-dsact]');
+  for(var b=0;b<btns.length;b++){
+    btns[b].onclick=function(){
+      var act=this.getAttribute('data-dsact');
+      var id=this.getAttribute('data-dsid');
+      if(act==='aprovar')aprovarDoBanco(id);
+      else if(act==='salvar')salvarDsStaff(id);
+      else if(act==='excluir')excluirDoBanco(id);
+      else if(act==='fechar')fecharDetStaff();
     };
   }
-  var excs=document.querySelectorAll('[data-bsexc]');
-  for(var e=0;e<excs.length;e++){
-    excs[e].onclick=function(){
-      var id=this.getAttribute('data-bsexc');
-      var p=null;
-      for(var k=0;k<bancoStaffTodos.length;k++)if(bancoStaffTodos[k].id===id){p=bancoStaffTodos[k];break;}
-      if(!confirm('Excluir '+(p?p.nome:'este cadastro')+' do banco?\n\nIsso e permanente.'))return;
-      fetch(SB+'/rest/v1/cadastros?id=eq.'+id,{
-        method:'DELETE',headers:{apikey:KY,Authorization:'Bearer '+KY}
-      }).then(function(){carregarBancoStaff();});
-    };
-  }
+}
+
+function fecharDetStaff(){
+  document.getElementById('modalDetStaff').classList.remove('on');
+}
+
+function salvarDsStaff(id){
+  var body={
+    nome:document.getElementById('dsNome').value.trim(),
+    cargo:document.getElementById('dsFuncao').value.trim(),
+    setor:document.getElementById('dsFuncao').value.trim(),
+    telefone:document.getElementById('dsTel').value.trim(),
+    email:document.getElementById('dsEmail').value.trim()||null
+  };
+  fetch(SB+'/rest/v1/cadastros?id=eq.'+id,{
+    method:'PATCH',
+    headers:{apikey:KY,Authorization:'Bearer '+KY,'Content-Type':'application/json',Prefer:'return=minimal'},
+    body:JSON.stringify(body)
+  }).then(function(r){
+    if(r.ok){
+      alert('Salvo!');
+      fecharDetStaff();
+      carregarBancoStaff();
+    }else{
+      alert('Erro ao salvar');
+    }
+  });
+}
+
+function aprovarDoBanco(id){
+  fetch(SB+'/rest/v1/cadastros?id=eq.'+id,{
+    method:'PATCH',
+    headers:{apikey:KY,Authorization:'Bearer '+KY,'Content-Type':'application/json',Prefer:'return=minimal'},
+    body:JSON.stringify({status:'aprovado'})
+  }).then(function(r){
+    if(r.ok){
+      fecharDetStaff();
+      carregarBancoStaff();
+    }
+  });
+}
+
+function excluirDoBanco(id){
+  var p=null;
+  for(var k=0;k<bancoStaffTodos.length;k++)if(bancoStaffTodos[k].id===id){p=bancoStaffTodos[k];break;}
+  if(!confirm('Excluir '+(p?p.nome:'este cadastro')+' do banco?\n\nIsso e permanente.'))return;
+  fetch(SB+'/rest/v1/cadastros?id=eq.'+id,{
+    method:'DELETE',headers:{apikey:KY,Authorization:'Bearer '+KY}
+  }).then(function(){
+    fecharDetStaff();
+    carregarBancoStaff();
+  });
 }
 
 init();
