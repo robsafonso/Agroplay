@@ -457,7 +457,7 @@ tr:last-child td { border-bottom: none; }
   <div class="mod">
     <div class="mod-titulo">
       <h3 id="modalConvitesTitulo">Convites do lote</h3>
-      <button class="mod-fechar" onclick="fecharModal('modalConvitesLote')">X</button>
+      <button class="mod-fechar" onclick="fecharConvitesLote()">X</button>
     </div>
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
       <div style="font-size:12px;color:#888">Copie 1 a 1 ou todos de uma vez</div>
@@ -1241,6 +1241,9 @@ function verConvitesLote(loteId) {
     return;
   }
 
+  // Salvar contexto pra restaurar ao recarregar
+  sessionStorage.setItem('ger_modal_lote', loteId);
+
   document.getElementById('modalConvitesTitulo').textContent = 'Convites de ' + lt.responsavel + ' (' + codigos.length + ')';
 
   let evBlock = '';
@@ -1257,20 +1260,82 @@ function verConvitesLote(loteId) {
     }
   }
 
-  let h = '';
+  // Resumo visual no topo
+  let totalConv = codigos.length;
+  let enviados = 0, cadastrados = 0, confirmados = 0;
+  codigos.forEach(c => {
+    if (c.cadastro_id) {
+      const cad = estado.cadastros.find(x => x.id === c.cadastro_id);
+      if (cad) {
+        if (cad.status === 'aprovado' || cad.bilhete_confirmado_em) confirmados++;
+        else cadastrados++;
+      }
+    } else if (c.enviado) {
+      enviados++;
+    }
+  });
+  const naoEnv = totalConv - enviados - cadastrados - confirmados;
+
+  let resumo = '<div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">';
+  resumo += '<div style="flex:1;min-width:60px;text-align:center;background:#0d150d;border:1px solid #333;border-radius:8px;padding:8px"><div style="font-size:18px;font-weight:900;color:#888">' + naoEnv + '</div><div style="font-size:9px;color:#666;text-transform:uppercase">Não env</div></div>';
+  resumo += '<div style="flex:1;min-width:60px;text-align:center;background:#0a1f24;border:1px solid #0891b2;border-radius:8px;padding:8px"><div style="font-size:18px;font-weight:900;color:#0891b2">' + enviados + '</div><div style="font-size:9px;color:#0891b2;text-transform:uppercase">Enviado</div></div>';
+  resumo += '<div style="flex:1;min-width:60px;text-align:center;background:#2a1f0a;border:1px solid #c9973c;border-radius:8px;padding:8px"><div style="font-size:18px;font-weight:900;color:#c9973c">' + cadastrados + '</div><div style="font-size:9px;color:#c9973c;text-transform:uppercase">Cadast.</div></div>';
+  resumo += '<div style="flex:1;min-width:60px;text-align:center;background:#0a2818;border:1px solid #2aab47;border-radius:8px;padding:8px"><div style="font-size:18px;font-weight:900;color:#2aab47">' + confirmados + '</div><div style="font-size:9px;color:#2aab47;text-transform:uppercase">Confirm.</div></div>';
+  resumo += '</div>';
+
+  let h = resumo;
   codigos.forEach((c, i) => {
     const link = URL_BASE + 'cadastro.html?cod=' + c.codigo + '&resp=' + encodeURIComponent(lt.responsavel) + (lt.evento_id ? '&ev=' + lt.evento_id : '');
     const msg = 'AGROPLAY Music 🎵\n\nOlá! Você foi convidado por ' + lt.responsavel + ' para fazer parte do nosso sistema.' + evBlock + '\n\nAcesse o link abaixo e faça seu cadastro:\n' + link + '\n\nCódigo: ' + c.codigo + '\nCódigo intransferível e de uso único.';
 
-    h += '<div class="convite-mini">' +
-      '<div style="font-size:9px;color:#555;margin-bottom:4px;text-transform:uppercase">Convite ' + (i + 1) + (c.usado ? ' (USADO)' : '') + '</div>' +
-      '<div style="font-family:monospace;font-size:13px;color:' + (c.usado ? '#555' : '#2aab47') + ';margin-bottom:8px;font-weight:700">' + c.codigo + '</div>' +
-      '<button class="btn" data-msg="' + escaparHtml(msg) + '" onclick="copiarMsgConvite(this)" style="font-size:11px;padding:7px;width:100%">Copiar mensagem ' + (i + 1) + '</button>' +
+    // Determina status visual
+    let statusCor = '#333', statusBg = '#0d150d', statusLabel = 'Não enviado', statusTxt = '#888';
+    let nomePessoa = '';
+    if (c.cadastro_id) {
+      const cad = estado.cadastros.find(x => x.id === c.cadastro_id);
+      if (cad) {
+        nomePessoa = cad.nome;
+        if (cad.status === 'aprovado' || cad.bilhete_confirmado_em) {
+          statusCor = '#2aab47'; statusBg = '#0a2818'; statusLabel = 'Confirmado'; statusTxt = '#2aab47';
+        } else {
+          statusCor = '#c9973c'; statusBg = '#2a1f0a'; statusLabel = 'Cadastrado'; statusTxt = '#c9973c';
+        }
+      }
+    } else if (c.enviado) {
+      statusCor = '#0891b2'; statusBg = '#0a1f24'; statusLabel = 'Enviado'; statusTxt = '#0891b2';
+    }
+
+    h += '<div class="convite-mini" style="background:' + statusBg + ';border:1px solid ' + statusCor + '">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">' +
+        '<div style="font-size:9px;color:#555;text-transform:uppercase;letter-spacing:1px">Convite ' + (i + 1) + '</div>' +
+        '<div style="font-size:9px;font-weight:700;padding:3px 8px;border-radius:8px;background:' + statusCor + '22;color:' + statusTxt + ';text-transform:uppercase;letter-spacing:1px">' + statusLabel + '</div>' +
+      '</div>' +
+      '<div style="font-family:monospace;font-size:13px;color:' + statusTxt + ';margin-bottom:6px;font-weight:700">' + c.codigo + '</div>' +
+      (nomePessoa ? '<div style="font-size:11px;color:#fff;margin-bottom:8px"><b>' + escaparHtml(nomePessoa) + '</b></div>' : '') +
+      (c.cadastro_id ? '' : '<button class="btn" data-msg="' + escaparHtml(msg) + '" data-codid="' + c.id + '" onclick="copiarMsgConviteEMarcar(this)" style="font-size:11px;padding:7px;width:100%">' + (c.enviado ? 'Reenviar mensagem' : 'Copiar mensagem ' + (i + 1)) + '</button>') +
     '</div>';
   });
 
   document.getElementById('listaConvitesLote').innerHTML = h;
   abrirModal('modalConvitesLote');
+}
+
+// Copia mensagem E marca o convite como enviado (vira azul)
+async function copiarMsgConviteEMarcar(btn) {
+  const msg = btn.dataset.msg.replaceAll('&amp;', '&').replaceAll('&lt;', '<').replaceAll('&gt;', '>').replaceAll('&quot;', '"');
+  const codId = btn.dataset.codid;
+  // Marca enviado
+  if (codId) {
+    await sb.from('codigos').update({ enviado: true, enviado_em: new Date().toISOString() }).eq('id', codId);
+  }
+  copiar(msg, btn, btn.textContent);
+  // Recarrega tudo pra atualizar visual
+  await carregarTudo();
+  // Reabre o modal com dados atualizados
+  const loteId = sessionStorage.getItem('ger_modal_lote');
+  if (loteId) {
+    setTimeout(() => verConvitesLote(loteId), 200);
+  }
 }
 
 function copiarMsgConvite(btn) {
@@ -1288,6 +1353,11 @@ function copiarTodosConvites() {
   });
   const all = msgs.join('\n\n---\n\n');
   copiar(all, document.getElementById('btnCopiarTodosConvites'), 'Copiar todos');
+}
+
+function fecharConvitesLote() {
+  fecharModal('modalConvitesLote');
+  sessionStorage.removeItem('ger_modal_lote');
 }
 
 async function excluirLote(loteId) {
@@ -1843,6 +1913,8 @@ function trocarAba(nome) {
   document.getElementById('aba-' + nome).classList.remove('gone');
   if (nome === 'codigos') renderCodigos();
   if (nome === 'validadores') renderListaValidadores();
+  // Salvar aba ativa pra restaurar ao recarregar
+  sessionStorage.setItem('ger_aba', nome);
 }
 
 // =================
@@ -2061,7 +2133,20 @@ document.getElementById('btnSalvarValidador').addEventListener('click', salvarVa
 document.getElementById('btnPegarCodigo').addEventListener('click', pegarUmCodigo);
 document.getElementById('btnCopiarTodosConvites').addEventListener('click', copiarTodosConvites);
 
-carregarTudo();
+// Carregar dados e depois restaurar contexto
+(async function init() {
+  await carregarTudo();
+  // Restaurar aba que estava aberta
+  const abaSalva = sessionStorage.getItem('ger_aba');
+  if (abaSalva && document.getElementById('aba-' + abaSalva)) {
+    trocarAba(abaSalva);
+  }
+  // Restaurar modal de convites se estava aberto
+  const loteIdModal = sessionStorage.getItem('ger_modal_lote');
+  if (loteIdModal && estado.lotes.find(l => l.id === loteIdModal)) {
+    setTimeout(() => verConvitesLote(loteIdModal), 200);
+  }
+})();
 </script>
 
 <!-- Bloqueio Visualizador -->
