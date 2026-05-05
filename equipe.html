@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Equipe - Agroplay</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:14px;max-width:480px;margin:0 auto}
+.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #2aab47}
+.logo{display:flex;border:1px solid #1a2a1a;border-radius:10px;overflow:hidden;cursor:pointer}
+.lt{background:#0d150d;padding:7px 12px;font-size:16px;font-weight:900;color:#fff}
+.lt span{color:#2aab47}
+.lv{background:#c9973c;padding:7px 10px;font-size:11px;font-weight:700;color:#000}
+.btn-sair{background:transparent;border:1px solid #c0392b;color:#c0392b;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer}
+h1{font-size:20px;color:#fff;margin-bottom:3px}
+.sub{font-size:12px;color:#888;margin-bottom:14px}
+select,input{width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:12px;color:#eee;font-size:13px;outline:none;margin-bottom:10px;font-family:inherit}
+.lbl{font-size:11px;color:#2aab47;font-weight:700;text-transform:uppercase;margin-bottom:6px;display:block}
+.box{background:#0a1f12;border:1px solid #1e7a35;border-radius:12px;padding:14px;margin:14px 0}
+.box b{color:#2aab47;display:block;font-size:15px;margin-bottom:4px}
+.box span{color:#999;font-size:12px}
+.tot{background:#0a2818;border:2px solid #2aab47;border-radius:14px;padding:18px;margin-bottom:16px;text-align:center}
+.tot-lbl{font-size:11px;color:#888;letter-spacing:2px;margin-bottom:6px}
+.tot-val{font-size:32px;font-weight:900;color:#2aab47}
+.stats{display:flex;gap:8px;margin-bottom:14px}
+.stat{flex:1;background:#0d150d;border:1px solid #1a2a1a;border-radius:10px;padding:10px;text-align:center}
+.stat .n{font-size:20px;font-weight:900;color:#2aab47}
+.stat .l{font-size:9px;color:#666;text-transform:uppercase;letter-spacing:1px}
+.btn-add-staff{width:100%;background:#1e7a35;border:none;color:#fff;padding:14px;font-size:14px;font-weight:700;cursor:pointer;border-radius:10px;margin-bottom:12px}
+.btn-link{width:100%;background:transparent;border:1px dashed #2aab47;color:#2aab47;padding:12px;font-size:13px;font-weight:700;cursor:pointer;border-radius:10px;margin-bottom:14px}
+.pessoa{background:#090e09;border:1px solid #1a2a1a;border-radius:10px;margin-bottom:10px;overflow:hidden}
+.pessoa-head{padding:12px;display:flex;align-items:center;gap:10px}
+.pessoa-foto{width:48px;height:48px;border-radius:50%;background:#1a2a1a;flex-shrink:0;object-fit:cover;border:2px solid #2aab47}
+.pessoa-info{flex:1;min-width:0}
+.pessoa-nome{font-size:14px;font-weight:700;color:#eee;margin-bottom:2px}
+.pessoa-funcao{font-size:11px;color:#2aab47;font-weight:700}
+.pessoa-tel{font-size:10px;color:#666;margin-top:2px}
+.pessoa-tot{font-size:14px;font-weight:700;color:#2aab47;text-align:right;white-space:nowrap}
+.pessoa-vals{padding:0 12px 12px;display:flex;gap:8px}
+.pessoa-vals input{flex:1;margin-bottom:0;background:#030503;padding:8px;font-size:11px}
+.pessoa-vals .lbl-mini{font-size:9px;color:#666;text-transform:uppercase;display:block;margin-bottom:2px;letter-spacing:1px}
+.pessoa-acts{padding:0 12px 12px;display:flex;gap:8px}
+.pessoa-acts button{flex:1;border-radius:6px;padding:6px 8px;font-size:11px;font-weight:700;cursor:pointer;border:none}
+.btn-salv{background:#1e7a35;color:#fff}
+.btn-rem{background:transparent;border:1px solid #c0392b!important;color:#c0392b}
+.btns-rod{display:flex;gap:8px;margin:14px 0 20px;flex-wrap:wrap}
+.btns-rod a,.btns-rod button{flex:1;min-width:140px;padding:16px;text-align:center;text-decoration:none;border-radius:12px;font-weight:700;font-size:14px;display:block;border:none;cursor:pointer}
+.btns-rod .b-pdf{background:#0891b2;color:#fff}
+.btns-rod .b-cop{background:#c9973c;color:#000}
+.empty{text-align:center;padding:30px 14px;color:#555;font-size:13px}
+.btn-entrar{width:100%;background:#1e7a35;border:none;border-radius:10px;padding:14px;color:#fff;font-size:14px;font-weight:700;cursor:pointer}
+
+/* Modal selecionar staff */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:100;align-items:flex-start;justify-content:center;padding:14px;overflow-y:auto}
+.modal-bg.on{display:flex}
+.modal{background:#0d150d;border:1px solid #2aab47;border-radius:12px;padding:14px;max-width:420px;width:100%;margin-top:20px}
+.modal h3{color:#2aab47;font-size:16px;margin-bottom:14px}
+.modal .lista-staff{max-height:50vh;overflow-y:auto;margin-bottom:12px}
+.modal .item-staff{padding:10px;background:#070b07;border-radius:8px;margin-bottom:6px;display:flex;align-items:center;gap:10px;cursor:pointer;border:1px solid #1a2a1a}
+.modal .item-staff:active{background:#0a1f12;border-color:#2aab47}
+.modal .item-staff img{width:36px;height:36px;border-radius:50%;border:2px solid #2aab47;object-fit:cover}
+.modal .item-staff .info{flex:1;min-width:0}
+.modal .item-staff .nm{font-size:13px;color:#fff;font-weight:700}
+.modal .item-staff .fc{font-size:11px;color:#2aab47}
+.modal .row-btn{display:flex;gap:8px;margin-top:10px}
+.modal .btn-cancel{flex:1;background:transparent;border:1px solid #c0392b;color:#c0392b;border-radius:8px;padding:12px;font-size:13px;font-weight:700;cursor:pointer}
+</style>
+
+</head>
+<body>
+
+<div class="hdr">
+  <div class="logo" onclick="location.href='home.html'">
+    <div class="lt">AGRO<span>PLAY</span></div>
+    <div class="lv">v32</div>
+  </div>
+  <button class="btn-sair" onclick="sair()">Sair</button>
+</div>
+
+<h1>Equipe do evento</h1>
+<div class="sub">Staff que vai trabalhar no evento</div>
+
+<div id="login" style="display:none">
+  <label class="lbl">Login Admin</label>
+  <input type="text" id="admU" placeholder="Usuario">
+  <input type="password" id="admP" placeholder="Senha">
+  <button class="btn-entrar" onclick="logar()">Entrar</button>
+  <div id="lmsg" style="color:#c0392b;font-size:12px;margin-top:8px;text-align:center"></div>
+</div>
+
+<div id="painel" style="display:none">
+  <label class="lbl">Selecione o evento</label>
+  <select id="esel"><option value="">Carregando...</option></select>
+  <div id="einfo"></div>
+  <div id="conteudo"></div>
+</div>
+
+<!-- Modal selecionar pessoa do banco -->
+
+<div id="modalBg" class="modal-bg">
+  <div class="modal">
+    <h3>Adicionar pessoa ao evento</h3>
+    <input type="text" id="buscaStaff" placeholder="Buscar por nome..." style="margin-bottom:10px">
+    <div id="listaStaff" class="lista-staff">Carregando...</div>
+    <div class="row-btn">
+      <button class="btn-cancel" onclick="fecharModal()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var SB='https://wexwcnezjadoutyzkbcj.supabase.co';
+var KY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ';
+
+var evAtual=null;
+var equipe=[];
+var allEvs=[];
+var allStaff=[];
+</script>
+
+<script>
+function fmt(v){return 'R$ '+parseFloat(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fd(d){if(!d)return'';var x=d.split('-');return x[2]+'/'+x[1]+'/'+x[0];}
+function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+</script>
+
+<script>
+function init(){
+  if(sessionStorage.getItem('ag_admin')==='1'){
+    document.getElementById('login').style.display='none';
+    document.getElementById('painel').style.display='block';
+    carregarEventos();
+  }else{
+    document.getElementById('login').style.display='block';
+    document.getElementById('painel').style.display='none';
+  }
+}
+
+function logar(){
+  var u=document.getElementById('admU').value.trim();
+  var p=document.getElementById('admP').value.trim();
+  var m=document.getElementById('lmsg');
+  if(!u||!p){m.textContent='Preencha';return;}
+  m.textContent='...';
+  fetch(SB+'/rest/v1/admins?usuario=eq.'+encodeURIComponent(u)+'&senha=eq.'+encodeURIComponent(p)+'&select=id',{
+    headers:{apikey:KY,Authorization:'Bearer '+KY}
+  }).then(function(r){return r.json();}).then(function(d){
+    if(Array.isArray(d)&&d.length){
+      sessionStorage.setItem('ag_admin','1');
+      init();
+    }else{
+      m.textContent='Usuario ou senha invalidos';
+    }
+  }).catch(function(){m.textContent='Erro';});
+}
+
+function sair(){
+  sessionStorage.removeItem('ag_admin');
+  location.reload();
+}
+
+function carregarEventos(){
+  fetch(SB+'/rest/v1/eventos?select=id,nome,data,horario,local&order=data.asc',{
+    headers:{apikey:KY,Authorization:'Bearer '+KY}
+  }).then(function(r){return r.json();}).then(function(d){
+    if(!Array.isArray(d)){document.getElementById('esel').innerHTML='<option>Erro</option>';return;}
+    allEvs=d;
+    var sel=document.getElementById('esel');
+    var h='<option value="">Selecione...</option>';
+    for(var i=0;i<d.length;i++){
+      h+='<option value="'+d[i].id+'">'+esc(d[i].nome)+' ('+fd(d[i].data)+')</option>';
+    }
+    sel.innerHTML=h;
+    sel.onchange=selEv;
+    var salvo=sessionStorage.getItem('eq_ev');
+    if(salvo){
+      for(var j=0;j<d.length;j++){
+        if(d[j].id===salvo){sel.value=salvo;selEv();break;}
+      }
+    }
+  }).catch(function(){document.getElementById('esel').innerHTML='<option>Erro de conexao</option>';});
+}
+
+function selEv(){
+  var id=document.getElementById('esel').value;
+  document.getElementById('einfo').innerHTML='';
+  document.getElementById('conteudo').innerHTML='';
+  evAtual=null;
+  if(!id){sessionStorage.removeItem('eq_ev');return;}
+  sessionStorage.setItem('eq_ev',id);
+  for(var i=0;i<allEvs.length;i++){
+    if(allEvs[i].id===id){evAtual=allEvs[i];break;}
+  }
+  if(!evAtual)return;
+  var info='<div class="box"><b>'+esc(evAtual.nome)+'</b><span>'+fd(evAtual.data);
+  if(evAtual.horario)info+=' as '+evAtual.horario.substring(0,5);
+  if(evAtual.local)info+=' - '+esc(evAtual.local);
+  info+='</span></div>';
+  document.getElementById('einfo').innerHTML=info;
+  carregarEquipe();
+}
+
+function carregarEquipe(){
+  if(!evAtual)return;
+  document.getElementById('conteudo').innerHTML='<div class="empty">Carregando...</div>';
+  fetch(SB+'/rest/v1/equipe_evento?evento_id=eq.'+evAtual.id+'&select=*&order=criado_em.asc',{
+    headers:{apikey:KY,Authorization:'Bearer '+KY}
+  }).then(function(r){return r.json();}).then(function(d){
+    if(!Array.isArray(d)){
+      document.getElementById('conteudo').innerHTML='<div class="empty" style="color:#c0392b">Erro ao carregar equipe</div>';
+      return;
+    }
+    equipe=d;
+    if(equipe.length===0){
+      render();
+      return;
+    }
+    // Buscar dados dos cadastros
+    var ids=[];
+    for(var i=0;i<equipe.length;i++)ids.push(equipe[i].cadastro_id);
+    var query='id=in.('+ids.join(',')+')';
+    fetch(SB+'/rest/v1/cadastros?'+query+'&select=id,nome,foto_url,telefone,setor,cargo',{
+      headers:{apikey:KY,Authorization:'Bearer '+KY}
+    }).then(function(r){return r.json();}).then(function(cads){
+      // Anexar dados do cadastro a cada item da equipe
+      for(var i=0;i<equipe.length;i++){
+        for(var j=0;j<cads.length;j++){
+          if(cads[j].id===equipe[i].cadastro_id){
+            equipe[i]._cad=cads[j];
+            break;
+          }
+        }
+      }
+      render();
+    });
+  }).catch(function(){
+    document.getElementById('conteudo').innerHTML='<div class="empty" style="color:#c0392b">Erro de conexao</div>';
+  });
+}
+</script>
+
+<script>
+function render(){
+  var tot=0,confirmados=0;
+  for(var k=0;k<equipe.length;k++){
+    tot+=parseFloat(equipe[k].total||0);
+  }
+  
+  var h='';
+  
+  // Stats
+  h+='<div class="stats">';
+  h+='<div class="stat"><div class="n">'+equipe.length+'</div><div class="l">Pessoas</div></div>';
+  h+='<div class="stat"><div class="n" style="color:#c9973c">'+fmt(tot).replace('R$ ','')+'</div><div class="l">A pagar</div></div>';
+  h+='</div>';
+  
+  // Total geral
+  h+='<div class="tot"><div class="tot-lbl">TOTAL A PAGAR</div><div class="tot-val">'+fmt(tot)+'</div></div>';
+  
+  // Botoes adicionar
+  h+='<button class="btn-add-staff" onclick="abrirModal()">+ Adicionar pessoa do banco</button>';
+  h+='<button class="btn-link" onclick="copiarLinkCadastro()">Copiar link de cadastro novo</button>';
+  
+  // Lista de pessoas
+  if(equipe.length===0){
+    h+='<div class="empty">Nenhuma pessoa adicionada ainda</div>';
+  }else{
+    for(var i=0;i<equipe.length;i++){
+      var eq=equipe[i];
+      var cad=eq._cad||{};
+      var foto=cad.foto_url||'';
+      h+='<div class="pessoa" data-eqid="'+eq.id+'">';
+      h+='<div class="pessoa-head">';
+      if(foto){
+        h+='<img src="'+foto+'" class="pessoa-foto">';
+      }else{
+        h+='<div class="pessoa-foto" style="display:flex;align-items:center;justify-content:center;color:#2aab47;font-weight:700">?</div>';
+      }
+      h+='<div class="pessoa-info">';
+      h+='<div class="pessoa-nome">'+esc(cad.nome||'(sem nome)')+'</div>';
+      h+='<div class="pessoa-funcao">'+esc(eq.funcao||cad.cargo||'')+'</div>';
+      if(cad.telefone)h+='<div class="pessoa-tel">'+esc(cad.telefone)+'</div>';
+      h+='</div>';
+      h+='<div class="pessoa-tot">'+fmt(eq.total||0)+'</div>';
+      h+='</div>';
+      h+='<div class="pessoa-vals">';
+      h+='<div style="flex:1"><span class="lbl-mini">Valor</span><input type="number" step="0.01" value="'+(eq.valor||0)+'" data-eqid="'+eq.id+'" data-campo="valor"></div>';
+      h+='<div style="flex:1"><span class="lbl-mini">Extra</span><input type="number" step="0.01" value="'+(eq.extra||0)+'" data-eqid="'+eq.id+'" data-campo="extra"></div>';
+      h+='</div>';
+      h+='<div class="pessoa-acts">';
+      h+='<button class="btn-salv" data-salv="'+eq.id+'">Salvar valores</button>';
+      h+='<button class="btn-rem" data-rem="'+eq.id+'">Remover</button>';
+      h+='</div>';
+      h+='</div>';
+    }
+  }
+  
+  // Botoes rodape (PDF + Copiar)
+  if(equipe.length>0&&evAtual){
+    h+='<div class="btns-rod">';
+    h+='<a href="equipe_pdf.html?ev='+evAtual.id+'" class="b-pdf">Gerar PDF</a>';
+    h+='<button class="b-cop" id="btnCop">Copiar Texto</button>';
+    h+='</div>';
+  }
+  
+  document.getElementById('conteudo').innerHTML=h;
+  
+  // Listeners
+  var salvBtns=document.querySelectorAll('[data-salv]');
+  for(var s=0;s<salvBtns.length;s++){
+    salvBtns[s].onclick=function(){salvarValores(this.getAttribute('data-salv'));};
+  }
+  var remBtns=document.querySelectorAll('[data-rem]');
+  for(var r=0;r<remBtns.length;r++){
+    remBtns[r].onclick=function(){removerPessoa(this.getAttribute('data-rem'));};
+  }
+  var cop=document.getElementById('btnCop');
+  if(cop)cop.onclick=function(){copiarTexto();};
+}
+
+function copiarLinkCadastro(){
+  if(!evAtual){alert('Selecione um evento');return;}
+  var url=location.origin+location.pathname.replace(/equipe\.html.*/,'')+'cadastro_staff.html?ev='+evAtual.id;
+  var msg='Ola! Voce foi convidado para trabalhar no evento '+evAtual.nome+' da Agroplay.\n\n';
+  msg+='Cadastre-se aqui: '+url;
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(msg).then(function(){
+      alert('Link copiado! Cole no WhatsApp da pessoa.');
+    }).catch(function(){alert('Erro ao copiar. Link: '+url);});
+  }else{
+    alert('Link: '+url);
+  }
+}
+
+function abrirModal(){
+  if(!evAtual){alert('Selecione um evento');return;}
+  document.getElementById('modalBg').classList.add('on');
+  document.getElementById('listaStaff').innerHTML='Carregando...';
+  document.getElementById('buscaStaff').value='';
+  
+  // Carregar todos os staff
+  fetch(SB+'/rest/v1/cadastros?tipo=eq.staff&select=id,nome,foto_url,setor,cargo,telefone&order=nome.asc',{
+    headers:{apikey:KY,Authorization:'Bearer '+KY}
+  }).then(function(r){return r.json();}).then(function(d){
+    if(!Array.isArray(d)){document.getElementById('listaStaff').innerHTML='Erro';return;}
+    // Filtrar quem ja ta na equipe
+    var idsNaEquipe=[];
+    for(var i=0;i<equipe.length;i++)idsNaEquipe.push(equipe[i].cadastro_id);
+    allStaff=d.filter(function(p){return idsNaEquipe.indexOf(p.id)<0;});
+    renderListaStaff(allStaff);
+  });
+  
+  document.getElementById('buscaStaff').oninput=function(){
+    var q=this.value.toLowerCase().trim();
+    var f=allStaff.filter(function(p){return (p.nome||'').toLowerCase().indexOf(q)>=0;});
+    renderListaStaff(f);
+  };
+}
+
+function renderListaStaff(lista){
+  if(lista.length===0){
+    document.getElementById('listaStaff').innerHTML='<div class="empty">Nenhuma pessoa encontrada.<br><br>Use "Copiar link de cadastro novo" pra cadastrar alguem.</div>';
+    return;
+  }
+  var h='';
+  for(var i=0;i<lista.length;i++){
+    var p=lista[i];
+    h+='<div class="item-staff" data-pid="'+p.id+'" data-pfunc="'+esc(p.cargo||p.setor||'')+'">';
+    if(p.foto_url){
+      h+='<img src="'+p.foto_url+'">';
+    }else{
+      h+='<div style="width:36px;height:36px;border-radius:50%;background:#1a2a1a;display:flex;align-items:center;justify-content:center;color:#2aab47;font-weight:700;border:2px solid #2aab47">?</div>';
+    }
+    h+='<div class="info">';
+    h+='<div class="nm">'+esc(p.nome||'(sem nome)')+'</div>';
+    h+='<div class="fc">'+esc(p.cargo||p.setor||'')+'</div>';
+    h+='</div>';
+    h+='</div>';
+  }
+  document.getElementById('listaStaff').innerHTML=h;
+  var its=document.querySelectorAll('[data-pid]');
+  for(var j=0;j<its.length;j++){
+    its[j].onclick=function(){
+      adicionarStaff(this.getAttribute('data-pid'),this.getAttribute('data-pfunc'));
+    };
+  }
+}
+
+function fecharModal(){
+  document.getElementById('modalBg').classList.remove('on');
+}
+
+function adicionarStaff(cadId,funcao){
+  if(!evAtual)return;
+  var body={evento_id:evAtual.id,cadastro_id:cadId,funcao:funcao,valor:0,extra:0,total:0};
+  fetch(SB+'/rest/v1/equipe_evento',{
+    method:'POST',
+    headers:{apikey:KY,Authorization:'Bearer '+KY,'Content-Type':'application/json',Prefer:'return=representation'},
+    body:JSON.stringify(body)
+  }).then(function(r){
+    if(r.ok)return r.json();
+    return r.text().then(function(t){throw new Error(t);});
+  }).then(function(d){
+    fecharModal();
+    carregarEquipe();
+  }).catch(function(e){alert('Erro: '+e.message);});
+}
+
+function salvarValores(eqId){
+  var inps=document.querySelectorAll('[data-eqid="'+eqId+'"]');
+  var valor=0,extra=0;
+  for(var i=0;i<inps.length;i++){
+    if(inps[i].getAttribute('data-campo')==='valor')valor=parseFloat(inps[i].value)||0;
+    if(inps[i].getAttribute('data-campo')==='extra')extra=parseFloat(inps[i].value)||0;
+  }
+  var total=valor+extra;
+  fetch(SB+'/rest/v1/equipe_evento?id=eq.'+eqId,{
+    method:'PATCH',
+    headers:{apikey:KY,Authorization:'Bearer '+KY,'Content-Type':'application/json',Prefer:'return=minimal'},
+    body:JSON.stringify({valor:valor,extra:extra,total:total})
+  }).then(function(r){
+    if(r.ok){
+      carregarEquipe();
+    }else{
+      alert('Erro ao salvar');
+    }
+  }).catch(function(){alert('Erro de conexao');});
+}
+
+function removerPessoa(eqId){
+  if(!confirm('Remover esta pessoa do evento?'))return;
+  fetch(SB+'/rest/v1/equipe_evento?id=eq.'+eqId,{
+    method:'DELETE',headers:{apikey:KY,Authorization:'Bearer '+KY}
+  }).then(function(){carregarEquipe();}).catch(function(){alert('Erro');});
+}
+
+function copiarTexto(){
+  if(!evAtual||!equipe.length){alert('Adicione pessoas primeiro');return;}
+  var tot=0;
+  for(var i=0;i<equipe.length;i++)tot+=parseFloat(equipe[i].total||0);
+  
+  var t='*EQUIPE - AGROPLAY MUSIC*\n';
+  t+=evAtual.nome;
+  if(evAtual.data)t+=' - '+fd(evAtual.data);
+  t+='\n\n*TOTAL A PAGAR: '+fmt(tot)+'*\n';
+  t+='*'+equipe.length+' pessoa(s)*\n\n';
+  
+  for(var j=0;j<equipe.length;j++){
+    var eq=equipe[j];
+    var cad=eq._cad||{};
+    t+='- '+(cad.nome||'(sem nome)');
+    if(eq.funcao)t+=' ('+eq.funcao+')';
+    t+=': '+fmt(eq.total||0);
+    if(eq.extra>0)t+=' [valor '+fmt(eq.valor)+' + extra '+fmt(eq.extra)+']';
+    t+='\n';
+  }
+  
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(function(){
+      alert('Texto copiado! Cole onde quiser.');
+    }).catch(function(){alert(t);});
+  }else{
+    alert(t);
+  }
+}
+
+init();
+</script>
+
+</body>
+</html>
