@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Equipe - Agroplay</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;max-width:700px;margin:0 auto;padding:20px;color:#222;background:#fff}
+.btns{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.btn{flex:1;min-width:140px;color:#fff;border:none;padding:14px;font-weight:700;border-radius:8px;cursor:pointer;font-size:14px;text-align:center;text-decoration:none;display:block}
+.btn-print{background:#1e7a35}
+.btn-back{background:#666}
+h1{color:#1e7a35;font-size:24px}
+h2{color:#666;font-size:14px;font-weight:normal;border-bottom:2px solid #1e7a35;padding-bottom:8px;margin-bottom:16px}
+.tb{background:#f0fff0;border:2px solid #1e7a35;border-radius:8px;padding:14px;margin:16px 0;display:flex;justify-content:space-between;align-items:center}
+.tb b{font-size:13px}
+.tb .v{font-size:20px;color:#1e7a35;font-weight:900}
+table{width:100%;border-collapse:collapse;margin-top:14px;font-size:12px}
+th{background:#1e7a35;color:#fff;padding:10px 8px;text-align:left;font-size:11px}
+th:last-child{text-align:right}
+td{padding:10px 8px;border-bottom:1px solid #eee;vertical-align:middle}
+td:last-child{text-align:right;font-weight:700;color:#1e7a35}
+tr:nth-child(even){background:#fafafa}
+.foto{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #1e7a35;display:inline-block;vertical-align:middle;margin-right:8px}
+.foto-vazia{display:inline-block;vertical-align:middle;width:36px;height:36px;border-radius:50%;background:#eee;text-align:center;line-height:36px;font-weight:700;color:#1e7a35;border:2px solid #1e7a35;margin-right:8px}
+.func{color:#1e7a35;font-size:10px;display:block;margin-top:2px}
+.tot-row{background:#f0fff0!important;font-weight:900}
+.tot-row td{padding:14px 8px;font-size:14px}
+.rodape{margin-top:30px;padding-top:14px;border-top:1px solid #ccc;font-size:10px;color:#888;text-align:center}
+.loader{text-align:center;padding:40px;color:#888}
+@media print{
+  .btns{display:none!important}
+  body{padding:14px}
+}
+</style>
+</head>
+<body>
+
+<div class="btns">
+  <button class="btn btn-print" onclick="window.print()">Imprimir / Salvar PDF</button>
+  <a href="equipe.html" class="btn btn-back">Voltar</a>
+</div>
+
+<div id="conteudo" class="loader">Carregando equipe...</div>
+
+<script>
+var SB='https://wexwcnezjadoutyzkbcj.supabase.co';
+var KY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ';
+
+function fmt(v){return 'R$ '+parseFloat(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fd(d){if(!d)return'';var x=d.split('-');return x[2]+'/'+x[1]+'/'+x[0];}
+function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+var params=new URLSearchParams(window.location.search);
+var evId=params.get('ev');
+
+if(!evId){
+  document.getElementById('conteudo').innerHTML='<div class="loader" style="color:#c0392b">Erro: sem evento na URL</div>';
+}else{
+  Promise.all([
+    fetch(SB+'/rest/v1/eventos?id=eq.'+evId+'&select=*',{headers:{apikey:KY,Authorization:'Bearer '+KY}}).then(function(r){return r.json();}),
+    fetch(SB+'/rest/v1/equipe_evento?evento_id=eq.'+evId+'&order=criado_em.asc',{headers:{apikey:KY,Authorization:'Bearer '+KY}}).then(function(r){return r.json();})
+  ]).then(function(res){
+    var ev=res[0]&&res[0][0];
+    var equipe=res[1]||[];
+    if(!ev){
+      document.getElementById('conteudo').innerHTML='<div class="loader" style="color:#c0392b">Evento nao encontrado</div>';
+      return;
+    }
+    if(!equipe.length){
+      document.getElementById('conteudo').innerHTML='<div class="loader">Nenhuma pessoa na equipe ainda.</div>';
+      return;
+    }
+    
+    // Buscar dados dos cadastros
+    var ids=[];
+    for(var i=0;i<equipe.length;i++)ids.push(equipe[i].cadastro_id);
+    var query='id=in.('+ids.join(',')+')';
+    
+    fetch(SB+'/rest/v1/cadastros?'+query+'&select=id,nome,foto_url,telefone,setor,cargo',{
+      headers:{apikey:KY,Authorization:'Bearer '+KY}
+    }).then(function(r){return r.json();}).then(function(cads){
+      // Anexar dados
+      for(var i=0;i<equipe.length;i++){
+        for(var j=0;j<cads.length;j++){
+          if(cads[j].id===equipe[i].cadastro_id){
+            equipe[i]._cad=cads[j];
+            break;
+          }
+        }
+      }
+      
+      var tot=0;
+      for(var k=0;k<equipe.length;k++)tot+=parseFloat(equipe[k].total||0);
+      
+      var h='<h1>AGROPLAY MUSIC</h1>';
+      h+='<h2>Equipe - '+esc(ev.nome);
+      if(ev.data)h+=' - '+fd(ev.data);
+      if(ev.local)h+=' - '+esc(ev.local);
+      h+='</h2>';
+      h+='<div class="tb"><b>'+equipe.length+' pessoa(s) - TOTAL A PAGAR</b><div class="v">'+fmt(tot)+'</div></div>';
+      
+      h+='<table>';
+      h+='<tr><th>Pessoa</th><th>Funcao</th><th>Valor</th><th>Extra</th><th>Total</th></tr>';
+      for(var x=0;x<equipe.length;x++){
+        var eq=equipe[x];
+        var cad=eq._cad||{};
+        h+='<tr>';
+        h+='<td>';
+        if(cad.foto_url){
+          h+='<img src="'+cad.foto_url+'" class="foto">';
+        }else{
+          h+='<span class="foto-vazia">?</span>';
+        }
+        h+='<span style="display:inline-block;vertical-align:middle">';
+        h+=esc(cad.nome||'(sem nome)');
+        if(cad.telefone)h+='<br><small style="color:#888">'+esc(cad.telefone)+'</small>';
+        h+='</span>';
+        h+='</td>';
+        h+='<td>'+esc(eq.funcao||cad.cargo||'-')+'</td>';
+        h+='<td>'+fmt(eq.valor||0)+'</td>';
+        h+='<td>'+fmt(eq.extra||0)+'</td>';
+        h+='<td>'+fmt(eq.total||0)+'</td>';
+        h+='</tr>';
+      }
+      h+='<tr class="tot-row"><td colspan="4">TOTAL GERAL</td><td>'+fmt(tot)+'</td></tr>';
+      h+='</table>';
+      
+      h+='<div class="rodape">Agroplay Music - Londrina/PR - '+new Date().toLocaleDateString('pt-BR')+'</div>';
+      
+      document.getElementById('conteudo').innerHTML=h;
+    });
+  }).catch(function(e){
+    document.getElementById('conteudo').innerHTML='<div class="loader" style="color:#c0392b">Erro: '+e.message+'</div>';
+  });
+}
+</script>
+
+</body>
+</html>
