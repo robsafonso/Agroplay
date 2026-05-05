@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cadastro Staff - Agroplay</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:14px;max-width:480px;margin:0 auto;min-height:100vh}
+.hdr{display:flex;justify-content:center;align-items:center;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid #2aab47}
+.logo{display:flex;border:1px solid #1a2a1a;border-radius:10px;overflow:hidden}
+.lt{background:#0d150d;padding:7px 12px;font-size:16px;font-weight:900;color:#fff}
+.lt span{color:#2aab47}
+.lv{background:#c9973c;padding:7px 10px;font-size:11px;font-weight:700;color:#000}
+h1{font-size:22px;color:#fff;margin-bottom:6px;text-align:center}
+.sub{font-size:13px;color:#888;margin-bottom:20px;text-align:center}
+.passo{background:#0a1f12;border:1px solid #1e7a35;border-radius:8px;padding:8px;text-align:center;margin-bottom:16px;font-size:11px;color:#2aab47;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+input,select{width:100%;background:#090e09;border:1px solid #1a2a1a;border-radius:10px;padding:14px;color:#eee;font-size:14px;outline:none;margin-bottom:12px;font-family:inherit}
+input:focus,select:focus{border-color:#2aab47}
+.lbl{font-size:11px;color:#2aab47;font-weight:700;text-transform:uppercase;margin-bottom:6px;display:block;letter-spacing:1px}
+.btn-prox{width:100%;background:#1e7a35;border:none;border-radius:10px;padding:16px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;margin-top:12px}
+.btn-volt{width:100%;background:transparent;border:1px solid #666;border-radius:10px;padding:14px;color:#888;font-size:13px;cursor:pointer;margin-top:8px}
+.evt{background:#0a1f12;border:1px solid #1e7a35;border-radius:10px;padding:12px;margin-bottom:16px;font-size:12px}
+.evt b{color:#2aab47}
+#camArea{margin-bottom:16px}
+#video{width:100%;border-radius:10px;background:#000;display:block}
+#canvas{display:none}
+.foto-preview{width:200px;height:200px;border-radius:50%;border:3px solid #2aab47;margin:0 auto 12px;display:block;object-fit:cover}
+.cam-btn{width:100%;background:#0891b2;border:none;border-radius:10px;padding:14px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:8px}
+.flash{position:fixed;inset:0;background:#fff;z-index:9999;opacity:0;pointer-events:none;transition:opacity 0.1s}
+.flash.on{opacity:1}
+.msg{background:#0a2818;border:1px solid #2aab47;border-radius:10px;padding:14px;color:#2aab47;text-align:center;margin-top:12px;font-size:13px}
+.msg.err{background:#2a0d0d;border-color:#c0392b;color:#c0392b}
+.sucesso{text-align:center;padding:30px 14px}
+.sucesso .check{font-size:60px;color:#2aab47;margin-bottom:14px}
+.sucesso h2{font-size:20px;color:#fff;margin-bottom:8px}
+.sucesso p{font-size:14px;color:#888}
+</style>
+</head>
+<body>
+
+<div class="flash" id="flash"></div>
+
+<div class="hdr">
+  <div class="logo">
+    <div class="lt">AGRO<span>PLAY</span></div>
+    <div class="lv">v32</div>
+  </div>
+</div>
+
+<h1>Cadastro Staff</h1>
+<div class="sub">Voce foi convidado para trabalhar no evento</div>
+
+<div id="evtBox"></div>
+
+<div id="passo1">
+  <div class="passo">PASSO 1 DE 3 - DADOS PESSOAIS</div>
+  <label class="lbl">Nome completo</label>
+  <input type="text" id="nome" placeholder="Seu nome">
+  <label class="lbl">CPF</label>
+  <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14">
+  <label class="lbl">Telefone</label>
+  <input type="text" id="tel" placeholder="(00) 00000-0000" maxlength="15">
+  <label class="lbl">Email</label>
+  <input type="email" id="email" placeholder="seu@email.com">
+  <label class="lbl">Funcao no evento</label>
+  <select id="funcao">
+    <option value="">Selecione...</option>
+    <option>Garcom</option>
+    <option>Bartender</option>
+    <option>Seguranca</option>
+    <option>Brigadista</option>
+    <option>Fotografo</option>
+    <option>Videomaker</option>
+    <option>Producao</option>
+    <option>Portaria</option>
+    <option>Roadie</option>
+    <option>Operador de som</option>
+    <option>Iluminador</option>
+    <option>Motorista</option>
+    <option>Outro</option>
+  </select>
+  <button class="btn-prox" onclick="irPasso2()">Proximo</button>
+</div>
+
+<div id="passo2" style="display:none">
+  <div class="passo">PASSO 2 DE 3 - SUA FOTO</div>
+  <p style="text-align:center;margin-bottom:14px;font-size:13px;color:#888">Tire uma selfie pra identificacao no evento</p>
+  <div id="camArea">
+    <video id="video" autoplay playsinline></video>
+    <canvas id="canvas"></canvas>
+  </div>
+  <img id="fotoPreview" class="foto-preview" style="display:none">
+  <button class="cam-btn" id="btnCapturar" onclick="capturarFoto()">Tirar foto</button>
+  <button class="cam-btn" id="btnRefazer" onclick="refazerFoto()" style="display:none;background:#c9973c;color:#000">Refazer foto</button>
+  <button class="btn-prox" id="btnPasso3" onclick="irPasso3()" style="display:none">Proximo</button>
+  <button class="btn-volt" onclick="voltarPasso1()">Voltar</button>
+</div>
+
+<div id="passo3" style="display:none">
+  <div class="passo">PASSO 3 DE 3 - CONFIRMAR</div>
+  <div id="resumo"></div>
+  <button class="btn-prox" id="btnSalvar" onclick="salvar()">Confirmar cadastro</button>
+  <button class="btn-volt" onclick="voltarPasso2()">Voltar</button>
+  <div id="msg"></div>
+</div>
+
+<div id="passoOk" style="display:none">
+  <div class="sucesso">
+    <div class="check">OK</div>
+    <h2>Cadastro confirmado!</h2>
+    <p>Aguarde a confirmacao da producao.<br>Boa sorte no evento!</p>
+  </div>
+</div>
+
+<script>
+var SB='https://wexwcnezjadoutyzkbcj.supabase.co';
+var KY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ';
+
+var evento=null;
+var fotoBase64=null;
+var stream=null;
+
+// Pegar evento_id da URL (opcional)
+var params=new URLSearchParams(window.location.search);
+var evId=params.get('ev');
+
+if(evId){
+  fetch(SB+'/rest/v1/eventos?id=eq.'+evId+'&select=*',{
+    headers:{apikey:KY,Authorization:'Bearer '+KY}
+  }).then(function(r){return r.json();}).then(function(d){
+    if(Array.isArray(d)&&d[0]){
+      evento=d[0];
+      var ev=d[0];
+      var info='<div class="evt"><b>'+ev.nome+'</b>';
+      if(ev.data){var x=ev.data.split('-');info+='<br>'+x[2]+'/'+x[1]+'/'+x[0];}
+      if(ev.local)info+=' - '+ev.local;
+      info+='</div>';
+      document.getElementById('evtBox').innerHTML=info;
+    }
+  });
+}
+
+// Mascara CPF
+document.getElementById('cpf').oninput=function(e){
+  var v=e.target.value.replace(/\D/g,'').substring(0,11);
+  if(v.length>9)v=v.substring(0,9)+'-'+v.substring(9);
+  if(v.length>6)v=v.substring(0,6)+'.'+v.substring(6);
+  if(v.length>3)v=v.substring(0,3)+'.'+v.substring(3);
+  e.target.value=v;
+};
+
+// Mascara telefone
+document.getElementById('tel').oninput=function(e){
+  var v=e.target.value.replace(/\D/g,'').substring(0,11);
+  if(v.length>10)v='('+v.substring(0,2)+') '+v.substring(2,7)+'-'+v.substring(7);
+  else if(v.length>6)v='('+v.substring(0,2)+') '+v.substring(2,6)+'-'+v.substring(6);
+  else if(v.length>2)v='('+v.substring(0,2)+') '+v.substring(2);
+  e.target.value=v;
+};
+
+function irPasso2(){
+  var nome=document.getElementById('nome').value.trim();
+  var cpf=document.getElementById('cpf').value.trim();
+  var tel=document.getElementById('tel').value.trim();
+  var funcao=document.getElementById('funcao').value;
+  if(!nome){alert('Preencha o nome');return;}
+  if(cpf.replace(/\D/g,'').length!==11){alert('CPF invalido');return;}
+  if(!tel){alert('Preencha o telefone');return;}
+  if(!funcao){alert('Selecione a funcao');return;}
+  
+  document.getElementById('passo1').style.display='none';
+  document.getElementById('passo2').style.display='block';
+  iniciarCamera();
+}
+
+function iniciarCamera(){
+  navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false})
+    .then(function(s){
+      stream=s;
+      document.getElementById('video').srcObject=s;
+    })
+    .catch(function(){
+      alert('Nao foi possivel acessar a camera');
+    });
+}
+
+function pararCamera(){
+  if(stream){
+    stream.getTracks().forEach(function(t){t.stop();});
+    stream=null;
+  }
+}
+
+function capturarFoto(){
+  var v=document.getElementById('video');
+  var c=document.getElementById('canvas');
+  c.width=200;c.height=200;
+  // Flash
+  var f=document.getElementById('flash');
+  f.classList.add('on');
+  setTimeout(function(){f.classList.remove('on');},150);
+  // Capturar centralizado
+  var ctx=c.getContext('2d');
+  var sw=v.videoWidth,sh=v.videoHeight;
+  var size=Math.min(sw,sh);
+  var sx=(sw-size)/2,sy=(sh-size)/2;
+  // Espelhar (selfie)
+  ctx.translate(200,0);
+  ctx.scale(-1,1);
+  ctx.drawImage(v,sx,sy,size,size,0,0,200,200);
+  fotoBase64=c.toDataURL('image/jpeg',0.7);
+  // Mostrar preview, esconder video
+  document.getElementById('camArea').style.display='none';
+  var img=document.getElementById('fotoPreview');
+  img.src=fotoBase64;
+  img.style.display='block';
+  document.getElementById('btnCapturar').style.display='none';
+  document.getElementById('btnRefazer').style.display='block';
+  document.getElementById('btnPasso3').style.display='block';
+  pararCamera();
+}
+
+function refazerFoto(){
+  fotoBase64=null;
+  document.getElementById('camArea').style.display='block';
+  document.getElementById('fotoPreview').style.display='none';
+  document.getElementById('btnCapturar').style.display='block';
+  document.getElementById('btnRefazer').style.display='none';
+  document.getElementById('btnPasso3').style.display='none';
+  iniciarCamera();
+}
+
+function voltarPasso1(){
+  pararCamera();
+  document.getElementById('passo2').style.display='none';
+  document.getElementById('passo1').style.display='block';
+}
+
+function irPasso3(){
+  var resumo='<div style="text-align:center;margin-bottom:16px">';
+  resumo+='<img src="'+fotoBase64+'" style="width:120px;height:120px;border-radius:50%;border:3px solid #2aab47;margin-bottom:10px">';
+  resumo+='<div style="font-size:18px;font-weight:700;color:#fff">'+document.getElementById('nome').value+'</div>';
+  resumo+='<div style="font-size:13px;color:#2aab47;margin-top:4px">'+document.getElementById('funcao').value+'</div>';
+  resumo+='<div style="font-size:11px;color:#888;margin-top:10px">CPF: '+document.getElementById('cpf').value+'</div>';
+  resumo+='<div style="font-size:11px;color:#888">Tel: '+document.getElementById('tel').value+'</div>';
+  if(document.getElementById('email').value)resumo+='<div style="font-size:11px;color:#888">Email: '+document.getElementById('email').value+'</div>';
+  resumo+='</div>';
+  document.getElementById('resumo').innerHTML=resumo;
+  document.getElementById('passo2').style.display='none';
+  document.getElementById('passo3').style.display='block';
+}
+
+function voltarPasso2(){
+  document.getElementById('passo3').style.display='none';
+  document.getElementById('passo2').style.display='block';
+}
+
+function salvar(){
+  var btn=document.getElementById('btnSalvar');
+  btn.textContent='Salvando...';
+  btn.disabled=true;
+  
+  var body={
+    nome:document.getElementById('nome').value.trim(),
+    cpf:document.getElementById('cpf').value.replace(/\D/g,''),
+    telefone:document.getElementById('tel').value,
+    email:document.getElementById('email').value.trim()||null,
+    setor:document.getElementById('funcao').value,
+    foto_url:fotoBase64,
+    tipo:'staff',
+    status:'pendente',
+    evento_id:evento?evento.id:null,
+    empresa:'STAFF',
+    cargo:document.getElementById('funcao').value
+  };
+  
+  fetch(SB+'/rest/v1/cadastros',{
+    method:'POST',
+    headers:{apikey:KY,Authorization:'Bearer '+KY,'Content-Type':'application/json',Prefer:'return=minimal'},
+    body:JSON.stringify(body)
+  }).then(function(r){
+    if(r.ok){
+      document.getElementById('passo3').style.display='none';
+      document.getElementById('passoOk').style.display='block';
+    }else{
+      return r.text().then(function(t){throw new Error(t);});
+    }
+  }).catch(function(e){
+    document.getElementById('msg').innerHTML='<div class="msg err">Erro: '+e.message.substring(0,150)+'</div>';
+    btn.textContent='Confirmar cadastro';
+    btn.disabled=false;
+  });
+}
+</script>
+
+</body>
+</html>
