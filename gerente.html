@@ -751,7 +751,37 @@ function verPerfil(id) {
   rows.forEach(r => { h += '<div class="prow"><span>' + r[0] + '</span><span>' + escaparHtml(r[1] || '-') + '</span></div>'; });
 
   document.getElementById('perfilConteudo').innerHTML = h;
-  document.getElementById('aprovarBox').classList.toggle('gone', c.status !== 'pendente');
+  // Mostrar caixa de aprovação SEMPRE (botões mudam conforme status)
+  const aprovarBox = document.getElementById('aprovarBox');
+  const btnAprovar = document.getElementById('btnAprovar');
+  const btnReprovar = document.getElementById('btnReprovar');
+  aprovarBox.classList.remove('gone');
+  // Ajustar visibilidade dos botões e o título conforme status atual
+  const labelEl = aprovarBox.querySelector('.label-pq');
+  if (c.status === 'aprovado') {
+    // Pode reverter pra reprovado
+    btnAprovar.style.display = 'none';
+    btnReprovar.style.display = '';
+    btnReprovar.textContent = 'Reverter para Reprovado';
+    btnReprovar.style.flex = '1';
+    if (labelEl) labelEl.textContent = 'Mudar status';
+  } else if (c.status === 'reprovado') {
+    // Pode reverter pra aprovado
+    btnAprovar.style.display = '';
+    btnReprovar.style.display = 'none';
+    btnAprovar.textContent = 'Aprovar agora';
+    btnAprovar.style.flex = '1';
+    if (labelEl) labelEl.textContent = 'Mudar status';
+  } else {
+    // Pendente - mostra os 2 normais
+    btnAprovar.style.display = '';
+    btnReprovar.style.display = '';
+    btnAprovar.textContent = 'Aprovar';
+    btnReprovar.textContent = 'Reprovar';
+    btnAprovar.style.flex = '1';
+    btnReprovar.style.flex = '1';
+    if (labelEl) labelEl.textContent = 'Aprovação';
+  }
   document.getElementById('auditoriaCad').innerHTML = renderAuditoriaCad(c);
   document.getElementById('editarCargoBox').classList.add('gone');
   document.getElementById('atualizarFotoBox').classList.add('gone');
@@ -770,7 +800,8 @@ function abrirFotoGrande(id) {
 async function aprovarPerfil() {
   const c = estado.perfilAtual; if (!c) return;
   const btn = document.getElementById('btnAprovar');
-  btn.textContent = 'Aprovando...'; btn.disabled = true;
+  const txtOriginal = btn.textContent;
+  btn.textContent = 'Salvando...'; btn.disabled = true;
   
   const agora = new Date().toISOString();
   const updateData = {
@@ -785,20 +816,16 @@ async function aprovarPerfil() {
   c.aprovado_por_nome = admin.nome;
   c.aprovado_em = agora;
   
-  btn.textContent = 'Aprovado!'; btn.disabled = false;
-  setTimeout(() => { btn.textContent = 'Aprovar'; }, 1800);
   renderTabelaCadastros(); renderEstatisticas();
-  // Atualizar bloco de auditoria no modal
-  if (estado.perfilAtual && estado.perfilAtual.id === c.id) {
-    const audEl = document.getElementById('auditoriaCad');
-    if (audEl) audEl.innerHTML = renderAuditoriaCad(c);
-  }
+  // Reabrir o perfil pra atualizar visual completo
+  verPerfil(c.id);
 }
 
 async function reprovarPerfil() {
   const c = estado.perfilAtual; if (!c) return;
   const btn = document.getElementById('btnReprovar');
-  btn.textContent = 'Reprovando...'; btn.disabled = true;
+  const txtOriginal = btn.textContent;
+  btn.textContent = 'Salvando...'; btn.disabled = true;
   
   const agora = new Date().toISOString();
   const updateData = {
@@ -813,14 +840,11 @@ async function reprovarPerfil() {
   c.aprovado_por_nome = admin.nome;
   c.aprovado_em = agora;
   
-  btn.textContent = 'Reprovar'; btn.disabled = false;
-  const msg = 'Olá ' + c.nome + ',\n\nSua solicitação não foi confirmada.\nContate o escritório Agroplay.\n\nAgroplay Music · Londrina PR';
-  copiar(msg, btn, 'Reprovar');
+  // Copiar mensagem de reprovação só na primeira vez (quando vinha de pendente)
+  // Não copia quando reverte de aprovado
   renderTabelaCadastros(); renderEstatisticas();
-  if (estado.perfilAtual && estado.perfilAtual.id === c.id) {
-    const audEl = document.getElementById('auditoriaCad');
-    if (audEl) audEl.innerHTML = renderAuditoriaCad(c);
-  }
+  // Reabrir o perfil pra atualizar visual completo
+  verPerfil(c.id);
 }
 
 function renderAuditoriaCad(c) {
