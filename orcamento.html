@@ -54,7 +54,7 @@ select,input{width:100%;background:#090e09;border:1px solid #1a2a1a;border-radiu
 <div class="hdr">
   <div class="logo" onclick="location.href='home.html'">
     <div class="lt">AGRO<span>PLAY</span></div>
-    <div class="lv">v32</div>
+    <div class="lv">v32.13</div>
   </div>
   <button class="btn-sair" onclick="sessionStorage.removeItem('ag_admin');location.href='index.html'">Sair</button>
 </div>
@@ -384,6 +384,50 @@ function mostrarTextoFallback(t){
   document.body.appendChild(bg);
   ta.select();
 }
+</script>
+
+<!-- Bloqueio Visualizador -->
+
+<style>
+body.modo-visualizador button:not(.permitido):not(.btn-sair):not([data-permitido]),
+body.modo-visualizador input:not(.permitido):not([data-permitido]):not([type=search]):not(#buscaBanco):not(#buscaStaff):not(#buscaSm),
+body.modo-visualizador select:not(.permitido):not([data-permitido]),
+body.modo-visualizador textarea:not(.permitido):not([data-permitido]) {
+  pointer-events: none !important;
+  opacity: 0.55 !important;
+}
+body.modo-visualizador::before {
+  content: '\1F441 MODO VISUALIZADOR - Sem permissao para editar';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #0891b2;
+  color: #fff;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px;
+  z-index: 99999;
+  letter-spacing: 1px;
+}
+body.modo-visualizador {
+  padding-top: 22px !important;
+}
+</style>
+
+<script>
+(function(){
+  try {
+    var d = sessionStorage.getItem('ag_admin');
+    if (d) {
+      var a = JSON.parse(d);
+      if (a.nivel === 'visualizador') {
+        document.body.classList.add('modo-visualizador');
+      }
+    }
+  } catch(e){}
+})();
 </script>
 
 </body>
