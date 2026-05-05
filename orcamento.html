@@ -215,7 +215,10 @@ function render(){
     h+='</div>';
   }
   
-  h+='<button class="btn-pdf" id="btnPDF">Copiar Orcamento</button>';
+  h+='<div style="display:flex;gap:8px;margin:14px 0 20px;flex-wrap:wrap">';
+  h+='<a href="orcamento_pdf.html?ev='+evAtual.id+'" class="btn-pdf" style="flex:1;min-width:140px;background:#0891b2;color:#fff;padding:16px;text-align:center;text-decoration:none;border-radius:12px;font-weight:700;font-size:14px;display:block">Gerar PDF</a>';
+  h+='<button class="btn-pdf" id="btnPDF" style="flex:1;min-width:140px;background:#c9973c;color:#000;border:none;padding:16px;font-weight:700;border-radius:12px;cursor:pointer;font-size:14px">Copiar Texto</button>';
+  h+='</div>';
   document.getElementById('conteudo').innerHTML=h;
   
   // PDF button - listener direto e robusto
