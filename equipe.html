@@ -82,14 +82,6 @@ select,input{width:100%;background:#090e09;border:1px solid #1a2a1a;border-radiu
 <h1>Equipe do evento</h1>
 <div class="sub">Staff que vai trabalhar no evento</div>
 
-<div id="login" style="display:none">
-  <label class="lbl">Login Admin</label>
-  <input type="text" id="admU" placeholder="Usuario">
-  <input type="password" id="admP" placeholder="Senha">
-  <button class="btn-entrar" onclick="logar()">Entrar</button>
-  <div id="lmsg" style="color:#c0392b;font-size:12px;margin-top:8px;text-align:center"></div>
-</div>
-
 <div id="painel" style="display:none">
   <label class="lbl">Selecione o evento</label>
   <select id="esel"><option value="">Carregando...</option></select>
@@ -128,37 +120,18 @@ function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/<
 
 <script>
 function init(){
-  if(sessionStorage.getItem('ag_admin')==='1'){
-    document.getElementById('login').style.display='none';
-    document.getElementById('painel').style.display='block';
-    carregarEventos();
-  }else{
-    document.getElementById('login').style.display='block';
-    document.getElementById('painel').style.display='none';
+  // Checar se esta logado (ag_admin existe no sessionStorage)
+  if(!sessionStorage.getItem('ag_admin')){
+    location.href='index.html';
+    return;
   }
-}
-
-function logar(){
-  var u=document.getElementById('admU').value.trim();
-  var p=document.getElementById('admP').value.trim();
-  var m=document.getElementById('lmsg');
-  if(!u||!p){m.textContent='Preencha';return;}
-  m.textContent='...';
-  fetch(SB+'/rest/v1/admins?usuario=eq.'+encodeURIComponent(u)+'&senha=eq.'+encodeURIComponent(p)+'&select=id',{
-    headers:{apikey:KY,Authorization:'Bearer '+KY}
-  }).then(function(r){return r.json();}).then(function(d){
-    if(Array.isArray(d)&&d.length){
-      sessionStorage.setItem('ag_admin','1');
-      init();
-    }else{
-      m.textContent='Usuario ou senha invalidos';
-    }
-  }).catch(function(){m.textContent='Erro';});
+  document.getElementById('painel').style.display='block';
+  carregarEventos();
 }
 
 function sair(){
   sessionStorage.removeItem('ag_admin');
-  location.reload();
+  location.href='index.html';
 }
 
 function carregarEventos(){
