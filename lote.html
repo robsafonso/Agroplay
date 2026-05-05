@@ -548,7 +548,28 @@ function renderConvites() {
     return;
   }
 
+  // Calcular resumo
+  let naoEnv = 0, enviados = 0, cadastrados = 0, confirmados = 0;
+  codigosLote.forEach(c => {
+    if (c.cadastro_id) {
+      const cad = cadastrosLote.find(x => x.id === c.cadastro_id);
+      if (cad && (cad.status === 'aprovado' || cad.bilhete_confirmado_em)) confirmados++;
+      else cadastrados++;
+    } else if (c.enviado) {
+      enviados++;
+    } else {
+      naoEnv++;
+    }
+  });
+
+  // Resumo no topo
   let h = '<div class="label-pq" style="margin-bottom:10px">Seus convites</div>';
+  h += '<div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">';
+  h += '<div style="flex:1;min-width:60px;text-align:center;background:#0d150d;border:1px solid #333;border-radius:8px;padding:8px"><div style="font-size:18px;font-weight:900;color:#888">' + naoEnv + '</div><div style="font-size:9px;color:#666;text-transform:uppercase">Não env</div></div>';
+  h += '<div style="flex:1;min-width:60px;text-align:center;background:#0a1f24;border:1px solid #0891b2;border-radius:8px;padding:8px"><div style="font-size:18px;font-weight:900;color:#0891b2">' + enviados + '</div><div style="font-size:9px;color:#0891b2;text-transform:uppercase">Enviado</div></div>';
+  h += '<div style="flex:1;min-width:60px;text-align:center;background:#2a1f0a;border:1px solid #c9973c;border-radius:8px;padding:8px"><div style="font-size:18px;font-weight:900;color:#c9973c">' + cadastrados + '</div><div style="font-size:9px;color:#c9973c;text-transform:uppercase">Cadast.</div></div>';
+  h += '<div style="flex:1;min-width:60px;text-align:center;background:#0a2818;border:1px solid #2aab47;border-radius:8px;padding:8px"><div style="font-size:18px;font-weight:900;color:#2aab47">' + confirmados + '</div><div style="font-size:9px;color:#2aab47;text-transform:uppercase">Confirm.</div></div>';
+  h += '</div>';
 
   codigosLote.forEach((cod, i) => {
     const link = URL_BASE + 'cadastro.html?cod=' + cod.codigo + '&resp=' + encodeURIComponent(loteAtual.responsavel) + (loteAtual.evento_id ? '&ev=' + loteAtual.evento_id : '');
@@ -566,32 +587,34 @@ function renderConvites() {
 
     const msg = 'AGROPLAY Music 🎵\n\nOlá! Você foi convidado por ' + loteAtual.responsavel + ' para fazer parte do nosso sistema.' + evBlock + '\n\nAcesse o link abaixo e faça seu cadastro:\n' + link + '\n\nCódigo: ' + cod.codigo + '\nCódigo intransferível e de uso único.';
 
-    // Define classe do card baseado no estado
-    let classeCard = '';
-    let statusTexto = '';
-    let statusClasse = '';
+    // Determinar status visual
+    let cor = '#333', bg = '#0d150d', label = 'Não enviado', txtCor = '#888';
+    let nomePessoa = '';
     let labelBotao = 'Copiar mensagem';
-
-    if (cod.usado) {
-      classeCard = 'confirmado';
-      statusTexto = '✓ Confirmado (cadastrado)';
-      statusClasse = 'confirmado-cor';
-      labelBotao = 'Copiar novamente';
+    
+    if (cod.cadastro_id) {
+      const cad = cadastrosLote.find(x => x.id === cod.cadastro_id);
+      if (cad) {
+        nomePessoa = cad.nome;
+        if (cad.status === 'aprovado' || cad.bilhete_confirmado_em) {
+          cor = '#2aab47'; bg = '#0a2818'; label = '✓ Confirmado'; txtCor = '#2aab47';
+        } else {
+          cor = '#c9973c'; bg = '#2a1f0a'; label = '⚠ Cadastrado'; txtCor = '#c9973c';
+        }
+      }
     } else if (cod.enviado) {
-      classeCard = 'enviado';
-      statusTexto = '✉ Enviado';
-      statusClasse = 'enviado-cor';
-      labelBotao = 'Copiar novamente';
-    } else {
-      statusTexto = '○ Disponível';
-      statusClasse = 'disponivel';
+      cor = '#0891b2'; bg = '#0a1f24'; label = '✉ Enviado'; txtCor = '#0891b2';
+      labelBotao = 'Reenviar';
     }
 
-    h += '<div class="convite-card ' + classeCard + '" id="card-' + cod.id + '">' +
-      '<div class="convite-numero">Convite ' + (i + 1) + '</div>' +
-      '<div class="convite-codigo">' + cod.codigo + '</div>' +
-      '<div class="convite-status ' + statusClasse + '">' + statusTexto + '</div>' +
-      '<button class="btn" data-codigo-id="' + cod.id + '" data-msg="' + escaparHtml(msg) + '" onclick="copiarConvite(this)" style="font-size:12px;padding:9px">' + labelBotao + '</button>' +
+    h += '<div class="convite-card" id="card-' + cod.id + '" style="background:' + bg + ';border:1px solid ' + cor + '">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">' +
+        '<div class="convite-numero">Convite ' + (i + 1) + '</div>' +
+        '<div style="font-size:9px;font-weight:700;padding:3px 8px;border-radius:8px;background:' + cor + '22;color:' + txtCor + ';text-transform:uppercase;letter-spacing:1px">' + label + '</div>' +
+      '</div>' +
+      '<div class="convite-codigo" style="color:' + txtCor + '">' + cod.codigo + '</div>' +
+      (nomePessoa ? '<div style="font-size:11px;color:#fff;margin:6px 0"><b>' + escaparHtml(nomePessoa) + '</b></div>' : '') +
+      (cod.cadastro_id ? '' : '<button class="btn" data-codigo-id="' + cod.id + '" data-msg="' + escaparHtml(msg) + '" onclick="copiarConvite(this)" style="font-size:12px;padding:9px;margin-top:4px">' + labelBotao + '</button>') +
     '</div>';
   });
 
