@@ -44,30 +44,10 @@ main{max-width:560px;margin:0 auto;padding:20px 14px 40px}
 .saudacao .badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:8px;letter-spacing:1px}
 .saudacao p{font-size:11px;color:#666;text-transform:uppercase;letter-spacing:2px}
 
-.secao-titulo{
-font-size:10px;
-color:#2aab47;
-text-transform:uppercase;
-letter-spacing:2px;
-margin:22px 0 10px;
-font-weight:700;
-display:flex;
-align-items:center;
-gap:8px;
-}
-.secao-titulo::after{
-content:’’;
-flex:1;
-height:1px;
-background:#1a2a1a;
-}
-
-.secao-master .secao-titulo{color:#c0392b}
-
 .grid-cards{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:8px;
+gap:10px;
 }
 
 .card{
@@ -116,12 +96,11 @@ line-height:1.3;
 border-color:#c0392b22;
 background:linear-gradient(135deg,#0d0808 0%,#0a0e0a 100%);
 }
-.card-master:hover{border-color:#c0392b}
+.card-master:hover{border-color:#c0392b;background:#1a0808}
 
 @media (min-width:480px){
 .grid-cards{
 grid-template-columns:1fr 1fr 1fr;
-gap:10px;
 }
 .card{min-height:130px;padding:20px 12px}
 .card .icone{font-size:32px}
@@ -132,30 +111,6 @@ gap:10px;
 grid-template-columns:1fr 1fr 1fr 1fr;
 }
 }
-/* === DESIGN SYSTEM v1.1 — botoes/badges/status padronizados === */
-.bti { background: #0891b2; color: #fff; border: none; border-radius: 8px; padding: 9px 13px; font-size: 12px; font-weight: 700; cursor: pointer; transition: background 0.15s; }
-.bti:hover, .bti:active { background: #14a8c9; }
-.btc { background: transparent; color: #888; border: 1px solid #333; border-radius: 8px; padding: 9px 13px; font-size: 12px; font-weight: 700; cursor: pointer; transition: background 0.15s; }
-.btc:hover, .btc:active { background: rgba(255,255,255,0.05); color: #ccc; }
-.st-cinza { background: #333; color: #888; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; display: inline-block; letter-spacing: 0.5px; }
-.st-azul  { background: #0891b2; color: #fff; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; display: inline-block; letter-spacing: 0.5px; }
-.st-amar  { background: #c9973c; color: #fff; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; display: inline-block; letter-spacing: 0.5px; }
-.st-verde { background: #1e7a35; color: #fff; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; display: inline-block; letter-spacing: 0.5px; }
-.st-verm  { background: #c0392b; color: #fff; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; display: inline-block; letter-spacing: 0.5px; }
-.resumo-status { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
-.resumo-status .rs-item { flex: 1; min-width: 60px; text-align: center; border-radius: 8px; padding: 8px 6px; border: 1px solid; }
-.resumo-status .rs-item .num { font-size: 18px; font-weight: 900; line-height: 1; margin-bottom: 4px; display: block; }
-.resumo-status .rs-item .lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
-.rs-cinza { background: #0d150d; border-color: #333; } .rs-cinza .num, .rs-cinza .lbl { color: #888; }
-.rs-azul { background: #0a1f24; border-color: #0891b2; } .rs-azul .num, .rs-azul .lbl { color: #0891b2; }
-.rs-amar { background: #2a1f0a; border-color: #c9973c; } .rs-amar .num, .rs-amar .lbl { color: #c9973c; }
-.rs-verde { background: #0a2818; border-color: #1e7a35; } .rs-verde .num, .rs-verde .lbl { color: #2aab47; }
-.rs-verm { background: #2a0a0a; border-color: #c0392b; } .rs-verm .num, .rs-verm .lbl { color: #c0392b; }
-.ai { background: rgba(8, 145, 178, 0.15); border: 1px solid #0891b2; color: #14a8c9; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 13px; }
-.ay { background: rgba(201, 151, 60, 0.15); border: 1px solid #c9973c; color: #c9973c; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 13px; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.loading-spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid #555; border-top-color: #2aab47; border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-right: 6px; }
-/* === FIM DESIGN SYSTEM === */
 </style>
 
 </head>
@@ -175,7 +130,6 @@ grid-template-columns:1fr 1fr 1fr 1fr;
     <p>O que você quer fazer?</p>
   </div>
 
-  <div class="secao-titulo">Operação</div>
   <div class="grid-cards">
     <a href="gerente.html" class="card">
       <div class="icone">⚡</div>
@@ -201,19 +155,13 @@ grid-template-columns:1fr 1fr 1fr 1fr;
   <div class="nome">Scanner QR</div>
   <div class="desc">Entrada do evento</div>
 </a>
-```
 
-  </div>
+<a href="orcamento.html" class="card">
+  <div class="icone">💰</div>
+  <div class="nome">Orçamento</div>
+  <div class="desc">Custos do evento</div>
+</a>
 
-  <div class="secao-titulo">Outros</div>
-  <div class="grid-cards">
-    <a href="orcamento.html" class="card">
-      <div class="icone">💰</div>
-      <div class="nome">Orçamento</div>
-      <div class="desc">Custos do evento</div>
-    </a>
-
-```
 <a href="equipe.html" class="card">
   <div class="icone">👮</div>
   <div class="nome">Credenciamento</div>
@@ -231,21 +179,14 @@ grid-template-columns:1fr 1fr 1fr 1fr;
   <div class="nome">Media Kit</div>
   <div class="desc">Divulgação</div>
 </a>
+
+<a href="admins.html" class="card card-master" id="cardAdmins" style="display:none">
+  <div class="icone">🔐</div>
+  <div class="nome">Administradores</div>
+  <div class="desc">Gerenciar acessos</div>
+</a>
 ```
 
-  </div>
-
-  <!-- Seção Master (só admin master vê) -->
-
-  <div id="secaoMaster" style="display:none" class="secao-master">
-    <div class="secao-titulo">Master</div>
-    <div class="grid-cards">
-      <a href="admins.html" class="card card-master">
-        <div class="icone">🔐</div>
-        <div class="nome">Administradores</div>
-        <div class="desc">Criar e gerenciar</div>
-      </a>
-    </div>
   </div>
 </main>
 
@@ -270,9 +211,9 @@ grid-template-columns:1fr 1fr 1fr 1fr;
   }
   document.getElementById('saudacao').innerHTML = 'Olá, ' + nomeUsuario + nivelInfo;
 
-  // Seção Master só pra master
+  // Card Administradores só pra master
   if (admin.nivel === 'master') {
-    document.getElementById('secaoMaster').style.display = 'block';
+    document.getElementById('cardAdmins').style.display = 'flex';
   }
 
   document.getElementById('btnSair').addEventListener('click', function () {
