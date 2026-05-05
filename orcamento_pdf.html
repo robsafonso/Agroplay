@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Orcamento - Agroplay</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;max-width:700px;margin:0 auto;padding:20px;color:#222;background:#fff}
+.btns{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.btn{flex:1;min-width:140px;color:#fff;border:none;padding:14px;font-weight:700;border-radius:8px;cursor:pointer;font-size:14px;text-align:center;text-decoration:none;display:block}
+.btn-print{background:#1e7a35}
+.btn-back{background:#666}
+h1{color:#1e7a35;font-size:24px}
+h2{color:#666;font-size:14px;font-weight:normal;border-bottom:2px solid #1e7a35;padding-bottom:8px;margin-bottom:16px}
+.tb{background:#f0fff0;border:2px solid #1e7a35;border-radius:8px;padding:14px;margin:16px 0;display:flex;justify-content:space-between;align-items:center}
+.tb b{font-size:13px}
+.tb .v{font-size:20px;color:#1e7a35;font-weight:900}
+h3{background:#1e7a35;color:#fff;padding:10px;margin-top:16px;border-radius:6px;font-size:14px;display:flex;justify-content:space-between}
+table{width:100%;border-collapse:collapse;margin-top:6px;font-size:12px}
+th{background:#f5f5f5;padding:8px;text-align:left;font-size:11px;border-bottom:2px solid #ddd}
+td{padding:8px;border-bottom:1px solid #eee}
+td:last-child,th:last-child{text-align:right;font-weight:700;color:#1e7a35}
+.rodape{margin-top:30px;padding-top:14px;border-top:1px solid #ccc;font-size:10px;color:#888;text-align:center}
+.loader{text-align:center;padding:40px;color:#888}
+@media print{
+  .btns{display:none!important}
+  body{padding:14px}
+}
+</style>
+</head>
+<body>
+
+<div class="btns">
+  <button class="btn btn-print" onclick="window.print()">Imprimir / Salvar PDF</button>
+  <a href="orcamento.html" class="btn btn-back">Voltar</a>
+</div>
+
+<div id="conteudo" class="loader">Carregando orcamento...</div>
+
+<script>
+var SB='https://wexwcnezjadoutyzkbcj.supabase.co';
+var KY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndleHdjbmV6amFkb3V0eXprYmNqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYzNTEwOTgsImV4cCI6MjA5MTkyNzA5OH0.i9fsKIoy6R1Pj8DOgyDQ4BjUvy9KUh_PPp83sQe9gHQ';
+
+function fmt(v){return 'R$ '+parseFloat(v||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fd(d){if(!d)return'';var x=d.split('-');return x[2]+'/'+x[1]+'/'+x[0];}
+function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+// Pegar evento_id da URL
+var params=new URLSearchParams(window.location.search);
+var evId=params.get('ev');
+
+if(!evId){
+  document.getElementById('conteudo').innerHTML='<div class="loader" style="color:#c0392b">Erro: sem evento na URL</div>';
+}else{
+  // Buscar evento e itens em paralelo
+  Promise.all([
+    fetch(SB+'/rest/v1/eventos?id=eq.'+evId+'&select=*',{headers:{apikey:KY,Authorization:'Bearer '+KY}}).then(function(r){return r.json();}),
+    fetch(SB+'/rest/v1/orcamentos?evento_id=eq.'+evId+'&order=categoria.asc,item.asc',{headers:{apikey:KY,Authorization:'Bearer '+KY}}).then(function(r){return r.json();})
+  ]).then(function(res){
+    var ev=res[0]&&res[0][0];
+    var itens=res[1]||[];
+    if(!ev){
+      document.getElementById('conteudo').innerHTML='<div class="loader" style="color:#c0392b">Evento nao encontrado</div>';
+      return;
+    }
+    if(!itens.length){
+      document.getElementById('conteudo').innerHTML='<div class="loader">Nenhum item no orcamento ainda.</div>';
+      return;
+    }
+    
+    var tot=0;
+    for(var i=0;i<itens.length;i++)tot+=parseFloat(itens[i].valor_total||0);
+    
+    var grp={};
+    for(var j=0;j<itens.length;j++){
+      var c=itens[j].categoria;
+      if(!grp[c])grp[c]=[];
+      grp[c].push(itens[j]);
+    }
+    
+    var ordemCats=['Artista','Estrutura Tecnica','Local','Seguranca','Equipe','Bebidas','Alimentacao','Divulgacao','Administracao'];
+    for(var c2 in grp)if(ordemCats.indexOf(c2)<0)ordemCats.push(c2);
+    
+    var h='<h1>AGROPLAY MUSIC</h1>';
+    h+='<h2>Orcamento - '+esc(ev.nome);
+    if(ev.data)h+=' - '+fd(ev.data);
+    if(ev.local)h+=' - '+esc(ev.local);
+    h+='</h2>';
+    h+='<div class="tb"><b>TOTAL ESTIMADO</b><div class="v">'+fmt(tot)+'</div></div>';
+    
+    for(var x=0;x<ordemCats.length;x++){
+      var cat=ordemCats[x];
+      if(!grp[cat])continue;
+      var ct=0;
+      for(var y=0;y<grp[cat].length;y++)ct+=parseFloat(grp[cat][y].valor_total||0);
+      h+='<h3><span>'+esc(cat)+'</span><span>'+fmt(ct)+'</span></h3>';
+      h+='<table><tr><th>Item</th><th>Qtd</th><th>Unit.</th><th>Total</th></tr>';
+      for(var z=0;z<grp[cat].length;z++){
+        var it=grp[cat][z];
+        h+='<tr><td>'+esc(it.item)+'</td><td>'+it.quantidade+'</td><td>'+fmt(it.valor_unitario)+'</td><td>'+fmt(it.valor_total)+'</td></tr>';
+      }
+      h+='</table>';
+    }
+    
+    h+='<div class="rodape">Agroplay Music - Londrina/PR - '+new Date().toLocaleDateString('pt-BR')+'</div>';
+    
+    document.getElementById('conteudo').innerHTML=h;
+  }).catch(function(e){
+    document.getElementById('conteudo').innerHTML='<div class="loader" style="color:#c0392b">Erro: '+e.message+'</div>';
+  });
+}
+</script>
+
+</body>
+</html>
