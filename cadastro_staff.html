@@ -123,10 +123,13 @@ var evento=null;
 var fotoBase64=null;
 var stream=null;
 
-// Pegar evento_id e token da URL
+// Pegar evento_id, token e dados de quem cadastrou
 var params=new URLSearchParams(window.location.search);
 var evId=params.get('ev');
 var tokenURL=params.get('t');
+var cadPorId=params.get('pid')||null;
+var cadPorNome=params.get('pn')||null;
+var cadPorTipo=params.get('pt')||null;
 
 // Se tem token, checar se ja foi usado
 if(tokenURL){
@@ -357,7 +360,10 @@ function salvarReal(){
     evento_id:evento?evento.id:null,
     empresa:'STAFF',
     cargo:funcFinal,
-    token:tokenURL||null
+    token:tokenURL||null,
+    cadastrado_por_id:cadPorId,
+    cadastrado_por_nome:cadPorNome,
+    cadastrado_por_tipo:cadPorTipo
   };
   
   fetch(SB+'/rest/v1/cadastros',{
