@@ -251,7 +251,7 @@ line-height: 1.7;
 <div class="logo-top">
   <div class="logo">
     <div class="a">AGRO<span>PLAY</span></div>
-    <div class="v">v32</div>
+    <div class="v">v32.13</div>
   </div>
 </div>
 
@@ -428,9 +428,14 @@ const sb = supabase.createClient(SB_URL, SB_KEY);
 
 const params = new URLSearchParams(window.location.search);
 const COD_PRE = params.get('cod') || null;
+const TOKEN = params.get('t') || null;
 const RESP = params.get('resp') || null;
 const LOTE_ID = params.get('lote') || null;
 const EV_ID = params.get('ev') || null;
+// Dados de quem gerou o link (admin master ou editor)
+const LINK_PID = params.get('pid') || null;
+const LINK_PNAME = params.get('pn') || null;
+const LINK_PTYPE = params.get('pt') || null;
 
 let codigoValido = null;
 let codigoIdValido = null;
@@ -511,8 +516,31 @@ async function carregarInfoTopo() {
 // ========================
 // ETAPA 1: CODIGO
 // ========================
+// ========================
+// SUPORTE A TOKEN INDIVIDUAL (link direto sem precisar digitar codigo)
+// ========================
 if (COD_PRE) {
   q('f-cod').value = COD_PRE.replace(/\D/g, '').substring(0, 8);
+}
+
+// Se veio com token, valida e pula a etapa do codigo
+if (TOKEN) {
+  (async function() {
+    // Verifica se token ja foi usado
+    const { data: existe } = await sb.from('cadastros').select('id, nome').eq('token', TOKEN).maybeSingle();
+    if (existe) {
+      document.body.innerHTML = '<div style="max-width:480px;margin:60px auto;padding:30px;text-align:center;background:#0d150d;border:2px solid #c0392b;border-radius:12px;color:#eee;font-family:Arial,sans-serif"><div style="font-size:60px;margin-bottom:14px;color:#c0392b">X</div><h2 style="color:#c0392b;margin-bottom:8px">Link já utilizado</h2><p style="color:#888;font-size:14px">Este convite já foi usado por <b style="color:#fff">'+existe.nome+'</b>.</p><p style="color:#888;font-size:13px;margin-top:14px">Peça um novo link ao organizador.</p></div>';
+      return;
+    }
+    // Token valido, pula direto pra dados
+    codigoValido = 'TOKEN_'+TOKEN; // marca virtualmente
+    codigoIdValido = null; // não tem id de código antigo
+    if (LOTE_ID) codigoLoteId = LOTE_ID;
+    if (EV_ID) codigoEventoId = EV_ID;
+    // Esconder etapa do código
+    document.getElementById('t-cod').classList.remove('on');
+    document.getElementById('t-dados').classList.add('on');
+  })();
 }
 
 q('btn-cod').onclick = async function() {
@@ -732,6 +760,18 @@ q('btn-salvar').onclick = async function() {
     lote_nome: respNome || null
   };
 
+  // Se veio por token, marca o token no cadastro
+  if (TOKEN) {
+    dados.token = TOKEN;
+  }
+  
+  // Quem gerou o link?
+  if (LINK_PID || LINK_PNAME) {
+    dados.cadastrado_por_id = LINK_PID;
+    dados.cadastrado_por_nome = LINK_PNAME;
+    dados.cadastrado_por_tipo = LINK_PTYPE || 'master';
+  }
+
   // Define lote_id: prioriza URL, senao pega do codigo
   const loteIdFinal = LOTE_ID || codigoLoteId;
   if (loteIdFinal) {
@@ -759,12 +799,15 @@ q('btn-salvar').onclick = async function() {
   }
 
   // 2. Vincula código ao cadastro + marca como usado (VIRA VERDE no painel do lote)
-  await sb.from('codigos').update({
-    cadastro_id: cadastro.id,
-    usado: true,
-    usado_em: new Date().toISOString(),
-    enviado: true  // garante que continue marcado como enviado
-  }).eq('id', codigoIdValido);
+  // Só atualiza tabela codigos se foi codigo antigo (nao token)
+  if (codigoIdValido) {
+    await sb.from('codigos').update({
+      cadastro_id: cadastro.id,
+      usado: true,
+      usado_em: new Date().toISOString(),
+      enviado: true  // garante que continue marcado como enviado
+    }).eq('id', codigoIdValido);
+  }
 
   ir('t-ok');
 };
