@@ -132,7 +132,7 @@ tr:last-child td { border-bottom: none; }
 <header>
   <div class="logo" onclick="window.location.href='home.html'">
     <div class="a">AGRO<span>PLAY</span></div>
-    <div class="v">v32</div>
+    <div class="v">v32.13</div>
   </div>
   <div class="header-acoes">
     <button class="bto" id="btnLinkCad" style="font-size:11px;padding:6px 10px">Link Cadastro</button>
@@ -553,7 +553,7 @@ async function carregarTudo() {
   document.getElementById('tabelaCadastros').innerHTML = '<div class="empty">Carregando...</div>';
 
   const [cadResp, evResp, lotResp, valResp] = await Promise.all([
-    sb.from('cadastros').select('*').order('criado_em', { ascending: false }),
+    sb.from('cadastros').select('*').neq('tipo', 'staff').order('criado_em', { ascending: false }),
     sb.from('eventos').select('*').order('data', { ascending: true }),
     sb.from('lotes').select('*').order('criado_em', { ascending: false }),
     sb.from('validadores').select('*').order('criado_em', { ascending: false })
