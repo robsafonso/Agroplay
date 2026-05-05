@@ -9,11 +9,11 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: Arial, sans-serif; background: #060a06; color: #eee; min-height: 100vh; }
 
-header { background: #060a06; border-bottom: 2px solid #1e7a35; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
+header { background: #060a06; border-bottom: 1px solid #1a2a1a; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 10; }
 .logo { display: flex; align-items: center; border: 1px solid #1a2a1a; border-radius: 10px; overflow: hidden; }
 .logo .a { background: #0d150d; padding: 7px 12px; font-size: 16px; font-weight: 900; color: #fff; letter-spacing: 1px; }
 .logo .a span { color: #2aab47; }
-.logo .v { background: #c9973c; padding: 7px 10px; font-size: 11px; font-weight: 700; color: #fff; letter-spacing: 1px; }
+.logo .v { background: #2aab47; padding: 8px 10px; font-size: 10px; font-weight: 700; color: #000; letter-spacing: 1px; }
 .header-acoes { display: flex; gap: 8px; align-items: center; }
 .live-dot { display: inline-block; width: 8px; height: 8px; background: #2aab47; border-radius: 50%; animation: pulse 1.5s infinite; }
 @keyframes pulse { 0%, 100% { opacity: 1 } 50% { opacity: 0.3 } }
@@ -89,6 +89,30 @@ input:focus, select:focus { border-color: #2aab47; }
 .hist-item { background: #030503; border: 1px solid #1a2a1a; border-radius: 6px; padding: 8px 10px; margin-bottom: 4px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
 .hist-nome { color: #fff; font-weight: 600; }
 .hist-meta { color: #666; font-size: 10px; }
+/* === DESIGN SYSTEM v1.1 — botoes/badges/status padronizados === */
+.bti { background: #0891b2; color: #fff; border: none; border-radius: 8px; padding: 9px 13px; font-size: 12px; font-weight: 700; cursor: pointer; transition: background 0.15s; }
+.bti:hover, .bti:active { background: #14a8c9; }
+.btc { background: transparent; color: #888; border: 1px solid #333; border-radius: 8px; padding: 9px 13px; font-size: 12px; font-weight: 700; cursor: pointer; transition: background 0.15s; }
+.btc:hover, .btc:active { background: rgba(255,255,255,0.05); color: #ccc; }
+.st-cinza { background: #333; color: #888; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; display: inline-block; letter-spacing: 0.5px; }
+.st-azul  { background: #0891b2; color: #fff; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; display: inline-block; letter-spacing: 0.5px; }
+.st-amar  { background: #c9973c; color: #fff; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; display: inline-block; letter-spacing: 0.5px; }
+.st-verde { background: #1e7a35; color: #fff; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; display: inline-block; letter-spacing: 0.5px; }
+.st-verm  { background: #c0392b; color: #fff; padding: 3px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; display: inline-block; letter-spacing: 0.5px; }
+.resumo-status { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+.resumo-status .rs-item { flex: 1; min-width: 60px; text-align: center; border-radius: 8px; padding: 8px 6px; border: 1px solid; }
+.resumo-status .rs-item .num { font-size: 18px; font-weight: 900; line-height: 1; margin-bottom: 4px; display: block; }
+.resumo-status .rs-item .lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+.rs-cinza { background: #0d150d; border-color: #333; } .rs-cinza .num, .rs-cinza .lbl { color: #888; }
+.rs-azul { background: #0a1f24; border-color: #0891b2; } .rs-azul .num, .rs-azul .lbl { color: #0891b2; }
+.rs-amar { background: #2a1f0a; border-color: #c9973c; } .rs-amar .num, .rs-amar .lbl { color: #c9973c; }
+.rs-verde { background: #0a2818; border-color: #1e7a35; } .rs-verde .num, .rs-verde .lbl { color: #2aab47; }
+.rs-verm { background: #2a0a0a; border-color: #c0392b; } .rs-verm .num, .rs-verm .lbl { color: #c0392b; }
+.ai { background: rgba(8, 145, 178, 0.15); border: 1px solid #0891b2; color: #14a8c9; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 13px; }
+.ay { background: rgba(201, 151, 60, 0.15); border: 1px solid #c9973c; color: #c9973c; padding: 10px; border-radius: 8px; margin-bottom: 10px; font-size: 13px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid #555; border-top-color: #2aab47; border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-right: 6px; }
+/* === FIM DESIGN SYSTEM === */
 </style>
 
 </head>
@@ -101,7 +125,7 @@ input:focus, select:focus { border-color: #2aab47; }
     <div style="text-align:center;margin-bottom:24px">
       <div class="logo" style="display:inline-flex">
         <div class="a">AGRO<span>PLAY</span></div>
-        <div class="v">v32.13</div>
+        <div class="v">v1.0</div>
       </div>
     </div>
     <h1>Painel Admin</h1>
@@ -119,7 +143,7 @@ input:focus, select:focus { border-color: #2aab47; }
   <header>
     <div class="logo" onclick="window.location.href='home.html'" style="cursor:pointer">
       <div class="a">AGRO<span>PLAY</span></div>
-      <div class="v">v32.13</div>
+      <div class="v">v1.0</div>
     </div>
     <div class="header-acoes">
       <span class="live-dot"></span>
