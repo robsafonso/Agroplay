@@ -74,13 +74,15 @@ select,input{width:100%;background:#090e09;border:1px solid #1a2a1a;border-radiu
 <div class="hdr">
   <div class="logo" onclick="location.href='home.html'">
     <div class="lt">AGRO<span>PLAY</span></div>
-    <div class="lv">v32</div>
+    <div class="lv">v32.13</div>
   </div>
   <button class="btn-sair" onclick="sair()">Sair</button>
 </div>
 
-<h1 style="display:flex;align-items:center;gap:8px">Credenciamento <button id="btnConfig" style="background:transparent;border:none;color:#888;font-size:18px;cursor:pointer;padding:4px" title="Configuracoes">[*]</button></h1>
+<h1>Credenciamento</h1>
 <div class="sub">Cadastro e pagamento de staff</div>
+
+<button id="btnConfig" style="display:none;width:100%;background:transparent;border:1px dashed #888;color:#888;padding:10px;font-size:12px;font-weight:700;border-radius:8px;cursor:pointer;margin-bottom:14px">Configurar Staff Managers</button>
 
 <div id="login" style="display:none">
   <label class="lbl">Login</label>
@@ -175,7 +177,7 @@ function init(){
   document.getElementById('login').style.display='none';
   document.getElementById('painel').style.display='block';
   // Engrenagem so pra admin master
-  document.getElementById('btnConfig').style.display=(quem==='master')?'inline-block':'none';
+  document.getElementById('btnConfig').style.display=(quem==='master')?'block':'none';
   document.getElementById('btnConfig').onclick=abrirConfig;
   carregarEventos();
 }
@@ -187,7 +189,7 @@ function logar(){
   if(!u||!p){m.textContent='Preencha';return;}
   m.textContent='...';
   // Tentar admin master primeiro
-  fetch(SB+'/rest/v1/admins?usuario=eq.'+encodeURIComponent(u)+'&senha=eq.'+encodeURIComponent(p)+'&select=id,nome',{
+  fetch(SB+'/rest/v1/admins?nome=eq.'+encodeURIComponent(u)+'&senha=eq.'+encodeURIComponent(p)+'&ativo=eq.true&select=id,nome',{
     headers:{apikey:KY,Authorization:'Bearer '+KY}
   }).then(function(r){return r.json();}).then(function(d){
     if(Array.isArray(d)&&d.length){
