@@ -298,7 +298,7 @@ async function carregarEventos() {
   q('saudacao').textContent = 'Olá, ' + validador.nome;
 
   // Busca eventos do dia (proximos 1 dia + hoje)
-  const { data } = await sb.from('eventos').select('*').order('data', { ascending: true });
+  const { data } = await sb.from('eventos').select('*').or('cancelado.is.null,cancelado.eq.false').order('data', { ascending: true });
   eventos = data || [];
 
   // Filtra eventos próximos ou em andamento (até 1 dia depois)
