@@ -35,7 +35,7 @@ select,input{width:100%;background:#090e09;border:1px solid #1a2a1a;border-radiu
 .it-v{font-size:13px;font-weight:700;color:#2aab47}
 .it-x{background:transparent;border:1px solid #c0392b;color:#c0392b;border-radius:6px;padding:4px 9px;font-size:11px;cursor:pointer}
 .btn-add{background:#1e7a35;border:none;color:#fff;padding:12px 14px;font-size:13px;font-weight:700;cursor:pointer;width:100%;border-top:1px solid #1a2a1a}
-.btn-pdf{width:100%;background:#0891b2;border:none;border-radius:12px;padding:16px;font-size:15px;font-weight:700;color:#fff;cursor:pointer;margin:14px 0 20px}
+.btn-pdf{width:100%;background:#ff0000;border:none;border-radius:12px;padding:20px;font-size:18px;font-weight:900;color:#fff;cursor:pointer;margin:14px 0 20px}
 .emp{text-align:center;padding:20px 14px;color:#555;font-size:12px}
 
 /* Modal */
@@ -217,7 +217,7 @@ function render(){
     h+='</div>';
   }
   
-  h+='<button class="btn-pdf" id="btnPDF" onclick="window.gerarPDF()">Gerar PDF</button>';
+  h+='<button class="btn-pdf" id="btnPDF" onclick="alert(\'OI! BOTAO PDF CLICADO!\')">Gerar PDF (TESTE)</button>';
   document.getElementById('conteudo').innerHTML=h;
   
   // Listeners
