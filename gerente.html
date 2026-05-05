@@ -329,6 +329,7 @@ tr:last-child td { border-bottom: none; }
         <button class="btr" id="btnReprovar" style="flex:1">Reprovar</button>
       </div>
     </div>
+    <div id="auditoriaCad"></div>
     <button class="bto" id="btnEditarCargo" style="width:100%;margin-top:12px;border-color:#c9973c;color:#c9973c">Editar empresa / função</button>
     <div id="editarCargoBox" class="gone" style="margin-top:10px">
       <div class="fl">
@@ -664,6 +665,7 @@ function verPerfil(id) {
 
   document.getElementById('perfilConteudo').innerHTML = h;
   document.getElementById('aprovarBox').classList.toggle('gone', c.status !== 'pendente');
+  document.getElementById('auditoriaCad').innerHTML = renderAuditoriaCad(c);
   document.getElementById('editarCargoBox').classList.add('gone');
   document.getElementById('atualizarFotoBox').classList.add('gone');
   document.getElementById('btnEditarCargo').textContent = 'Editar empresa / função';
@@ -680,20 +682,75 @@ function abrirFotoGrande(id) {
 
 async function aprovarPerfil() {
   const c = estado.perfilAtual; if (!c) return;
-  await sb.from('cadastros').update({ status: 'aprovado' }).eq('id', c.id);
+  const btn = document.getElementById('btnAprovar');
+  btn.textContent = 'Aprovando...'; btn.disabled = true;
+  
+  const agora = new Date().toISOString();
+  const updateData = {
+    status: 'aprovado',
+    aprovado_por_id: admin.id,
+    aprovado_por_nome: admin.nome,
+    aprovado_em: agora
+  };
+  await sb.from('cadastros').update(updateData).eq('id', c.id);
   c.status = 'aprovado';
-  document.getElementById('btnAprovar').textContent = 'Aprovado!';
-  setTimeout(() => { document.getElementById('btnAprovar').textContent = 'Aprovar'; }, 1800);
+  c.aprovado_por_id = admin.id;
+  c.aprovado_por_nome = admin.nome;
+  c.aprovado_em = agora;
+  
+  btn.textContent = 'Aprovado!'; btn.disabled = false;
+  setTimeout(() => { btn.textContent = 'Aprovar'; }, 1800);
   renderTabelaCadastros(); renderEstatisticas();
+  // Atualizar bloco de auditoria no modal
+  if (estado.perfilAtual && estado.perfilAtual.id === c.id) {
+    const audEl = document.getElementById('auditoriaCad');
+    if (audEl) audEl.innerHTML = renderAuditoriaCad(c);
+  }
 }
 
 async function reprovarPerfil() {
   const c = estado.perfilAtual; if (!c) return;
-  await sb.from('cadastros').update({ status: 'reprovado' }).eq('id', c.id);
+  const btn = document.getElementById('btnReprovar');
+  btn.textContent = 'Reprovando...'; btn.disabled = true;
+  
+  const agora = new Date().toISOString();
+  const updateData = {
+    status: 'reprovado',
+    aprovado_por_id: admin.id,
+    aprovado_por_nome: admin.nome,
+    aprovado_em: agora
+  };
+  await sb.from('cadastros').update(updateData).eq('id', c.id);
   c.status = 'reprovado';
+  c.aprovado_por_id = admin.id;
+  c.aprovado_por_nome = admin.nome;
+  c.aprovado_em = agora;
+  
+  btn.textContent = 'Reprovar'; btn.disabled = false;
   const msg = 'Olá ' + c.nome + ',\n\nSua solicitação não foi confirmada.\nContate o escritório Agroplay.\n\nAgroplay Music · Londrina PR';
-  copiar(msg, document.getElementById('btnReprovar'), 'Reprovar');
+  copiar(msg, btn, 'Reprovar');
   renderTabelaCadastros(); renderEstatisticas();
+  if (estado.perfilAtual && estado.perfilAtual.id === c.id) {
+    const audEl = document.getElementById('auditoriaCad');
+    if (audEl) audEl.innerHTML = renderAuditoriaCad(c);
+  }
+}
+
+function renderAuditoriaCad(c) {
+  if (!c.aprovado_por_nome && !c.aprovado_em) return '';
+  let h = '<div style="background:#0a1f12;border:1px solid #1e7a35;border-radius:8px;padding:8px 10px;margin:10px 0;font-size:11px;color:#888">';
+  if (c.status === 'aprovado') {
+    h += '<b style="color:#2aab47">✓ Aprovado</b>';
+  } else if (c.status === 'reprovado') {
+    h += '<b style="color:#c0392b">✗ Reprovado</b>';
+  }
+  if (c.aprovado_por_nome) h += ' por <b style="color:#fff">' + escaparHtml(c.aprovado_por_nome) + '</b>';
+  if (c.aprovado_em) {
+    const dt = new Date(c.aprovado_em);
+    h += '<br><span style="color:#666">' + dt.toLocaleDateString('pt-BR') + ' às ' + dt.toLocaleTimeString('pt-BR').substring(0,5) + '</span>';
+  }
+  h += '</div>';
+  return h;
 }
 
 async function excluirPerfil() {
@@ -956,37 +1013,109 @@ function renderListaEventos() {
     el.innerHTML = '<div class="empty">Nenhum evento criado. Toque em + Criar evento.</div>';
     return;
   }
+  
+  // Separar ativos vs cancelados
+  const ativos = estado.eventos.filter(e => !e.cancelado);
+  const cancelados = estado.eventos.filter(e => e.cancelado);
+  
   let h = '';
-  estado.eventos.forEach(ev => {
+  
+  function montarCard(ev, isCancelado) {
     const data = formatarData(ev.data);
     const horaIni = formatarHora(ev.horario);
     const horaFim = formatarHora(ev.horario_fim);
     const cadVinc = estado.cadastros.filter(c => c.evento_id === ev.id).length;
     const tipoBadge = ev.tipo === 'interno' ? '<span class="badge" style="background:#0891b2;font-size:9px;margin-left:6px">INT</span>' : '<span class="badge" style="background:#1f2937;font-size:9px;margin-left:6px">EXT</span>';
-    h += '<div class="ev-card"><div class="ev-card-nome">' + escaparHtml(ev.nome) + tipoBadge + '</div><div class="ev-card-info">';
-    if (data) h += '📅 ' + data + (horaIni ? ' às ' + horaIni + (horaFim ? ' - ' + horaFim : '') : '') + '<br>';
-    if (ev.local) h += '📍 ' + escaparHtml(ev.local) + '<br>';
-    if (ev.atracao1) h += '🎵 ' + escaparHtml(ev.atracao1) + (ev.atracao2 ? ' + ' + escaparHtml(ev.atracao2) : '') + '<br>';
-    if (cadVinc > 0) h += '👥 ' + cadVinc + ' cadastro(s) vinculado(s)<br>';
-    // Calcula se ja pode abrir bilhetes (7 dias antes do evento ate o dia)
+    const canceladoBadge = isCancelado ? '<span class="badge" style="background:#c0392b;font-size:9px;margin-left:6px">CANCELADO</span>' : '';
+    
+    let card = '<div class="ev-card" style="' + (isCancelado ? 'opacity:0.55;border-left:3px solid #c0392b' : '') + '">';
+    card += '<div class="ev-card-nome">' + escaparHtml(ev.nome) + tipoBadge + canceladoBadge + '</div>';
+    card += '<div class="ev-card-info">';
+    if (data) card += '📅 ' + data + (horaIni ? ' às ' + horaIni + (horaFim ? ' - ' + horaFim : '') : '') + '<br>';
+    if (ev.local) card += '📍 ' + escaparHtml(ev.local) + '<br>';
+    if (ev.atracao1) card += '🎵 ' + escaparHtml(ev.atracao1) + (ev.atracao2 ? ' + ' + escaparHtml(ev.atracao2) : '') + '<br>';
+    if (cadVinc > 0) card += '👥 ' + cadVinc + ' cadastro(s) vinculado(s)<br>';
+    
+    // Auditoria
+    if (isCancelado && ev.cancelado_por_nome) {
+      const dt = ev.cancelado_em ? new Date(ev.cancelado_em).toLocaleDateString('pt-BR') : '';
+      card += '<div style="font-size:10px;color:#c0392b;margin-top:4px"><b>Cancelado</b> por ' + escaparHtml(ev.cancelado_por_nome) + (dt ? ' · ' + dt : '') + '</div>';
+    } else if (ev.editado_por_nome && ev.editado_em) {
+      const dt = new Date(ev.editado_em).toLocaleDateString('pt-BR');
+      card += '<div style="font-size:9px;color:#666;margin-top:4px">Editado por ' + escaparHtml(ev.editado_por_nome) + ' · ' + dt + '</div>';
+    }
+    
     let podeBilhetes = false;
-    if (ev.data) {
+    if (ev.data && !isCancelado) {
       const hoje = new Date();
       hoje.setHours(0, 0, 0, 0);
       const dataEv = new Date(ev.data + 'T00:00:00');
       const diffDias = Math.floor((dataEv - hoje) / (1000 * 60 * 60 * 24));
-      podeBilhetes = diffDias <= 7 && diffDias >= -1; // -1 = aceita 1 dia depois (caso evento tenha rolado mas ainda querendo gerenciar)
+      podeBilhetes = diffDias <= 7 && diffDias >= -1;
     }
 
     let botoesAcoes = '<button class="btn" onclick="verListaEvento(\'' + ev.id + '\')" style="font-size:11px;padding:8px 10px">Lista</button>';
     if (podeBilhetes) {
       botoesAcoes += '<button class="btn" onclick="verBilhetesEvento(\'' + ev.id + '\')" style="font-size:11px;padding:8px 10px;background:#0891b2">Bilhetes</button>';
     }
-    botoesAcoes += '<button class="bty" onclick="editarEvento(\'' + ev.id + '\')">Editar</button><button class="btr" onclick="excluirEvento(\'' + ev.id + '\')">Excluir</button>';
+    if (isCancelado) {
+      botoesAcoes += '<button class="btn" onclick="reativarEvento(\'' + ev.id + '\')" style="font-size:11px;padding:8px 10px;background:#1e7a35">Reativar</button>';
+      botoesAcoes += '<button class="btr" onclick="excluirEvento(\'' + ev.id + '\')">Excluir</button>';
+    } else {
+      botoesAcoes += '<button class="bty" onclick="editarEvento(\'' + ev.id + '\')">Editar</button>';
+      botoesAcoes += '<button class="bto" onclick="cancelarEvento(\'' + ev.id + '\')" style="border-color:#c9973c;color:#c9973c">Cancelar</button>';
+      botoesAcoes += '<button class="btr" onclick="excluirEvento(\'' + ev.id + '\')">Excluir</button>';
+    }
 
-    h += '</div><div class="ev-card-acoes">' + botoesAcoes + '</div></div>';
-  });
+    card += '</div><div class="ev-card-acoes">' + botoesAcoes + '</div></div>';
+    return card;
+  }
+  
+  ativos.forEach(ev => { h += montarCard(ev, false); });
+  
+  if (cancelados.length > 0) {
+    h += '<div style="margin-top:14px;padding:8px 10px;background:#1a0808;border-left:3px solid #c0392b;border-radius:6px;font-size:11px;color:#c0392b;font-weight:700;text-transform:uppercase;letter-spacing:1px">Cancelados (' + cancelados.length + ')</div>';
+    cancelados.forEach(ev => { h += montarCard(ev, true); });
+  }
+  
   el.innerHTML = h;
+}
+
+async function cancelarEvento(id) {
+  const ev = estado.eventos.find(e => e.id === id);
+  if (!ev) return;
+  if (!confirm('Cancelar o evento "' + ev.nome + '"?\n\nEle vai para a lista de cancelados, mas o histórico (cadastros, lotes, etc) é mantido. Você pode reativar depois.')) return;
+  
+  const agora = new Date().toISOString();
+  await sb.from('eventos').update({
+    cancelado: true,
+    cancelado_em: agora,
+    cancelado_por_nome: admin.nome
+  }).eq('id', id);
+  
+  ev.cancelado = true;
+  ev.cancelado_em = agora;
+  ev.cancelado_por_nome = admin.nome;
+  
+  renderListaEventos();
+}
+
+async function reativarEvento(id) {
+  const ev = estado.eventos.find(e => e.id === id);
+  if (!ev) return;
+  if (!confirm('Reativar o evento "' + ev.nome + '"?')) return;
+  
+  await sb.from('eventos').update({
+    cancelado: false,
+    cancelado_em: null,
+    cancelado_por_nome: null
+  }).eq('id', id);
+  
+  ev.cancelado = false;
+  ev.cancelado_em = null;
+  ev.cancelado_por_nome = null;
+  
+  renderListaEventos();
 }
 
 function abrirNovoEvento() {
@@ -1042,7 +1171,9 @@ async function salvarEvento() {
     atracao2: document.getElementById('evAtr2').value.trim() || null,
     insta_atr2: document.getElementById('evInsta2').value.trim() || null,
     foto_url: document.getElementById('evFoto').value.trim() || null,
-    descricao: document.getElementById('evDescricao').value.trim() || null
+    descricao: document.getElementById('evDescricao').value.trim() || null,
+    editado_por_nome: admin.nome,
+    editado_em: new Date().toISOString()
   };
   let resposta;
   if (estado.eventoEditandoId) resposta = await sb.from('eventos').update(dados).eq('id', estado.eventoEditandoId);
