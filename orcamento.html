@@ -328,18 +328,11 @@ h+=’<tr><td>’+esc(it.item)+’</td><td>’+it.quantidade+’</td><td>’+fmt
 }
 h+=’</table>’;
 }
-h+=’<div style="display:flex;gap:8px;margin-top:24px"><button class="btn" onclick="window.print()" style="flex:1">Imprimir / Salvar PDF</button><button class="btn" onclick="history.back()" style="flex:1;background:#666">Voltar</button></div></body></html>’;
-// Usar data URL pra abrir em nova janela (funciona no iOS)
-var blob=new Blob([h],{type:‘text/html’});
-var url=URL.createObjectURL(blob);
-var a=document.createElement(‘a’);
-a.href=url;
-a.target=’_blank’;
-a.rel=‘noopener’;
-document.body.appendChild(a);
-a.click();
-document.body.removeChild(a);
-setTimeout(function(){URL.revokeObjectURL(url);},1000);
+h+=’<div style="display:flex;gap:8px;margin-top:24px;flex-wrap:wrap"><button class="btn" onclick="window.print()" style="flex:1;min-width:140px">Imprimir / Salvar PDF</button><button class="btn" onclick="location.href=\'orcamento.html\'" style="flex:1;min-width:140px;background:#666">Voltar ao orcamento</button></div></body></html>’;
+// Substituir a pagina atual com o PDF (funciona em todos browsers)
+document.open();
+document.write(h);
+document.close();
 }
 </script>
 
