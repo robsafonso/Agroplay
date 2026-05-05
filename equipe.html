@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Equipe - Agroplay</title>
+<title>Credenciamento - Agroplay</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 body{background:#060a06;color:#eee;font-family:Arial,sans-serif;padding:14px;max-width:480px;margin:0 auto}
@@ -79,8 +79,48 @@ select,input{width:100%;background:#090e09;border:1px solid #1a2a1a;border-radiu
   <button class="btn-sair" onclick="sair()">Sair</button>
 </div>
 
-<h1>Equipe do evento</h1>
-<div class="sub">Staff que vai trabalhar no evento</div>
+<h1 style="display:flex;align-items:center;gap:8px">Credenciamento <button id="btnConfig" style="background:transparent;border:none;color:#888;font-size:18px;cursor:pointer;padding:4px" title="Configuracoes">[*]</button></h1>
+<div class="sub">Cadastro e pagamento de staff</div>
+
+<div id="login" style="display:none">
+  <label class="lbl">Login</label>
+  <input type="text" id="admU" placeholder="Usuario" autocomplete="off">
+  <input type="password" id="admP" placeholder="Senha">
+  <button class="btn-entrar" onclick="logar()">Entrar</button>
+  <div id="lmsg" style="color:#c0392b;font-size:12px;margin-top:8px;text-align:center"></div>
+  <div style="margin-top:14px;text-align:center;font-size:11px;color:#555">
+    <a href="home.html" style="color:#888;text-decoration:none">Voltar para o sistema</a>
+  </div>
+</div>
+
+<!-- Modal Configuracoes (so admin master) -->
+
+<div id="modalCfg" class="modal-bg">
+  <div class="modal" style="max-width:440px">
+    <h3>Staff Managers</h3>
+    <p style="color:#888;font-size:11px;margin-bottom:14px">Pessoas autorizadas a acessar essa tela. So elas conseguem cadastrar staff e definir pagamentos.</p>
+    <div id="listaSMs" style="max-height:50vh;overflow-y:auto;margin-bottom:12px"></div>
+    <button class="btn-add-staff" onclick="abrirNovoSM()" style="margin-bottom:8px">+ Novo Staff Manager</button>
+    <button class="btn-cancel" onclick="fecharCfg()" style="width:100%">Fechar</button>
+  </div>
+</div>
+
+<!-- Modal Novo Staff Manager -->
+
+<div id="modalNovoSM" class="modal-bg">
+  <div class="modal" style="max-width:380px">
+    <h3>Novo Staff Manager</h3>
+    <label class="lbl">Nome</label>
+    <input type="text" id="smNome" placeholder="Nome completo">
+    <label class="lbl">Usuario</label>
+    <input type="text" id="smUser" placeholder="ex: joao" autocomplete="off">
+    <label class="lbl">Senha</label>
+    <input type="text" id="smSenha" placeholder="ex: joao123">
+    <div id="smMsg" style="font-size:12px;text-align:center;margin:8px 0"></div>
+    <button class="btn-add-staff" onclick="salvarSM()">Criar</button>
+    <button class="btn-cancel" onclick="fecharNovoSM()" style="width:100%;margin-top:8px">Cancelar</button>
+  </div>
+</div>
 
 <div id="painel" style="display:none">
   <label class="lbl">Selecione o evento</label>
@@ -119,19 +159,60 @@ function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/<
 </script>
 
 <script>
+function getQuemEstaLogado(){
+  // Retorna 'master', 'staffmgr' ou null
+  if(sessionStorage.getItem('ag_admin'))return 'master';
+  if(sessionStorage.getItem('eq_sm'))return 'staffmgr';
+  return null;
+}
+
 function init(){
-  // Checar se esta logado (ag_admin existe no sessionStorage)
-  if(!sessionStorage.getItem('ag_admin')){
-    location.href='index.html';
+  var quem=getQuemEstaLogado();
+  if(!quem){
+    document.getElementById('login').style.display='block';
     return;
   }
+  document.getElementById('login').style.display='none';
   document.getElementById('painel').style.display='block';
+  // Engrenagem so pra admin master
+  document.getElementById('btnConfig').style.display=(quem==='master')?'inline-block':'none';
+  document.getElementById('btnConfig').onclick=abrirConfig;
   carregarEventos();
+}
+
+function logar(){
+  var u=document.getElementById('admU').value.trim();
+  var p=document.getElementById('admP').value.trim();
+  var m=document.getElementById('lmsg');
+  if(!u||!p){m.textContent='Preencha';return;}
+  m.textContent='...';
+  // Tentar admin master primeiro
+  fetch(SB+'/rest/v1/admins?usuario=eq.'+encodeURIComponent(u)+'&senha=eq.'+encodeURIComponent(p)+'&select=id,nome',{
+    headers:{apikey:KY,Authorization:'Bearer '+KY}
+  }).then(function(r){return r.json();}).then(function(d){
+    if(Array.isArray(d)&&d.length){
+      sessionStorage.setItem('ag_admin',JSON.stringify({id:d[0].id,nome:d[0].nome,nivel:'master'}));
+      init();
+      return;
+    }
+    // Tentar staff manager
+    fetch(SB+'/rest/v1/staff_managers?usuario=eq.'+encodeURIComponent(u)+'&senha=eq.'+encodeURIComponent(p)+'&ativo=eq.true&select=id,nome',{
+      headers:{apikey:KY,Authorization:'Bearer '+KY}
+    }).then(function(r){return r.json();}).then(function(d2){
+      if(Array.isArray(d2)&&d2.length){
+        sessionStorage.setItem('eq_sm',JSON.stringify({id:d2[0].id,nome:d2[0].nome}));
+        init();
+      }else{
+        m.textContent='Usuario ou senha invalidos';
+      }
+    }).catch(function(){m.textContent='Erro';});
+  }).catch(function(){m.textContent='Erro';});
 }
 
 function sair(){
   sessionStorage.removeItem('ag_admin');
-  location.href='index.html';
+  sessionStorage.removeItem('eq_sm');
+  location.reload();
 }
 
 function carregarEventos(){
@@ -175,9 +256,19 @@ function selEv(){
   carregarEquipe();
 }
 
+var pendentes=[];
+
 function carregarEquipe(){
   if(!evAtual)return;
   document.getElementById('conteudo').innerHTML='<div class="empty">Carregando...</div>';
+  
+  // Carregar pendentes em paralelo (staff status=pendente)
+  fetch(SB+'/rest/v1/cadastros?tipo=eq.staff&status=eq.pendente&select=id,nome,foto_url,telefone,cargo,setor,cpf&order=criado_em.desc',{
+    headers:{apikey:KY,Authorization:'Bearer '+KY}
+  }).then(function(r){return r.json();}).then(function(d){
+    pendentes=Array.isArray(d)?d:[];
+  });
+  
   fetch(SB+'/rest/v1/equipe_evento?evento_id=eq.'+evAtual.id+'&select=*&order=criado_em.asc',{
     headers:{apikey:KY,Authorization:'Bearer '+KY}
   }).then(function(r){return r.json();}).then(function(d){
@@ -225,9 +316,36 @@ function render(){
   
   // Stats
   h+='<div class="stats">';
-  h+='<div class="stat"><div class="n">'+equipe.length+'</div><div class="l">Pessoas</div></div>';
-  h+='<div class="stat"><div class="n" style="color:#c9973c">'+fmt(tot).replace('R$ ','')+'</div><div class="l">A pagar</div></div>';
+  h+='<div class="stat"><div class="n">'+equipe.length+'</div><div class="l">No evento</div></div>';
+  h+='<div class="stat"><div class="n" style="color:#c9973c">'+pendentes.length+'</div><div class="l">Pendentes</div></div>';
+  h+='<div class="stat"><div class="n" style="color:#0891b2;font-size:14px">'+fmt(tot).replace('R$ ','')+'</div><div class="l">A pagar</div></div>';
   h+='</div>';
+  
+  // SECAO PENDENTES (cadastros novos pra aprovar)
+  if(pendentes.length>0){
+    h+='<div style="background:#2a1f0a;border:1px solid #c9973c;border-radius:12px;padding:12px;margin-bottom:14px">';
+    h+='<div style="font-size:11px;color:#c9973c;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Aguardando aprovacao ('+pendentes.length+')</div>';
+    for(var p=0;p<pendentes.length;p++){
+      var pd=pendentes[p];
+      h+='<div style="background:#0a1408;border:1px solid #1a2a1a;border-radius:8px;padding:10px;margin-bottom:8px;display:flex;align-items:center;gap:10px">';
+      if(pd.foto_url){
+        h+='<img src="'+pd.foto_url+'" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #c9973c">';
+      }else{
+        h+='<div style="width:40px;height:40px;border-radius:50%;background:#1a2a1a;display:flex;align-items:center;justify-content:center;color:#c9973c;font-weight:700;border:2px solid #c9973c">?</div>';
+      }
+      h+='<div style="flex:1;min-width:0">';
+      h+='<div style="font-size:13px;font-weight:700;color:#fff">'+esc(pd.nome||'(sem nome)')+'</div>';
+      h+='<div style="font-size:11px;color:#c9973c;font-weight:700">'+esc(pd.cargo||pd.setor||'')+'</div>';
+      if(pd.telefone)h+='<div style="font-size:10px;color:#666">'+esc(pd.telefone)+'</div>';
+      h+='</div>';
+      h+='</div>';
+      h+='<div style="display:flex;gap:6px;margin-top:6px;margin-bottom:8px">';
+      h+='<button data-aprov="'+pd.id+'" style="flex:1;background:#1e7a35;color:#fff;border:none;border-radius:6px;padding:8px;font-size:11px;font-weight:700;cursor:pointer">Aprovar</button>';
+      h+='<button data-rejei="'+pd.id+'" style="flex:1;background:transparent;color:#c0392b;border:1px solid #c0392b;border-radius:6px;padding:8px;font-size:11px;font-weight:700;cursor:pointer">Rejeitar</button>';
+      h+='</div>';
+    }
+    h+='</div>';
+  }
   
   // Total geral
   h+='<div class="tot"><div class="tot-lbl">TOTAL A PAGAR</div><div class="tot-val">'+fmt(tot)+'</div></div>';
@@ -291,17 +409,54 @@ function render(){
   }
   var cop=document.getElementById('btnCop');
   if(cop)cop.onclick=function(){copiarTexto();};
+  
+  // Aprovar/rejeitar pendentes
+  var apvs=document.querySelectorAll('[data-aprov]');
+  for(var a=0;a<apvs.length;a++){
+    apvs[a].onclick=function(){aprovarStaff(this.getAttribute('data-aprov'));};
+  }
+  var rjs=document.querySelectorAll('[data-rejei]');
+  for(var rj=0;rj<rjs.length;rj++){
+    rjs[rj].onclick=function(){rejeitarStaff(this.getAttribute('data-rejei'));};
+  }
+}
+
+function aprovarStaff(id){
+  fetch(SB+'/rest/v1/cadastros?id=eq.'+id,{
+    method:'PATCH',
+    headers:{apikey:KY,Authorization:'Bearer '+KY,'Content-Type':'application/json',Prefer:'return=minimal'},
+    body:JSON.stringify({status:'aprovado'})
+  }).then(function(r){
+    if(r.ok){carregarEquipe();}
+    else{alert('Erro ao aprovar');}
+  });
+}
+
+function rejeitarStaff(id){
+  if(!confirm('Rejeitar este cadastro? Ele sera apagado.'))return;
+  fetch(SB+'/rest/v1/cadastros?id=eq.'+id,{
+    method:'DELETE',headers:{apikey:KY,Authorization:'Bearer '+KY}
+  }).then(function(){carregarEquipe();});
+}
+
+function gerarToken(){
+  // Token aleatorio de 8 chars
+  var c='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  var t='';
+  for(var i=0;i<8;i++)t+=c.charAt(Math.floor(Math.random()*c.length));
+  return t;
 }
 
 function copiarLinkCadastro(){
   if(!evAtual){alert('Selecione um evento');return;}
-  var url=location.origin+location.pathname.replace(/equipe\.html.*/,'')+'cadastro_staff.html?ev='+evAtual.id;
+  var token=gerarToken();
+  var url=location.origin+location.pathname.replace(/equipe\.html.*/,'')+'cadastro_staff.html?ev='+evAtual.id+'&t='+token;
   var msg='Ola! Voce foi convidado para trabalhar no evento '+evAtual.nome+' da Agroplay.\n\n';
-  msg+='Cadastre-se aqui: '+url;
+  msg+='Cadastre-se aqui (link individual): '+url;
   if(navigator.clipboard&&navigator.clipboard.writeText){
     navigator.clipboard.writeText(msg).then(function(){
-      alert('Link copiado! Cole no WhatsApp da pessoa.');
-    }).catch(function(){alert('Erro ao copiar. Link: '+url);});
+      alert('Link copiado!\n\nCodigo: '+token+'\n\nCole no WhatsApp da pessoa. Cada link e individual.');
+    }).catch(function(){alert('Link: '+url);});
   }else{
     alert('Link: '+url);
   }
@@ -313,12 +468,11 @@ function abrirModal(){
   document.getElementById('listaStaff').innerHTML='Carregando...';
   document.getElementById('buscaStaff').value='';
   
-  // Carregar todos os staff
-  fetch(SB+'/rest/v1/cadastros?tipo=eq.staff&select=id,nome,foto_url,setor,cargo,telefone&order=nome.asc',{
+  // Carregar APROVADOS apenas (pendentes ficam fora do banco geral)
+  fetch(SB+'/rest/v1/cadastros?tipo=eq.staff&status=eq.aprovado&select=id,nome,foto_url,setor,cargo,telefone&order=nome.asc',{
     headers:{apikey:KY,Authorization:'Bearer '+KY}
   }).then(function(r){return r.json();}).then(function(d){
     if(!Array.isArray(d)){document.getElementById('listaStaff').innerHTML='Erro';return;}
-    // Filtrar quem ja ta na equipe
     var idsNaEquipe=[];
     for(var i=0;i<equipe.length;i++)idsNaEquipe.push(equipe[i].cadastro_id);
     allStaff=d.filter(function(p){return idsNaEquipe.indexOf(p.id)<0;});
@@ -437,6 +591,99 @@ function copiarTexto(){
   }else{
     alert(t);
   }
+}
+
+
+// ============ Staff Manager (gestao) ============
+function abrirConfig(){
+  document.getElementById('modalCfg').classList.add('on');
+  carregarSMs();
+}
+function fecharCfg(){
+  document.getElementById('modalCfg').classList.remove('on');
+}
+function carregarSMs(){
+  document.getElementById('listaSMs').innerHTML='Carregando...';
+  fetch(SB+'/rest/v1/staff_managers?select=*&order=criado_em.desc',{
+    headers:{apikey:KY,Authorization:'Bearer '+KY}
+  }).then(function(r){return r.json();}).then(function(d){
+    if(!Array.isArray(d)){document.getElementById('listaSMs').innerHTML='Erro';return;}
+    if(d.length===0){
+      document.getElementById('listaSMs').innerHTML='<div class="empty" style="padding:14px">Nenhum Staff Manager cadastrado</div>';
+      return;
+    }
+    var h='';
+    for(var i=0;i<d.length;i++){
+      var sm=d[i];
+      h+='<div style="background:#070b07;border:1px solid #1a2a1a;border-radius:8px;padding:10px;margin-bottom:8px">';
+      h+='<div style="font-size:13px;font-weight:700;color:#fff">'+esc(sm.nome)+'</div>';
+      h+='<div style="font-size:11px;color:#2aab47;margin-top:2px">Usuario: '+esc(sm.usuario)+' | Senha: '+esc(sm.senha)+'</div>';
+      h+='<div style="display:flex;gap:6px;margin-top:8px">';
+      h+='<button data-cpsm="'+sm.id+'" style="flex:1;background:#0891b2;color:#fff;border:none;border-radius:6px;padding:8px;font-size:11px;font-weight:700;cursor:pointer">Copiar link</button>';
+      h+='<button data-rmsm="'+sm.id+'" style="flex:1;background:transparent;color:#c0392b;border:1px solid #c0392b;border-radius:6px;padding:8px;font-size:11px;font-weight:700;cursor:pointer">Excluir</button>';
+      h+='</div>';
+      h+='</div>';
+    }
+    document.getElementById('listaSMs').innerHTML=h;
+    // listeners
+    var cps=document.querySelectorAll('[data-cpsm]');
+    for(var j=0;j<cps.length;j++){
+      cps[j].onclick=function(){copiarLinkSM(this.getAttribute('data-cpsm'),d);};
+    }
+    var rms=document.querySelectorAll('[data-rmsm]');
+    for(var k=0;k<rms.length;k++){
+      rms[k].onclick=function(){excluirSM(this.getAttribute('data-rmsm'));};
+    }
+  });
+}
+function abrirNovoSM(){
+  document.getElementById('smNome').value='';
+  document.getElementById('smUser').value='';
+  document.getElementById('smSenha').value='';
+  document.getElementById('smMsg').textContent='';
+  document.getElementById('modalNovoSM').classList.add('on');
+}
+function fecharNovoSM(){
+  document.getElementById('modalNovoSM').classList.remove('on');
+}
+function salvarSM(){
+  var nome=document.getElementById('smNome').value.trim();
+  var usuario=document.getElementById('smUser').value.trim().toLowerCase();
+  var senha=document.getElementById('smSenha').value.trim();
+  var msg=document.getElementById('smMsg');
+  if(!nome||!usuario||!senha){msg.style.color='#c0392b';msg.textContent='Preencha tudo';return;}
+  msg.style.color='#888';msg.textContent='Salvando...';
+  fetch(SB+'/rest/v1/staff_managers',{
+    method:'POST',
+    headers:{apikey:KY,Authorization:'Bearer '+KY,'Content-Type':'application/json',Prefer:'return=minimal'},
+    body:JSON.stringify({nome:nome,usuario:usuario,senha:senha,ativo:true})
+  }).then(function(r){
+    if(r.ok){
+      msg.style.color='#2aab47';msg.textContent='Criado!';
+      setTimeout(function(){fecharNovoSM();carregarSMs();},700);
+    }else{
+      return r.text().then(function(t){
+        msg.style.color='#c0392b';
+        msg.textContent=t.indexOf('duplic')>=0?'Usuario ja existe':'Erro ao salvar';
+      });
+    }
+  });
+}
+function copiarLinkSM(id,lista){
+  var sm=null;
+  for(var i=0;i<lista.length;i++)if(lista[i].id===id){sm=lista[i];break;}
+  if(!sm)return;
+  var url=location.origin+location.pathname.replace(/equipe\.html.*/,'')+'equipe.html';
+  var msg='AGROPLAY Music\n\nOla '+sm.nome+'!\n\nVoce foi designado como Staff Manager.\n\nAcesso: '+url+'\nUsuario: '+sm.usuario+'\nSenha: '+sm.senha;
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(msg).then(function(){alert('Link copiado!');});
+  }else{alert(msg);}
+}
+function excluirSM(id){
+  if(!confirm('Excluir este Staff Manager?'))return;
+  fetch(SB+'/rest/v1/staff_managers?id=eq.'+id,{
+    method:'DELETE',headers:{apikey:KY,Authorization:'Bearer '+KY}
+  }).then(function(){carregarSMs();});
 }
 
 init();
